@@ -1,0 +1,67 @@
+tempdir := $(shell mktemp -d)
+
+all: <%= package_name %>
+
+<%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
+	<%= generate_package.join("\n\t") %>
+
+<%= @name %>-<%= @version %>.tar.gz: <%= @directories.join(" ") %> <%= @name %>
+	<%= pack_tarball_command %>
+
+<%- @directories.each do |dir| -%>
+<%= dir %>:
+	mkdir -p <%= dir %>
+<%- end -%>
+
+<%= @name %>: <%= @components.map {|comp| comp.name }.join(" ") %>
+	touch <%= @name %>
+
+<%- @components.each do |comp| -%>
+<%= comp.name %>: <%= comp.dependencies.join(" ") %> <%= comp.name %>-install
+
+<%= comp.name %>-unpack:
+	<%= comp.extract_with %>
+	touch <%= comp.name %>-unpack
+
+<%= comp.name %>-patch: <%= comp.name %>-unpack
+	<%- unless comp.patches.empty? -%>
+		cd <%= comp.dirname %>; \
+		<%- comp.patches.each do |patch| -%>
+			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %>
+		<%- end -%>
+	<%- end -%>
+	touch <%= comp.name %>-patch
+
+<%= comp.name %>-configure: <%= comp.name %>-patch
+	cd <%= comp.dirname %>; \
+	<%= comp.configure.join(";\\\n\t") %>
+	touch <%= comp.name %>-configure
+
+<%= comp.name %>-build: <%= comp.name %>-configure
+	cd <%= comp.dirname %>; \
+	<%= comp.build.join(";\\\n\t") %>
+	touch <%= comp.name %>-build
+
+<%= comp.name %>-install: <%= comp.name %>-build
+	cd <%= comp.dirname %>; \
+	<%= comp.install.join(";\\\n\t") %>
+	touch <%= comp.name %>-install
+
+<%= comp.name %>-clean:
+	[ -d <%= comp.dirname %> ] && cd <%= comp.dirname %>; \
+	<%= @platform[:make] %> clean
+	<%- ["configure", "build", "install"].each do |type| -%>
+	[ -e <%= comp.name %>-<%= type %> ] && rm <%= comp.name %>-<%= type %>
+	<%- end -%>
+
+<%= comp.name %>-clobber: <%= comp.name %>-clean
+	[ -d <%= comp.dirname %> ] && rm -r <%= comp.dirname %>
+	[ -e <%= comp.name %>-unpack ] && rm <%= comp.name %>-unpack
+
+<%- end -%>
+
+clean: <%= @components.map {|comp| "#{comp.name}-clean" }.join(" ") %>
+
+clobber: <%= @components.map {|comp| "#{comp.name}-clobber" }.join(" ") %>
+
+.PHONY: clean clobber  <%= @components.map {|comp| "#{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>
