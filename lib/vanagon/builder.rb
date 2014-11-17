@@ -1,5 +1,6 @@
 require 'vanagon/project'
 require 'vanagon/platform'
+require 'vanagon/platform/dsl'
 require 'vanagon/component'
 require 'vanagon/utilities'
 require 'tmpdir'
@@ -18,20 +19,7 @@ class Vanagon::Builder
   end
 
   def load_platform
-    platfile = File.join(@configdir, "platforms", "#{@platform_name}.rb")
-    if File.exists?(platfile)
-      code = File.read(platfile)
-      @platform = Vanagon::Platform.new
-      begin
-        @platform.instance_eval(code)
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
-      end
-    else
-      STDERR.puts "Could not find a file describing platform: '#{@platform_name}'. Was looking for '#{platfile}'."
-    end
+    @platform = Vanagon::Platform.load_platform(@platform_name, File.join(@configdir, "platforms"))
   end
 
   def load_project

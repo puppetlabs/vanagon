@@ -1,12 +1,23 @@
-require 'vanagon/platform/deb'
-require 'vanagon/platform/rpm'
+require 'vanagon/platform/dsl'
 
 class Vanagon::Platform
   attr_accessor :make, :servicedir, :defaultdir, :provisioning, :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings, :servicetype, :patch, :architecture
 
-  def platform(name, &block)
+  def self.load_platform(name, configdir)
+    platfile = File.join(configdir, "#{name}.rb")
+    code = File.read(platfile)
+    dsl = Vanagon::Platform::DSL.new(name)
+    dsl.instance_eval(code)
+    dsl._platform
+  rescue => e
+    puts "Error loading platform '#{name}' using '#{platfile}':"
+    puts e
+    puts e.backtrace.join("\n")
+    raise e
+  end
+
+  def initialize(name)
     @name = name
-    block.call(self, @settings)
   end
 
   # This allows instance variables to be accessed using the hash lookup syntax
@@ -22,32 +33,6 @@ class Vanagon::Platform
 
   def install_build_dependencies_with(command)
     @build_dependencies = command
-  end
-
-  def package_name(project, platform = self)
-    if is_deb?
-      Vanagon::Platform::DEB.package_name(project, platform)
-    elsif is_rpm?
-      Vanagon::Platform::RPM.package_name(project, platform)
-    end
-  end
-
-  def generate_package(project, platform = self)
-    if is_deb?
-      Vanagon::Platform::DEB.generate_package(project, platform)
-    elsif is_rpm?
-      Vanagon::Platform::RPM.generate_package(project, platform)
-    end
-  end
-
-  def generate_packaging_artifacts(workdir, proj_name, binding)
-    if is_deb?
-      Vanagon::Platform::DEB.generate_packaging_artifacts(workdir, proj_name, binding)
-    elsif is_rpm?
-      Vanagon::Platform::RPM.generate_packaging_artifacts(workdir, proj_name, binding)
-    else
-      fail "Something went wrong. Please teach me how to #generate_packaging_artifacts for #{@name}"
-    end
   end
 
   def architecture
