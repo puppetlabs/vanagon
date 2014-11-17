@@ -56,7 +56,7 @@ class Vanagon::Project
       # We only append if name is actually set because that is an easy way to see if the component applies to the current platform.
       @components << component if component.name
     else
-      STDERR.puts "Could find a file describing platform: '#{name}'. Was looking for '#{compfile}'."
+      STDERR.puts "Could not find a file describing platform: '#{name}'. Was looking for '#{compfile}'."
     end
 
   end

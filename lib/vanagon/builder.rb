@@ -30,7 +30,7 @@ class Vanagon::Builder
         raise e
       end
     else
-      STDERR.puts "Could find a file describing platform: '#{@platform_name}'. Was looking for '#{platfile}'."
+      STDERR.puts "Could not find a file describing platform: '#{@platform_name}'. Was looking for '#{platfile}'."
     end
   end
 
@@ -49,7 +49,7 @@ class Vanagon::Builder
         raise e
       end
     else
-      STDERR.puts "Could find a file describing project: '#{@project_name}'. Was looking for '#{projfile}'."
+      STDERR.puts "Could not find a file describing project: '#{@project_name}'. Was looking for '#{projfile}'."
     end
   end
 
