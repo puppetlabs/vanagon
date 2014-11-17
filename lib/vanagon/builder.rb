@@ -1,4 +1,5 @@
 require 'vanagon/project'
+require 'vanagon/project/dsl'
 require 'vanagon/platform'
 require 'vanagon/platform/dsl'
 require 'vanagon/component'
@@ -23,22 +24,7 @@ class Vanagon::Builder
   end
 
   def load_project
-    projfile = File.join(@configdir, "projects", "#{@project_name}.rb")
-    if File.exists?(projfile)
-      code = File.read(projfile)
-      @project = Vanagon::Project.new
-      @project.platform = @platform
-      @project.configdir = @configdir
-      begin
-        @project.instance_eval(code)
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
-      end
-    else
-      STDERR.puts "Could not find a file describing project: '#{@project_name}'. Was looking for '#{projfile}'."
-    end
+    @project = Vanagon::Project.load_project(@project_name, File.join(@configdir, "projects"), @platform)
   end
 
   def cleanup_workdir

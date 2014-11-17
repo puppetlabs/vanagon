@@ -7,11 +7,26 @@ class Vanagon::Project
   include Vanagon::Utilities
   attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :the_license, :the_description, :the_vendor, :the_homepage
 
-  def initialize
+  def self.load_project(name, configdir, platform)
+    projfile = File.join(configdir, "#{name}.rb")
+    code = File.read(projfile)
+    dsl = Vanagon::Project::DSL.new(name, platform)
+    dsl.instance_eval(code)
+    dsl._project
+  rescue => e
+    puts "Error loading project '#{name}' using '#{projfile}':"
+    puts e
+    puts e.backtrace.join("\n")
+    raise e
+  end
+
+  def initialize(name, platform)
+    @name = name
     @components = []
     @directories = []
     @settings = {}
     @version = "0.1.0"
+    @platform = platform
   end
 
   def setting(name, value)
