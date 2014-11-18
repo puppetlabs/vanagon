@@ -1,10 +1,10 @@
 Source: <%= @name %>
-Maintainer: <%= @the_vendor %>
+Maintainer: <%= @vendor %>
 Section: admin
 Priority: optional
 Build-Depends: debhelper (>= 7.0.0)
 Standards-Version: 3.9.1
-Homepage: <%= @the_homepage %>
+Homepage: <%= @homepage %>
 
 Package: <%= @name %>
 Architecture: any
@@ -13,8 +13,8 @@ Priority: optional
 #Provides:
 #Replaces:
 #Conflicts:
-Description: <%= @the_description.lines.first.chomp %>
- <%= @the_description.lines[1..-1].join("\n ") -%>
+Description: <%= @description.lines.first.chomp %>
+ <%= @description.lines[1..-1].join("\n ") -%>
  .
  Contains the following components:
  <%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.join(", ") %>

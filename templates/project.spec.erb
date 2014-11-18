@@ -9,11 +9,11 @@
 Name:           <%= @name %>
 Version:        <%= @version %>
 Release:        1
-Summary:        <%= @the_description.lines.first.chomp %>
-Vendor:         <%= @the_vendor.match(/^(.*) <.*>$/)[1] %>
-License:        <%= @the_license %>
+Summary:        <%= @description.lines.first.chomp %>
+Vendor:         <%= @vendor.match(/^(.*) <.*>$/)[1] %>
+License:        <%= @license %>
 Group:          System Environment/Base
-URL:            <%= @the_homepage %>
+URL:            <%= @homepage %>
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -24,7 +24,7 @@ Autoprov: 0
 Autoreq: 0
 
 %description
-<%= @the_description %>
+<%= @description %>
 
 Contains the following components:
 <%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.join(", ") %>

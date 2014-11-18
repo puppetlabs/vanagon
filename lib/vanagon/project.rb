@@ -5,7 +5,7 @@ require 'ostruct'
 
 class Vanagon::Project
   include Vanagon::Utilities
-  attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :the_license, :the_description, :the_vendor, :the_homepage
+  attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :license, :description, :vendor, :homepage
 
   def self.load_project(name, configdir, platform)
     projfile = File.join(configdir, "#{name}.rb")
@@ -27,58 +27,6 @@ class Vanagon::Project
     @settings = {}
     @version = "0.1.0"
     @platform = platform
-  end
-
-  def setting(name, value)
-    @settings[name] = value
-  end
-
-  def directory(dir)
-    @directories << dir
-  end
-
-  def description(descr)
-    @the_description = descr
-  end
-
-  def license(lic)
-    @the_license = lic
-  end
-
-  def vendor(vend)
-    @the_vendor = vend
-  end
-
-  def homepage(page)
-    @the_homepage = page
-  end
-
-  def component(name)
-    puts "Loading #{name}"
-    compfile = File.join(Vanagon::Builder.configdir, "components", "#{name}.rb")
-    if File.exists?(compfile)
-      code = File.read(compfile)
-      component = Vanagon::Component.new
-      component.settings = @settings
-      component.platform = @platform
-      begin
-        component.instance_eval(code)
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
-      end
-      # We only append if name is actually set because that is an easy way to see if the component applies to the current platform.
-      @components << component if component.name
-    else
-      STDERR.puts "Could not find a file describing platform: '#{name}'. Was looking for '#{compfile}'."
-    end
-
-  end
-
-  def project(name, &block)
-    @name = name
-    block.call(self)
   end
 
   def method_missing(method, *args)
