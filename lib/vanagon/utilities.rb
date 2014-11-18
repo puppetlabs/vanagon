@@ -6,7 +6,7 @@ class Vanagon
       Digest::MD5.file(file).hexdigest.to_s
     end
 
-    def curl(url, type)
+    def http_request(url, type)
       require 'net/http'
       require 'uri'
       require 'json'
@@ -20,7 +20,7 @@ class Vanagon
       when "delete"
       response = http.request(Net::HTTP::Delete.new(uri.request_uri))
       else
-        fail "ACTION: #{type} not supported by #curl method. Maybe you should add it?"
+        fail "ACTION: #{type} not supported by #http_request method. Maybe you should add it?"
       end
 
       JSON.parse(response.body)

@@ -36,7 +36,7 @@ class Vanagon::Driver
   end
 
   def get_target
-    target = curl("http://vcloud/vm/#{@platform.vcloud_name}", "POST")
+    target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
     if target and target["ok"]
       return target[@platform.vcloud_name]["hostname"]
     else
@@ -67,7 +67,7 @@ class Vanagon::Driver
   end
 
   def teardown_template(host)
-    target = curl("http://vcloud/vm/#{host}", "DELETE")
+    target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
     if target and target["ok"]
       puts "'#{host}' has been destroyed"
       return true
