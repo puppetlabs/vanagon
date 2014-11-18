@@ -3,6 +3,7 @@ require 'vanagon/project/dsl'
 require 'vanagon/platform'
 require 'vanagon/platform/dsl'
 require 'vanagon/component'
+require 'vanagon/component/dsl'
 require 'vanagon/utilities'
 require 'tmpdir'
 

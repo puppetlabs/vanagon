@@ -51,24 +51,7 @@ class Vanagon::Project::DSL
 
   def component(name)
     puts "Loading #{name}"
-    compfile = File.join(Vanagon::Driver.configdir, "components", "#{name}.rb")
-    if File.exists?(compfile)
-      code = File.read(compfile)
-      component = Vanagon::Component.new
-      component.settings = @project.settings
-      component.platform = @project.platform
-      begin
-        component.instance_eval(code)
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
-      end
-      # We only append if name is actually set because that is an easy way to see if the component applies to the current platform.
-      @project.components << component if component.name
-    else
-      STDERR.puts "Could not find a file describing platform: '#{name}'. Was looking for '#{compfile}'."
-    end
-
+    component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
+    @project.components << component if component.url
   end
 end
