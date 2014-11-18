@@ -6,6 +6,16 @@ class Vanagon
       Digest::MD5.file(file).hexdigest.to_s
     end
 
+    def get_sum(file, type)
+      require 'digest'
+      case type.downcase
+      when 'md5'
+        Digest::MD5.file(file).hexdigest.to_s
+      when 'sha512'
+        Digest::SHA512.file(file).hexdigest.to_s
+      end
+    end
+
     def http_request(url, type)
       require 'net/http'
       require 'uri'
