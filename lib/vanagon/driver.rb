@@ -6,7 +6,7 @@ require 'vanagon/component'
 require 'vanagon/utilities'
 require 'tmpdir'
 
-class Vanagon::Builder
+class Vanagon::Driver
   include Vanagon::Utilities
   attr_accessor :platform, :project, :target, :workdir
 
