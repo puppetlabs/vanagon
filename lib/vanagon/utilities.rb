@@ -152,52 +152,5 @@ class Vanagon
         fail "Don't know how to guess dirname for '#{source}' with extension: '#{extension}'. Please teach me."
       end
     end
-
-    # Return the ref type of HEAD on the current branch
-    def git_ref_type
-      git = ex('which git').chomp
-      ex("#{git} cat-file -t #{git_describe}").strip
-    end
-
-    # Return information about the current tree, using `git describe`, ready for
-    # further processing.
-    #
-    # Returns an array of one to four elements, being:
-    # * version (three dot-joined numbers, leading `v` stripped)
-    # * the string 'rcX' (if the last tag was an rc release, where X is the rc number)
-    # * commits (string containing integer, number of commits since that version was tagged)
-    # * dirty (string 'dirty' if local changes exist in the repo)
-    def git_describe_version
-      return nil unless is_git_repo and raw = run_git_describe_internal
-      # reprocess that into a nice set of output data
-      # The elements we select potentially change if this is an rc
-      # For an rc with added commits our string will be something like '0.7.0-rc1-63-g51ccc51'
-      # and our return will be [0.7.0, rc1, 63, <dirty>]
-      # For a final with added commits, it will look like '0.7.0-63-g51ccc51'
-      # and our return will be [0.7.0, 64, <dirty>]
-      info = raw.chomp.split('-')
-      if git_ref_type == "tag"
-        version_string = info.compact
-      elsif info[1].to_s.match('^[\d]+')
-        version_string = info.values_at(0, 1, 3).compact
-      else
-        version_string = info.values_at(0, 1, 2, 4).compact
-      end
-      version_string
-    end
-
-    # This is a stub to ease testing...
-    def run_git_describe_internal
-      Pkg::Util.in_project_root do
-        raw = Pkg::Util::Execution.ex("#{GIT} describe --tags --dirty 2>#{DEVNULL}")
-        $?.success? ? raw : nil
-      end
-    end
-
-    def get_dash_version
-      if info = git_describe_version
-        info.join('-')
-      end
-    end
   end
 end
