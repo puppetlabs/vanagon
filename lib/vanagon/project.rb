@@ -55,7 +55,7 @@ class Vanagon::Project
 
   def component(name)
     puts "Loading #{name}"
-    compfile = File.join(@configdir, "components", "#{name}.rb")
+    compfile = File.join(Vanagon::Builder.configdir, "components", "#{name}.rb")
     if File.exists?(compfile)
       code = File.read(compfile)
       component = Vanagon::Component.new

@@ -16,19 +16,23 @@ class Vanagon::Builder
     @platform_name = platform
     @project_name = project
     @workdir = Dir.mktmpdir
-    @configdir = configdir
+    @@configdir = configdir
   end
 
   def load_platform
-    @platform = Vanagon::Platform.load_platform(@platform_name, File.join(@configdir, "platforms"))
+    @platform = Vanagon::Platform.load_platform(@platform_name, File.join(@@configdir, "platforms"))
   end
 
   def load_project
-    @project = Vanagon::Project.load_project(@project_name, File.join(@configdir, "projects"), @platform)
+    @project = Vanagon::Project.load_project(@project_name, File.join(@@configdir, "projects"), @platform)
   end
 
   def cleanup_workdir
     FileUtils.rm_rf(@workdir)
+  end
+
+  def self.configdir
+    @@configdir
   end
 
   def get_target
