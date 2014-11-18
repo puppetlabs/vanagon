@@ -45,7 +45,7 @@ class Vanagon::Driver
     end
   end
 
-  def provision_template(target)
+  def template_to_builder(target)
     script = @platform.provisioning
     remote_ssh_command(target, script)
   end
@@ -92,7 +92,7 @@ class Vanagon::Driver
 
       # All about the target
       FileUtils.mkdir_p("output")
-      provision_template(login)
+      template_to_builder(login)
       install_build_dependencies(login)
       @project.fetch_sources(@workdir)
       @project.make_makefile(@workdir)
