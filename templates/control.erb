@@ -1,0 +1,20 @@
+Source: <%= @name %>
+Maintainer: <%= @vendor %>
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 7.0.0)
+Standards-Version: 3.9.1
+Homepage: <%= @homepage %>
+
+Package: <%= @name %>
+Architecture: any
+Section: admin
+Priority: optional
+#Provides:
+#Replaces:
+#Conflicts:
+Description: <%= @description.lines.first.chomp %>
+ <%= @description.lines[1..-1].join("\n ") -%>
+ .
+ Contains the following components:
+ <%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.join(", ") %>

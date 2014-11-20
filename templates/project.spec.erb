@@ -1,0 +1,62 @@
+%global real_initrddir    %{_initrddir}
+%global local_initrddir   %(echo %{_initrddir} | sed 's,^/,,g')
+
+%global _prefix     <%= prefix %>
+%global _sysconfdir <%= sysconfdir %>
+%global _logdir     <%= logdir %>
+%global local_unitdir   %(echo %{_unitdir} | sed 's,^/,,g')
+
+Name:           <%= @name %>
+Version:        <%= @version %>
+Release:        1
+Summary:        <%= @description.lines.first.chomp %>
+Vendor:         <%= @vendor.match(/^(.*) <.*>$/)[1] %>
+License:        <%= @license %>
+Group:          System Environment/Base
+URL:            <%= @homepage %>
+
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Source0:        %{name}-%{version}.tar.gz
+
+# Don't provide anything so the system doesn't use our packages to resolve deps
+Autoprov: 0
+Autoreq: 0
+
+%description
+<%= @description %>
+
+Contains the following components:
+<%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.join(", ") %>
+
+%prep
+%setup -q -n %{name}-%{version}
+
+%build
+
+%clean
+
+%install
+rm -rf %{buildroot}
+
+mkdir -p %{buildroot}%{_sysconfdir}
+mkdir -p %{buildroot}%{_prefix}
+mkdir -p %{buildroot}%{_logdir}
+
+<%- if @platform.servicetype == "systemd" -%>
+mkdir -p %{buildroot}%{_unitdir}
+cp -pr %{local_unitdir}/* %{buildroot}%{_unitdir}
+<%- elsif @platform.servicetype == "sysv" -%>
+mkdir -p %{buildroot}%{real_initrddir}
+cp -pr %{local_initrddir}/* %{buildroot}%{real_initrddir}
+<%- end -%>
+
+cp -pr etc %{buildroot}
+cp -pr opt %{buildroot}
+cp -pr var %{buildroot}
+
+%files
+%{_prefix}
+%{_sysconfdir}
+%{_logdir}
+<%= get_service_files.join("\n") %>

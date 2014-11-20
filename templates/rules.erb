@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+override_dh_auto_install:
+	mkdir -p debian/tmp
+	cp -pr opt debian/tmp/
+	cp -pr etc debian/tmp/
+
+override_dh_shlibdeps:
+
+%:
+	dh $@
