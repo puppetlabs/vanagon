@@ -76,7 +76,7 @@ class Vanagon::Platform
   end
 
   def is_rpm?
-    return !!@name.match(/^(el|fedora|eos|nxos)-.*$/)
+    return !!@name.match(/^(el|fedora|eos|nxos|sles)-.*$/)
   end
 
   def is_el?
