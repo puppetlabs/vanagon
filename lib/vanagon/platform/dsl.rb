@@ -8,7 +8,7 @@ class Vanagon::Platform::DSL
 
   def platform(name, &block)
     @platform = case name
-                when /^el-/
+                when /^(el|sles)-/
                   Vanagon::Platform::RPM.new(@name)
                 when /^(debian|ubuntu)-/
                   Vanagon::Platform::DEB.new(@name)
