@@ -46,7 +46,7 @@ class Vanagon
 
     def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])
       rsync = ex("which rsync").chomp
-      flags = "-rHlv -O --no-perms --no-owner --no-group"
+      flags = "-rHlv --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
       end
