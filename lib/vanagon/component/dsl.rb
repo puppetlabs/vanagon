@@ -51,10 +51,6 @@ class Vanagon::Component::DSL
     @component.environment = block.call
   end
 
-  def depends_on(dependency)
-    @component.dependencies << dependency
-  end
-
   def apply_patch(patch, flag = nil)
     @component.patches << patch
   end
@@ -63,8 +59,18 @@ class Vanagon::Component::DSL
     @component.service_files << file
   end
 
-  def build_depends_on(dependency)
-    @component.build_dependencies << dependency
+  # build_requires adds a requirements to the list of build time dependencies
+  # that will need to be fetched from an external source before this component
+  # can be built. build_requires can also be satisfied by other components in
+  # the same project.
+  def build_requires(build_requirement)
+    @component.build_requires << build_requirement
+  end
+
+  # requires adds a requirement to the list of runtime requirements for the
+  # component
+  def requires(requirement)
+    @component.requires << requirement
   end
 
   def version(ver)
