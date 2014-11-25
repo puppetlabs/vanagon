@@ -69,6 +69,11 @@ class Vanagon::Project
     erb_file(File.join(VANAGON_ROOT, "templates/Makefile.erb"), File.join(workdir, "Makefile"))
   end
 
+  # Return a list of the build_dependencies that are satisfied by an internal component
+  def list_component_dependencies(component)
+    component.build_requires.select {|dep| @components.map {|comp| comp.name}.include?(dep) }
+  end
+
   def package_name
     @platform.package_name(self)
   end

@@ -19,5 +19,11 @@ class Vanagon::Platform
     def package_name(project)
       "#{project.name}-#{project.version}-1.#{@architecture}.rpm"
     end
+
+    def initialize(name)
+      @name = name
+      @make = "/usr/bin/make"
+      @patch = "/usr/bin/patch"
+    end
   end
 end

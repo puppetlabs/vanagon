@@ -17,7 +17,7 @@ all: <%= package_name %>
 	touch <%= @name %>
 
 <%- @components.each do |comp| -%>
-<%= comp.name %>: <%= comp.dependencies.join(" ") %> <%= comp.name %>-install
+<%= comp.name %>: <%= list_component_dependencies(comp).join(" ") %> <%= comp.name %>-install
 
 <%= comp.name %>-unpack:
 	<%= comp.extract_with %>

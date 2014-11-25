@@ -23,4 +23,15 @@ class Vanagon::Platform::DSL
   def _platform
     @platform
   end
+
+  # Platform attributes and DSL methods defined below
+  #
+  #
+  def make(make_cmd)
+    @platform.make = make_cmd
+  end
+
+  def patch(patch_cmd)
+    @platform.patch = patch_cmd
+  end
 end
