@@ -104,6 +104,11 @@ class Vanagon::Component::DSL
     @component.service = service_name
   end
 
+  # link will add a command to the install to create a symlink from source to target
+  def link(source, target)
+    @component.install << "ln -s '#{source}' '#{target}'"
+  end
+
   def version(ver)
     @component.version = ver
   end
