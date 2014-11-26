@@ -36,15 +36,15 @@ class Vanagon::Component::DSL
   #
   #
   def configure(&block)
-    @component.configure = block.call
+    @component.configure << block.call
   end
 
   def build(&block)
-    @component.build = block.call
+    @component.build << block.call
   end
 
   def install(&block)
-    @component.install = block.call
+    @component.install << block.call
   end
 
   def environment(&block)
