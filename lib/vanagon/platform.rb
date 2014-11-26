@@ -39,11 +39,15 @@ class Vanagon::Platform
     @architecture ||= @name.match(/^.*-.*-(.*)$/)[1]
   end
 
+
+  # Debian/Ubuntu/Cumulus specific utility to convert a platform to its codename
   def to_codename
     fail "#to_codename not implemented for non-debian platforms" unless is_deb?
     case @name
     when /^ubuntu-(.*)-.*$/
       case $1
+      when "14.10"
+        "utopic"
       when "14.04"
         "trusty"
       when "12.04"
