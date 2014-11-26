@@ -55,10 +55,6 @@ class Vanagon::Component::DSL
     @component.patches << patch
   end
 
-  def add_service_file(file)
-    @component.service_files << file
-  end
-
   # build_requires adds a requirements to the list of build time dependencies
   # that will need to be fetched from an external source before this component
   # can be built. build_requires can also be satisfied by other components in
@@ -71,6 +67,41 @@ class Vanagon::Component::DSL
   # component
   def requires(requirement)
     @component.requires << requirement
+  end
+
+  # Utilities for handling service installation
+  #
+  #
+
+  # install_service adds the commands to install the various files on
+  # disk during the package build
+  def install_service(service_file, default_file = nil, service_name = @component.name)
+    case @component.platform.servicetype
+    when "sysv"
+      target_service_file = File.join(@component.platform.servicedir, service_name)
+      target_default_file = File.join(@component.platform.defaultdir, service_name)
+    when "systemd"
+      target_service_file = File.join(@component.platform.servicedir, "#{service_name}.service")
+      target_default_file = File.join(@component.platform.defaultdir, service_name)
+    else
+      fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
+    end
+    install_service_cmd = []
+    install_service_cmd << "install -d '#{@component.platform.servicedir}'"
+    install_service_cmd << "cp -p '#{service_file}' '#{target_service_file}'"
+    @component.files << target_service_file
+
+    if default_file
+      install_service_cmd << "install -d '#{@component.platform.defaultdir}'"
+      install_service_cmd << "cp -p '#{default_file}' '#{target_default_file}'"
+      @component.files << target_default_file
+    end
+
+    # Actually append the cp calls to the @install instance var
+    @component.install << install_service_cmd
+
+    # Register the service for use in packaging
+    @component.service = service_name
   end
 
   def version(ver)
