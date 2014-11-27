@@ -23,6 +23,26 @@ Source0:        %{name}-%{version}.tar.gz
 Autoprov: 0
 Autoreq: 0
 
+<%- if has_services? -%>
+  <%- if @platform.servicetype == "systemd" -%>
+    <%- if @platform.is_sles? -%>
+BuildRequires:    systemd
+%{?systemd_requires}
+    <%- else -%>
+BuildRequires:    systemd
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
+    <%- end -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
+    <%- if @platform.is_sles? -%>
+Requires: aaa_base
+    <%- else -%>
+Requires: chkconfig
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+
 %description
 <%= @description %>
 

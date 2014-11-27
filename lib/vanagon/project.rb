@@ -50,6 +50,14 @@ class Vanagon::Project
     @components.map {|comp| comp.files }.flatten
   end
 
+  def get_services
+    @components.map {|comp| comp.service }.flatten.compact
+  end
+
+  def has_services?
+    ! get_services.empty?
+  end
+
   def get_tarball_files
     files = []
     files.push prefix
