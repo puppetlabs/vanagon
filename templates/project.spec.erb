@@ -53,6 +53,56 @@ cp -pr etc %{buildroot}
 cp -pr opt %{buildroot}
 cp -pr var %{buildroot}
 
+%post
+<%- get_services.each do |service| -%>
+  # switch based on systemd vs systemv
+  #
+  <%- if @platform.servicetype == "systemd" -%>
+    <%- if @platform.is_sles? -%>
+      %service_add_post <%= service %>.service
+    <%- else -%>
+      %systemd_post <%= service %>.service
+    <%- end -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
+    chkconfig --add <%= service %>
+  <%- end -%>
+<%- end -%>
+
+%postun
+<%- get_services.each do |service| -%>
+  # switch based on systemd vs systemv
+  #
+  <%- if @platform.servicetype == "systemd" -%>
+    <%- if @platform.is_sles? -%>
+      %service_del_postun <%= service %>.service
+    <%- else -%>
+      %systemd_postun_with_restart <%= service %>.service
+    <%- end -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
+    if [ $1 -ge 1 ]; then
+      /sbin/service <%= service %> condrestart
+    fi
+  <%- end -%>
+
+<%- end -%>
+
+%preun
+<%- get_services.each do |service| -%>
+  # switch based on systemd vs systemv
+  #
+  <%- if @platform.servicetype == "systemd" -%>
+    <%- if @platform.is_sles? -%>
+      %service_del_preun <%= service %>.service
+    <%- else -%>
+      %systemd_preun <%= service %>.service
+    <%- end -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
+    /sbin/service <%= service %> stop >/dev/null 2>&1
+    chkconfig --del <%= service %>
+  <%- end -%>
+<%- end -%>
+
+
 %files
 %{_prefix}
 %{_sysconfdir}
