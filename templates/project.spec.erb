@@ -60,3 +60,7 @@ cp -pr var %{buildroot}
 %{_sysconfdir}
 %{_logdir}
 <%= get_files.join("\n") %>
+
+%changelog
+* <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-1
+- Build for <%= @version %>
