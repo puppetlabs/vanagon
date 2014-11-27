@@ -37,6 +37,10 @@ class Vanagon::Project::DSL
     @project.homepage = page
   end
 
+  def version(ver)
+    @project.version = ver
+  end
+
   def vendor(vend)
     @project.vendor = vend
   end
