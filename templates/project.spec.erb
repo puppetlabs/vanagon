@@ -43,12 +43,10 @@ mkdir -p %{buildroot}%{_sysconfdir}
 mkdir -p %{buildroot}%{_prefix}
 mkdir -p %{buildroot}%{_logdir}
 
-<%- if @platform.servicetype == "systemd" -%>
-mkdir -p %{buildroot}%{_unitdir}
-cp -pr %{local_unitdir}/* %{buildroot}%{_unitdir}
-<%- elsif @platform.servicetype == "sysv" -%>
-mkdir -p %{buildroot}%{real_initrddir}
-cp -pr %{local_initrddir}/* %{buildroot}%{real_initrddir}
+# Copy each of the extra files into place
+<%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>
+  install -d %{buildroot}/<%= File.dirname(file) %>
+  cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
 cp -pr etc %{buildroot}
