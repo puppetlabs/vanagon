@@ -87,6 +87,10 @@ class Vanagon::Platform
     return !!@name.match(/^el-.*$/)
   end
 
+  def is_sles?
+    return !!@name.match(/^sles-.*$/)
+  end
+
   def is_fedora?
     return !!@name.match(/^fedora-.*$/)
   end
