@@ -107,6 +107,7 @@ class Vanagon::Component::DSL
   def install_file(source, target)
     @component.install << "install -d '#{File.dirname(target)}'"
     @component.install << "cp -p '#{source}' '#{target}'"
+    @component.files << target
   end
 
   # link will add a command to the install to create a symlink from source to target
