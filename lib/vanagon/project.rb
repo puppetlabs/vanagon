@@ -46,8 +46,16 @@ class Vanagon::Project
     end
   end
 
-  def get_service_files
-    @components.map {|comp| comp.service_files }.flatten
+  def get_files
+    @components.map {|comp| comp.files }.flatten
+  end
+
+  def get_services
+    @components.map {|comp| comp.service }.flatten.compact
+  end
+
+  def has_services?
+    ! get_services.empty?
   end
 
   def get_tarball_files
@@ -55,7 +63,7 @@ class Vanagon::Project
     files.push prefix
     files.push sysconfdir
     files.push logdir
-    files.push get_service_files
+    files.push get_files
   end
 
   def pack_tarball_command

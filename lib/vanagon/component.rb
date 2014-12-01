@@ -2,7 +2,7 @@ require 'vanagon/utilities'
 
 class Vanagon::Component
   include Vanagon::Utilities
-  attr_accessor :name, :version, :source, :md5sum, :url, :configure, :build, :install, :environment, :extract_with, :dirname, :build_requires, :version, :settings, :platform, :service_files, :patches, :requires
+  attr_accessor :name, :version, :source, :md5sum, :url, :configure, :build, :install, :environment, :extract_with, :dirname, :build_requires, :version, :settings, :platform, :files, :patches, :requires, :service
 
   def self.load_component(name, configdir, settings, platform)
     compfile = File.join(configdir, "#{name}.rb")
@@ -27,7 +27,7 @@ class Vanagon::Component
     @install = []
     @build = []
     @patches = []
-    @service_files = []
+    @files = []
   end
 
   def get_source(workdir)
