@@ -27,14 +27,6 @@ class Vanagon::Platform
     end
   end
 
-  def provision_with(command)
-    @provisioning = command
-  end
-
-  def install_build_dependencies_with(command)
-    @build_dependencies = command
-  end
-
   def architecture
     @architecture ||= @name.match(/^.*-.*-(.*)$/)[1]
   end
