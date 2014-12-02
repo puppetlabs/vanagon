@@ -16,7 +16,7 @@ class Vanagon::Platform::DSL
                   fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                 end
 
-    block.call(@platform)
+    block.call(self)
     @platform
   end
 
@@ -33,5 +33,33 @@ class Vanagon::Platform::DSL
 
   def patch(patch_cmd)
     @platform.patch = patch_cmd
+  end
+
+  def provision_with(command)
+    @platform.provisioning = command
+  end
+
+  def install_build_dependencies_with(command)
+    @platform.build_dependencies = command
+  end
+
+  def servicedir(dir)
+    @platform.servicedir = dir
+  end
+
+  def defaultdir(dir)
+    @platform.defaultdir = dir
+  end
+
+  def servicetype(type)
+    @platform.servicetype = type
+  end
+
+  def vcloud_name(name)
+    @platform.vcloud_name = name
+  end
+
+  def codename(name)
+    @platform.codename = name
   end
 end
