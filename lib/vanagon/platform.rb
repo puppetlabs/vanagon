@@ -1,7 +1,7 @@
 require 'vanagon/platform/dsl'
 
 class Vanagon::Platform
-  attr_accessor :make, :servicedir, :defaultdir, :provisioning, :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings, :servicetype, :patch, :architecture
+  attr_accessor :make, :servicedir, :defaultdir, :provisioning, :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings, :servicetype, :patch, :architecture, :codename
 
   def self.load_platform(name, configdir)
     platfile = File.join(configdir, "#{name}.rb")
@@ -29,38 +29,6 @@ class Vanagon::Platform
 
   def architecture
     @architecture ||= @name.match(/^.*-.*-(.*)$/)[1]
-  end
-
-
-  # Debian/Ubuntu/Cumulus specific utility to convert a platform to its codename
-  def to_codename
-    fail "#to_codename not implemented for non-debian platforms" unless is_deb?
-    case @name
-    when /^ubuntu-(.*)-.*$/
-      case $1
-      when "14.10"
-        "utopic"
-      when "14.04"
-        "trusty"
-      when "12.04"
-        "precise"
-      when "10.04"
-        "lucid"
-      else
-        "ubuntu"
-      end
-    when /^debian-(.*)-.*$/
-      case $1
-      when "6"
-        "squeeze"
-      when "7"
-        "wheezy"
-      when "8"
-        "jessie"
-      else
-        "debian"
-      end
-    end
   end
 
   #
