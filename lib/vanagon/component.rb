@@ -2,7 +2,7 @@ require 'vanagon/component/source'
 
 class Vanagon
   class Component
-    attr_accessor :name, :version, :source, :md5sum, :url, :configure, :build, :install, :environment, :extract_with, :dirname, :build_requires, :version, :settings, :platform, :files, :patches, :requires, :service
+    attr_accessor :name, :version, :source, :url, :configure, :build, :install, :environment, :extract_with, :dirname, :build_requires, :version, :settings, :platform, :files, :patches, :requires, :service, :options
 
     def self.load_component(name, configdir, settings, platform)
       compfile = File.join(configdir, "#{name}.rb")
@@ -21,6 +21,7 @@ class Vanagon
       @name = name
       @settings = settings
       @platform = platform
+      @options = {}
       @build_requires = []
       @requires = []
       @configure = []
@@ -31,11 +32,14 @@ class Vanagon
     end
 
     def get_source(workdir)
-      @source = Vanagon::Component::Source.source(@url, @md5sum, workdir)
+      @source = Vanagon::Component::Source.source(@url, @options, workdir)
       @source.fetch
       @source.verify
       @extract_with = @source.extract
       @dirname = @source.dirname
+
+      # Git based sources probably won't set the version, so we load it if it hasn't been already set
+      @version ||= @source.version
     end
   end
 end
