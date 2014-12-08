@@ -73,43 +73,6 @@ class Vanagon
       end
     end
 
-    def fetch_source(url, md5sum, workdir)
-      file = download_file(url, workdir)
-      puts "verifying file: #{file} against md5sum: '#{md5sum}'"
-      verify_file(file, md5sum)
-      file
-    end
-
-    def download_file(url, workdir)
-      require 'net/http'
-      require 'uri'
-      uri = URI.parse(url)
-      target_file = File.basename(uri.path)
-
-      case uri.scheme
-      when 'http', 'https'
-        Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-          request = Net::HTTP::Get.new(uri)
-
-          http.request request do |response|
-            open(File.join(workdir, target_file), 'w') do |io|
-              response.read_body do |chunk|
-                io.write(chunk)
-              end
-            end
-          end
-        end
-      end
-      File.join(workdir, target_file)
-    end
-
-    def verify_file(file, md5)
-      actual = get_md5sum(file)
-      unless md5 == actual
-        fail "Unable to verify '#{file}'. Expected: '#{md5}', got: '#{actual}'"
-      end
-    end
-
     def erb_string(erbfile, b = binding)
       require 'erb'
       template = File.read(erbfile)
@@ -124,43 +87,6 @@ class Vanagon
       puts "Generated: #{outfile}"
       FileUtils.rm_rf erbfile if remove_orig
       outfile
-    end
-
-    def get_extension(source)
-      extension_match = source.match(/.*(\.tar\.gz|\.tgz|\.gem|\.tar\.bz)/)
-      unless extension_match
-        fail "Unrecognized extension for '#{source}'. Don't know how to extract this format. Please teach me."
-      end
-
-      extension_match[1]
-    end
-
-    def extract_source(source)
-      extension = get_extension(source)
-
-      case extension
-      when '.tar.gz', '.tgz'
-        return "gunzip -c '#{source}' | tar xf -"
-      when '.gem'
-        # Don't need to unpack gems
-        return nil
-      else
-        fail "Extraction unimplemented for '#{extension}' in source '#{source}'. Please teach me."
-      end
-    end
-
-    def get_dirname(source)
-      extension = get_extension(source)
-
-      case extension
-      when '.tar.gz', '.tgz'
-        return source.chomp(extension)
-      when '.gem'
-        # Because we cd into the source dir, using ./ here avoids special casing gems in the Makefile
-        return './'
-      else
-        fail "Don't know how to guess dirname for '#{source}' with extension: '#{extension}'. Please teach me."
-      end
     end
   end
 end
