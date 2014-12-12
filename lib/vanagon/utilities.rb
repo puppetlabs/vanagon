@@ -39,9 +39,19 @@ class Vanagon
     def ex(command)
       ret = `#{command}`
       unless $?.success?
-        raise RuntimeError
+        raise RuntimeError, "'#{command}' did not succeed"
       end
       ret
+    end
+
+    def git(*commands)
+      git_bin = ex('which git').chomp
+
+      unless git_bin
+        raise "Could not find git. Please install and try again (and make sure it is on PATH)."
+      end
+
+      ex("#{git_bin} #{commands.join(' ')}").chomp
     end
 
     def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])

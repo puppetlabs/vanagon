@@ -11,15 +11,14 @@ class Vanagon
           @url = url
           @ref = ref
           @workdir = workdir
-          @git = ex('which git').chomp
         end
 
         def fetch
           Dir.chdir(@workdir) do
-            ex("#{@git} clone '#{@url}'")
+            git('clone', @url)
             Dir.chdir(dirname) do
-              ex("#{@git} checkout '#{@ref}'")
-              @version = ex("#{@git} describe --tags").chomp
+              git('checkout', @ref)
+              @version = git('describe', '--tags')
             end
           end
         end
