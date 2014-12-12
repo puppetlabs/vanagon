@@ -8,6 +8,9 @@ class Vanagon
         attr_accessor :url, :ref, :workdir, :version
 
         def initialize(url, ref, workdir)
+          unless ref
+            fail "ref parameter is required for the git source"
+          end
           @url = url
           @ref = ref
           @workdir = workdir

@@ -10,6 +10,9 @@ class Vanagon
         attr_accessor :url, :sum, :file, :extension, :workdir
 
         def initialize(url, sum, workdir)
+          unless sum
+            fail "sum is required to validate the http source"
+          end
           @url = url
           @sum = sum
           @workdir = workdir
