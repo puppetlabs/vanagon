@@ -1,12 +1,12 @@
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'
-require 'uri'
 
 class Vanagon
   class Component
     class Source
       def self.source(url, options, workdir)
-        uri_scheme = URI.parse(url).scheme
+        url_match = url.match(/^(.*)(@|:\/\/)(.*)$/)
+        uri_scheme = url_match[1] if url_match
         local_source =  case uri_scheme
                         when /^http/
                           Vanagon::Component::Source::Http.new(url, options[:sum], workdir)
