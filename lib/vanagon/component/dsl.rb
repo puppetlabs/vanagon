@@ -143,6 +143,10 @@ class Vanagon::Component::DSL
   end
 
   def md5sum(md5)
-    @component.md5sum = md5
+    @component.options[:sum] = md5
+  end
+
+  def ref(the_ref)
+    @component.options[:ref] = the_ref
   end
 end
