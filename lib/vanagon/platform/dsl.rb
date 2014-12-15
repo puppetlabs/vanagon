@@ -24,6 +24,24 @@ class Vanagon::Platform::DSL
     @platform
   end
 
+  # All purpose getter. This object, which is passed to the platform block,
+  # won't have easy access to the attributes of the @platform, so we make a
+  # getter for each attribute.
+  #
+  # We only magically handle get_ methods, any other methods just get the
+  # standard method_missing treatment.
+  #
+  def method_missing(method, *args)
+    attribute_match = method.to_s.match(/get_(.*)/)
+    if attribute_match
+      attribute = attribute_match.captures.first
+    else
+      super
+    end
+
+    @platform.send(attribute)
+  end
+
   # Platform attributes and DSL methods defined below
   #
   #
