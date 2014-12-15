@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'json'
 
 class Vanagon::Component::DSL
   def initialize(name, settings, platform)
@@ -53,6 +54,24 @@ class Vanagon::Component::DSL
 
   def apply_patch(patch, flag = nil)
     @component.patches << patch
+  end
+
+  # Loads and parses json from a file. Will treat the keys in the
+  # json as methods to invoke on the component in question
+  def load_from_json(file)
+    if File.exists?(file)
+      data = JSON.parse(File.read(file))
+      raise "Hash required. Got '#{data.class}' when parsing '#{file}'" unless data.is_a?(Hash)
+      data.each do |key, value|
+        if self.respond_to?(key)
+          self.send(key, value)
+        else
+          fail "Component does not have a '#{key}' method to invoke. Maybe your bespoke json has a typo?"
+        end
+      end
+    else
+      fail "Cannot load component data from '#{file}'. It does not exist."
+    end
   end
 
   # build_requires adds a requirements to the list of build time dependencies
