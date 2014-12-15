@@ -1,7 +1,9 @@
 require 'vanagon/platform/dsl'
 
 class Vanagon::Platform
-  attr_accessor :make, :servicedir, :defaultdir, :provisioning, :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings, :servicetype, :patch, :architecture, :codename
+  attr_accessor :make, :servicedir, :defaultdir, :provisioning
+  attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
+  attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
 
   def self.load_platform(name, configdir)
     platfile = File.join(configdir, "#{name}.rb")
@@ -18,6 +20,9 @@ class Vanagon::Platform
 
   def initialize(name)
     @name = name
+    @os_name = os_name
+    @os_version = os_version
+    @architecture = architecture
   end
 
   # This allows instance variables to be accessed using the hash lookup syntax
@@ -25,6 +30,14 @@ class Vanagon::Platform
     if instance_variable_get("@#{key}")
       instance_variable_get("@#{key}")
     end
+  end
+
+  def os_name
+    @os_name ||= @name.match(/^(.*)-(.*)-(.*)$/)[1]
+  end
+
+  def os_version
+    @os_version ||= @name.match(/^(.*)-(.*)-(.*)$/)[2]
   end
 
   def architecture
