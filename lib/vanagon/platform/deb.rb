@@ -1,13 +1,13 @@
 class Vanagon::Platform
   class DEB < Vanagon::Platform
     def generate_package(project)
-      ["mkdir -p output/#{@name}",
+      ["mkdir -p output/#{output_dir}",
       "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
       "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/#{project.name}_#{project.version}.orig.tar.gz",
       "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
       "gunzip -c #{project.name}-#{project.version}.tar.gz | tar -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
       "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian -uc -us)",
-      "cp $(tempdir)/*.deb ./output/#{@name}"]
+      "cp $(tempdir)/*.deb ./output/#{output_dir}"]
     end
 
     def generate_packaging_artifacts(workdir, name, binding)
@@ -29,10 +29,15 @@ class Vanagon::Platform
       "#{project.name}_#{project.version}-1_#{@architecture}.deb"
     end
 
+    def output_dir
+      File.join("deb", @codename)
+    end
+
     def initialize(name)
       @name = name
       @make = "/usr/bin/make"
       @patch = "/usr/bin/patch"
+      super(name)
     end
   end
 end
