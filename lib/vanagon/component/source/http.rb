@@ -48,7 +48,10 @@ class Vanagon
                 end
               end
             end
+          else
+            fail "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"
           end
+
           target_file
         end
 
