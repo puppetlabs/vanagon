@@ -8,8 +8,8 @@ class Vanagon::Platform
       "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
       "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
       "rpmbuild -bb --define '_topdir $(tempdir)/rpmbuild' $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
-      "mkdir -p output/#{@name}",
-      "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{@name}"]
+      "mkdir -p output/#{output_dir}",
+      "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{output_dir}"]
     end
 
     def generate_packaging_artifacts(workdir, name, binding)
@@ -20,10 +20,15 @@ class Vanagon::Platform
       "#{project.name}-#{project.version}-1.#{@architecture}.rpm"
     end
 
+    def output_dir
+      File.join(@os_name, @os_version, "products", @architecture)
+    end
+
     def initialize(name)
       @name = name
       @make = "/usr/bin/make"
       @patch = "/usr/bin/patch"
+      super(name)
     end
   end
 end

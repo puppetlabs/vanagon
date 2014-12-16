@@ -3,7 +3,7 @@ require 'vanagon/component/source'
 class Vanagon
   class Component
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
-    attr_accessor :environment, :extract_with, :dirname, :build_requires, :version
+    attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
 
     def self.load_component(name, configdir, settings, platform)
