@@ -5,6 +5,8 @@ class Vanagon::Platform
   attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
   attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
 
+  PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/
+
   def self.load_platform(name, configdir)
     platfile = File.join(configdir, "#{name}.rb")
     code = File.read(platfile)
@@ -33,15 +35,15 @@ class Vanagon::Platform
   end
 
   def os_name
-    @os_name ||= @name.match(/^(.*)-(.*)-(.*)$/)[1]
+    @os_name ||= @name.match(PLATFORM_REGEX)[1]
   end
 
   def os_version
-    @os_version ||= @name.match(/^(.*)-(.*)-(.*)$/)[2]
+    @os_version ||= @name.match(PLATFORM_REGEX)[2]
   end
 
   def architecture
-    @architecture ||= @name.match(/^.*-.*-(.*)$/)[1]
+    @architecture ||= @name.match(PLATFORM_REGEX)[3]
   end
 
   #
