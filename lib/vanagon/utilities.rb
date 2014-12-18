@@ -60,7 +60,24 @@ class Vanagon
 
     def git(*commands)
       git_bin = find_program_on_path('git')
-      %x("#{git_bin} #{commands.join(' ')}")
+      %x(#{git_bin} #{commands.join(' ')})
+    end
+
+    def is_git_repo?(directory = Dir.pwd)
+      Dir.chdir(directory) do
+        git('rev-parse', '--git-dir', '> /dev/null 2>&1')
+        $?.success?
+      end
+    end
+
+    def git_version(directory = Dir.pwd)
+      if is_git_repo?(directory)
+        Dir.chdir(directory) do
+          git('describe', '--tags').chomp
+        end
+      else
+        fail "Directory '#{directory}' is not a git repo, cannot get a version"
+      end
     end
 
     def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])

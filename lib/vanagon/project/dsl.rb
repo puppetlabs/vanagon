@@ -56,6 +56,9 @@ class Vanagon
         @project.version = ver
       end
 
+      def version_from_git
+        @project.version = Vanagon::Utilities.git_version(File.expand_path("..", Vanagon::Driver.configdir)).gsub('-', '.')
+      end
 
       def vendor(vend)
         @project.vendor = vend

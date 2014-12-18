@@ -24,6 +24,9 @@ class Vanagon
 
     def load_project
       @project = Vanagon::Project.load_project(@project_name, File.join(@@configdir, "projects"), @platform)
+      if @project.version.nil? or @project.version.empty?
+        fail "Project requires a version set, all is lost."
+      end
     end
 
     def cleanup_workdir
