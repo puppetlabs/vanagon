@@ -1,13 +1,17 @@
+require 'net/http'
+require 'uri'
+require 'json'
+require 'digest'
+require 'erb'
+
 class Vanagon
   module Utilities
 
     def get_md5sum(file)
-      require 'digest'
       Digest::MD5.file(file).hexdigest.to_s
     end
 
     def get_sum(file, type)
-      require 'digest'
       case type.downcase
       when 'md5'
         Digest::MD5.file(file).hexdigest.to_s
@@ -17,9 +21,6 @@ class Vanagon
     end
 
     def http_request(url, type)
-      require 'net/http'
-      require 'uri'
-      require 'json'
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
       case type.downcase
@@ -84,7 +85,6 @@ class Vanagon
     end
 
     def erb_string(erbfile, b = binding)
-      require 'erb'
       template = File.read(erbfile)
       message  = ERB.new(template, nil, "-")
       message.result(b)
