@@ -45,18 +45,26 @@ class Vanagon
       ret
     end
 
-    def git(*commands)
-      git_bin = ex('which git').chomp
-
-      unless git_bin
-        raise "Could not find git. Please install and try again (and make sure it is on PATH)."
+    def find_program_on_path(command, required = true)
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path_elem|
+        location = File.join(path_elem, command)
+        return location if FileTest.executable?(location)
       end
 
-      ex("#{git_bin} #{commands.join(' ')}").chomp
+      if required
+        fail "Could not find '#{command}'. Please install (or ensure it is on $PATH), and try again."
+      else
+        return false
+      end
+    end
+
+    def git(*commands)
+      git_bin = find_program_on_path('git')
+      %x("#{git_bin} #{commands.join(' ')}")
     end
 
     def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])
-      rsync = ex("which rsync").chomp
+      rsync = find_program_on_path('rsync')
       flags = "-rHlv --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
@@ -65,7 +73,7 @@ class Vanagon
     end
 
     def rsync_from(source, target, dest, extra_flags = [])
-      rsync = ex("which rsync").chomp
+      rsync = find_program_on_path('rsync')
       flags = "-rHlv -O --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
@@ -75,7 +83,7 @@ class Vanagon
 
     def remote_ssh_command(target, command)
       if target
-        ssh = ex("which ssh").chomp
+        ssh = find_program_on_path('ssh')
         puts "Executing '#{command}' on #{target}"
         Kernel.system("#{ssh} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
