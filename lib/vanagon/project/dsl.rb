@@ -19,9 +19,22 @@ class Vanagon::Project::DSL
   # Project attributes and DSL methods defined below
   #
   #
+  # All purpose getter. This object, which is passed to the project block,
+  # won't have easy access to the attributes of the @project, so we make a
+  # getter for each attribute.
+  #
+  # We only magically handle get_ methods, any other methods just get the
+  # standard method_missing treatment.
+  #
   def method_missing(method, *args)
-    if @project.settings.has_key?(method)
+    attribute_match = method.to_s.match(/get_(.*)/)
+    if attribute_match
+      attribute = attribute_match.captures.first
+      @project.send(attribute)
+    elsif @project.settings.has_key?(method)
       return @project.settings[method]
+    else
+      super
     end
   end
 
