@@ -1,4 +1,5 @@
 require 'vanagon/component/source'
+require 'vanagon/component/dsl'
 
 class Vanagon
   class Component
