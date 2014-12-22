@@ -21,7 +21,7 @@ class Vanagon
             git('clone', '--recursive', @url)
             Dir.chdir(dirname) do
               git('checkout', @ref)
-              @version = git('describe', '--tags')
+              @version = git_version
             end
           end
         end
