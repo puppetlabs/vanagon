@@ -6,9 +6,9 @@ class Vanagon
     attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
 
-    # Platform names currently contain some information about the platform. This
-    # information is - delimited in the name, and this regex can be used to
-    # extract that information.
+    # Platform names currently contain some information about the platform. Fields
+    # within the name are delimited by the '-' character, and this regex can be used to
+    # extract those fields.
     PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/
 
     # Loads a given platform from the configdir
