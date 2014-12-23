@@ -1,13 +1,17 @@
+require 'net/http'
+require 'uri'
+require 'json'
+require 'digest'
+require 'erb'
+
 class Vanagon
   module Utilities
 
     def get_md5sum(file)
-      require 'digest'
       Digest::MD5.file(file).hexdigest.to_s
     end
 
     def get_sum(file, type)
-      require 'digest'
       case type.downcase
       when 'md5'
         Digest::MD5.file(file).hexdigest.to_s
@@ -17,9 +21,6 @@ class Vanagon
     end
 
     def http_request(url, type)
-      require 'net/http'
-      require 'uri'
-      require 'json'
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
       case type.downcase
@@ -44,18 +45,43 @@ class Vanagon
       ret
     end
 
-    def git(*commands)
-      git_bin = ex('which git').chomp
-
-      unless git_bin
-        raise "Could not find git. Please install and try again (and make sure it is on PATH)."
+    def find_program_on_path(command, required = true)
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path_elem|
+        location = File.join(path_elem, command)
+        return location if FileTest.executable?(location)
       end
 
-      ex("#{git_bin} #{commands.join(' ')}").chomp
+      if required
+        fail "Could not find '#{command}'. Please install (or ensure it is on $PATH), and try again."
+      else
+        return false
+      end
+    end
+
+    def git(*commands)
+      git_bin = find_program_on_path('git')
+      %x(#{git_bin} #{commands.join(' ')})
+    end
+
+    def is_git_repo?(directory = Dir.pwd)
+      Dir.chdir(directory) do
+        git('rev-parse', '--git-dir', '> /dev/null 2>&1')
+        $?.success?
+      end
+    end
+
+    def git_version(directory = Dir.pwd)
+      if is_git_repo?(directory)
+        Dir.chdir(directory) do
+          git('describe', '--tags').chomp
+        end
+      else
+        fail "Directory '#{directory}' is not a git repo, cannot get a version"
+      end
     end
 
     def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])
-      rsync = ex("which rsync").chomp
+      rsync = find_program_on_path('rsync')
       flags = "-rHlv --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
@@ -64,7 +90,7 @@ class Vanagon
     end
 
     def rsync_from(source, target, dest, extra_flags = [])
-      rsync = ex("which rsync").chomp
+      rsync = find_program_on_path('rsync')
       flags = "-rHlv -O --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
@@ -74,7 +100,7 @@ class Vanagon
 
     def remote_ssh_command(target, command)
       if target
-        ssh = ex("which ssh").chomp
+        ssh = find_program_on_path('ssh')
         puts "Executing '#{command}' on #{target}"
         Kernel.system("#{ssh} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
@@ -84,7 +110,6 @@ class Vanagon
     end
 
     def erb_string(erbfile, b = binding)
-      require 'erb'
       template = File.read(erbfile)
       message  = ERB.new(template, nil, "-")
       message.result(b)
