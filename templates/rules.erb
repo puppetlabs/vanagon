@@ -6,6 +6,12 @@ override_dh_auto_install:
 	mkdir -p debian/tmp
 	cp -pr opt debian/tmp/
 	cp -pr etc debian/tmp/
+	cp -pr var debian/tmp/
+	# Copy each of the extra files into place
+<%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>
+	install -d debian/tmp/<%= File.dirname(file) %>
+	cp -p <%= file %> debian/tmp/<%= File.dirname(file) %>
+<%- end -%>
 
 override_dh_shlibdeps:
 
