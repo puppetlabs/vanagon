@@ -58,20 +58,19 @@ Contains the following components:
 
 %install
 rm -rf %{buildroot}
+install -d %{buildroot}
 
-mkdir -p %{buildroot}%{_sysconfdir}
-mkdir -p %{buildroot}%{_prefix}
-mkdir -p %{buildroot}%{_logdir}
+# Copy each directory into place
+<%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
+  install -d %{buildroot}/<%= File.dirname(dir) %>
+  cp -pr <%= dir %> %{buildroot}/<%= File.dirname(dir) %>
+<%- end -%>
 
 # Copy each of the extra files into place
 <%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>
   install -d %{buildroot}/<%= File.dirname(file) %>
   cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
-
-cp -pr etc %{buildroot}
-cp -pr opt %{buildroot}
-cp -pr var %{buildroot}
 
 %post
 <%- get_services.each do |service| -%>

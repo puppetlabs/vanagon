@@ -1,2 +1,6 @@
-opt/puppetlabs/agent
-etc/puppetlabs/agent
+<%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
+<%= dir %>
+<%- end -%>
+<%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>
+<%= file %>
+<%- end -%>

@@ -3,10 +3,12 @@
 #export DH_VERBOSE=1
 
 override_dh_auto_install:
-	mkdir -p debian/tmp
-	cp -pr opt debian/tmp/
-	cp -pr etc debian/tmp/
-	cp -pr var debian/tmp/
+	install -d debian/tmp
+	# Copy each directory into place
+<%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
+	install -d debian/tmp/<%= File.dirname(dir) %>
+	cp -pr <%= dir %> debian/tmp/<%= File.dirname(dir) %>
+<%- end -%>
 	# Copy each of the extra files into place
 <%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>
 	install -d debian/tmp/<%= File.dirname(file) %>

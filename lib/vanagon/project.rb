@@ -51,6 +51,12 @@ class Vanagon
       @components.map {|comp| comp.files }.flatten
     end
 
+    # This method may eventually include collecting directories from
+    # components, if components are allowed to register directories.
+    def get_directories
+      @directories
+    end
+
     def get_services
       @components.map {|comp| comp.service }.flatten.compact
     end
@@ -61,9 +67,7 @@ class Vanagon
 
     def get_tarball_files
       files = []
-      files.push prefix
-      files.push sysconfdir
-      files.push logdir
+      files.push get_directories
       files.push get_files
     end
 
