@@ -73,7 +73,11 @@ class Vanagon
     def git_version(directory = Dir.pwd)
       if is_git_repo?(directory)
         Dir.chdir(directory) do
-          git('describe', '--tags').chomp
+          version = git('describe', '--tags', '2> /dev/null').chomp
+          if version.empty?
+            warn "Directory '#{directory}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+          end
+          return version
         end
       else
         fail "Directory '#{directory}' is not a git repo, cannot get a version"
