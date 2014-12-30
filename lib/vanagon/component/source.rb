@@ -4,6 +4,12 @@ require 'vanagon/component/source/git'
 class Vanagon
   class Component
     class Source
+      # Basic factory to hand back the correct {Vanagon::Component::Source} subtype to the component
+      #
+      # @param url [String] URL to the source (includes git@... style links)
+      # @param options [Hash] hash of the options needed for the subtype
+      # @param workdir [String] working directory to fetch the source into
+      # @return [Vanagon::Component::Source] the correct subtype for the given source
       def self.source(url, options, workdir)
         url_match = url.match(/^(.*)(@|:\/\/)(.*)$/)
         uri_scheme = url_match[1] if url_match

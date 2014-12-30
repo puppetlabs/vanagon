@@ -7,6 +7,14 @@ class Vanagon
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
 
+    # Loads a given component from the configdir
+    #
+    # @param name [String] the name of the component
+    # @param configdir [String] the path to the component config file
+    # @param settings [Hash] the settings to be used in the component
+    # @param platform [Vanagon::Platform] the platform to build the component for
+    # @return [Vanagon::Component] the component as specified in the component config
+    # @raise if the instance_eval on Component fails, the exception is reraised
     def self.load_component(name, configdir, settings, platform)
       compfile = File.join(configdir, "#{name}.rb")
       code = File.read(compfile)
@@ -20,6 +28,12 @@ class Vanagon
       raise e
     end
 
+    # Component constructor.
+    #
+    # @param name [String] the name of the component
+    # @param settings [Hash] the settings to be used in the component
+    # @param platform [Vanagon::Platform] the platform to build the component for
+    # @return [Vanagon::Component] the component with the given settings and platform
     def initialize(name, settings, platform)
       @name = name
       @settings = settings
@@ -34,6 +48,11 @@ class Vanagon
       @files = []
     end
 
+    # Fetches the primary source for the component. As a side effect, also sets
+    # \@extract_with, @dirname and @version for the component for use in the
+    # makefile template
+    #
+    # @param workdir [String] working directory to put the source into
     def get_source(workdir)
       @source = Vanagon::Component::Source.source(@url, @options, workdir)
       @source.fetch

@@ -16,6 +16,7 @@ class Vanagon
     # @param name [String] the name of the platform
     # @param configdir [String] the path to the platform config file
     # @return [Vanagon::Platform] the platform as specified in the platform config
+    # @raise if the instance_eval on Platform fails, the exception is reraised
     def self.load_platform(name, configdir)
       platfile = File.join(configdir, "#{name}.rb")
       code = File.read(platfile)
@@ -32,6 +33,7 @@ class Vanagon
     # Platform constructor. Takes just the name. Also sets the @name, @os_name,
     # \@os_version and @architecture instance attributes as a side effect
     #
+    # @param name [String] name of the platform
     # @return [Vanagon::Platform] the platform with the given name
     def initialize(name)
       @name = name
