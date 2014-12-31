@@ -29,6 +29,7 @@ class Vanagon
         @name = name
         @make = "/usr/bin/make"
         @patch = "/usr/bin/patch"
+        @num_cores = "/bin/grep -c 'processor' /proc/cpuinfo"
         super(name)
       end
     end
