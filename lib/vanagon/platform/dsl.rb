@@ -55,6 +55,14 @@ class Vanagon
         @platform.patch = patch_cmd
       end
 
+
+      # Sets the command to retrieve the number of cores available on a platform.
+      #
+      # @param num_cores_cmd [String] the command to retrieve the number of available cores on a platform.
+      def num_cores(num_cores_cmd)
+        @platform.num_cores = num_cores_cmd
+      end
+
       def provision_with(command)
         @platform.provisioning = command
       end

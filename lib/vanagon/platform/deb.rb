@@ -38,6 +38,7 @@ class Vanagon
         @name = name
         @make = "/usr/bin/make"
         @patch = "/usr/bin/patch"
+        @num_cores = "/usr/bin/nproc"
         super(name)
       end
     end
