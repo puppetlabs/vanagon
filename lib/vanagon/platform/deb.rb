@@ -1,6 +1,10 @@
 class Vanagon
   class Platform
     class DEB < Vanagon::Platform
+      # The specific bits used to generate a debian package for a given project
+      #
+      # @param project [Vanagon::Project] project to build a debian package of
+      # @return [Array] list of commands required to build a debian package for the given project from a tarball
       def generate_package(project)
         ["mkdir -p output/#{output_dir}",
         "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
@@ -11,6 +15,11 @@ class Vanagon
         "cp $(tempdir)/*.deb ./output/#{output_dir}"]
       end
 
+      # Method to generate the files required to build a debian package for the project
+      #
+      # @param workdir [String] working directory to stage the evaluated templates in
+      # @param name [String] name of the project
+      # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
         deb_dir = File.join(workdir, "debian")
         FileUtils.mkdir_p(deb_dir)
@@ -26,14 +35,26 @@ class Vanagon
         File.open(File.join(deb_dir, "source", "format"), "w") {|f| f.puts("3.0 (quilt)") }
       end
 
+      # Method to derive the package name for the project
+      #
+      # @param project [Vanagon::Project] project to name
+      # @return [String] name of the debian package for this project
       def package_name(project)
         "#{project.name}_#{project.version}-1_#{@architecture}.deb"
       end
 
+      # Get the expected output dir for the debian packages. This allows us to
+      # use some standard tools to ship internally.
+      #
+      # @return [String] relative path to where debian packages should be staged
       def output_dir
         File.join("deb", @codename)
       end
 
+      # Constructor. Sets up some defaults for the debian platform and calls the parent constructor
+      #
+      # @param name [String] name of the platform
+      # @return [Vanagon::Platform::DEB] the deb derived platform with the given name
       def initialize(name)
         @name = name
         @make = "/usr/bin/make"
