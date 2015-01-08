@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('yard')
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
-  gem.executables  = ['build', 'ship']
+  gem.executables  = ['build', 'ship', 'repo']
 
   # Ensure the gem is built out of versioned files
   gem.files = Dir['{bin,lib,spec,templates}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
