@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+ENV["PROJECT_ROOT"] = Dir.pwd
+
+# Begin warning: This ship script is an internal tool.
+# This is not intended to function outside of Puppet Labs' infrastructure.
+# This presumes packages for this ref have already been build and shipped.
+# End of warning.
+
+require 'packaging'
+Pkg::Util::RakeUtils.load_packaging_tasks
+Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
+Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
