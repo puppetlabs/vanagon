@@ -140,19 +140,13 @@ class Vanagon
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
-        install_service_cmd = []
-        install_service_cmd << "install -d '#{@component.platform.servicedir}'"
-        install_service_cmd << "cp -p '#{service_file}' '#{target_service_file}'"
-        @component.files << target_service_file
+
+        # Install the service and default files
+        install_file(service_file, target_service_file)
 
         if default_file
-          install_service_cmd << "install -d '#{@component.platform.defaultdir}'"
-          install_service_cmd << "cp -p '#{default_file}' '#{target_default_file}'"
-          @component.files << target_default_file
+          install_file(default_file, target_default_file)
         end
-
-        # Actually append the cp calls to the @install instance var
-        @component.install << install_service_cmd
 
         # Register the service for use in packaging
         @component.service = service_name
