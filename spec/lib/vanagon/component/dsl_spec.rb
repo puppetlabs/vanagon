@@ -12,6 +12,16 @@ end" }
   pkg.load_from_json('spec/fixures/component/invalid-test-fixture.json')
 end" }
 
+  let (:dummy_platform) {
+    plat = Vanagon::Platform::DSL.new('debian-6-i386')
+    plat.instance_eval("platform 'debian-6-i386' do |plat|
+                       plat.servicetype 'sysv'
+                       plat.servicedir '/etc/init.d'
+                       plat.defaultdir '/etc/default'
+                    end")
+    plat._platform
+  }
+
   describe '#load_from_json' do
     it "sets the ref and url based on the json fixture" do
       comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
@@ -23,6 +33,116 @@ end" }
     it "raises an error on invalid methods/attributes in the json" do
       comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
       expect { comp.instance_eval(invalid_component_block) }.to raise_error(RuntimeError)
+    end
+  end
+
+  describe '#configure' do
+    it 'sets configure to the value if configure is empty' do
+      comp = Vanagon::Component::DSL.new('configure-test', {}, {})
+      comp.configure { './configure' }
+      expect(comp._component.configure).to eq(['./configure'])
+    end
+
+    it 'appends to the existing configure if not empty' do
+      comp = Vanagon::Component::DSL.new('configure-test', {}, {})
+      comp.configure { './configure' }
+      comp.configure { './test' }
+      expect(comp._component.configure).to eq(['./configure', './test'])
+    end
+  end
+
+  describe '#build' do
+    it 'sets build to the value if build is empty' do
+      comp = Vanagon::Component::DSL.new('build-test', {}, {})
+      comp.build { './build' }
+      expect(comp._component.build).to eq(['./build'])
+    end
+
+    it 'appends to the existing build if not empty' do
+      comp = Vanagon::Component::DSL.new('build-test', {}, {})
+      comp.build { './build' }
+      comp.build { './test' }
+      expect(comp._component.build).to eq(['./build', './test'])
+    end
+  end
+
+  describe '#install' do
+    it 'sets install to the value if install is empty' do
+      comp = Vanagon::Component::DSL.new('install-test', {}, {})
+      comp.install { './install' }
+      expect(comp._component.install).to eq(['./install'])
+    end
+
+    it 'appends to the existing install if not empty' do
+      comp = Vanagon::Component::DSL.new('install-test', {}, {})
+      comp.install { './install' }
+      comp.install { './test' }
+      expect(comp._component.install).to eq(['./install', './test'])
+    end
+  end
+
+  describe '#apply_patch' do
+    it 'adds the patch to the list of patches' do
+      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
+      comp.apply_patch('patch_file1')
+      comp.apply_patch('patch_file2')
+      expect(comp._component.patches).to be_include('patch_file1')
+      expect(comp._component.patches).to be_include('patch_file2')
+    end
+  end
+
+  describe '#build_requires' do
+    it 'adds the build requirement to the list of build requirements' do
+      comp = Vanagon::Component::DSL.new('buildreq-test', {}, {})
+      comp.build_requires('library1')
+      comp.build_requires('library2')
+      expect(comp._component.build_requires).to be_include('library1')
+      expect(comp._component.build_requires).to be_include('library2')
+    end
+  end
+
+  describe '#requires' do
+    it 'adds the runtime requirement to the list of requirements' do
+      comp = Vanagon::Component::DSL.new('requires-test', {}, {})
+      comp.requires('library1')
+      comp.requires('library2')
+      expect(comp._component.requires).to be_include('library1')
+      expect(comp._component.requires).to be_include('library2')
+    end
+  end
+
+  describe '#install_service' do
+    it 'adds the correct command to the install for the component' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform)
+      comp.install_service('component-client.init', 'component-client.sysconfig')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to be_include("install -d '/etc/init.d'")
+      expect(comp._component.install).to be_include("cp -p 'component-client.init' '/etc/init.d/service-test'")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to be_include("install -d '/etc/default'")
+      expect(comp._component.install).to be_include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
+
+      # The component should now have a service registered
+      expect(comp._component.service).to eq('service-test')
+    end
+  end
+
+  describe '#install_file' do
+    it 'adds the correct commands to the install to copy the file' do
+      comp = Vanagon::Component::DSL.new('install-file-test', {}, dummy_platform)
+      comp.install_file('thing1', 'place/to/put/thing1')
+      expect(comp._component.install).to be_include("install -d 'place/to/put'")
+      expect(comp._component.install).to be_include("cp -p 'thing1' 'place/to/put/thing1'")
+    end
+  end
+
+  describe '#link' do
+    it 'adds the correct command to the install for the component' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform)
+      comp.install_service('component-client.init', 'component-client.sysconfig')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to be_include("install -d '/etc/init.d'")
     end
   end
 end
