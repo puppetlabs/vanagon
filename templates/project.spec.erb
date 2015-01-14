@@ -4,6 +4,7 @@
 %global _prefix     <%= prefix %>
 %global _sysconfdir <%= sysconfdir %>
 %global _logdir     <%= logdir %>
+%global _piddir     <%= piddir %>
 %global local_unitdir   %(echo %{_unitdir} | sed 's,^/,,g')
 
 Name:           <%= @name %>
@@ -126,6 +127,7 @@ install -d %{buildroot}
 %{_prefix}
 %{_sysconfdir}
 %{_logdir}
+%{_piddir}
 <%= get_files.join("\n") %>
 
 %changelog
