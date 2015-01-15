@@ -167,6 +167,7 @@ class Vanagon
       # @param source [String] path to the file to symlink
       # @param target [String] path to the desired symlink
       def link(source, target)
+        @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "ln -s '#{source}' '#{target}'"
       end
 

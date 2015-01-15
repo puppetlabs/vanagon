@@ -139,10 +139,10 @@ end" }
 
   describe '#link' do
     it 'adds the correct command to the install for the component' do
-      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform)
-      comp.install_service('component-client.init', 'component-client.sysconfig')
-      # Look for servicedir creation and copy
-      expect(comp._component.install).to be_include("install -d '/etc/init.d'")
+      comp = Vanagon::Component::DSL.new('link-test', {}, dummy_platform)
+      comp.link('link-source', '/place/to/put/things')
+      expect(comp._component.install).to be_include("install -d '/place/to/put'")
+      expect(comp._component.install).to be_include("ln -s 'link-source' '/place/to/put/things'")
     end
   end
 end
