@@ -123,9 +123,9 @@ install -d %{buildroot}
 
 
 %files
-%{_prefix}
-%{_sysconfdir}
-%{_logdir}
+<%- get_directories.each do |dir| -%>
+<%= dir %>
+<%- end -%>
 <%= get_files.join("\n") %>
 
 %changelog
