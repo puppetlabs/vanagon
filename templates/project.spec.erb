@@ -118,7 +118,12 @@ install -d %{buildroot}
 <%- get_directories.each do |dir| -%>
 <%= dir %>
 <%- end -%>
-<%= get_files.join("\n") %>
+<%- get_configfiles.each do |configfile| -%>
+%config(noreplace) <%= configfile %>
+<%- end -%>
+<%- (get_files - get_configfiles).each do |file| -%>
+<%= file %>
+<%- end -%>
 
 %changelog
 * <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-1

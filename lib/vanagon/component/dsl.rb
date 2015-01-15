@@ -146,6 +146,7 @@ class Vanagon
 
         if default_file
           install_file(default_file, target_default_file)
+          configfile(target_default_file)
         end
 
         # Register the service for use in packaging
@@ -160,6 +161,23 @@ class Vanagon
         @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
         @component.files << target
+      end
+
+      # Marks a file as a configfile to ensure that it is not overwritten on
+      # upgrade if it has been modified
+      #
+      # @param file [String] name of the configfile
+      def configfile(file)
+        @component.configfiles << file
+      end
+
+      # Shorthand to install a file and mark it as a configfile
+      #
+      # @param source [String] path to the configfile to copy
+      # @param target [String] path to the desired target of the configfile
+      def install_configfile(source, target)
+        install_file(source, target)
+        configfile(target)
       end
 
       # link will add a command to the install to create a symlink from source to target

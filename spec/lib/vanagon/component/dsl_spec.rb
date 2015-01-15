@@ -137,6 +137,29 @@ end" }
     end
   end
 
+  describe '#configfile' do
+    it 'adds the file to the configfiles list' do
+      comp = Vanagon::Component::DSL.new('config-file-test', {}, {})
+      comp.configfile('/place/to/put/thing1')
+      expect(comp._component.configfiles).to be_include('/place/to/put/thing1')
+    end
+  end
+
+  describe '#install_configfile' do
+    it 'adds the commands to install the configfile' do
+      comp = Vanagon::Component::DSL.new('install-config-file-test', {}, {})
+      comp.install_configfile('thing1', 'place/to/put/thing1')
+      expect(comp._component.install).to be_include("install -d 'place/to/put'")
+      expect(comp._component.install).to be_include("cp -p 'thing1' 'place/to/put/thing1'")
+    end
+
+    it 'adds the file to the configfiles list' do
+      comp = Vanagon::Component::DSL.new('install-config-file-test', {}, {})
+      comp.install_configfile('thing1', 'place/to/put/thing1')
+      expect(comp._component.configfiles).to be_include('place/to/put/thing1')
+    end
+  end
+
   describe '#link' do
     it 'adds the correct command to the install for the component' do
       comp = Vanagon::Component::DSL.new('link-test', {}, dummy_platform)

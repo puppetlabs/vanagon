@@ -25,7 +25,7 @@ class Vanagon
         FileUtils.mkdir_p(deb_dir)
 
         # Lots of templates here
-        ["control", "dirs", "rules", "install", "changelog", "prerm", "postrm", "postinst"].each do |deb_file|
+        ["control", "conffiles", "dirs", "rules", "install", "changelog", "prerm", "postrm", "postinst"].each do |deb_file|
           erb_file(File.join(VANAGON_ROOT, "templates/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, {:binding => binding})
         end
 
