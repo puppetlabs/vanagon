@@ -140,19 +140,14 @@ class Vanagon
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
-        install_service_cmd = []
-        install_service_cmd << "install -d '#{@component.platform.servicedir}'"
-        install_service_cmd << "cp -p '#{service_file}' '#{target_service_file}'"
-        @component.files << target_service_file
+
+        # Install the service and default files
+        install_file(service_file, target_service_file)
 
         if default_file
-          install_service_cmd << "install -d '#{@component.platform.defaultdir}'"
-          install_service_cmd << "cp -p '#{default_file}' '#{target_default_file}'"
-          @component.files << target_default_file
+          install_file(default_file, target_default_file)
+          configfile(target_default_file)
         end
-
-        # Actually append the cp calls to the @install instance var
-        @component.install << install_service_cmd
 
         # Register the service for use in packaging
         @component.service = service_name
@@ -168,11 +163,29 @@ class Vanagon
         @component.files << target
       end
 
+      # Marks a file as a configfile to ensure that it is not overwritten on
+      # upgrade if it has been modified
+      #
+      # @param file [String] name of the configfile
+      def configfile(file)
+        @component.configfiles << file
+      end
+
+      # Shorthand to install a file and mark it as a configfile
+      #
+      # @param source [String] path to the configfile to copy
+      # @param target [String] path to the desired target of the configfile
+      def install_configfile(source, target)
+        install_file(source, target)
+        configfile(target)
+      end
+
       # link will add a command to the install to create a symlink from source to target
       #
       # @param source [String] path to the file to symlink
       # @param target [String] path to the desired symlink
       def link(source, target)
+        @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "ln -s '#{source}' '#{target}'"
       end
 

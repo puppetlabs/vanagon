@@ -1,11 +1,3 @@
-%global real_initrddir    %{_initrddir}
-%global local_initrddir   %(echo %{_initrddir} | sed 's,^/,,g')
-
-%global _prefix     <%= prefix %>
-%global _sysconfdir <%= sysconfdir %>
-%global _logdir     <%= logdir %>
-%global local_unitdir   %(echo %{_unitdir} | sed 's,^/,,g')
-
 Name:           <%= @name %>
 Version:        <%= @version %>
 Release:        1
@@ -123,10 +115,15 @@ install -d %{buildroot}
 
 
 %files
-%{_prefix}
-%{_sysconfdir}
-%{_logdir}
-<%= get_files.join("\n") %>
+<%- get_directories.each do |dir| -%>
+<%= dir %>
+<%- end -%>
+<%- get_configfiles.each do |configfile| -%>
+%config(noreplace) <%= configfile %>
+<%- end -%>
+<%- (get_files - get_configfiles).each do |file| -%>
+<%= file %>
+<%- end -%>
 
 %changelog
 * <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-1

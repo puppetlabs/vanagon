@@ -71,6 +71,13 @@ class Vanagon
       @components.map {|comp| comp.files }.flatten
     end
 
+    # Collects any configfiles supplied by components
+    #
+    # @return [Array] array of configfiles installed by components of the project
+    def get_configfiles
+      @components.map {|comp| comp.configfiles }.flatten
+    end
+
     # This method may eventually include collecting directories from
     # components, if components are allowed to register directories.
     #
