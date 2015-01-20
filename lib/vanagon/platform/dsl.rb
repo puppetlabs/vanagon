@@ -18,7 +18,7 @@ class Vanagon
       # @param block [Proc] DSL definition of the platform to call
       def platform(name, &block)
         @platform = case name
-                    when /^(el|sles)-/
+                    when /^(el|sles|eos)-/
                       Vanagon::Platform::RPM.new(@name)
                     when /^(debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)

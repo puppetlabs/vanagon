@@ -114,5 +114,12 @@ class Vanagon
     def is_aix?
       return !!@name.match(/^aix-.*$/)
     end
+
+    # Utility matcher to determine is the platform is an eos variety
+    #
+    # @return [true, false] true if it is an eos variety, false otherwise
+    def is_eos?
+      return !!@name.match(/^eos-.*$/)
+    end
   end
 end
