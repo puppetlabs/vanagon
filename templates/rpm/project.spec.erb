@@ -16,7 +16,9 @@ Source0:        %{name}-%{version}.tar.gz
 # Don't provide anything so the system doesn't use our packages to resolve deps
 Autoprov: 0
 Autoreq: 0
-
+<%- if @requires -%>
+Requires:  <%= @requires %>
+<%- end -%>
 <%- if has_services? -%>
   <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>

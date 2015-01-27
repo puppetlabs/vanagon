@@ -14,6 +14,7 @@ project "my-app" do |proj|
   proj.license "ASL 2.0"
   proj.vendor "Me <info@my-app.com>"
   proj.homepage "https://www.my-app.com"
+  proj.requires "glibc"
 
   proj.component "component1"
   proj.component "component2"
