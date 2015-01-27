@@ -74,6 +74,13 @@ class Vanagon
         @project.homepage = page
       end
 
+      # Sets the run time requirements for the project. Mainly for use in packaging.
+      #
+      # @param req [String] of requirements of the project
+      def requires(req)
+        @project.requires = req
+      end
+
       # Sets the version for the project. Mainly for use in packaging.
       #
       # @param ver [String] version of the project
