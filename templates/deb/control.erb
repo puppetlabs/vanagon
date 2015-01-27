@@ -13,6 +13,7 @@ Priority: optional
 #Provides:
 #Replaces:
 #Conflicts:
+Depends: <%= get_requires.join(", ") %>
 Description: <%= @description.lines.first.chomp %>
  <%= @description.lines[1..-1].join("\n ") -%>
  .

@@ -7,7 +7,7 @@ require 'ostruct'
 class Vanagon
   class Project
     include Vanagon::Utilities
-    attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :license, :description, :vendor, :homepage
+    attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :license, :description, :vendor, :homepage, :requires
 
     # Loads a given project from the configdir
     #
@@ -38,6 +38,7 @@ class Vanagon
     def initialize(name, platform)
       @name = name
       @components = []
+      @requires = []
       @directories = []
       @settings = {}
       @platform = platform
@@ -69,6 +70,13 @@ class Vanagon
     # @return [Array] array of files installed by components of the project
     def get_files
       @components.map {|comp| comp.files }.flatten
+    end
+
+    def get_requires
+      req = []
+      req << @components.map {|comp| comp.requires }.flatten
+      req << @requires
+      req.flatten.uniq
     end
 
     # Collects any configfiles supplied by components
