@@ -55,6 +55,9 @@ class Vanagon
               request = Net::HTTP::Get.new(uri)
 
               http.request request do |response|
+                unless response.is_a? Net::HTTPSuccess
+                  fail "Error: #{response.code.to_s}. Unable to get source from #{@url}"
+                end
                 open(File.join(@workdir, target_file), 'w') do |io|
                   response.read_body do |chunk|
                     io.write(chunk)
