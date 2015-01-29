@@ -115,8 +115,8 @@ class Vanagon
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
       files = []
-      files.push get_directories
       files.push get_files
+      files.push get_configfiles
     end
 
     # Method to generate the command to create a tarball of the project
@@ -125,7 +125,7 @@ class Vanagon
     def pack_tarball_command
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
-       %Q[tar -cf - #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; tar xfp -)],
+       %Q[tar -cf - -T file-list #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; tar xfp -)],
        %Q[tar -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz]].join("\n\t")
     end
 

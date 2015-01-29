@@ -6,8 +6,12 @@ override_dh_auto_install:
 	install -d debian/tmp
 	# Copy each directory into place
 <%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
-	install -d debian/tmp/<%= File.dirname(dir) %>
-	cp -pr <%= dir %> debian/tmp/<%= File.dirname(dir) %>
+	if [ -d <%= dir %> ]; then \
+		install -d debian/tmp/<%= File.dirname(dir) %>; \
+		cp -pr <%= dir %> debian/tmp/<%= File.dirname(dir) %>; \
+	else \
+		install -d debian/tmp/<%= dir %>; \
+	fi
 <%- end -%>
 	# Copy each of the extra files into place
 <%- get_files.map {|f| f.sub(/^\//,'')}.each do |file| -%>

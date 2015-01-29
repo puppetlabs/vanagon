@@ -5,21 +5,30 @@ all: <%= package_name %>
 <%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
 	<%= generate_package.join("\n\t") %>
 
-<%= @name %>-<%= @version %>.tar.gz: <%= @directories.join(" ") %> <%= @name %>
+file-list-before-build:
+	find -L <%= @directories.join(' ') %> -type f | sort > file-list-before-build
+
+file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
+	find -L <%= @directories.join(' ') %> -type f | sort > file-list-after-build
+
+<%= @name %>-<%= @version %>.tar.gz: file-list
 	<%= pack_tarball_command %>
+
+file-list: <%= @directories.join(" ") %> <%= @name %>
+	comm -23 file-list-after-build file-list-before-build > file-list
 
 <%- @directories.each do |dir| -%>
 <%= dir %>:
 	mkdir -p <%= dir %>
-<%- end -%>
+<%- end %>
 
-<%= @name %>: <%= @components.map {|comp| comp.name }.join(" ") %>
+<%= @name %>: file-list-after-build
 	touch <%= @name %>
 
 <%- @components.each do |comp| -%>
 <%= comp.name %>: <%= list_component_dependencies(comp).join(" ") %> <%= comp.name %>-install
 
-<%= comp.name %>-unpack:
+<%= comp.name %>-unpack: file-list-before-build
 	<%= comp.extract_with %>
 	touch <%= comp.name %>-unpack
 
