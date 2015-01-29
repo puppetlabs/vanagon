@@ -11,6 +11,7 @@ class Vanagon
       def generate_package(project)
         ["mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
+        "cp file-list $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
         "rpmbuild -bb --define '_topdir $(tempdir)/rpmbuild' $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
         "mkdir -p output/#{output_dir}",

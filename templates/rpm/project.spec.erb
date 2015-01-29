@@ -12,6 +12,7 @@ URL:            <%= @homepage %>
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Source0:        %{name}-%{version}.tar.gz
+Source1:        file-list
 
 # Don't provide anything so the system doesn't use our packages to resolve deps
 Autoprov: 0
@@ -56,10 +57,14 @@ Contains the following components:
 rm -rf %{buildroot}
 install -d %{buildroot}
 
-# Copy each directory into place
+# Copy each directory into place. Because empty directories won't make it into.
 <%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
-  install -d %{buildroot}/<%= File.dirname(dir) %>
-  cp -pr <%= dir %> %{buildroot}/<%= File.dirname(dir) %>
+  if [ -d <%= dir %> ]; then
+    install -d %{buildroot}/<%= File.dirname(dir) %>
+    cp -pr <%= dir %> %{buildroot}/<%= File.dirname(dir) %>
+  else
+    install -d %{buildroot}/<%= dir %>
+  fi
 <%- end -%>
 
 # Copy each of the extra files into place
@@ -118,9 +123,9 @@ install -d %{buildroot}
 <%- end -%>
 
 
-%files
+%files -f %{SOURCE1}
 <%- get_directories.each do |dir| -%>
-<%= dir %>
+%dir <%= dir %>
 <%- end -%>
 <%- get_configfiles.each do |configfile| -%>
 %config(noreplace) <%= configfile %>
