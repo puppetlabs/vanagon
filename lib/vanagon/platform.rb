@@ -85,6 +85,7 @@ HERE
       @os_name = os_name
       @os_version = os_version
       @architecture = architecture
+      @provisioning = []
     end
 
     # This allows instance variables to be accessed using the hash lookup syntax

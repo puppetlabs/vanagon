@@ -49,7 +49,7 @@ class Vanagon
     end
 
     def template_to_builder(target)
-      script = @platform.provisioning
+      script = @platform.provisioning.join(' ; ')
       remote_ssh_command(target, script)
     end
 
