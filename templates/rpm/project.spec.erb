@@ -124,8 +124,9 @@ install -d %{buildroot}
 
 
 %files -f %{SOURCE1}
+%defattr(-, root, root, 0755)
 <%- get_directories.each do |dir| -%>
-%dir <%= dir.path %>
+%dir %attr(<%= dir.mode || "-" %>, <%= dir.owner || "-" %>, <%= dir.group || "-" %>) <%= dir.path %>
 <%- end -%>
 <%- get_configfiles.each do |configfile| -%>
 %config(noreplace) <%= configfile %>
