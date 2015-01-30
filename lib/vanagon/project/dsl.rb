@@ -107,7 +107,7 @@ class Vanagon
       #
       # @param dir [String] directory to add to the project
       def directory(dir)
-        @project.directories << dir
+        @project.directories << Vanagon::Common::Directory.new(dir)
       end
 
       # Sets the license for the project. Mainly for use in packaging.

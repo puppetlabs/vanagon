@@ -1,3 +1,3 @@
-<%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
+<%- get_directories.map {|d| d.path.sub(/^\//,'')}.each do |dir| -%>
 <%= dir %>
 <%- end -%>

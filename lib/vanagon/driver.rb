@@ -2,6 +2,7 @@ require 'vanagon/project'
 require 'vanagon/platform'
 require 'vanagon/component'
 require 'vanagon/utilities'
+require 'vanagon/common'
 require 'tmpdir'
 
 class Vanagon

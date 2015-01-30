@@ -1,3 +1,5 @@
+<% dirnames = @directories.map {|d| d.path } %>
+
 tempdir := $(shell mktemp -d)
 
 all: <%= package_name %>
@@ -6,18 +8,18 @@ all: <%= package_name %>
 	<%= generate_package.join("\n\t") %>
 
 file-list-before-build:
-	find -L <%= @directories.join(' ') %> -type f | sort > file-list-before-build
+	find -L <%= dirnames.join(' ') %> -type f | sort > file-list-before-build
 
 file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
-	find -L <%= @directories.join(' ') %> -type f | sort > file-list-after-build
+	find -L <%= dirnames.join(' ') %> -type f | sort > file-list-after-build
 
 <%= @name %>-<%= @version %>.tar.gz: file-list
 	<%= pack_tarball_command %>
 
-file-list: <%= @directories.join(" ") %> <%= @name %>
+file-list: <%= dirnames.join(' ') %> <%= @name %>
 	comm -23 file-list-after-build file-list-before-build > file-list
 
-<%- @directories.each do |dir| -%>
+<%- dirnames.each do |dir| -%>
 <%= dir %>:
 	mkdir -p <%= dir %>
 <%- end %>

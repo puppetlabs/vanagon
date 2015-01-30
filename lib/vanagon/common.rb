@@ -1,0 +1,1 @@
+require 'vanagon/common/directory'
