@@ -7,7 +7,9 @@ require 'ostruct'
 class Vanagon
   class Project
     include Vanagon::Utilities
-    attr_accessor :components, :settings, :platform, :configdir, :name, :version, :directories, :license, :description, :vendor, :homepage, :requires
+    attr_accessor :components, :settings, :platform, :configdir, :name
+    attr_accessor :version, :directories, :license, :description, :vendor
+    attr_accessor :homepage, :requires
 
     # Loads a given project from the configdir
     #
