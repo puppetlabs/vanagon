@@ -1,4 +1,5 @@
 require 'vanagon/component/dsl'
+require 'vanagon/common'
 require 'json'
 
 describe 'Vanagon::Component::DSL' do
@@ -166,6 +167,38 @@ end" }
       comp.link('link-source', '/place/to/put/things')
       expect(comp._component.install).to be_include("install -d '/place/to/put'")
       expect(comp._component.install).to be_include("ln -s 'link-source' '/place/to/put/things'")
+    end
+  end
+
+  describe '#directory' do
+    it 'adds a directory with the desired path to the directory collection for the component' do
+      comp = Vanagon::Component::DSL.new('directory-test', {}, dummy_platform)
+      comp.directory('/a/b/c')
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Directory.new('/a/b/c'))
+    end
+
+    it 'adds a directory with the desired mode to the directory collection for the component' do
+      comp = Vanagon::Component::DSL.new('directory-test', {}, dummy_platform)
+      comp.directory('/a/b/c', mode: '0755')
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Directory.new('/a/b/c', '0755'))
+    end
+
+    it 'adds a directory with the desired owner to the directory collection for the component' do
+      comp = Vanagon::Component::DSL.new('directory-test', {}, dummy_platform)
+      comp.directory('/a/b/c', owner: 'olivia')
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Directory.new('/a/b/c', nil, 'olivia'))
+    end
+
+    it 'adds a directory with the desired group to the directory collection for the component' do
+      comp = Vanagon::Component::DSL.new('directory-test', {}, dummy_platform)
+      comp.directory('/a/b/c', group: 'release-engineering')
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Directory.new('/a/b/c', nil, nil, 'release-engineering'))
+    end
+
+    it 'adds a directory with the desired attributes to the directory collection for the component' do
+      comp = Vanagon::Component::DSL.new('directory-test', {}, dummy_platform)
+      comp.directory('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering')
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Directory.new('/a/b/c', '0400', 'olivia', 'release-engineering'))
     end
   end
 end

@@ -6,7 +6,7 @@ class Vanagon
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
-    attr_accessor :configfiles
+    attr_accessor :configfiles, :directories
 
     # Loads a given component from the configdir
     #
@@ -48,6 +48,7 @@ class Vanagon
       @patches = []
       @files = []
       @configfiles = []
+      @directories = []
     end
 
     # Fetches the primary source for the component. As a side effect, also sets

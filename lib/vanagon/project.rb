@@ -86,12 +86,14 @@ class Vanagon
       @components.map {|comp| comp.configfiles }.flatten
     end
 
-    # This method may eventually include collecting directories from
-    # components, if components are allowed to register directories.
+    # Collects any directories declared by the project and components
     #
-    # @return [Array] the directories in the project
+    # @return [Array] the directories in the project and components
     def get_directories
-      @directories
+      dirs = []
+      dirs.push @directories
+      dirs.push @components.map {|comp| comp.directories }.flatten
+      dirs.flatten
     end
 
     # Get any services registered by components in the project
