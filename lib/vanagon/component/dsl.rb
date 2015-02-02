@@ -216,6 +216,16 @@ class Vanagon
       def ref(the_ref)
         @component.options[:ref] = the_ref
       end
+
+      # Adds a directory to the list of directories provided by the project, to be included in any packages of the project
+      #
+      # @param dir [String] directory to add to the project
+      # @param mode [String] octal mode to apply to the directory
+      # @param owner [String] owner of the directory
+      # @param group [String] group of the directory
+      def directory(dir, mode: nil, owner: nil, group: nil)
+        @component.directories << Vanagon::Common::Directory.new(dir, mode, owner, group)
+      end
     end
   end
 end

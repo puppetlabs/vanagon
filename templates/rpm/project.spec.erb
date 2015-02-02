@@ -58,7 +58,7 @@ rm -rf %{buildroot}
 install -d %{buildroot}
 
 # Copy each directory into place. Because empty directories won't make it into.
-<%- get_directories.map {|d| d.sub(/^\//,'')}.each do |dir| -%>
+<%- get_directories.map {|d| d.path.sub(/^\//,'')}.each do |dir| -%>
   if [ -d <%= dir %> ]; then
     install -d %{buildroot}/<%= File.dirname(dir) %>
     cp -pr <%= dir %> %{buildroot}/<%= File.dirname(dir) %>
@@ -124,8 +124,9 @@ install -d %{buildroot}
 
 
 %files -f %{SOURCE1}
+%defattr(-, root, root, 0755)
 <%- get_directories.each do |dir| -%>
-%dir <%= dir %>
+%dir %attr(<%= dir.mode || "-" %>, <%= dir.owner || "-" %>, <%= dir.group || "-" %>) <%= dir.path %>
 <%- end -%>
 <%- get_configfiles.each do |configfile| -%>
 %config(noreplace) <%= configfile %>

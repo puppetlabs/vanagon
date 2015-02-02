@@ -15,3 +15,22 @@ if [ -x "<%= @platform.servicedir %>/<%= service %>" ]; then
 fi
   <%- end -%>
 <%- end -%>
+
+# Set up any specific permissions needed...
+<%- get_directories.select { |dir| dir.has_overrides? }.each do |directory| -%>
+  <%= "chmod '#{directory.mode}' '#{directory.path}'" if directory.mode %>
+  <%- if directory.owner -%>
+    if getent passwd '<%= directory.owner %>' &> /dev/null; then
+      chown '<%= directory.owner %>' '<%= directory.path %>'
+    else
+      echo "Error updating '<%= directory.path %>': user '<%= directory.owner %>' does not exist."
+    fi
+  <%- end -%>
+  <%- if directory.group -%>
+    if getent group '<%= directory.group %>' &> /dev/null; then
+      chgrp '<%= directory.group %>' '<%= directory.path %>'
+    else
+      echo "Error updating '<%= directory.path %>': group '<%= directory.group %>' does not exist."
+    fi
+  <%- end -%>
+<%- end -%>
