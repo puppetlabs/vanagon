@@ -13,7 +13,7 @@ class Vanagon
       #
       # @return [true, false] whether or not mode, owner or group has been set for the object
       def has_overrides?
-        @mode || @owner || @group
+        !!(@mode || @owner || @group)
       end
 
       # Equality. How does it even work?
