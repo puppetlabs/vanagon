@@ -39,18 +39,25 @@ class Vanagon
     end
 
     def get_target
-      target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
-      if target and target["ok"]
-        return target[@platform.vcloud_name]["hostname"]
+      if @platform.docker_image
+        ex("docker run -d --name #{@platform.docker_image}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
+        # If you don't sleep, ssh doesn't start up in time
+        ex('sleep 2')
+        return "localhost"
       else
-        puts "something went wrong, maybe the pool for #{@platform.vcloud_name} is empty?"
-        return false
+        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
+        if target and target["ok"]
+          return target[@platform.vcloud_name]["hostname"]
+        else
+          puts "something went wrong, maybe the pool for #{@platform.vcloud_name} is empty?"
+          return false
+        end
       end
     end
 
     def template_to_builder(target)
       script = @platform.provisioning.join(' ; ')
-      remote_ssh_command(target, script)
+      remote_ssh_command(target, script, @platform.ssh_port)
     end
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
@@ -59,29 +66,34 @@ class Vanagon
     end
 
     def install_build_dependencies(target)
-      remote_ssh_command(target, "#{@platform.build_dependencies} #{list_build_dependencies.join(' ')}")
+      remote_ssh_command(target, "#{@platform.build_dependencies} #{list_build_dependencies.join(' ')}", @platform.ssh_port)
     end
 
     def ship_workdir_to(target)
-      rsync_to("#{@workdir}/*", target, "~/", [])
+      rsync_to("#{@workdir}/*", target, "~/", @platform.ssh_port )
     end
 
     def build_artifact_on(target)
-      remote_ssh_command(target, "time #{@platform.make}")
+      remote_ssh_command(target, "time #{@platform.make}", @platform.ssh_port)
     end
 
     def retrieve_built_artifact_from(target)
-      rsync_from("output/*", target, "output")
+      rsync_from("output/*", target, "output", @platform.ssh_port )
     end
 
     def teardown_template(host)
-      target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
-      if target and target["ok"]
-        puts "'#{host}' has been destroyed"
+      if @platform.docker_image
+        ex("docker stop #{@platform.docker_image}-builder; docker rm #{@platform.docker_image}-builder")
         return true
       else
-        puts "something went wrong"
-        return false
+        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
+        if target and target["ok"]
+          puts "'#{host}' has been destroyed"
+          return true
+        else
+          puts "something went wrong"
+          return false
+        end
       end
     end
 
