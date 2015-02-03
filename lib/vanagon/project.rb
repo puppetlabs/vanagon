@@ -9,7 +9,7 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :components, :settings, :platform, :configdir, :name
     attr_accessor :version, :directories, :license, :description, :vendor
-    attr_accessor :homepage, :requires
+    attr_accessor :homepage, :requires, :user
 
     # Loads a given project from the configdir
     #

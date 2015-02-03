@@ -113,6 +113,17 @@ class Vanagon
         @project.directories << Vanagon::Common::Directory.new(dir, mode, owner, group)
       end
 
+      # Add a user to the project
+      #
+      # @param name [String] name of the user to create
+      # @param group [String] group of the user
+      # @param shell [String] login shell to set for the user
+      # @param is_system [true, false] if the user should be a system user
+      # @param homedir [String] home directory for the user
+      def user(name, group: nil, shell: nil, is_system: false, homedir: nil)
+        @project.user = Vanagon::Common::User.new(name, group, shell, is_system, homedir)
+      end
+
       # Sets the license for the project. Mainly for use in packaging.
       #
       # @param lic [String] the license the project is released under
