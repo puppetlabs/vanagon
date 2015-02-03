@@ -84,4 +84,18 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities.git_version(dir)).to be_empty
     end
   end
+
+  describe '#ssh_command' do
+    it 'adds the correct flags to the command if VANAGON_SSH_KEY is set' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      ENV['VANAGON_SSH_KEY'] = '/a/b/c'
+      expect(Vanagon::Utilities.ssh_command).to eq('/tmp/ssh -i /a/b/c')
+      ENV['VANAGON_SSH_KEY'] = nil
+    end
+
+    it 'returns just the path to ssh if VANAGON_SSH_KEY is not set' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command).to eq('/tmp/ssh')
+    end
+  end
 end
