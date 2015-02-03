@@ -146,7 +146,16 @@ class Vanagon
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
       end
-      ex("#{rsync} #{flags} #{source} #{target}:#{dest}")
+      ex("#{rsync} -e '#{ssh_command}' #{flags} #{source} #{target}:#{dest}")
+    end
+
+    # Hacky wrapper to add on the correct flags for ssh to be used in ssh and rsync methods
+    #
+    # @return [String] start of ssh command, including flags for ssh keys
+    def ssh_command
+      ssh = find_program_on_path('ssh')
+      args = ENV['VANAGON_SSH_KEY'] ? " -i #{ENV['VANAGON_SSH_KEY']}" : ""
+      return ssh + args
     end
 
     # Retrieves the desired file/directory from the destination using rsync
@@ -162,7 +171,7 @@ class Vanagon
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
       end
-      ex("#{rsync} #{flags} #{target}:#{source} #{dest}")
+      ex("#{rsync} -e '#{ssh_command}' #{flags} #{target}:#{source} #{dest}")
     end
 
     # Runs the command on the given host via ssh call
@@ -173,9 +182,8 @@ class Vanagon
     # @raise [RuntimeError] If there is no target given or the command fails an exception is raised
     def remote_ssh_command(target, command)
       if target
-        ssh = find_program_on_path('ssh')
         puts "Executing '#{command}' on #{target}"
-        Kernel.system("#{ssh} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
+        Kernel.system("#{ssh_command} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       else
         fail "Need a target to ssh to. Received none."
