@@ -16,6 +16,12 @@ fi
   <%- end -%>
 <%- end -%>
 
+<%- if @user -%>
+# Add our user and group
+<%= @platform.add_group(@user) %>
+<%= @platform.add_user(@user) %>
+<%- end -%>
+
 # Set up any specific permissions needed...
 <%- get_directories.select { |dir| dir.has_overrides? }.each do |directory| -%>
   <%= "chmod '#{directory.mode}' '#{directory.path}'" if directory.mode %>

@@ -30,6 +30,51 @@ class Vanagon
       raise e
     end
 
+    # Generate the scripts required to add a group to the package generated.
+    # This will also update the group if it has changed.
+    #
+    # @param user [Vanagon::Common::User] the user to reference for the group
+    # @return [String] the commands required to add a group to the system
+    def add_group(user)
+      group_check = "getent group '#{user.group}' &> /dev/null"
+      cmd_args = ''
+      cmd_args << ' --system' if user.is_system
+      cmd_args << " '#{user.group}'"
+      return <<-HERE
+if #{group_check}; then
+  /usr/sbin/groupmod #{cmd_args}
+else
+  /usr/sbin/groupadd #{cmd_args}
+fi
+HERE
+    end
+
+    # Generate the scripts required to add a user to the package generated.
+    # This will also update the user if it has changed.
+    #
+    # @param user [Vanagon::Common::User] the user to create
+    # @return [String] the commands required to add a user to the system
+    def add_user(user)
+      user_check = "getent passwd '#{user.name}' &> /dev/null"
+      cmd_args = ''
+      cmd_args << ' --system' if user.is_system
+      cmd_args << " --gid '#{user.group}'" if user.group
+      cmd_args << " --home '#{user.homedir}'" if user.homedir
+      if user.shell
+        cmd_args << " --shell '#{user.shell}'"
+      elsif user.is_system
+        cmd_args << " --shell '/usr/sbin/nologin'"
+      end
+      cmd_args << " '#{user.name}'"
+      return <<-HERE
+if #{user_check}; then
+  /usr/sbin/usermod #{cmd_args}
+else
+ /usr/sbin/useradd #{cmd_args}
+fi
+HERE
+    end
+
     # Platform constructor. Takes just the name. Also sets the @name, @os_name,
     # \@os_version and @architecture instance attributes as a side effect
     #
