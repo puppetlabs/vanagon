@@ -160,7 +160,7 @@ class Vanagon
       def install_file(source, target)
         @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
-        @component.files << target
+        @component.files << Vanagon::Common::Pathname.new(target)
       end
 
       # Marks a file as a configfile to ensure that it is not overwritten on
@@ -168,7 +168,7 @@ class Vanagon
       #
       # @param file [String] name of the configfile
       def configfile(file)
-        @component.configfiles << file
+        @component.configfiles << Vanagon::Common::Pathname.new(file)
       end
 
       # Shorthand to install a file and mark it as a configfile

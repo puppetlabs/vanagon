@@ -142,7 +142,7 @@ end" }
     it 'adds the file to the configfiles list' do
       comp = Vanagon::Component::DSL.new('config-file-test', {}, {})
       comp.configfile('/place/to/put/thing1')
-      expect(comp._component.configfiles).to include('/place/to/put/thing1')
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1'))
     end
   end
 
@@ -157,7 +157,7 @@ end" }
     it 'adds the file to the configfiles list' do
       comp = Vanagon::Component::DSL.new('install-config-file-test', {}, {})
       comp.install_configfile('thing1', 'place/to/put/thing1')
-      expect(comp._component.configfiles).to include('place/to/put/thing1')
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1'))
     end
   end
 
@@ -174,7 +174,7 @@ end" }
     it 'adds a directory with the desired path to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
       comp.directory('/a/b/c')
-      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c'))
+      expect(comp._component.directories).to include(Vanagon::Common::Pathname.new('/a/b/c'))
     end
 
     it 'adds a directory with the desired mode to the directory collection for the component' do
