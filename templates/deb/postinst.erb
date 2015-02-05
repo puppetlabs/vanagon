@@ -23,20 +23,20 @@ fi
 <%- end -%>
 
 # Set up any specific permissions needed...
-<%- get_directories.select { |dir| dir.has_overrides? }.each do |directory| -%>
-  <%= "chmod '#{directory.mode}' '#{directory.path}'" if directory.mode %>
-  <%- if directory.owner -%>
-    if getent passwd '<%= directory.owner %>' &> /dev/null; then
-      chown '<%= directory.owner %>' '<%= directory.path %>'
+<%- (get_directories + get_configfiles + get_files).select { |pathname| pathname.has_overrides? }.uniq.each do |file_or_directory| -%>
+  <%= "chmod '#{file_or_directory.mode}' '#{file_or_directory.path}'" if file_or_directory.mode %>
+  <%- if file_or_directory.owner -%>
+    if getent passwd '<%= file_or_directory.owner %>' &> /dev/null; then
+      chown '<%= file_or_directory.owner %>' '<%= file_or_directory.path %>'
     else
-      echo "Error updating '<%= directory.path %>': user '<%= directory.owner %>' does not exist."
+      echo "Error updating '<%= file_or_directory.path %>': user '<%= file_or_directory.owner %>' does not exist."
     fi
   <%- end -%>
-  <%- if directory.group -%>
-    if getent group '<%= directory.group %>' &> /dev/null; then
-      chgrp '<%= directory.group %>' '<%= directory.path %>'
+  <%- if file_or_directory.group -%>
+    if getent group '<%= file_or_directory.group %>' &> /dev/null; then
+      chgrp '<%= file_or_directory.group %>' '<%= file_or_directory.path %>'
     else
-      echo "Error updating '<%= directory.path %>': group '<%= directory.group %>' does not exist."
+      echo "Error updating '<%= file_or_directory.path %>': group '<%= file_or_directory.group %>' does not exist."
     fi
   <%- end -%>
 <%- end -%>
