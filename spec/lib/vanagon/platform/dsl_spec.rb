@@ -20,7 +20,7 @@ end"  }
       plat.instance_eval(deb_platform_block)
       expect(Digest::MD5).to receive(:hexdigest).with(apt_definition).and_return("abcdefghij")
       plat.apt_repo(apt_definition)
-      expect(plat._platform.provisioning).to be_include("curl -o '/etc/apt/sources.list.d/somerepo-abcdefg.list' '#{apt_definition}'; apt-get -qq update")
+      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/sources.list.d/somerepo-abcdefg.list' '#{apt_definition}'; apt-get -qq update")
     end
 
     it "installs a deb when given a deb" do
@@ -28,7 +28,7 @@ end"  }
       plat.instance_eval(deb_platform_block)
       expect(Digest::MD5).to receive(:hexdigest).with(apt_definition_deb).and_return("abcdefghij")
       plat.apt_repo(apt_definition_deb)
-      expect(plat._platform.provisioning).to be_include("curl -o local.deb '#{apt_definition_deb}'; dpkg -i local.deb; rm -f local.deb")
+      expect(plat._platform.provisioning).to include("curl -o local.deb '#{apt_definition_deb}'; dpkg -i local.deb; rm -f local.deb")
     end
   end
 
@@ -38,7 +38,7 @@ end"  }
       plat.instance_eval(el_platform_block)
       expect(Digest::MD5).to receive(:hexdigest).with(el_definition).and_return("abcdefghij")
       plat.yum_repo(el_definition)
-      expect(plat._platform.provisioning).to be_include("curl -o '/etc/yum.repos.d/somerepo-abcdefg.repo' '#{el_definition}'")
+      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/somerepo-abcdefg.repo' '#{el_definition}'")
     end
 
     it "installs a rpm when given a rpm" do
@@ -46,7 +46,7 @@ end"  }
       plat.instance_eval(el_platform_block)
       expect(Digest::MD5).to receive(:hexdigest).with(el_definition_rpm).and_return("abcdefghij")
       plat.yum_repo(el_definition_rpm)
-      expect(plat._platform.provisioning).to be_include("yum localinstall -y '#{el_definition_rpm}'")
+      expect(plat._platform.provisioning).to include("yum localinstall -y '#{el_definition_rpm}'")
     end
   end
 end
