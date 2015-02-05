@@ -1,6 +1,6 @@
 class Vanagon
   class Common
-    class Directory
+    class Pathname
       attr_accessor :path, :mode, :owner, :group
       def initialize(path, mode = nil, owner = nil, group = nil)
         @path = path

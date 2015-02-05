@@ -224,7 +224,7 @@ class Vanagon
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
       def directory(dir, mode: nil, owner: nil, group: nil)
-        @component.directories << Vanagon::Common::Directory.new(dir, mode, owner, group)
+        @component.directories << Vanagon::Common::Pathname.new(dir, mode, owner, group)
       end
     end
   end

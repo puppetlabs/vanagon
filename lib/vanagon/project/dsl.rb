@@ -110,7 +110,7 @@ class Vanagon
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
       def directory(dir, mode: nil, owner: nil, group: nil)
-        @project.directories << Vanagon::Common::Directory.new(dir, mode, owner, group)
+        @project.directories << Vanagon::Common::Pathname.new(dir, mode, owner, group)
       end
 
       # Add a user to the project
