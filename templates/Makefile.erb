@@ -18,6 +18,7 @@ file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 
 file-list: <%= dirnames.join(' ') %> <%= @name %>
 	comm -23 file-list-after-build file-list-before-build > file-list
+	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*\s.*$$\)/"\1"/g' > file-list-for-rpm
 
 <%- dirnames.each do |dir| -%>
 <%= dir %>:
