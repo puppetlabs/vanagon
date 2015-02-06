@@ -19,7 +19,7 @@ class Vanagon
       # @param block [Proc] DSL definition of the platform to call
       def platform(name, &block)
         @platform = case name
-                    when /^(el|sles|eos)-/
+                    when /^(el|sles|eos|nxos)-/
                       Vanagon::Platform::RPM.new(@name)
                     when /^(debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
@@ -117,6 +117,20 @@ class Vanagon
       # @param name [String] name that the pooler uses for this platform
       def vcloud_name(name)
         @platform.vcloud_name = name
+      end
+
+      # Set the name of the docker image to use
+      #
+      # @param name [String] name of the docker image to use
+      def docker_image(name)
+        @platform.docker_image = name
+      end
+
+      # Set the port for ssh to use if it's not 22
+      #
+      # @param port [Integer] port number for ssh
+      def ssh_port(port = 22)
+        @platform.ssh_port = port
       end
 
       # Set any codename this platform may have (debian for example)

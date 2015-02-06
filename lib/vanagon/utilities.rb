@@ -139,22 +139,25 @@ class Vanagon
     # @param target [String] ssh host to send to (user@machine)
     # @param dest [String] path on target to place the source
     # @param extra_flags [Array] any additional flags to pass to rsync
+    # @param port [Integer] Port number for ssh (default 22)
     # @return [String] output of rsync command
-    def rsync_to(source, target, dest, extra_flags = ["--ignore-existing"])
+    def rsync_to(source, target, dest, port = 22, extra_flags = ["--ignore-existing"])
       rsync = find_program_on_path('rsync')
       flags = "-rHlv --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
       end
-      ex("#{rsync} -e '#{ssh_command}' #{flags} #{source} #{target}:#{dest}")
+      ex("#{rsync} -e '#{ssh_command(port)}' #{flags} #{source} #{target}:#{dest}")
     end
 
     # Hacky wrapper to add on the correct flags for ssh to be used in ssh and rsync methods
     #
+    # @param port [Integer] Port number for ssh (default 22)
     # @return [String] start of ssh command, including flags for ssh keys
-    def ssh_command
+    def ssh_command(port = 22 )
       ssh = find_program_on_path('ssh')
       args = ENV['VANAGON_SSH_KEY'] ? " -i #{ENV['VANAGON_SSH_KEY']}" : ""
+      args << " -p #{port} "
       return ssh + args
     end
 
@@ -163,27 +166,29 @@ class Vanagon
     # @param source [String] path on target to retrieve from
     # @param target [String] ssh host to retrieve from (user@machine)
     # @param dest [String] path on local host to place the source
+    # @param port [Integer] port number for ssh (default 22)
     # @param extra_flags [Array] any additional flags to pass to rsync
     # @return [String] output of rsync command
-    def rsync_from(source, target, dest, extra_flags = [])
+    def rsync_from(source, target, dest, port = 22, extra_flags = [])
       rsync = find_program_on_path('rsync')
       flags = "-rHlv -O --no-perms --no-owner --no-group"
       unless extra_flags.empty?
         flags << " " << extra_flags.join(" ")
       end
-      ex("#{rsync} -e '#{ssh_command}' #{flags} #{target}:#{source} #{dest}")
+      ex("#{rsync} -e '#{ssh_command(port)}' #{flags} #{target}:#{source} #{dest}")
     end
 
     # Runs the command on the given host via ssh call
     #
     # @param target [String] ssh host to run command on (user@machine)
     # @param command [String] command to run on the target
+    # @param port [Integer] port number for ssh (default 22)
     # @return [true] Returns true if the command was successful
     # @raise [RuntimeError] If there is no target given or the command fails an exception is raised
-    def remote_ssh_command(target, command)
+    def remote_ssh_command(target, command, port = 22 )
       if target
         puts "Executing '#{command}' on #{target}"
-        Kernel.system("#{ssh_command} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
+        Kernel.system("#{ssh_command(port)} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       else
         fail "Need a target to ssh to. Received none."

@@ -89,13 +89,23 @@ describe "Vanagon::Utilities" do
     it 'adds the correct flags to the command if VANAGON_SSH_KEY is set' do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
       ENV['VANAGON_SSH_KEY'] = '/a/b/c'
-      expect(Vanagon::Utilities.ssh_command).to eq('/tmp/ssh -i /a/b/c')
+      expect(Vanagon::Utilities.ssh_command).to include('/tmp/ssh -i /a/b/c')
       ENV['VANAGON_SSH_KEY'] = nil
     end
 
     it 'returns just the path to ssh if VANAGON_SSH_KEY is not set' do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
-      expect(Vanagon::Utilities.ssh_command).to eq('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command).to include('/tmp/ssh')
+    end
+
+    it 'sets the port to 22 when none is specified' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command).to include('-p 22')
+    end
+
+    it 'sets the port to 2222 when that is specified' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command(2222)).to include('-p 2222')
     end
   end
 end

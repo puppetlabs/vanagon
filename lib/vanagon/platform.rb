@@ -5,6 +5,7 @@ class Vanagon
     attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores
     attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
+    attr_accessor :docker_image, :ssh_port
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
@@ -85,6 +86,7 @@ HERE
       @os_name = os_name
       @os_version = os_version
       @architecture = architecture
+      @ssh_port = 22
       @provisioning = []
     end
 
@@ -166,6 +168,13 @@ HERE
     # @return [true, false] true if it is an eos variety, false otherwise
     def is_eos?
       return !!@name.match(/^eos-.*$/)
+    end
+
+    # Utility matcher to determine is the platform is an nxos variety
+    #
+    # @return [true, false] true if it is an eos variety, false otherwise
+    def is_nxos?
+      return !!@name.match(/^nxos-.*$/)
     end
   end
 end
