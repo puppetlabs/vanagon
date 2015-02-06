@@ -13,11 +13,21 @@ end" }
   pkg.load_from_json('spec/fixures/component/invalid-test-fixture.json')
 end" }
 
-  let (:dummy_platform) {
+  let (:dummy_platform_sysv) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
                        plat.servicetype 'sysv'
                        plat.servicedir '/etc/init.d'
+                       plat.defaultdir '/etc/default'
+                    end")
+    plat._platform
+  }
+
+  let (:dummy_platform_systemd) {
+    plat = Vanagon::Platform::DSL.new('el-7-x86_64')
+    plat.instance_eval("platform 'el-7-x86_64' do |plat|
+                       plat.servicetype 'systemd'
+                       plat.servicedir '/usr/lib/systemd/system'
                        plat.defaultdir '/etc/default'
                     end")
     plat._platform
@@ -113,8 +123,8 @@ end" }
   end
 
   describe '#install_service' do
-    it 'adds the correct command to the install for the component' do
-      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform)
+    it 'adds the correct command to the install for the component for sysv platforms' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_sysv)
       comp.install_service('component-client.init', 'component-client.sysconfig')
       # Look for servicedir creation and copy
       expect(comp._component.install).to include("install -d '/etc/init.d'")
@@ -123,6 +133,29 @@ end" }
       # Look for defaultdir creation and copy
       expect(comp._component.install).to include("install -d '/etc/default'")
       expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
+
+      # Look for files and configfiles
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/etc/init.d/service-test', '0755'))
+
+      # The component should now have a service registered
+      expect(comp._component.service).to eq('service-test')
+    end
+
+    it 'adds the correct command to the install for the component for systemd platforms' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_systemd)
+      comp.install_service('component-client.service', 'component-client.sysconfig')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to include("install -d '/usr/lib/systemd/system'")
+      expect(comp._component.install).to include("cp -p 'component-client.service' '/usr/lib/systemd/system/service-test.service'")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to include("install -d '/etc/default'")
+      expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
+
+      # Look for files and configfiles
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/usr/lib/systemd/system/service-test.service', '0644'))
 
       # The component should now have a service registered
       expect(comp._component.service).to eq('service-test')

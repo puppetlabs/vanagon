@@ -134,15 +134,17 @@ class Vanagon
         when "sysv"
           target_service_file = File.join(@component.platform.servicedir, service_name)
           target_default_file = File.join(@component.platform.defaultdir, service_name)
+          target_mode = '0755'
         when "systemd"
           target_service_file = File.join(@component.platform.servicedir, "#{service_name}.service")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
+          target_mode = '0644'
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
 
         # Install the service and default files
-        install_file(service_file, target_service_file)
+        install_file(service_file, target_service_file, target_mode)
 
         if default_file
           install_file(default_file, target_default_file)
@@ -157,10 +159,10 @@ class Vanagon
       #
       # @param source [String] path to the file to copy
       # @param target [String] path to the desired target of the file
-      def install_file(source, target)
+      def install_file(source, target, mode = '0644')
         @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
-        @component.files << Vanagon::Common::Pathname.new(target)
+        @component.files << Vanagon::Common::Pathname.new(target, mode)
       end
 
       # Marks a file as a configfile to ensure that it is not overwritten on
