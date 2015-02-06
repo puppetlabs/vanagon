@@ -119,8 +119,8 @@ class Vanagon
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
       files = []
-      files.push get_files
-      files.push get_configfiles
+      files.push get_files.map {|file| file.path }
+      files.push get_configfiles.map {|file| file.path }
     end
 
     # Method to generate the command to create a tarball of the project
