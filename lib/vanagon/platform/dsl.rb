@@ -178,6 +178,30 @@ class Vanagon
         end
       end
 
+      # Helper to setup a zypper repository on a target system
+      #
+      # @param definition [String] the repo setup URI or RPM file
+      # @param reponame [String] optional name of the repo, defaults to 'somerepo-md5'
+      def zypper_repo(definition, reponame = "somerepo" )
+        if @platform.os_version == '10'
+          flag = 'sa'
+        else
+          flag = 'ar'
+        end
+        # Add a semi-random suffix to the default in case more than one repo is specificied to use the default
+        reponame = reponame + "-" +   Digest::MD5.hexdigest(definition)[0..6] if reponame == 'somerepo'
+        self.provision_with "yes | zypper -n --no-gpg-checks install curl"
+        if ( definition =~ /^http/ and definition !~ /rpm$/ )
+          # Repo definition is a URI e.g.
+          # http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64.repo
+          reponame = reponame + '.repo'  if reponame !~ /\.repo$/
+          self.provision_with "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
+        else ( definition =~ /rpm$/ )
+          # repo definition is an rpm (like puppetlabs-release)
+          self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+        end
+      end
+
     end
   end
 end
