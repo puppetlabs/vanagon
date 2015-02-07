@@ -74,6 +74,9 @@ class Vanagon
       @components.map {|comp| comp.files }.flatten
     end
 
+    # Collects all of the requires for both the project and its components
+    #
+    # @return [Array] array of runtime requirements for the project
     def get_requires
       req = []
       req << @components.map {|comp| comp.requires }.flatten
