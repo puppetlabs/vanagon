@@ -10,9 +10,8 @@ Package: <%= @name %>
 Architecture: any
 Section: admin
 Priority: optional
-#Provides:
-#Replaces:
-#Conflicts:
+Replaces: <%= get_replaces.join(", ") %>
+Conflicts: <%= get_replaces.join(", ") %>
 Depends: <%= get_requires.join(", ") %>
 Description: <%= @description.lines.first.chomp %>
  <%= @description.lines[1..-1].join("\n ") -%>

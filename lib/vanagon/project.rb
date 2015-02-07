@@ -84,6 +84,13 @@ class Vanagon
       req.flatten.uniq
     end
 
+    # Collects all of the replacements for the project and its components
+    #
+    # @return [Array] array of package level replacements for the project
+    def get_replaces
+      @components.map {|comp| comp.replaces }.flatten.uniq
+    end
+
     # Collects any configfiles supplied by components
     #
     # @return [Array] array of configfiles installed by components of the project

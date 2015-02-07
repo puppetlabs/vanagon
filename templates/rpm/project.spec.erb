@@ -40,6 +40,11 @@ Requires: chkconfig
   <%- end -%>
 <%- end -%>
 
+<%- get_replaces.each do |replacement| -%>
+Conflicts: <%= replacement %>
+Obsoletes: <%= replacement %>
+<%- end -%>
+
 %description
 <%= @description %>
 
