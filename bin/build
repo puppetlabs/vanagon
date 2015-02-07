@@ -9,11 +9,15 @@ def usage
 EOS
 end
 
-project = ARGV[0]
-platform = ARGV[1]
-target = ARGV[2]
-preserve = ARGV.include?("--preserve")
-verbose = ARGV.include?("-v")
+FLAG_REGEX = /^(-|--).*$/
+flags = ARGV.select {|arg| arg.match(FLAG_REGEX) }
+args = ARGV.reject {|arg| arg.match(FLAG_REGEX) }
+
+project = args[0]
+platform = args[1]
+target = args[2]
+preserve = flags.include?("--preserve")
+verbose = flags.include?("-v")
 configdir = File.join(Dir.pwd, "configs")
 
 if project.nil? or platform.nil?
