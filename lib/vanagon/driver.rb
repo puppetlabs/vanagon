@@ -4,6 +4,7 @@ require 'vanagon/component'
 require 'vanagon/utilities'
 require 'vanagon/common'
 require 'tmpdir'
+require 'logger'
 
 class Vanagon
   class Driver
@@ -17,6 +18,8 @@ class Vanagon
       @project_name = project
       @workdir = Dir.mktmpdir
       @@configdir = configdir
+      @logger = Logger.new('vanagon_hosts.log')
+      @logger.progname = 'vanagon'
     end
 
     def load_platform
@@ -47,6 +50,7 @@ class Vanagon
       else
         target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
         if target and target["ok"]
+          @logger.info "Reserving #{target[@platform.vcloud_name]["hostname"]} (#{@platform.vcloud_name})"
           return target[@platform.vcloud_name]["hostname"]
         else
           puts "something went wrong, maybe the pool for #{@platform.vcloud_name} is empty?"
@@ -88,6 +92,7 @@ class Vanagon
       else
         target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
         if target and target["ok"]
+          @logger.info  "#{host} has been destroyed"
           puts "'#{host}' has been destroyed"
           return true
         else
