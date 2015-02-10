@@ -74,11 +74,21 @@ class Vanagon
       @components.map {|comp| comp.files }.flatten
     end
 
+    # Collects all of the requires for both the project and its components
+    #
+    # @return [Array] array of runtime requirements for the project
     def get_requires
       req = []
       req << @components.map {|comp| comp.requires }.flatten
       req << @requires
       req.flatten.uniq
+    end
+
+    # Collects all of the replacements for the project and its components
+    #
+    # @return [Array] array of package level replacements for the project
+    def get_replaces
+      @components.map {|comp| comp.replaces }.flatten.uniq
     end
 
     # Collects any configfiles supplied by components

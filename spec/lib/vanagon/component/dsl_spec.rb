@@ -122,6 +122,16 @@ end" }
     end
   end
 
+  describe '#replaces' do
+    it 'adds the package replacement to the list of replacements' do
+      comp = Vanagon::Component::DSL.new('replaces-test', {}, {})
+      comp.replaces('thing1')
+      comp.replaces('thing2')
+      expect(comp._component.replaces).to be_include('thing1')
+      expect(comp._component.replaces).to be_include('thing2')
+    end
+  end
+
   describe '#install_service' do
     it 'adds the correct command to the install for the component for sysv platforms' do
       comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_sysv)

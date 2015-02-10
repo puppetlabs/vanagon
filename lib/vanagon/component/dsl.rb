@@ -123,6 +123,13 @@ class Vanagon
         @component.requires << requirement
       end
 
+      # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
+      #
+      # @param replacement [String] a package that is replaced with this component
+      def replaces(replacement)
+        @component.replaces << replacement
+      end
+
       # install_service adds the commands to install the various files on
       # disk during the package build and registers the service with the project
       #
