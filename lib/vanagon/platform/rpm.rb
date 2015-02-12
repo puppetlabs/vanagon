@@ -13,7 +13,7 @@ class Vanagon
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
-        "rpmbuild -bb --define '_topdir $(tempdir)/rpmbuild' $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
+        "rpmbuild -bb #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
         "mkdir -p output/#{output_dir}",
         "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{output_dir}"]
       end
@@ -41,6 +41,12 @@ class Vanagon
       # @return [String] relative path to where rpm packages should be staged
       def output_dir
         File.join(@os_name, @os_version, "products", @architecture)
+      end
+
+      def rpm_defines
+        defines =  %Q{--define '_topdir $(tempdir)/rpmbuild' }
+        defines << %Q{--define "%dist .#{os_name}#{os_version}" }
+        defines
       end
 
       # Constructor. Sets up some defaults for the rpm platform and calls the parent constructor

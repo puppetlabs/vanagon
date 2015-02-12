@@ -2,7 +2,7 @@
 
 Name:           <%= @name %>
 Version:        <%= @version %>
-Release:        1
+Release:        1%{?dist}
 Summary:        <%= @description.lines.first.chomp %>
 Vendor:         <%= @vendor.match(/^(.*) <.*>$/)[1] %>
 License:        <%= @license %>

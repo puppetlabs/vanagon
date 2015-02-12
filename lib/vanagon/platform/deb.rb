@@ -41,7 +41,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the debian package for this project
       def package_name(project)
-        "#{project.name}_#{project.version}-1_#{@architecture}.deb"
+        "#{project.name}_#{project.version}-1#{@codename}_#{@architecture}.deb"
       end
 
       # Get the expected output dir for the debian packages. This allows us to
