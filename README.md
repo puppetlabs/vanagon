@@ -31,6 +31,47 @@ Vanagon won't be much use without a project to build. Beyond that, you must
 define any platforms you want to build for. Vanagon ships with some simple
 binaries to use, but the one you probably care about is named 'build'.
 
+### `build` usage
+
+The build command has positional arguments and position independent flags.
+
+#### Arguments (position dependent)
+
+##### project name
+The name of the project to build, and a file named \<project\_name\>.rb must be
+present in configs/projects in the working directory.
+
+##### platform name
+The name of the platform to build against, and a file named
+\<platform\_name\>.rb must be present in configs/platforms in the working
+directory.
+
+##### target host [optional]
+Target host is an optional argument to override the host selection. Instead of using
+a vm collected from the pooler, the build will attempt to ssh to target as the
+root user.
+
+#### Flags (can be anywhere in the command)
+
+##### --preserve
+Indicates that the host used for building the project should be left intact
+after the build instead of destroyed. The host is usually destroyed after a
+successful build, or left after a failed build.
+
+##### -v, --verbose (not yet implemented)
+Increase verbosity of output.
+
+#### Environment variables
+
+##### VANAGON\_SSH\_KEY
+A full path on disk for a private ssh key to be used in ssh and rsync
+communications. This will be used instead of whatever defaults are configured
+in .ssh/config.
+
+#### Example usage
+`build --preserve puppet-agent el-6-i386` will build the puppet-agent project
+on the el-6-i386 platform and leave the host intact afterward.
+
 License
 ---
 See [LICENSE](LICENSE) file.
