@@ -53,6 +53,11 @@ class Vanagon
       end
 
       JSON.parse(response.body)
+
+    rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
+      Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+      STDERR.puts "Problem reaching #{url}. Is #{uri.host} down?"
+      raise e
     end
 
     # Similar to rake's sh, the passed command will be executed and an
