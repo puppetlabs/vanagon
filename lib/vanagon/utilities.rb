@@ -58,6 +58,9 @@ class Vanagon
       Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
       STDERR.puts "Problem reaching #{url}. Is #{uri.host} down?"
       raise e
+    rescue JSON::ParserError => e
+      STDERR.puts "#{uri.host} handed us a response that doesn't look like JSON."
+      raise e
     end
 
     # Similar to rake's sh, the passed command will be executed and an
