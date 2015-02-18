@@ -70,6 +70,11 @@ class Vanagon
           end
 
           target_file
+
+        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
+          Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+          STDERR.puts "Problem downloading #{target_file} from #{uri.host} (derived from #{@url}). Please verify you have the correct host and uri specified."
+          raise e
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
