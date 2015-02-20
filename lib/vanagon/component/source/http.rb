@@ -44,7 +44,7 @@ class Vanagon
 
         # Downloads the file from @url into the @workdir
         #
-        # @raise [RuntimeError] an exception is raised if the URI scheme cannot be handled
+        # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
         def download
           uri = URI.parse(@url)
           target_file = File.basename(uri.path)
@@ -71,10 +71,10 @@ class Vanagon
 
           target_file
 
-        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError,
-          Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-          STDERR.puts "Problem downloading #{target_file} from #{uri.host} (derived from #{@url}). Please verify you have the correct host and uri specified."
-          raise e
+        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
+          Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
+          Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from #{uri.host} (derived from #{@url}). Please verify you have the correct host and uri specified.")
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
