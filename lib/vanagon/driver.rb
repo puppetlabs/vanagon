@@ -79,7 +79,7 @@ class Vanagon
     end
 
     def build_artifact_on(target)
-      remote_ssh_command(target, "time #{@platform.make}", @platform.ssh_port)
+      remote_ssh_command(target, @platform.make, @platform.ssh_port)
     end
 
     def retrieve_built_artifact_from(target)
