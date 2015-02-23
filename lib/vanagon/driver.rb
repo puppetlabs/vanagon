@@ -3,6 +3,7 @@ require 'vanagon/platform'
 require 'vanagon/component'
 require 'vanagon/utilities'
 require 'vanagon/common'
+require 'vanagon/errors'
 require 'tmpdir'
 require 'logger'
 

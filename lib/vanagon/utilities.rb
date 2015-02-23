@@ -38,6 +38,9 @@ class Vanagon
     # @param url [String] The url to make the request against (needs to be parsable by URI
     # @param type [String] One of the supported request types (currently 'get', 'post', 'delete')
     # @return [Hash] The response body is parsed by JSON and returned
+    # @raise [RuntimeError, Vanagon::Error] an exception is raised if the
+    # action is not supported, or if there is a problem with the http request,
+    # or if the response is not JSON
     def http_request(url, type)
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
@@ -53,6 +56,13 @@ class Vanagon
       end
 
       JSON.parse(response.body)
+
+    rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
+      EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
+      Net::ProtocolError => e
+      raise Vanagon::Error.wrap(e, "Problem reaching #{url}. Is #{uri.host} down?")
+    rescue JSON::ParserError => e
+      raise Vanagon::Error.wrap(e, "#{uri.host} handed us a response that doesn't look like JSON.")
     end
 
     # Similar to rake's sh, the passed command will be executed and an
