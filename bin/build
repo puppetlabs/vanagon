@@ -4,8 +4,8 @@ def usage
   puts <<-EOS
   #{File.basename(__FILE__)} <project-name> <platform-name> [options]
   Options:
-    target - where to build the project (defaults to grabbing one from the pooler)
-    preserve - whether to tear down the vm on success or not (defaults to false)
+    <target> - where to build the project (defaults to grabbing one from the pooler)
+    --preserve - whether to tear down the vm on success or not (defaults to false)
 EOS
 end
 
