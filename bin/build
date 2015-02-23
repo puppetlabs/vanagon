@@ -6,7 +6,7 @@ def usage
   Options:
     <target> - where to build the project (defaults to grabbing one from the pooler)
     --preserve - whether to tear down the vm on success or not (defaults to false)
-    --engine=<engine-name> - a custom engine to use (defaults to the pooler) [base, docker, pooler currently supported]
+    --engine=<engine-name> - a custom engine to use (defaults to the pooler) [base, local, docker, pooler currently supported]
 EOS
 end
 
