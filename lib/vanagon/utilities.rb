@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require 'digest'
 require 'erb'
+require 'benchmark'
 
 class Vanagon
   module Utilities
@@ -198,7 +199,7 @@ class Vanagon
     def remote_ssh_command(target, command, port = 22 )
       if target
         puts "Executing '#{command}' on #{target}"
-        Kernel.system("#{ssh_command(port)} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
+        puts Benchmark.measure { Kernel.system("#{ssh_command(port)} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'") }
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       else
         fail "Need a target to ssh to. Received none."
