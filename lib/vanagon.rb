@@ -8,8 +8,8 @@ require 'vanagon/driver'
 
 class Vanagon
 
-  def initialize(platform, project, configdir)
-    @vanagon = Vanagon::Driver.new(platform, project, configdir)
+  def initialize(platform, project, configdir, engine = 'pooler')
+    @vanagon = Vanagon::Driver.new(platform, project, configdir, engine)
   end
 
   def run(target, preserve = false, verbose = false)

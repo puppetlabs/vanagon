@@ -12,12 +12,11 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir
 
-    # Future options: configdir, backend for virtualization
-
-    def initialize(platform, project, configdir)
+    def initialize(platform, project, configdir, engine)
       @platform_name = platform
       @project_name = project
       @workdir = Dir.mktmpdir
+      @engine_name = engine
       @@configdir = configdir
       @@logger = Logger.new('vanagon_hosts.log')
       @@logger.progname = 'vanagon'
@@ -34,6 +33,17 @@ class Vanagon
       end
     end
 
+    def load_engine(target = nil)
+      # If a target has been given, we don't want to make any assumptions about how to tear it down.
+      if target
+        @engine_name = 'base'
+      end
+      require "vanagon/engine/#{@engine_name}"
+      @engine = Object.const_get("Vanagon::Engine::#{@engine_name.capitalize}").new(@platform, target)
+    rescue LoadError => e
+      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{@engine_name}'.")
+    end
+
     def cleanup_workdir
       FileUtils.rm_rf(@workdir)
     end
@@ -44,29 +54,6 @@ class Vanagon
 
     def self.logger
       @@logger
-    end
-
-    def get_target
-      if @platform.docker_image
-        ex("docker run -d --name #{@platform.docker_image}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
-        # If you don't sleep, ssh doesn't start up in time
-        ex('sleep 2')
-        return "localhost"
-      else
-        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
-        if target and target["ok"]
-          @logger.info "Reserving #{target[@platform.vcloud_name]["hostname"]} (#{@platform.vcloud_name})"
-          return target[@platform.vcloud_name]["hostname"]
-        else
-          puts "something went wrong, maybe the pool for #{@platform.vcloud_name} is empty?"
-          return false
-        end
-      end
-    end
-
-    def template_to_builder(target)
-      script = @platform.provisioning.join(' ; ')
-      remote_ssh_command(target, script, @platform.ssh_port)
     end
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
@@ -90,39 +77,19 @@ class Vanagon
       rsync_from("output/*", target, "output", @platform.ssh_port )
     end
 
-    def teardown_template(host)
-      if @platform.docker_image
-        ex("docker stop #{@platform.docker_image}-builder; docker rm #{@platform.docker_image}-builder")
-        return true
-      else
-        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
-        if target and target["ok"]
-          @logger.info  "#{host} has been destroyed"
-          puts "'#{host}' has been destroyed"
-          return true
-        else
-          puts "something went wrong"
-          return false
-        end
-      end
-    end
-
     def run(target = nil, preserve = false)
       begin
         load_platform
+        load_engine(target)
+        @engine.startup
         load_project
 
-        unless target
-          target = get_target
-        end
+        login = "#{@engine.target_user}@#{@engine.target}"
 
-        login = "root@#{target}"
-
-        puts "Target is #{target}"
+        puts "Target is #{@engine.target}"
 
         # All about the target
         FileUtils.mkdir_p("output")
-        template_to_builder(login)
         install_build_dependencies(login)
         @project.fetch_sources(@workdir)
         @project.make_makefile(@workdir)
@@ -130,7 +97,7 @@ class Vanagon
         ship_workdir_to(login)
         build_artifact_on(login)
         retrieve_built_artifact_from(login)
-        teardown_template(target) unless preserve
+        @engine.teardown unless preserve
         cleanup_workdir unless preserve
       rescue => e
         puts e
@@ -138,6 +105,5 @@ class Vanagon
         raise e
       end
     end
-
   end
 end
