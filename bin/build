@@ -6,6 +6,7 @@ def usage
   Options:
     <target> - where to build the project (defaults to grabbing one from the pooler)
     --preserve - whether to tear down the vm on success or not (defaults to false)
+    --engine=<engine-name> - a custom engine to use (defaults to the pooler) [base, docker, pooler currently supported]
 EOS
 end
 
@@ -17,15 +18,33 @@ project = args[0]
 platform = args[1]
 target = args[2]
 preserve = flags.include?("--preserve")
+
+unless flags.grep(/--engine/).empty?
+  entry = flags.select {|flag| flag.match(/--engine/) }.first
+  if match = entry.match(/=(.*)$/)
+    engine = match[1]
+  else
+    warn "expected an engine name after --engine"
+    usage
+    exit 1
+  end
+end
+
 verbose = flags.include?("-v")
 configdir = File.join(Dir.pwd, "configs")
 
 if project.nil? or platform.nil?
-  STDERR.puts "project and platform are both required arguments."
+  warn "project and platform are both required arguments."
   usage
   exit 1
 end
 
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
-artifact = Vanagon.new(platform, project, configdir)
+
+if engine
+  artifact = Vanagon.new(platform, project, configdir, engine)
+else
+  artifact = Vanagon.new(platform, project, configdir)
+end
+
 artifact.run(target, preserve, verbose)
