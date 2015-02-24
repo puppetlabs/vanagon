@@ -18,6 +18,13 @@ Vanagon builds up a Makefile and packaging files (specfile for RPM,
 control/rules/etc for DEB) and copies them to a remote host, where make can be
 invoked to build all of the components and make a package of the contents.
 
+Vanagon also provides a devkit command that will prepare a machine as a
+development environment for the entire project, or restricted to individual
+components of the project. The devkit command installs all required build tools,
+creates a master makefile for the project, and configures, builds, and installs
+all components. The result is an environment where you can work on individual
+components, then rebuild the project and test the installed artifacts.
+
 Runtime Requirements
 ---
 Vanagon is self-contained. A recent version of ruby should be all that is
@@ -51,9 +58,26 @@ Target host is an optional argument to override the host selection. Instead of u
 a vm collected from the pooler, the build will attempt to ssh to target as the
 root user.
 
+#### Flagged arguments (can be anywhere in the command)
+
+##### -w DIR, --workdir DIR
+Specifies a directory where the sources should be placed and builds performed.
+Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
+
+##### -c DIR, --configdir DIR
+Specifies where project configuration is found. Defaults to $pwd/configs.
+
+##### -e ENGINE, --engine ENGINE
+Choose a different virtualization engine to use to select the build target.
+Currently supported engines are:
+* `base` - Pure ssh backend; no teardown currently defined
+* `local` - Build on the local machine; platform name must match the local machine
+* `docker` - Builds in a docker container
+* `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
+
 #### Flags (can be anywhere in the command)
 
-##### --preserve
+##### -p, --preserve
 Indicates that the host used for building the project should be left intact
 after the build instead of destroyed. The host is usually destroyed after a
 successful build, or left after a failed build.
@@ -61,12 +85,8 @@ successful build, or left after a failed build.
 ##### -v, --verbose (not yet implemented)
 Increase verbosity of output.
 
-##### --engine=\<engine\_name\>
-Choose a different virtualization engine to use to select the build target.
-Currently supported engines are:
-* `base` - Pure ssh backend. No teardown currently defined
-* `docker` - Builds in a docker container
-* `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
+##### -h, --help
+Display command-line help.
 
 #### Environment variables
 
@@ -82,6 +102,37 @@ on the el-6-i386 platform and leave the host intact afterward.
 `build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
 project on the el-6-i386 platform using the docker engine (the platform must
 have a docker\_image defined in its config).
+
+### `devkit` usage
+
+The devkit command has positional arguments and position independent flagged
+arguments.
+
+#### Arguments (position dependent)
+
+##### project name
+As in `build` arguments.
+
+##### platform name
+As in `build` arguments.
+
+##### component names [optional]
+Specifies specific components that should be built. If components are not
+specified, then all components in the project will be built. If components
+are specified as arguments, then any in the project that aren't specified
+as arguments will be retrieved from packages rather than built from source.
+
+#### Flagged arguments (can be anywhere in the command)
+
+Supports all flagged arguments from the `build` command.
+
+##### -t HOST, --target HOST
+As in the `build` target host optional argument.
+
+#### Flags (can be anywhere in the command)
+
+##### -h, --help
+Display command-line help.
 
 License
 ---

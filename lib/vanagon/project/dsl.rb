@@ -1,5 +1,6 @@
 require 'vanagon/project'
 require 'vanagon/utilities'
+require 'set'
 
 class Vanagon
   class Project
@@ -8,10 +9,12 @@ class Vanagon
       #
       # @param name [String] name of the project
       # @param platform [Vanagon::Platform] platform for the project to build against
+      # @param include_components [List] optional list restricting the loaded components
       # @return [Vanagon::Project::DSL] A DSL object to describe the {Vanagon::Project}
-      def initialize(name, platform)
+      def initialize(name, platform, include_components = [])
         @name = name
         @project = Vanagon::Project.new(@name, platform)
+        @include_components = include_components.to_set
       end
 
       # Primary way of interacting with the DSL
@@ -136,8 +139,10 @@ class Vanagon
       # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently
       def component(name)
         puts "Loading #{name}"
-        component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
-        @project.components << component if component.url
+        if @include_components.empty? or @include_components.include?(name)
+          component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
+          @project.components << component if component.url
+        end
       end
     end
   end

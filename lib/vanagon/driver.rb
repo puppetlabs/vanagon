@@ -12,14 +12,17 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
 
-    def initialize(platform, project, configdir, target = nil, engine = 'pooler')
+    def initialize(platform, project, options = {:configdir => nil, :target => nil, :engine => nil, :components => nil})
       @verbose = false
       @preserve = false
 
-      @@configdir = configdir
+      @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
+      components = options[:components] || []
+      target = options[:target]
+      engine = options[:engine] || 'pooler'
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
-      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform)
+      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
 
       # If a target has been given, we don't want to make any assumptions about how to tear it down.
       engine = 'base' if target
@@ -73,6 +76,26 @@ class Vanagon
         @engine.retrieve_built_artifact
         @engine.teardown unless @preserve
         cleanup_workdir unless @preserve
+      rescue => e
+        puts e
+        puts e.backtrace.join("\n")
+        raise e
+      end
+    end
+
+    def prepare(workdir = nil)
+      begin
+        @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
+        @engine.startup(@workdir)
+
+        puts "Devkit on #{@engine.target}"
+
+        install_build_dependencies
+        @project.fetch_sources(@workdir)
+        @project.make_makefile(@workdir)
+        # Builds only the project, skipping packaging into an artifact.
+        @engine.ship_workdir(@workdir)
+        @engine.dispatch("#{@platform.make} #{@project.name}")
       rescue => e
         puts e
         puts e.backtrace.join("\n")
