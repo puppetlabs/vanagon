@@ -19,8 +19,8 @@ class Vanagon
       @project_name = project
       @workdir = Dir.mktmpdir
       @@configdir = configdir
-      @logger = Logger.new('vanagon_hosts.log')
-      @logger.progname = 'vanagon'
+      @@logger = Logger.new('vanagon_hosts.log')
+      @@logger.progname = 'vanagon'
     end
 
     def load_platform
@@ -40,6 +40,10 @@ class Vanagon
 
     def self.configdir
       @@configdir
+    end
+
+    def self.logger
+      @@logger
     end
 
     def get_target
