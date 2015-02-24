@@ -108,4 +108,23 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities.ssh_command(2222)).to include('-p 2222')
     end
   end
+
+  describe '#retry_with_timeout' do
+    let (:tries) { 7 }
+    let (:timeout) { 2 }
+    let (:host) { 'abcd' }
+    let (:command) { 'echo' }
+    let (:port) { 1234 }
+
+    it 'raises a Vanagon::Error if the command fails n times' do
+      expect(Vanagon::Utilities).to receive(:remote_ssh_command).with(host, command, port).exactly(tries).times.and_raise(RuntimeError)
+      expect{ Vanagon::Utilities.retry_with_timeout(tries, timeout) { Vanagon::Utilities.remote_ssh_command(host, command, port) } }.to raise_error(Vanagon::Error)
+    end
+
+    it 'returns true if the command succeeds within n times' do
+      expect(Vanagon::Utilities).to receive(:remote_ssh_command).with(host, command, port).exactly(tries - 1).times.and_raise(RuntimeError)
+      expect(Vanagon::Utilities).to receive(:remote_ssh_command).with(host, command, port).exactly(1).times.and_return(true)
+      expect(Vanagon::Utilities.retry_with_timeout(tries, timeout) { Vanagon::Utilities.remote_ssh_command(host, command, port) }).to be(true)
+    end
+  end
 end
