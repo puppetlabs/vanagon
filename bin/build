@@ -42,9 +42,12 @@ end
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
 if engine
-  artifact = Vanagon.new(platform, project, configdir, engine)
+  artifact = Vanagon::Driver.new(platform, project, configdir, target, engine)
 else
-  artifact = Vanagon.new(platform, project, configdir)
+  artifact = Vanagon::Driver.new(platform, project, configdir, target)
 end
 
-artifact.run(target, preserve, verbose)
+artifact.verbose = true if verbose
+artifact.preserve = true if preserve
+
+artifact.run

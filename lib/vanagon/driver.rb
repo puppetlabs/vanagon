@@ -12,34 +12,22 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir
 
-    def initialize(platform, project, configdir, engine)
-      @platform_name = platform
-      @project_name = project
-      @workdir = Dir.mktmpdir
-      @engine_name = engine
+    def initialize(platform, project, configdir, target = nil, engine = 'pooler')
+      @verbose = false
+      @preserve = false
+
       @@configdir = configdir
+
+      @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
+      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform)
+
+      # If a target has been given, we don't want to make any assumptions about how to tear it down.
+      engine = 'base' if target
+      require "vanagon/engine/#{engine}"
+      @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target)
+
       @@logger = Logger.new('vanagon_hosts.log')
       @@logger.progname = 'vanagon'
-    end
-
-    def load_platform
-      @platform = Vanagon::Platform.load_platform(@platform_name, File.join(@@configdir, "platforms"))
-    end
-
-    def load_project
-      @project = Vanagon::Project.load_project(@project_name, File.join(@@configdir, "projects"), @platform)
-      if @project.version.nil? or @project.version.empty?
-        fail "Project requires a version set, all is lost."
-      end
-    end
-
-    def load_engine(target = nil)
-      # If a target has been given, we don't want to make any assumptions about how to tear it down.
-      if target
-        @engine_name = 'base'
-      end
-      require "vanagon/engine/#{@engine_name}"
-      @engine = Object.const_get("Vanagon::Engine::#{@engine_name.capitalize}").new(@platform, target)
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{@engine_name}'.")
     end
@@ -77,18 +65,19 @@ class Vanagon
       rsync_from("output/*", target, "output", @platform.ssh_port )
     end
 
-    def run(target = nil, preserve = false)
+    def run
       begin
-        load_platform
-        load_engine(target)
+        # Simple sanity check for the project
+        if @project.version.nil? or @project.version.empty?
+          raise Vanagon::Error.new "Project requires a version set, all is lost."
+        end
         @engine.startup
-        load_project
+        @workdir = Dir.mktmpdir
 
         login = "#{@engine.target_user}@#{@engine.target}"
 
         puts "Target is #{@engine.target}"
 
-        # All about the target
         FileUtils.mkdir_p("output")
         install_build_dependencies(login)
         @project.fetch_sources(@workdir)
@@ -97,8 +86,8 @@ class Vanagon
         ship_workdir_to(login)
         build_artifact_on(login)
         retrieve_built_artifact_from(login)
-        @engine.teardown unless preserve
-        cleanup_workdir unless preserve
+        @engine.teardown unless @preserve
+        cleanup_workdir unless @preserve
       rescue => e
         puts e
         puts e.backtrace.join("\n")
