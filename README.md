@@ -79,6 +79,10 @@ in .ssh/config.
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
 on the el-6-i386 platform and leave the host intact afterward.
 
+`build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
+project on the el-6-i386 platform using the docker engine (the platform must
+have a docker\_image defined in its config).
+
 License
 ---
 See [LICENSE](LICENSE) file.
