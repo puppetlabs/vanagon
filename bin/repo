@@ -7,7 +7,20 @@ ENV["PROJECT_ROOT"] = Dir.pwd
 # This presumes packages for this ref have already been build and shipped.
 # End of warning.
 
+# repo_target will allow us to be more granular with the selection of repos that will be constructed
+# if we have not built debs or rpms, the packaging repo will fail when creating repos
+if ARGV[0]
+  repo_target = ARGV[0].downcase
+end
+
 require 'packaging'
 Pkg::Util::RakeUtils.load_packaging_tasks
-Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
-Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+case repo_target
+when 'rpm'
+  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
+when 'deb'
+  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+else
+  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
+  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+end
