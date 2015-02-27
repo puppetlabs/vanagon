@@ -61,6 +61,13 @@ successful build, or left after a failed build.
 ##### -v, --verbose (not yet implemented)
 Increase verbosity of output.
 
+##### --engine=\<engine\_name\>
+Choose a different virtualization engine to use to select the build target.
+Currently supported engines are:
+* `base` - Pure ssh backend. No teardown currently defined
+* `docker` - Builds in a docker container
+* `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
+
 #### Environment variables
 
 ##### VANAGON\_SSH\_KEY
@@ -71,6 +78,10 @@ in .ssh/config.
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
 on the el-6-i386 platform and leave the host intact afterward.
+
+`build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
+project on the el-6-i386 platform using the docker engine (the platform must
+have a docker\_image defined in its config).
 
 License
 ---

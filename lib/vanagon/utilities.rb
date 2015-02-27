@@ -1,8 +1,10 @@
+require 'vanagon/errors'
 require 'net/http'
 require 'uri'
 require 'json'
 require 'digest'
 require 'erb'
+require 'timeout'
 
 class Vanagon
   module Utilities
@@ -100,6 +102,28 @@ class Vanagon
       else
         return false
       end
+    end
+
+    # Method to retry a ruby block and fail if the command does not succeed
+    # within the number of tries and timeout.
+    #
+    # @param tries [Integer] number of times to try calling the block
+    # @param timeout [Integer] number of seconds to run the block before timing out
+    # @return [true] If the block succeeds, true is returned
+    # @raise [Vanagon::Error] if the block fails after the retries are exhausted, an error is raised
+    def retry_with_timeout(tries = 5, timeout = 1, &blk)
+      tries.times do
+        Timeout::timeout(timeout) do
+          begin
+            blk.call
+            return true
+          rescue
+            warn 'An error was encountered evaluating block. Retrying..'
+          end
+        end
+      end
+
+      raise Vanagon::Error.new("Block failed maximum of #{tries} tries. Exiting..")
     end
 
     # Simple wrapper around git command line executes the given commands and

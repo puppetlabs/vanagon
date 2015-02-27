@@ -12,26 +12,24 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir
 
-    # Future options: configdir, backend for virtualization
+    def initialize(platform, project, configdir, target = nil, engine = 'pooler')
+      @verbose = false
+      @preserve = false
 
-    def initialize(platform, project, configdir)
-      @platform_name = platform
-      @project_name = project
-      @workdir = Dir.mktmpdir
       @@configdir = configdir
-      @logger = Logger.new('vanagon_hosts.log')
-      @logger.progname = 'vanagon'
-    end
 
-    def load_platform
-      @platform = Vanagon::Platform.load_platform(@platform_name, File.join(@@configdir, "platforms"))
-    end
+      @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
+      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform)
 
-    def load_project
-      @project = Vanagon::Project.load_project(@project_name, File.join(@@configdir, "projects"), @platform)
-      if @project.version.nil? or @project.version.empty?
-        fail "Project requires a version set, all is lost."
-      end
+      # If a target has been given, we don't want to make any assumptions about how to tear it down.
+      engine = 'base' if target
+      require "vanagon/engine/#{engine}"
+      @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target)
+
+      @@logger = Logger.new('vanagon_hosts.log')
+      @@logger.progname = 'vanagon'
+    rescue LoadError => e
+      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{@engine_name}'.")
     end
 
     def cleanup_workdir
@@ -42,27 +40,8 @@ class Vanagon
       @@configdir
     end
 
-    def get_target
-      if @platform.docker_image
-        ex("docker run -d --name #{@platform.docker_image}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
-        # If you don't sleep, ssh doesn't start up in time
-        ex('sleep 2')
-        return "localhost"
-      else
-        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{@platform.vcloud_name}", "POST")
-        if target and target["ok"]
-          @logger.info "Reserving #{target[@platform.vcloud_name]["hostname"]} (#{@platform.vcloud_name})"
-          return target[@platform.vcloud_name]["hostname"]
-        else
-          puts "something went wrong, maybe the pool for #{@platform.vcloud_name} is empty?"
-          return false
-        end
-      end
-    end
-
-    def template_to_builder(target)
-      script = @platform.provisioning.join(' ; ')
-      remote_ssh_command(target, script, @platform.ssh_port)
+    def self.logger
+      @@logger
     end
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
@@ -86,39 +65,20 @@ class Vanagon
       rsync_from("output/*", target, "output", @platform.ssh_port )
     end
 
-    def teardown_template(host)
-      if @platform.docker_image
-        ex("docker stop #{@platform.docker_image}-builder; docker rm #{@platform.docker_image}-builder")
-        return true
-      else
-        target = http_request("http://vmpooler.delivery.puppetlabs.net/vm/#{host}", "DELETE")
-        if target and target["ok"]
-          @logger.info  "#{host} has been destroyed"
-          puts "'#{host}' has been destroyed"
-          return true
-        else
-          puts "something went wrong"
-          return false
-        end
-      end
-    end
-
-    def run(target = nil, preserve = false)
+    def run
       begin
-        load_platform
-        load_project
-
-        unless target
-          target = get_target
+        # Simple sanity check for the project
+        if @project.version.nil? or @project.version.empty?
+          raise Vanagon::Error.new "Project requires a version set, all is lost."
         end
+        @engine.startup
+        @workdir = Dir.mktmpdir
 
-        login = "root@#{target}"
+        login = "#{@engine.target_user}@#{@engine.target}"
 
-        puts "Target is #{target}"
+        puts "Target is #{@engine.target}"
 
-        # All about the target
         FileUtils.mkdir_p("output")
-        template_to_builder(login)
         install_build_dependencies(login)
         @project.fetch_sources(@workdir)
         @project.make_makefile(@workdir)
@@ -126,14 +86,13 @@ class Vanagon
         ship_workdir_to(login)
         build_artifact_on(login)
         retrieve_built_artifact_from(login)
-        teardown_template(target) unless preserve
-        cleanup_workdir unless preserve
+        @engine.teardown unless @preserve
+        cleanup_workdir unless @preserve
       rescue => e
         puts e
         puts e.backtrace.join("\n")
         raise e
       end
     end
-
   end
 end
