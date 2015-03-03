@@ -10,7 +10,7 @@ require 'logger'
 class Vanagon
   class Driver
     include Vanagon::Utilities
-    attr_accessor :platform, :project, :target, :workdir
+    attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
 
     def initialize(platform, project, configdir, target = nil, engine = 'pooler')
       @verbose = false
