@@ -67,5 +67,16 @@ class Vanagon
       # Git based sources probably won't set the version, so we load it if it hasn't been already set
       @version ||= @source.version
     end
+
+    # Fetches patches if any are provided for the project.
+    #
+    # @param workdir [String] working directory to put the patches into
+    def get_patches(workdir)
+      unless @patches.empty?
+        patchdir = File.join(workdir, "patches")
+        FileUtils.mkdir_p(patchdir)
+        FileUtils.cp(@patches, patchdir)
+      end
+    end
   end
 end

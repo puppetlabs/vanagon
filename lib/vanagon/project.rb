@@ -59,11 +59,7 @@ class Vanagon
     def fetch_sources(workdir)
       @components.each do |component|
         component.get_source(workdir)
-        unless component.patches.empty?
-          patchdir = File.join(workdir, "patches")
-          FileUtils.mkdir_p(patchdir)
-          FileUtils.cp(component.patches, patchdir)
-        end
+        component.get_patches(workdir)
       end
     end
 
