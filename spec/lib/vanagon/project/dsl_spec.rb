@@ -10,7 +10,7 @@ end" }
 
   describe '#version_from_git' do
     it 'sets the version based on the git describe' do
-      Vanagon::Driver.new('abcd', 'abcd', configdir)
+      expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
       proj = Vanagon::Project::DSL.new('test-fixture', {})
       proj.instance_eval(project_block)
       expect(Vanagon::Utilities).to receive(:git_version).with(File.expand_path('..', configdir)).and_return('1.2.3-1234')
