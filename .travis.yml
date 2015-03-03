@@ -1,0 +1,10 @@
+language: ruby
+bundler_args: --without development
+before_script:
+  - 'git config --global user.email "you@example.com"'
+  - 'git config --global user.name "Your Name"'
+script: "bundle exec rspec spec"
+notifications:
+  email: false
+rvm:
+  - 2.1.5
