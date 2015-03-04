@@ -1,3 +1,5 @@
+require 'time'
+
 Gem::Specification.new do |gem|
   gem.name    = 'vanagon'
   gem.version = %x(git describe --tags).gsub('-', '.').chomp
