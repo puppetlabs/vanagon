@@ -1,3 +1,4 @@
+![Build Status](https://magnum.travis-ci.com/puppetlabs/vanagon.svg?token=A9NWBM3ogJqUCfos2gVF&branch=master)
 The Vanagon Project
 ===
  * What is vanagon?
