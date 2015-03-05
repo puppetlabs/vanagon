@@ -6,14 +6,15 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a debian package of
       # @return [Array] list of commands required to build a debian package for the given project from a tarball
       def generate_package(project)
-        ["mkdir -p output/#{output_dir}",
+        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/#{project.name}_#{project.version}.orig.tar.gz",
         "cat file-list >> debian/install",
         "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | tar -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian -uc -us)",
-        "cp $(tempdir)/*.deb ./output/#{output_dir}"]
+        "cp $(tempdir)/*.deb ./output/#{target_dir}"]
       end
 
       # Method to generate the files required to build a debian package for the project
@@ -48,8 +49,8 @@ class Vanagon
       # use some standard tools to ship internally.
       #
       # @return [String] relative path to where debian packages should be staged
-      def output_dir
-        File.join("deb", @codename)
+      def output_dir(target_repo = "")
+        File.join("deb", @codename, target_repo)
       end
 
       # Constructor. Sets up some defaults for the debian platform and calls the parent constructor

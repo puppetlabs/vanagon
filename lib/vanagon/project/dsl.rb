@@ -144,6 +144,13 @@ class Vanagon
           @project.components << component if component.url
         end
       end
+
+      # Adds a target repo for the project
+      #
+      # @param repo [String] name of the target repository to ship to used in laying out the packages on disk
+      def target_repo(repo)
+        @project.repo = repo
+      end
     end
   end
 end
