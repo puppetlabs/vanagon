@@ -1,53 +1,23 @@
 #!/usr/bin/env ruby
+load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
-def usage
-  puts <<-EOS
-  #{File.basename(__FILE__)} <project-name> <platform-name> [options]
-  Options:
-    <target> - where to build the project (defaults to grabbing one from the pooler)
-    --preserve - whether to tear down the vm on success or not (defaults to false)
-    --engine=<engine-name> - a custom engine to use (defaults to the pooler) [base, docker, pooler currently supported]
-EOS
-end
+optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [<target>] [options]",
+                                 [:workdir, :configdir, :engine, :preserve, :verbose])
+options = optparse.parse! ARGV
 
-FLAG_REGEX = /^(-|--).*$/
-flags = ARGV.select {|arg| arg.match(FLAG_REGEX) }
-args = ARGV.reject {|arg| arg.match(FLAG_REGEX) }
-
-project = args[0]
-platform = args[1]
-target = args[2]
-preserve = flags.include?("--preserve")
-
-unless flags.grep(/--engine/).empty?
-  entry = flags.select {|flag| flag.match(/--engine/) }.first
-  if match = entry.match(/=(.*)$/)
-    engine = match[1]
-  else
-    warn "expected an engine name after --engine"
-    usage
-    exit 1
-  end
-end
-
-verbose = flags.include?("-v")
-configdir = File.join(Dir.pwd, "configs")
+project = ARGV[0]
+platform = ARGV[1]
+target = ARGV[2]
 
 if project.nil? or platform.nil?
   warn "project and platform are both required arguments."
-  usage
+  puts optparse
   exit 1
 end
 
-load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
+artifact = Vanagon::Driver.new(platform, project, options.merge({:target => target}))
 
-if engine
-  artifact = Vanagon::Driver.new(platform, project, configdir, target, engine)
-else
-  artifact = Vanagon::Driver.new(platform, project, configdir, target)
-end
-
-artifact.verbose = true if verbose
-artifact.preserve = true if preserve
+artifact.verbose = true if options[:verbose]
+artifact.preserve = true if options[:preserve]
 
 artifact.run

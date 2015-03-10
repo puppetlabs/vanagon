@@ -16,12 +16,13 @@ class Vanagon
     # @param name [String] the name of the project
     # @param configdir [String] the path to the project config file
     # @param platform [Vanagon::Platform] platform to build against
+    # @param include_components [List] optional list restricting the loaded components
     # @return [Vanagon::Project] the project as specified in the project config
     # @raise if the instance_eval on Project fails, the exception is reraised
-    def self.load_project(name, configdir, platform)
+    def self.load_project(name, configdir, platform, include_components = [])
       projfile = File.join(configdir, "#{name}.rb")
       code = File.read(projfile)
-      dsl = Vanagon::Project::DSL.new(name, platform)
+      dsl = Vanagon::Project::DSL.new(name, platform, include_components)
       dsl.instance_eval(code)
       dsl._project
     rescue => e
