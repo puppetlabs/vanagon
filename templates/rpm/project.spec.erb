@@ -45,6 +45,10 @@ Conflicts: <%= replacement %>
 Obsoletes: <%= replacement %>
 <%- end -%>
 
+<%- get_provides.each do |provide| -%>
+Provides: <%= provide %>
+<%- end -%>
+
 %description
 <%= @description %>
 

@@ -88,6 +88,13 @@ class Vanagon
       @components.map {|comp| comp.replaces }.flatten.uniq
     end
 
+    # Collects all of the provides for the project and its components
+    #
+    # @return [Array] array of package level provides for the project
+    def get_provides
+      @components.map {|comp| comp.provides }.flatten.uniq
+    end
+
     # Collects any configfiles supplied by components
     #
     # @return [Array] array of configfiles installed by components of the project

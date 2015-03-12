@@ -130,6 +130,13 @@ class Vanagon
         @component.replaces << replacement
       end
 
+      # Indicates that this component provides a system level package. Provides can be collected and used by the project and package.
+      #
+      # @param provide [String] a package that is provided with this component
+      def provides(provide)
+        @component.provides << provide
+      end
+
       # install_service adds the commands to install the various files on
       # disk during the package build and registers the service with the project
       #
