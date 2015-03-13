@@ -122,6 +122,16 @@ end" }
     end
   end
 
+  describe '#provides' do
+    it 'adds the package provide to the list of provides' do
+      comp = Vanagon::Component::DSL.new('provides-test', {}, {})
+      comp.provides('thing1')
+      comp.provides('thing2')
+      expect(comp._component.provides).to include('thing1')
+      expect(comp._component.provides).to include('thing2')
+    end
+  end
+
   describe '#replaces' do
     it 'adds the package replacement to the list of replacements' do
       comp = Vanagon::Component::DSL.new('replaces-test', {}, {})
