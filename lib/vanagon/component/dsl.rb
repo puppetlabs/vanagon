@@ -158,7 +158,7 @@ class Vanagon
         end
 
         # Install the service and default files
-        install_file(service_file, target_service_file, target_mode)
+        install_file(service_file, target_service_file, mode: target_mode)
 
         if default_file
           install_file(default_file, target_default_file)
@@ -173,10 +173,12 @@ class Vanagon
       #
       # @param source [String] path to the file to copy
       # @param target [String] path to the desired target of the file
-      def install_file(source, target, mode = '0644')
+      # @param owner  [String] owner of the file
+      # @param group  [String] group owner of the file
+      def install_file(source, target, mode: '0644', owner: nil, group:  nil )
         @component.install << "install -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
-        @component.files << Vanagon::Common::Pathname.new(target, mode)
+        @component.files << Vanagon::Common::Pathname.new(target, mode, owner, group)
       end
 
       # Marks a file as a configfile to ensure that it is not overwritten on

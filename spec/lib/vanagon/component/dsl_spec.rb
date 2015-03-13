@@ -189,6 +189,14 @@ end" }
       expect(comp._component.install).to include("install -d 'place/to/put'")
       expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
     end
+
+    it 'adds an owner and group to the installation' do
+      comp = Vanagon::Component::DSL.new('install-file-test', {}, {})
+      comp.install_file('thing1', 'place/to/put/thing1', owner: 'bob', group: 'timmy', mode: '0022')
+      expect(comp._component.install).to include("install -d 'place/to/put'")
+      expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('place/to/put/thing1', '0022', 'bob', 'timmy'))
+    end
   end
 
   describe '#configfile' do
