@@ -17,7 +17,7 @@ class Vanagon
         response = Vanagon::Utilities.http_request("#{@pooler}/vm/#{@platform.vcloud_name}", "POST")
         if response and response["ok"]
           Vanagon::Driver.logger.info "Reserving #{response[@platform.vcloud_name]['hostname']} (#{@platform.vcloud_name})"
-          @target = response[@platform.vcloud_name]['hostname']
+          @target = response[@platform.vcloud_name]['hostname'] + '.' + response['domain']
         else
           raise Vanagon::Error.new("Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vcloud_name} is empty?")
         end
