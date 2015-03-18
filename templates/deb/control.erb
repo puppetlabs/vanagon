@@ -10,10 +10,10 @@ Package: <%= @name %>
 Architecture: any
 Section: admin
 Priority: optional
-Replaces: <%= get_replaces.join(", ") %>
-Conflicts: <%= get_replaces.join(", ") %>
+Replaces: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
+Conflicts: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
 Depends: <%= get_requires.join(", ") %>
-Provides: <%= get_provides.join(", ") %>
+Provides: <%= get_provides.map { |prov| prov.provide }.join(", ") %>
 Description: <%= @description.lines.first.chomp %>
  <%= @description.lines[1..-1].join("\n ") -%>
  .
