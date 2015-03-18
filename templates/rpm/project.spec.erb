@@ -40,13 +40,13 @@ Requires: chkconfig
   <%- end -%>
 <%- end -%>
 
-<%- get_replaces.each do |replacement| -%>
-Conflicts: <%= replacement %>
-Obsoletes: <%= replacement %>
+<%- get_replaces.each do |replace| -%>
+Conflicts: <%= replace.replacement %><%= replace.version ? " < #{replace.version}" : "" %>
+Obsoletes: <%= replace.replacement %><%= replace.version ? " < #{replace.version}" : "" %>
 <%- end -%>
 
-<%- get_provides.each do |provide| -%>
-Provides: <%= provide %>
+<%- get_provides.each do |prov| -%>
+Provides: <%= prov.provide %><%= prov.version ? " >= #{prov.version}" : "" %>
 <%- end -%>
 
 %description

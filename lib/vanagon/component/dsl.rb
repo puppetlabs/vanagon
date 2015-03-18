@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'ostruct'
 require 'json'
 
 class Vanagon
@@ -126,15 +127,17 @@ class Vanagon
       # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
       #
       # @param replacement [String] a package that is replaced with this component
-      def replaces(replacement)
-        @component.replaces << replacement
+      # @param version [String] the version of the package that is replaced
+      def replaces(replacement, version = nil)
+        @component.replaces << OpenStruct.new(:replacement => replacement, :version => version)
       end
 
       # Indicates that this component provides a system level package. Provides can be collected and used by the project and package.
       #
       # @param provide [String] a package that is provided with this component
-      def provides(provide)
-        @component.provides << provide
+      # @param version [String] the version of the package that is provided with this component
+      def provides(provide, version = nil)
+        @component.provides << OpenStruct.new(:provide => provide, :version => version)
       end
 
       # install_service adds the commands to install the various files on

@@ -127,8 +127,15 @@ end" }
       comp = Vanagon::Component::DSL.new('provides-test', {}, {})
       comp.provides('thing1')
       comp.provides('thing2')
-      expect(comp._component.provides).to include('thing1')
-      expect(comp._component.provides).to include('thing2')
+      expect(comp._component.provides.first.provide).to eq('thing1')
+      expect(comp._component.provides.last.provide).to eq('thing2')
+    end
+
+    it 'supports versioned provides' do
+      comp = Vanagon::Component::DSL.new('provides-test', {}, {})
+      comp.provides('thing1', '1.2.3')
+      expect(comp._component.provides.first.provide).to eq('thing1')
+      expect(comp._component.provides.first.version).to eq('1.2.3')
     end
   end
 
@@ -137,8 +144,15 @@ end" }
       comp = Vanagon::Component::DSL.new('replaces-test', {}, {})
       comp.replaces('thing1')
       comp.replaces('thing2')
-      expect(comp._component.replaces).to be_include('thing1')
-      expect(comp._component.replaces).to be_include('thing2')
+      expect(comp._component.replaces.first.replacement).to eq('thing1')
+      expect(comp._component.replaces.last.replacement).to eq('thing2')
+    end
+
+    it 'supports versioned replaces' do
+      comp = Vanagon::Component::DSL.new('replaces-test', {}, {})
+      comp.replaces('thing1', '1.2.3')
+      expect(comp._component.replaces.first.replacement).to eq('thing1')
+      expect(comp._component.replaces.first.version).to eq('1.2.3')
     end
   end
 
