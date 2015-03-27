@@ -9,13 +9,14 @@ class Vanagon
       # @param project [Vanagon::Project] project to build an rpm package of
       # @return [Array] list of commands required to build an rpm package for the given project from a tarball
       def generate_package(project)
+        target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
         "rpmbuild -bb #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
-        "mkdir -p output/#{output_dir}",
-        "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{output_dir}"]
+        "mkdir -p output/#{target_dir}",
+        "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"]
       end
 
       # Method to generate the files required to build an rpm package for the project
@@ -39,8 +40,8 @@ class Vanagon
       # use some standard tools to ship internally.
       #
       # @return [String] relative path to where rpm packages should be staged
-      def output_dir
-        File.join(@os_name, @os_version, "products", @architecture)
+      def output_dir(target_repo = "products")
+        File.join(@os_name, @os_version, target_repo, @architecture)
       end
 
       def rpm_defines

@@ -36,4 +36,13 @@ end" }
       expect(proj._project.user).to eq(Vanagon::Common::User.new('test-user'))
     end
   end
+
+  describe '#target_repo' do
+    it 'sets the target_repo for the project' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.target_repo "pc1"
+      expect(proj._project.repo).to eq("pc1")
+    end
+  end
 end
