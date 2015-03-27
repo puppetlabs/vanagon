@@ -26,9 +26,10 @@ class Vanagon
         # a side effect.
         def fetch
           Dir.chdir(@workdir) do
-            git('clone', '--recursive', @url)
+            git('clone', @url)
             Dir.chdir(dirname) do
               git('checkout', @ref)
+              git('submodule', 'update', '--init', '--recursive')
               @version = git_version
             end
           end
