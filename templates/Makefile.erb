@@ -1,4 +1,4 @@
-<% dirnames = @directories.map {|d| d.path } %>
+<% dirnames = get_directories.map {|d| d.path } %>
 
 tempdir := $(shell mktemp -d)
 
