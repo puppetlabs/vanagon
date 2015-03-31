@@ -8,6 +8,7 @@ describe "Vanagon::Component::Source" do
     let (:private_git) { "git@github.com:abcd/things" }
     let (:http_url) { "http://abcd/things" }
     let (:https_url) { "https://abcd/things" }
+    let (:file_url) { "file://things" }
 
     let (:ref) { "1.2.3" }
     let (:sum) { "abcd1234" }
@@ -35,6 +36,10 @@ describe "Vanagon::Component::Source" do
 
     it "returns an object of the correct type for https:// urls" do
       expect(Vanagon::Component::Source.source(https_url, {:sum => sum }, workdir).class).to equal(Vanagon::Component::Source::Http)
+    end
+
+    it "returns an object of the correct type for file:// urls" do
+      expect(Vanagon::Component::Source.source(file_url, {:sum => sum }, workdir).class).to equal(Vanagon::Component::Source::Http)
     end
   end
 end

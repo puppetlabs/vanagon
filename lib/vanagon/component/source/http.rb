@@ -65,6 +65,15 @@ class Vanagon
                 end
               end
             end
+          when 'file'
+            uri = @url.match(/^file:\/\/(.*)$/)
+            if uri
+              source_file = uri[1]
+              target_file = File.basename(source_file)
+              FileUtils.cp(source_file, File.join(@workdir, target_file))
+            else
+              raise Vanagon::Error.new("Unable to parse '#{@url}' for local file path.")
+            end
           else
             fail "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"
           end
@@ -72,9 +81,9 @@ class Vanagon
           target_file
 
         rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
-          Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
+          Errno::EACCES, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
           Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from #{uri.host} (derived from #{@url}). Please verify you have the correct host and uri specified.")
+          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from '#{@url}'. Please verify you have the correct uri specified.")
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)

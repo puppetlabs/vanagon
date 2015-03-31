@@ -14,7 +14,7 @@ class Vanagon
         url_match = url.match(/^(.*)(@|:\/\/)(.*)$/)
         uri_scheme = url_match[1] if url_match
         local_source =  case uri_scheme
-                        when /^http/
+                        when /^(http|file)/
                           Vanagon::Component::Source::Http.new(url, options[:sum], workdir)
                         when /^git/
                           Vanagon::Component::Source::Git.new(url, options[:ref], workdir)
