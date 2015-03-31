@@ -94,8 +94,8 @@ class Vanagon
           case @extension
           when '.tar.gz', '.tgz'
             return "gunzip -c '#{@file}' | tar xf -"
-          when '.gem', '.ru', '.txt', '.conf', '.ini'
-            # Don't need to unpack gems, ru, txt, conf, ini
+          when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
+            # Don't need to unpack gems, ru, txt, conf, ini, gpg
             return nil
           else
             fail "Extraction unimplemented for '#{@extension}' in source '#{@file}'. Please teach me."
@@ -107,7 +107,7 @@ class Vanagon
         # @return [String] the extension of @file
         # @raise [RuntimeError] an exception is raised if the extension isn't in the current list
         def get_extension
-          extension_match = @file.match(/.*(\.tar\.gz|\.tgz|\.gem|\.tar\.bz|\.ru|\.txt|\.conf|\.ini)/)
+          extension_match = @file.match(/.*(\.tar\.gz|\.tgz|\.gem|\.tar\.bz|\.ru|\.txt|\.conf|\.ini|\.gpg)/)
           unless extension_match
             fail "Unrecognized extension for '#{@file}'. Don't know how to extract this format. Please teach me."
           end
@@ -123,7 +123,7 @@ class Vanagon
           case @extension
           when '.tar.gz', '.tgz'
             return @file.chomp(@extension)
-          when '.gem', '.ru', '.txt', '.conf', '.ini'
+          when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
             # Because we cd into the source dir, using ./ here avoids special casing single file
             # sources in the Makefile
             return './'
