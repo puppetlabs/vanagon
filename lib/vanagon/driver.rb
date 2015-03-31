@@ -53,7 +53,9 @@ class Vanagon
     end
 
     def install_build_dependencies
-      @engine.dispatch("#{@platform.build_dependencies} #{list_build_dependencies.join(' ')}")
+      unless list_build_dependencies.empty?
+        @engine.dispatch("#{@platform.build_dependencies} #{list_build_dependencies.join(' ')}")
+      end
     end
 
     def run
