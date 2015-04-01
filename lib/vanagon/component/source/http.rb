@@ -65,6 +65,15 @@ class Vanagon
                 end
               end
             end
+          when 'file'
+            uri = @url.match(/^file:\/\/(.*)$/)
+            if uri
+              source_file = uri[1]
+              target_file = File.basename(source_file)
+              FileUtils.cp(source_file, File.join(@workdir, target_file))
+            else
+              raise Vanagon::Error.new("Unable to parse '#{@url}' for local file path.")
+            end
           else
             fail "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"
           end
@@ -72,9 +81,9 @@ class Vanagon
           target_file
 
         rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
-          Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
+          Errno::EACCES, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
           Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from #{uri.host} (derived from #{@url}). Please verify you have the correct host and uri specified.")
+          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from '#{@url}'. Please verify you have the correct uri specified.")
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
@@ -85,8 +94,8 @@ class Vanagon
           case @extension
           when '.tar.gz', '.tgz'
             return "gunzip -c '#{@file}' | tar xf -"
-          when '.gem', '.ru', '.txt', '.conf', '.ini'
-            # Don't need to unpack gems, ru, txt, conf, ini
+          when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
+            # Don't need to unpack gems, ru, txt, conf, ini, gpg
             return nil
           else
             fail "Extraction unimplemented for '#{@extension}' in source '#{@file}'. Please teach me."
@@ -98,7 +107,7 @@ class Vanagon
         # @return [String] the extension of @file
         # @raise [RuntimeError] an exception is raised if the extension isn't in the current list
         def get_extension
-          extension_match = @file.match(/.*(\.tar\.gz|\.tgz|\.gem|\.tar\.bz|\.ru|\.txt|\.conf|\.ini)/)
+          extension_match = @file.match(/.*(\.tar\.gz|\.tgz|\.gem|\.tar\.bz|\.ru|\.txt|\.conf|\.ini|\.gpg)/)
           unless extension_match
             fail "Unrecognized extension for '#{@file}'. Don't know how to extract this format. Please teach me."
           end
@@ -114,7 +123,7 @@ class Vanagon
           case @extension
           when '.tar.gz', '.tgz'
             return @file.chomp(@extension)
-          when '.gem', '.ru', '.txt', '.conf', '.ini'
+          when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
             # Because we cd into the source dir, using ./ here avoids special casing single file
             # sources in the Makefile
             return './'
