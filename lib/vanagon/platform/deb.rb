@@ -12,7 +12,7 @@ class Vanagon
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/#{project.name}_#{project.version}.orig.tar.gz",
         "cat file-list >> debian/install",
         "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
-        "gunzip -c #{project.name}-#{project.version}.tar.gz | tar -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
+        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian -uc -us)",
         "cp $(tempdir)/*.deb ./output/#{target_dir}"]
       end
@@ -60,6 +60,7 @@ class Vanagon
       def initialize(name)
         @name = name
         @make = "/usr/bin/make"
+        @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/bin/nproc"
         super(name)
