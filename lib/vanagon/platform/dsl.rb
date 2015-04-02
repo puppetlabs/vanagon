@@ -70,6 +70,13 @@ class Vanagon
         @platform.tar = tar_cmd
       end
 
+      # Set the path to rpmbuild for the platform
+      #
+      # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default
+      def rpmbuild(rpmbuild_cmd)
+        @platform.rpmbuild = rpmbuild_cmd
+      end
+
       # Set the path to patch for the platform
       #
       # @param patch_cmd [String] Full path to the patch command for the platform
