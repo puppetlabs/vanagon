@@ -2,7 +2,8 @@ require 'vanagon/platform/dsl'
 
 describe 'Vanagon::Platform::DSL' do
   let (:deb_platform_block)  {  "platform 'debian-test-fixture' do |plat| end" }
-  let (:el_platform_block)   {  "platform 'el-test-fixture'     do |plat| end" }
+  let (:el_5_platform_block)   {  "platform 'el-5-fixture'     do |plat| end" }
+  let (:el_6_platform_block)   {  "platform 'el-6-fixture'     do |plat| end" }
   let (:sles_platform_block) {  "platform 'sles-test-fixture'   do |plat| end" }
 
   let(:apt_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy" }
@@ -32,19 +33,29 @@ describe 'Vanagon::Platform::DSL' do
 
   describe '#yum_repo' do
     it "grabs the file and adds .repo to it" do
-      plat = Vanagon::Platform::DSL.new('el-test-fixture')
-      plat.instance_eval(el_platform_block)
+      plat = Vanagon::Platform::DSL.new('el-5-fixture')
+      plat.instance_eval(el_5_platform_block)
       expect(Digest::MD5).to receive(:hexdigest).with(el_definition).and_return("abcdefghij")
       plat.yum_repo(el_definition)
       expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/somerepo-abcdefg.repo' '#{el_definition}'")
     end
 
-    it "installs a rpm when given a rpm" do
-      plat = Vanagon::Platform::DSL.new('el-test-fixture')
-      plat.instance_eval(el_platform_block)
-      expect(Digest::MD5).to receive(:hexdigest).with(el_definition_rpm).and_return("abcdefghij")
-      plat.yum_repo(el_definition_rpm)
-      expect(plat._platform.provisioning).to include("yum localinstall -y '#{el_definition_rpm}'")
+    describe "installs a rpm when given a rpm" do
+      it 'uses yum on el 6 and higher' do
+        plat = Vanagon::Platform::DSL.new('el-6-fixture')
+        plat.instance_eval(el_6_platform_block)
+        expect(Digest::MD5).to receive(:hexdigest).with(el_definition_rpm).and_return("abcdefghij")
+        plat.yum_repo(el_definition_rpm)
+        expect(plat._platform.provisioning).to include("yum localinstall -y '#{el_definition_rpm}'")
+      end
+
+      it 'uses rpm on el 5 and lower' do
+        plat = Vanagon::Platform::DSL.new('el-5-fixture')
+        plat.instance_eval(el_5_platform_block)
+        expect(Digest::MD5).to receive(:hexdigest).with(el_definition_rpm).and_return("abcdefghij")
+        plat.yum_repo(el_definition_rpm)
+        expect(plat._platform.provisioning).to include("curl -o local.rpm '#{el_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+      end
     end
   end
 

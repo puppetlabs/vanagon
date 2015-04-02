@@ -174,7 +174,15 @@ class Vanagon
           self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
         else ( definition =~ /rpm$/ )
           # repo definition is an rpm (like puppetlabs-release)
-          self.provision_with "yum localinstall -y '#{definition}'"
+          if @platform.os_version.to_i < 6
+            # This can likely be done with just rpm itself (minus curl) however
+            # with a http_proxy curl has many more options avavailable for
+            # usage than rpm raw does. So for the most compatibility, we have
+            # chosen curl.
+            self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+          else
+            self.provision_with "yum localinstall -y '#{definition}'"
+          end
         end
       end
 
