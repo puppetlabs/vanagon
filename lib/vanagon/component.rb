@@ -62,7 +62,7 @@ class Vanagon
       @source = Vanagon::Component::Source.source(@url, @options, workdir)
       @source.fetch
       @source.verify
-      @extract_with = @source.extract
+      @extract_with = @source.extract(@platform.tar)
       @dirname = @source.dirname
 
       # Git based sources probably won't set the version, so we load it if it hasn't been already set

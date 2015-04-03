@@ -88,12 +88,13 @@ class Vanagon
 
         # Gets the command to extract the archive given if needed (uses @extension)
         #
+        # @param tar [String] the tar command to use
         # @return [String, nil] command to extract the source
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
-        def extract
+        def extract(tar)
           case @extension
           when '.tar.gz', '.tgz'
-            return "gunzip -c '#{@file}' | tar xf -"
+            return "gunzip -c '#{@file}' | '#{tar}' xf -"
           when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
             # Don't need to unpack gems, ru, txt, conf, ini, gpg
             return nil

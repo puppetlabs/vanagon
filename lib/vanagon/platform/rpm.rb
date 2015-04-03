@@ -57,6 +57,7 @@ class Vanagon
       def initialize(name)
         @name = name
         @make = "/usr/bin/make"
+        @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/bin/grep -c 'processor' /proc/cpuinfo"
         super(name)

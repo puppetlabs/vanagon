@@ -143,8 +143,8 @@ class Vanagon
     def pack_tarball_command
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
-       %Q[tar -cf - -T file-list #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; tar xfp -)],
-       %Q[tar -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz]].join("\n\t")
+       %Q['#{@platform.tar}' -cf - -T file-list #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)],
+       %Q['#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz]].join("\n\t")
     end
 
     # Evaluates the makefile template and writes the contents to the workdir
