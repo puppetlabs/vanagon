@@ -14,7 +14,7 @@ class Vanagon
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
-        "rpmbuild -bb #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
+        "#{@rpmbuild} -bb #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
         "mkdir -p output/#{target_dir}",
         "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"]
       end
@@ -60,6 +60,7 @@ class Vanagon
         @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/bin/grep -c 'processor' /proc/cpuinfo"
+        @rpmbuild = "/usr/bin/rpmbuild"
         super(name)
       end
     end
