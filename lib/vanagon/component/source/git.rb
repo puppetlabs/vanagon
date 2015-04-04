@@ -46,15 +46,6 @@ class Vanagon
         def dirname
           File.basename(@url).sub(/\.git/, '')
         end
-
-        # The command to extract the source. For git, it is already unpacked,
-        # no need to extract it further.
-        #
-        # @return [nil]
-        def extract
-          # Nothing to extract
-          return nil
-        end
       end
     end
   end
