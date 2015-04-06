@@ -63,6 +63,7 @@ Contains the following components:
 %clean
 
 %install
+test -d /opt/freeware/bin && export PATH="/opt/freeware/bin:${PATH}"
 rm -rf %{buildroot}
 install -d %{buildroot}
 
