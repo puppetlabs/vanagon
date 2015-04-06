@@ -10,7 +10,7 @@ class Vanagon
       # @return [Array] list of commands required to build an rpm package for the given project from a tarball
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
-        ["mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}",
+        ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
