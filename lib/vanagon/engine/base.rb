@@ -32,8 +32,10 @@ class Vanagon
       # Applies the steps needed to extend the system to build packages against
       # the target system
       def setup
-        script = @platform.provisioning.join(' ; ')
-        dispatch(script)
+        unless @platform.provisioning.empty?
+          script = @platform.provisioning.join(' ; ')
+          dispatch(script)
+        end
       end
 
       # This method will take care of validation and target selection all at
