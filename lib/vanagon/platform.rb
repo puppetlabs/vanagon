@@ -176,5 +176,12 @@ HERE
     def is_nxos?
       return !!@name.match(/^nxos-.*$/)
     end
+
+    # Utility matcher to determine is the platform is an osx variety
+    #
+    # @return [true, false] true if it is an osx variety, false otherwise
+    def is_osx?
+      return !!@name.match(/^osx-.*$/)
+    end
   end
 end
