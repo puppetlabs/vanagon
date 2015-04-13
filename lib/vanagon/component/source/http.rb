@@ -48,6 +48,7 @@ class Vanagon
         def download
           uri = URI.parse(@url)
           target_file = File.basename(uri.path)
+          puts "Downloading file '#{target_file}' from url '#{@url}'"
 
           case uri.scheme
           when 'http', 'https'

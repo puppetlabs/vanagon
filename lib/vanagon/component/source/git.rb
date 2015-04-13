@@ -25,6 +25,7 @@ class Vanagon
         # and check out the ref. Also sets the version if there is a git tag as
         # a side effect.
         def fetch
+          puts "Cloning ref '#{@ref}' from url '#{@url}'"
           Dir.chdir(@workdir) do
             git('clone', @url)
             Dir.chdir(dirname) do
