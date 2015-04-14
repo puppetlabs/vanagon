@@ -45,4 +45,13 @@ end" }
       expect(proj._project.repo).to eq("pc1")
     end
   end
+
+  describe '#noarch' do
+    it 'sets noarch on the project to true' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.noarch
+      expect(proj._project.noarch).to eq(true)
+    end
+  end
 end

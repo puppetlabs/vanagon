@@ -151,6 +151,11 @@ class Vanagon
       def target_repo(repo)
         @project.repo = repo
       end
+
+      # Sets the project to be architecture independent, or noarch
+      def noarch
+        @project.noarch = true
+      end
     end
   end
 end
