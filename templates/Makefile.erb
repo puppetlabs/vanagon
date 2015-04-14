@@ -24,7 +24,7 @@ file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%= @name %>-<%= @version %>.tar.gz: file-list
 	<%= pack_tarball_command %>
 
-file-list: <%= dirnames.join(' ') %> <%= @name %>
+file-list: <%= dirnames.join(' ') %> <%= @name %>-project
 	comm -23 file-list-after-build file-list-before-build > file-list
 	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*\s.*$$\)/"\1"/g' > file-list-for-rpm
 
@@ -33,8 +33,8 @@ file-list: <%= dirnames.join(' ') %> <%= @name %>
 	mkdir -p <%= dir %>
 <%- end %>
 
-<%= @name %>: file-list-after-build
-	touch <%= @name %>
+<%= @name %>-project: file-list-after-build
+	touch <%= @name %>-project
 
 <%- @components.each do |comp| -%>
 <%= comp.name %>: <%= list_component_dependencies(comp).join(" ") %> <%= comp.name %>-install
