@@ -60,6 +60,9 @@ class Vanagon
         @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/bin/grep -c 'processor' /proc/cpuinfo"
+        if is_aix?
+          @num_cores = "lsdev -Cc processor |wc -l"
+        end
         @rpmbuild = "/usr/bin/rpmbuild"
         super(name)
       end
