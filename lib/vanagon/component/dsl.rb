@@ -156,6 +156,9 @@ class Vanagon
           target_service_file = File.join(@component.platform.servicedir, "#{service_name}.service")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
+        when "launchd"
+          target_service_file = File.join(@component.platform.servicedir, "#{service_name}.plist")
+          target_mode = '0644'
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end

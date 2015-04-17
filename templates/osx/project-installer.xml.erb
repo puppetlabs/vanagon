@@ -1,0 +1,19 @@
+<installer-gui-script minSpecVersion="2">
+    <title><%= @name -%></title>
+    <background file="<%= @name -%>-Background.png" alignment="left" scaling="proportional"/>
+    <welcome file="<%= @name -%>-Welcome.rtf"/>
+    <license file="<%= @name -%>-License.rtf"/>
+    <domains enable_anywhere="true" enable_currentUserHome="false" enable_localSystem="true" />
+    <pkg-ref id="<%= @identifier-%>.<%= @name -%>"/>
+    <options customize="never" hostArchitectures="i386" require-scripts="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="<%= @identifier-%>.<%= @name -%>"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="<%= @identifier-%>.<%= @name -%>" visible="false">
+        <pkg-ref id="<%= @identifier-%>.<%= @name -%>"/>
+    </choice>
+    <pkg-ref id="<%= @identifier-%>.<%= @name -%>" version="<%= @version -%>" onConclusion="none"><%= @name -%>-<%= @version -%>.pkg</pkg-ref>
+</installer-gui-script>

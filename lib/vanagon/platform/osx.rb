@@ -7,17 +7,55 @@ class Vanagon
       # @return [Array] list of commands required to build a osx package for the given project from a tarball
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
-        # TODO This needs to be filled in with scriptlets to make OSX package building go
-        ["mkdir -p output/#{target_dir}"]
+         # Setup build directories
+        ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload}'",
+         "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
+         # Grab distribution xml, scripts and other external resources
+         "cp #{project.name}-installer.xml $(tempdir)/osx/build/",
+         "cp scripts/* $(tempdir)/osx/build/scripts/",
+         "cp resources/osx/productbuild/* $(tempdir)/osx/build/resources/",
+         # Unpack the project
+         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
+         # Package the project
+         "(cd $(tempdir)/osx/build/; #{@pkgbuild} --root root/#{project.name}-#{project.version} \
+          --scripts $(tempdir)/osx/build/scripts \
+          --identifier #{project.identifier}.#{project.name} \
+          --version #{project.version} \
+          --install-location / \
+          payload/#{project.name}-#{project.version}.pkg)",
+         # Create a custom installer using the pkg above
+         "(cd $(tempdir)/osx/build/; #{@productbuild} --distribution #{project.name}-installer.xml \
+          --identifier #{project.identifier}.#{project.name}-installer \
+          --package-path payload/ \
+          --resources $(tempdir)/osx/build/resources  \
+          pkg/#{project.name}-#{project.version}-installer.pkg)",
+         # Create a dmg and ship it to the output dir
+         "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \
+          -srcfolder pkg/ dmg/#{project.package_name})",
+         "mkdir -p output/#{target_dir}",
+         "cp $(tempdir)/osx/build/dmg/#{project.package_name} ./output/#{target_dir}"]
       end
 
-      # Method to generate the files required to build a debian package for the project
+      # Method to generate the files required to build a osx package for the project
       #
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
-        # TODO This needs to be filled in with whatever templates are required for OSX
+        resources_dir = File.join(workdir, "resources", "osx")
+        FileUtils.mkdir_p(resources_dir)
+        script_dir = File.join(workdir, "scripts")
+        FileUtils.mkdir_p(script_dir)
+
+        erb_file(File.join(VANAGON_ROOT, "templates/osx/project-installer.xml.erb"), File.join(workdir, "#{name}-installer.xml"), false, {:binding => binding})
+
+        ["postinstall", "preinstall"].each do |script_file|
+          erb_file(File.join(VANAGON_ROOT, "templates/osx/#{script_file}.erb"), File.join(script_dir, script_file), false, {:binding => binding})
+          FileUtils.chmod 0755, File.join(script_dir, script_file)
+        end
+
+        # Probably a better way to do this, but OSX tends to need some extra stuff
+        FileUtils.cp_r("resources/osx/.", resources_dir)
       end
 
       # Method to derive the package name for the project
@@ -25,8 +63,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the osx package for this project
       def package_name(project)
-        # TODO This may need updating to match reality
-        "#{project.name}-#{project.version}-1#{@codename}_#{@architecture}.dmg"
+        "#{project.name}-#{project.version}-#{@os_name}-#{@os_version}-#{@architecture}.dmg"
       end
 
       # Get the expected output dir for the osx packages. This allows us to
@@ -45,6 +82,9 @@ class Vanagon
         @name = name
         @make = "/usr/bin/make"
         @tar = "tar"
+        @pkgbuild = "/usr/bin/pkgbuild"
+        @productbuild = "/usr/bin/productbuild"
+        @hdiutil = "/usr/bin/hdiutil"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/sbin/sysctl -n hw.physicalcpu"
         super(name)

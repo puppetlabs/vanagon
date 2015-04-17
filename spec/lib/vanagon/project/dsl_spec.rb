@@ -55,6 +55,15 @@ end" }
     end
   end
 
+  describe '#identifier' do
+    it 'sets the identifier for the project' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.identifier "com.example"
+      expect(proj._project.identifier).to eq("com.example")
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|

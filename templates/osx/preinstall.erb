@@ -1,0 +1,7 @@
+#!/bin/bash
+
+<%- get_services.each do |service| -%>
+if /bin/launchctl list "<%= service %>" &> /dev/null; then
+  /bin/launchctl unload "<%= @platform.servicedir %>/<%= service %>.plist"
+fi
+<%- end -%>

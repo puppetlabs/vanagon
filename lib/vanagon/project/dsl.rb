@@ -134,6 +134,13 @@ class Vanagon
         @project.license = lic
       end
 
+      # Sets the identifier for the project. Mainly for use in OSX packaging.
+      #
+      # @param ident [String] uses the reverse-domain naming convention
+      def identifier(ident)
+        @project.identifier = ident
+      end
+
       # Adds a component to the project
       #
       # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently

@@ -1,6 +1,6 @@
 <% dirnames = get_directories.map {|d| d.path } %>
 
-tempdir := $(shell mktemp -d)
+tempdir := $(shell mktemp -d 2>/dev/null || mktemp -d -t 'tmp')
 
 all: <%= package_name %>
 
