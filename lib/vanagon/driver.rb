@@ -97,7 +97,7 @@ class Vanagon
         @project.make_makefile(@workdir)
         # Builds only the project, skipping packaging into an artifact.
         @engine.ship_workdir(@workdir)
-        @engine.dispatch("#{@platform.make} #{@project.name}")
+        @engine.dispatch("#{@platform.make} #{@project.name}-project")
       rescue => e
         puts e
         puts e.backtrace.join("\n")
