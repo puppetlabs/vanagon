@@ -141,7 +141,7 @@ class Vanagon
         puts "Loading #{name}"
         if @include_components.empty? or @include_components.include?(name)
           component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
-          @project.components << component if component.url
+          @project.components << component
         end
       end
 

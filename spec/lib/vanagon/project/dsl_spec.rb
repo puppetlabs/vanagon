@@ -54,4 +54,38 @@ end" }
       expect(proj._project.noarch).to eq(true)
     end
   end
+
+  describe "#component" do
+    let(:project_block) {
+"project 'test-fixture' do |proj|
+  proj.component 'some-component'
+end"
+    }
+
+    let(:component) { double(Vanagon::Component) }
+
+    before do
+      allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
+      allow(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      allow(Vanagon::Component).to receive(:load_component).with('some-component', any_args).and_return(component)
+    end
+
+    it 'stores the component in the project if the included components set is empty' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.components).to include(component)
+    end
+
+    it 'stores the component in the project if the component name is listed in the included components set' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, ['some-component'])
+      proj.instance_eval(project_block)
+      expect(proj._project.components).to include(component)
+    end
+
+    it 'does not store the component if the included components set is not empty and does not include the component name' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, ['some-different-component'])
+      proj.instance_eval(project_block)
+      expect(proj._project.components).to_not include(component)
+    end
+  end
 end
