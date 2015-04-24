@@ -112,6 +112,11 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
       expect(Vanagon::Utilities.ssh_command).to include('-o StrictHostKeyChecking=no')
     end
+
+    it 'sets known hosts file to /dev/null' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command).to include('-o UserKnownHostsFile=/dev/null')
+    end
   end
 
   describe '#retry_with_timeout' do
