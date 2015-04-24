@@ -107,6 +107,11 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
       expect(Vanagon::Utilities.ssh_command(2222)).to include('-p 2222')
     end
+
+    it 'disables strict host checking' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      expect(Vanagon::Utilities.ssh_command).to include('-o StrictHostKeyChecking=no')
+    end
   end
 
   describe '#retry_with_timeout' do
