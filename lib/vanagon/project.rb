@@ -132,9 +132,17 @@ class Vanagon
     #
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
-      files = ['file-list']
+      files = ['file-list', 'bill-of-materials']
       files.push get_files.map {|file| file.path }
       files.push get_configfiles.map {|file| file.path }
+    end
+
+    # Generate a bill-of-materials: a listing of the components and their
+    # versions in the current project
+    #
+    # @return [Array] a listing of component names and versions
+    def generate_bill_of_materials
+      @components.map {|comp| "#{comp.name} #{comp.version}" }.sort
     end
 
     # Method to generate the command to create a tarball of the project
@@ -154,6 +162,15 @@ class Vanagon
     # @return [String] full path to the generated Makefile
     def make_makefile(workdir)
       erb_file(File.join(VANAGON_ROOT, "templates/Makefile.erb"), File.join(workdir, "Makefile"))
+    end
+
+    # Generates a bill-of-materials and writes the contents to the workdir for use in
+    # building the project
+    #
+    # @param workdir [String] full path to the workdir to send the bill-of-materials
+    # @return [String] full path to the generated bill-of-materials
+    def make_bill_of_materials(workdir)
+      File.open(File.join(workdir, 'bill-of-materials'), 'w') {|f| f.puts(generate_bill_of_materials.join("\n"))}
     end
 
     # Return a list of the build_dependencies that are satisfied by an internal component

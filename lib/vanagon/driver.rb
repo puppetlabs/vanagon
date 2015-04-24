@@ -72,6 +72,7 @@ class Vanagon
         install_build_dependencies
         @project.fetch_sources(@workdir)
         @project.make_makefile(@workdir)
+        @project.make_bill_of_materials(@workdir)
         @project.generate_packaging_artifacts(@workdir)
         @engine.ship_workdir(@workdir)
         @engine.dispatch(@platform.make)
@@ -95,6 +96,7 @@ class Vanagon
         install_build_dependencies
         @project.fetch_sources(@workdir)
         @project.make_makefile(@workdir)
+        @project.make_bill_of_materials(@workdir)
         # Builds only the project, skipping packaging into an artifact.
         @engine.ship_workdir(@workdir)
         @engine.dispatch("#{@platform.make} #{@project.name}-project")
