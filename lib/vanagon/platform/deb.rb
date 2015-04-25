@@ -13,6 +13,7 @@ class Vanagon
         "cat file-list >> debian/install",
         "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
+        "sed -i 's/\ /?/g' $(tempdir)/#{project.name}-#{project.version}/debian/install",
         "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian -uc -us)",
         "cp $(tempdir)/*.deb ./output/#{target_dir}"]
       end
