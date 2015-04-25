@@ -192,6 +192,8 @@ class Vanagon
       ssh = find_program_on_path('ssh')
       args = ENV['VANAGON_SSH_KEY'] ? " -i #{ENV['VANAGON_SSH_KEY']}" : ""
       args << " -p #{port} "
+      args << " -o UserKnownHostsFile=/dev/null"
+      args << " -o StrictHostKeyChecking=no"
       return ssh + args
     end
 
@@ -222,7 +224,7 @@ class Vanagon
     def remote_ssh_command(target, command, port = 22 )
       if target
         puts "Executing '#{command}' on #{target}"
-        Kernel.system("#{ssh_command(port)} -t -o StrictHostKeyChecking=no #{target} '#{command.gsub("'", "'\\\\''")}'")
+        Kernel.system("#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}'")
         $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       else
         fail "Need a target to ssh to. Received none."
