@@ -132,9 +132,17 @@ class Vanagon
     #
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
-      files = []
+      files = ['file-list', 'bill-of-materials']
       files.push get_files.map {|file| file.path }
       files.push get_configfiles.map {|file| file.path }
+    end
+
+    # Generate a bill-of-materials: a listing of the components and their
+    # versions in the current project
+    #
+    # @return [Array] a listing of component names and versions
+    def generate_bill_of_materials
+      @components.map {|comp| "#{comp.name} #{comp.version}" }.sort
     end
 
     # Method to generate the command to create a tarball of the project
@@ -143,16 +151,26 @@ class Vanagon
     def pack_tarball_command
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
-       %Q['#{@platform.tar}' -cf - -T file-list #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)],
+       %Q['#{@platform.tar}' -cf - -T #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)],
        %Q['#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz]].join("\n\t")
     end
 
     # Evaluates the makefile template and writes the contents to the workdir
     # for use in building the project
     #
+    # @param workdir [String] full path to the workdir to send the evaluated template
     # @return [String] full path to the generated Makefile
     def make_makefile(workdir)
       erb_file(File.join(VANAGON_ROOT, "templates/Makefile.erb"), File.join(workdir, "Makefile"))
+    end
+
+    # Generates a bill-of-materials and writes the contents to the workdir for use in
+    # building the project
+    #
+    # @param workdir [String] full path to the workdir to send the bill-of-materials
+    # @return [String] full path to the generated bill-of-materials
+    def make_bill_of_materials(workdir)
+      File.open(File.join(workdir, 'bill-of-materials'), 'w') {|f| f.puts(generate_bill_of_materials.join("\n"))}
     end
 
     # Return a list of the build_dependencies that are satisfied by an internal component

@@ -15,7 +15,7 @@ Conflicts: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.ve
 Depends: <%= get_requires.join(", ") %>
 Provides: <%= get_provides.map { |prov| prov.provide }.join(", ") %>
 Description: <%= @description.lines.first.chomp %>
- <%= @description.lines[1..-1].join("\n ") -%>
+ <%= @description.lines[1..-1].join("\n\s") -%>
  .
  Contains the following components:
- <%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.sort.join("\n ") %>
+ <%= generate_bill_of_materials.join("\n\s") %>

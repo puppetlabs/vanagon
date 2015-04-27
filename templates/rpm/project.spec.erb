@@ -60,7 +60,7 @@ Provides: <%= prov.provide %><%= prov.version ? " >= #{prov.version}" : "" %>
 <%= @description %>
 
 Contains the following components:
-<%= @components.map {|comp| "#{comp.name} (#{comp.version})" }.sort.join("\n") %>
+<%= generate_bill_of_materials.join("\n") %>
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -148,6 +148,7 @@ install -d %{buildroot}
 
 
 %files -f %{SOURCE1}
+%doc bill-of-materials
 %defattr(-, root, root, 0755)
 <%- get_directories.each do |dir| -%>
 %dir %attr(<%= dir.mode || "-" %>, <%= dir.owner || "-" %>, <%= dir.group || "-" %>) <%= dir.path %>
