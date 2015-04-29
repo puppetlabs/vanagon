@@ -1,5 +1,6 @@
 require 'vanagon/project'
 require 'vanagon/utilities'
+require 'vanagon/component/source'
 require 'set'
 
 class Vanagon
@@ -155,6 +156,14 @@ class Vanagon
       # Sets the project to be architecture independent, or noarch
       def noarch
         @project.noarch = true
+      end
+
+      # Sets up a rewrite rule for component sources for a given protocol
+      #
+      # @param protocol [String] a supported component source type (Http, Git, ...)
+      # @param rule [String, Proc] a rule used to rewrite component source urls
+      def register_rewrite_rule(protocol, rule)
+        Vanagon::Component::Source.register_rewrite_rule(protocol, rule)
       end
     end
   end
