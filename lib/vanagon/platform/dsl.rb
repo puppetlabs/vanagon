@@ -1,5 +1,6 @@
 require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
+require 'vanagon/platform/osx'
 require 'digest/md5'
 
 class Vanagon
@@ -23,6 +24,8 @@ class Vanagon
                       Vanagon::Platform::RPM.new(@name)
                     when /^(debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
+                    when /^osx-/
+                      Vanagon::Platform::OSX.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                     end
