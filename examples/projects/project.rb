@@ -19,6 +19,20 @@ project "my-app" do |proj|
   proj.component "component1"
   proj.component "component2"
 
+  # Here we rewrite public http urls to use our internal source host instead.
+  # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
+  # rewritten as
+  # http://buildsources.delivery.puppetlabs.net/openssl-1.0.0r.tar.gz
+  proj.register_rewrite_rule 'http', 'http://buildsources.delivery.puppetlabs.net'
+
+  # Here we rewrite public git urls to use our internal git mirror It turns
+  # urls that look like git://github.com/puppetlabs/puppet.git into
+  # git://github.delivery.puppetlabs.net/puppetlabs-puppet.git
+  proj.register_rewrite_rule 'git', Proc.new { |url|
+    match = url.match(/github.com\/(.*)$/)
+    "git://github.delivery.puppetlabs.net/#{match[1].gsub('/', '-')}" if match
+  }
+
   # directory adds a directory (and its contents) to the package that is created
   proj.directory proj.prefix
   proj.directory proj.sysconfdir
