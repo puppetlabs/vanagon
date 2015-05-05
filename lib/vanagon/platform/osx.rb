@@ -13,7 +13,7 @@ class Vanagon
          # Grab distribution xml, scripts and other external resources
          "cp #{project.name}-installer.xml $(tempdir)/osx/build/",
          "cp scripts/* $(tempdir)/osx/build/scripts/",
-         "cp resources/osx/productbuild/* $(tempdir)/osx/build/resources/",
+         "if [ -d resources/osx/productbuild ] ; then cp resources/osx/productbuild/* $(tempdir)/osx/build/resources/; fi",
          # Unpack the project
          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
          # Package the project
@@ -55,7 +55,7 @@ class Vanagon
         end
 
         # Probably a better way to do this, but OSX tends to need some extra stuff
-        FileUtils.cp_r("resources/osx/.", resources_dir)
+        FileUtils.cp_r("resources/osx/.", resources_dir) if File.exist?("resources/osx/")
       end
 
       # Method to derive the package name for the project
