@@ -47,9 +47,10 @@ file-list: <%= dirnames.join(' ') %> <%= @name %>-project
 	<%- unless comp.patches.empty? -%>
 		cd <%= comp.dirname %>; \
 		<%- comp.patches.each do |patch| -%>
-			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %>
+			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %>; \
 		<%- end -%>
 	<%- end -%>
+	
 	touch <%= comp.name %>-patch
 
 <%= comp.name %>-configure: <%= comp.name %>-patch
