@@ -1,7 +1,8 @@
 require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
 require 'vanagon/platform/osx'
-require 'digest/md5'
+require 'securerandom'
+require 'uri'
 
 class Vanagon
   class Platform
@@ -181,46 +182,58 @@ class Vanagon
 
       # Helper to setup a apt repository on a target system
       #
-      # @param definition [String] the repo setup URI or DEB file
-      # @param reponame [String] optional name of the repo, defaults to 'somerepo-md5'
-      def apt_repo(definition, reponame = "somerepo" )
-        # Add a semi-random suffix to the default in case more than one repo is specificied to use the default
-        reponame = reponame + "-" +   Digest::MD5.hexdigest(definition)[0..6] if reponame == 'somerepo'
+      # @param definition [String] the repo setup file, must be a valid uri, fetched with curl
+      # @param gpg_key [String] optional gpg key to be fetched via curl and installed
+      def apt_repo(definition, gpg_key = nil)
+        # i.e., definition = http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
+        # parse the definition and gpg_key if set to ensure they are both valid URIs
+        definition = URI.parse definition
+        gpg_key = URI.parse gpg_key if gpg_key
+
         self.provision_with "apt-get -qq install curl"
-        if ( definition =~ /^http/ and definition !~ /deb$/ )
-          # Repo definition is a URI e.g.
-          # http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
-          reponame = reponame + '.list'  if reponame !~ /\.list$/
-          self.provision_with "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'; apt-get -qq update"
-        else ( definition =~ /deb$/ )
-          # repo definition is an deb (like puppetlabs-release)
-          self.provision_with "curl -o local.deb '#{definition}'; dpkg -i local.deb; rm -f local.deb"
+        if definition.scheme =~ /^(http|ftp)/
+          if File.extname(definition.path) == '.deb'
+            # repo definition is an deb (like puppetlabs-release)
+            self.provision_with "curl -o local.deb '#{definition}'; dpkg -i local.deb; rm -f local.deb"
+          else
+            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
+            reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
+            self.provision_with "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
+          end
         end
+
+        if gpg_key
+          gpgname = "#{SecureRandom.hex}-#{File.basename(gpg_key.path)}"
+          gpgname = "#{gpgname}.gpg" if gpgname !~ /\.gpg$/
+          self.provision_with "curl -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
+        end
+
+        self.provision_with "apt-get -qq update"
       end
 
       # Helper to setup a yum repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
-      # @param reponame [String] optional name of the repo, defaults to 'somerepo-md5'
-      def yum_repo(definition, reponame = "somerepo" )
-        # Add a semi-random suffix to the default in case more than one repo is specificied to use the default
-        reponame = reponame + "-" +   Digest::MD5.hexdigest(definition)[0..6] if reponame == 'somerepo'
+      def yum_repo(definition)
+        definition = URI.parse definition
+
         self.provision_with "yum -y install curl"
-        if ( definition =~ /^http/ and definition !~ /rpm$/ )
-          # Repo definition is a URI e.g.
-          # http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64.repo
-          reponame = reponame + '.repo'  if reponame !~ /\.repo$/
-          self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
-        else ( definition =~ /rpm$/ )
-          # repo definition is an rpm (like puppetlabs-release)
-          if @platform.os_version.to_i < 6
-            # This can likely be done with just rpm itself (minus curl) however
-            # with a http_proxy curl has many more options avavailable for
-            # usage than rpm raw does. So for the most compatibility, we have
-            # chosen curl.
-            self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+        if definition.scheme =~ /^(http|ftp)/
+          if File.extname(definition.path) == '.rpm'
+            # repo definition is an rpm (like puppetlabs-release)
+            if @platform.os_version.to_i < 6
+              # This can likely be done with just rpm itself (minus curl) however
+              # with a http_proxy curl has many more options avavailable for
+              # usage than rpm raw does. So for the most compatibility, we have
+              # chosen curl.
+              self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+            else
+              self.provision_with "yum localinstall -y '#{definition}'"
+            end
           else
-            self.provision_with "yum localinstall -y '#{definition}'"
+            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
+            reponame = "#{reponame}.repo"  if File.extname(reponame) != '.repo'
+            self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
           end
         end
       end
@@ -228,27 +241,23 @@ class Vanagon
       # Helper to setup a zypper repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
-      # @param reponame [String] optional name of the repo, defaults to 'somerepo-md5'
-      def zypper_repo(definition, reponame = "somerepo" )
+      def zypper_repo(definition)
+        definition = URI.parse definition
         if @platform.os_version == '10'
           flag = 'sa'
         else
           flag = 'ar'
         end
-        # Add a semi-random suffix to the default in case more than one repo is specificied to use the default
-        reponame = reponame + "-" +   Digest::MD5.hexdigest(definition)[0..6] if reponame == 'somerepo'
         self.provision_with "yes | zypper -n --no-gpg-checks install curl"
-        if ( definition =~ /^http/ and definition !~ /rpm$/ )
-          # Repo definition is a URI e.g.
-          # http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64.repo
-          reponame = reponame + '.repo'  if reponame !~ /\.repo$/
-          self.provision_with "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
-        else ( definition =~ /rpm$/ )
-          # repo definition is an rpm (like puppetlabs-release)
-          self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+        if definition.scheme =~ /^(http|ftp)/
+          if File.extname(definition.path) == '.rpm'
+            # repo definition is an rpm (like puppetlabs-release)
+            self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+          else
+            self.provision_with "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
+          end
         end
       end
-
     end
   end
 end
