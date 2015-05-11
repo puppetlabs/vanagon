@@ -14,10 +14,28 @@ class Vanagon
       # vmpooler (https://github.com/puppetlabs/vmpooler)
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
-        response = Vanagon::Utilities.http_request("#{@pooler}/vm/#{@platform.vcloud_name}", "POST")
+        response = Vanagon::Utilities.http_request(
+          "#{@pooler}/vm",
+          'POST',
+          '{"' + @platform.vcloud_name + '":"1"}'
+        )
         if response and response["ok"]
           Vanagon::Driver.logger.info "Reserving #{response[@platform.vcloud_name]['hostname']} (#{@platform.vcloud_name})"
           @target = response[@platform.vcloud_name]['hostname'] + '.' + response['domain']
+
+          tags = {
+            'tags' => {
+              'jenkins_build_url' => ENV['BUILD_URL'],
+              'project' => ENV['JOB_NAME'] || 'vanagon',
+              'created_by' => ENV['USER'] || ENV['USERNAME'] || 'unknown'
+            }
+          }
+
+          response_tag = Vanagon::Utilities.http_request(
+            "#{@pooler}/vm/#{response[@platform.vcloud_name]['hostname']}",
+            'PUT',
+            tags.to_json
+          )
         else
           raise Vanagon::Error.new("Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vcloud_name} is empty?")
         end
