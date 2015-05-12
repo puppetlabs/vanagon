@@ -33,6 +33,16 @@ end" }
     plat._platform
   }
 
+  let (:dummy_platform_smf) {
+    plat = Vanagon::Platform::DSL.new('debian-11-i386')
+    plat.instance_eval("platform 'debian-11-i386' do |plat|
+                       plat.servicetype 'smf'
+                       plat.servicedir '/var/svc/manifest'
+                       plat.defaultdir '/lib/svc/method'
+                    end")
+    plat._platform
+  }
+
   describe '#load_from_json' do
     it "sets the ref and url based on the json fixture" do
       comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
@@ -190,6 +200,44 @@ end" }
       # Look for files and configfiles
       expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/etc/default/service-test'))
       expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/usr/lib/systemd/system/service-test.service', '0644'))
+
+      # The component should now have a service registered
+      expect(comp._component.service).to eq('service-test')
+    end
+
+    it 'adds the correct command to the install for smf services using a service_type' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_smf)
+      comp.install_service('service.xml', 'service-default-file', service_type: 'network')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to include("install -d '/var/svc/manifest/network'")
+      expect(comp._component.install).to include("cp -p 'service.xml' '/var/svc/manifest/network/service-test.xml'")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to include("install -d '/lib/svc/method'")
+      expect(comp._component.install).to include("cp -p 'service-default-file' '/lib/svc/method/service-test'")
+
+      # Look for files and configfiles
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/lib/svc/method/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/network/service-test.xml', '0644'))
+
+      # The component should now have a service registered
+      expect(comp._component.service).to eq('service-test')
+    end
+
+    it 'adds the correct command to the install for smf services' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_smf)
+      comp.install_service('service.xml', 'service-default-file')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to include("install -d '/var/svc/manifest'")
+      expect(comp._component.install).to include("cp -p 'service.xml' '/var/svc/manifest/service-test.xml'")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to include("install -d '/lib/svc/method'")
+      expect(comp._component.install).to include("cp -p 'service-default-file' '/lib/svc/method/service-test'")
+
+      # Look for files and configfiles
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/lib/svc/method/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/service-test.xml', '0644'))
 
       # The component should now have a service registered
       expect(comp._component.service).to eq('service-test')
