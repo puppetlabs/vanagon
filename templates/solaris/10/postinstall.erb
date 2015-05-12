@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
 <%- get_services.each do |service| -%>
-/usr/sbin/svccfg import <%= @platform.servicedir %>/<%= service %>.xml || true
+# Importing service <%= service.name %>
+/usr/sbin/svccfg import <%= service.service_file %> || true
 <%- end -%>
 
 # Set up any specific permissions needed...

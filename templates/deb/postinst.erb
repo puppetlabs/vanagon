@@ -10,11 +10,11 @@ else
   systemctl try-restart <%= service %>.service >/dev/null || :
 fi
   <%- elsif @platform.servicetype == "sysv" -%>
-if [ -x "<%= @platform.servicedir %>/<%= service %>" ]; then
-  update-rc.d <%= service %> defaults > /dev/null
+if [ -x "<%= service.service_file %>" ]; then
+  update-rc.d <%= service.name %> defaults > /dev/null
 
   if [ -n "$2" ]; then
-    invoke-rc.d <%= service %> condrestart || true
+    invoke-rc.d <%= service.name %> condrestart || true
   fi
 fi
   <%- end -%>

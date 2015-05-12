@@ -7,7 +7,7 @@
 systemctl daemon-reload >/dev/null 2>&1 || :
   <%- elsif @platform.servicetype == "sysv" -%>
 if [ "$1" = "purge" ] ; then
-  update-rc.d <%= service %> remove > /dev/null
+  update-rc.d <%= service.name %> remove > /dev/null
 fi
   <%- end -%>
 <%- end -%>

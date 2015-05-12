@@ -183,7 +183,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/etc/init.d/service-test', '0755'))
 
       # The component should now have a service registered
-      expect(comp._component.service).to eq('service-test')
+      expect(comp._component.service.name).to eq('service-test')
     end
 
     it 'adds the correct command to the install for the component for systemd platforms' do
@@ -202,7 +202,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/usr/lib/systemd/system/service-test.service', '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service).to eq('service-test')
+      expect(comp._component.service.name).to eq('service-test')
     end
 
     it 'adds the correct command to the install for smf services using a service_type' do
@@ -221,7 +221,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/network/service-test.xml', '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service).to eq('service-test')
+      expect(comp._component.service.name).to eq('service-test')
     end
 
     it 'adds the correct command to the install for smf services' do
@@ -240,7 +240,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/service-test.xml', '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service).to eq('service-test')
+      expect(comp._component.service.name).to eq('service-test')
     end
   end
 
