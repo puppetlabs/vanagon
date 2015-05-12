@@ -112,6 +112,22 @@ class Vanagon
       dirs.flatten
     end
 
+    # Gets the highest level directories declared by the project
+    #
+    # @return [Array] the highest level directories that have been declared by the project
+    def get_root_directories
+      dirs = get_directories.map { |dir| dir.path.split('/') }
+      dirs.sort! { |dir1, dir2| dir1.length <=> dir2.length }
+      ret_dirs = []
+
+      dirs.each do |dir|
+        unless ret_dirs.include?(dir.first(dir.length - 1).join('/'))
+          ret_dirs << dir.join('/')
+        end
+      end
+      ret_dirs
+    end
+
     # Get any services registered by components in the project
     #
     # @return [Array] the services provided by components in the project
