@@ -5,6 +5,18 @@
 /usr/sbin/svccfg import <%= service.service_file %> || true
 <%- end -%>
 
+# Move any new configfiles into place
+<%- get_configfiles.each do |config|
+dest_file = config.path.gsub(/\.pristine$/, '') -%>
+
+if [ -f "<%= dest_file %>" ]; then
+  echo "Detected file at '<%= dest_file %>'; updated file at '<%= config.path %>'."
+else
+  cp -pr '<%= config.path %>' '<%= dest_file %>'
+fi
+
+<%- end -%>
+
 # Set up any specific permissions needed...
 <%- (get_directories + get_configfiles + get_files).select { |pathname| pathname.has_overrides? }.uniq.each do |file_or_directory| -%>
   <%= "chmod '#{file_or_directory.mode}' '#{file_or_directory.path}'" if file_or_directory.mode %>

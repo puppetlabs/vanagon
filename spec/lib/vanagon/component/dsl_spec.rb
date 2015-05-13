@@ -261,26 +261,65 @@ end" }
     end
   end
 
-  describe '#configfile' do
-    it 'adds the file to the configfiles list' do
-      comp = Vanagon::Component::DSL.new('config-file-test', {}, {})
-      comp.configfile('/place/to/put/thing1')
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1'))
-    end
-  end
+  describe 'configfile handling' do
+    let(:platform) { double(Vanagon::Platform) }
 
-  describe '#install_configfile' do
-    it 'adds the commands to install the configfile' do
-      comp = Vanagon::Component::DSL.new('install-config-file-test', {}, {})
-      comp.install_configfile('thing1', 'place/to/put/thing1')
-      expect(comp._component.install).to include("install -d 'place/to/put'")
-      expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+    describe 'on anything but solaris 10' do
+      before do
+        allow(platform).to receive(:name).and_return('debian-8-amd64')
+      end
+
+      describe '#configfile' do
+        it 'adds the file to the configfiles list' do
+          comp = Vanagon::Component::DSL.new('config-file-test', {}, platform)
+          comp.configfile('/place/to/put/thing1')
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1'))
+        end
+      end
+
+      describe '#install_configfile' do
+        it 'adds the commands to install the configfile' do
+          comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
+          comp.install_configfile('thing1', 'place/to/put/thing1')
+          expect(comp._component.install).to include("install -d 'place/to/put'")
+          expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+        end
+
+        it 'adds the file to the configfiles list' do
+          comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
+          comp.install_configfile('thing1', 'place/to/put/thing1')
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1'))
+        end
+      end
     end
 
-    it 'adds the file to the configfiles list' do
-      comp = Vanagon::Component::DSL.new('install-config-file-test', {}, {})
-      comp.install_configfile('thing1', 'place/to/put/thing1')
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1'))
+    describe 'on solaris 10, do something terrible' do
+      before do
+        allow(platform).to receive(:name).and_return('solaris-10-x86_64')
+      end
+
+      describe '#configfile' do
+        it 'adds the file to the configfiles list' do
+          comp = Vanagon::Component::DSL.new('config-file-test', {}, platform)
+          comp.configfile('/place/to/put/thing1')
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1.pristine'))
+        end
+      end
+
+      describe '#install_configfile' do
+        it 'adds the commands to install the configfile' do
+          comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
+          comp.install_configfile('thing1', 'place/to/put/thing1')
+          expect(comp._component.install).to include("install -d 'place/to/put'")
+          expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+        end
+
+        it 'adds the file to the configfiles list' do
+          comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
+          comp.install_configfile('thing1', 'place/to/put/thing1')
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1.pristine'))
+        end
+      end
     end
   end
 

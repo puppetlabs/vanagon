@@ -197,7 +197,13 @@ class Vanagon
       #
       # @param file [String] name of the configfile
       def configfile(file)
-        @component.configfiles << Vanagon::Common::Pathname.new(file)
+        # I AM SO SORRY
+        if @component.platform.name =~ /solaris-10/
+          @component.install << "mv '#{file}' '#{file}.pristine'"
+          @component.configfiles << Vanagon::Common::Pathname.new("#{file}.pristine")
+        else
+          @component.configfiles << Vanagon::Common::Pathname.new(file)
+        end
       end
 
       # Shorthand to install a file and mark it as a configfile
