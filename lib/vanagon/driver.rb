@@ -54,7 +54,7 @@ class Vanagon
 
     def install_build_dependencies
       unless list_build_dependencies.empty?
-        @engine.dispatch("#{@platform.build_dependencies} #{list_build_dependencies.join(' ')}")
+        @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
       end
     end
 
