@@ -2,6 +2,7 @@ require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
+require 'vanagon/platform/solaris_11'
 require 'securerandom'
 require 'uri'
 
@@ -30,6 +31,8 @@ class Vanagon
                       Vanagon::Platform::OSX.new(@name)
                     when /^solaris-10/
                       Vanagon::Platform::Solaris10.new(@name)
+                    when /^solaris-11/
+                      Vanagon::Platform::Solaris11.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                     end

@@ -1,0 +1,60 @@
+set name=pkg.fmri value="<%= @name %>@<%= @platform.ips_version(@version) %>"
+set name=pkg.summary value="<%= @description.lines.first.chomp %>"
+set name=pkg.human-version value="<%= @version %>"
+set name=pkg.description value="<%= @description %>"
+set name=info.classification value="org.opensolaris.category.2008:System/Administration and Configuration"
+set name=org.opensolaris.consolidation value="<%= @name %>"
+set name=description value="<%= @description %>"
+set name=variant.opensolaris.zone value=global value=nonglobal
+set name=variant.arch value="<%= @platform.architecture %>"
+
+# Add any needed dependencies
+<%- get_requires.each do |requirement| -%>
+depend fmri=pkg:/<%= requirement %> type=require
+<%- end -%>
+
+<%- get_root_directories.each do |dir| -%>
+<transform dir path=<%= dir.split('/')[0..-2].join('/').gsub(/^\//, '') %>$ -> drop>
+<%- end -%>
+
+<%- if has_services? -%>
+# Make sure smf manifests cause manifest-import to happen
+<transform file path=(var|lib)/svc/manifest/.*\.xml$ -> default restart_fmri svc:/system/manifest-import:default>
+<%- end -%>
+
+<%- get_configfiles.each do |config| -%>
+# Preserve the old conf file on upgrade
+<transform file path=<%= config.path.gsub(/^\//, '') %>$ -> add preserve renamenew>
+<%- end -%>
+
+# Set any required owner, group or mode transformations
+<%- (get_configfiles + get_files).select { |pathname| pathname.has_overrides? }.uniq.each do |file| -%>
+  <%- if file.group -%>
+    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set group <%= file.group %>>
+  <%- end -%>
+  <%- if file.owner -%>
+    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set owner <%= file.owner %>>
+  <%- end -%>
+  <%- if file.mode -%>
+    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set mode <%= file.mode %>>
+  <%- end -%>
+<%- end -%>
+
+# Set any required owner, group or mode transformations
+<%- get_directories.select { |pathname| pathname.has_overrides? }.uniq.each do |dir| -%>
+  <%- if dir.group -%>
+    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set group <%= dir.group %>>
+  <%- end -%>
+  <%- if dir.owner -%>
+    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set owner <%= dir.owner %>>
+  <%- end -%>
+  <%- if dir.mode -%>
+    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set mode <%= dir.mode %>>
+  <%- end -%>
+<%- end -%>
+
+<%- if @user -%>
+# Create a user/group if desired
+  <%= @platform.add_group(@user) %>
+  <%= @platform.add_user(@user) %>
+<%- end -%>
