@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+#
+<%- if @user -%>
+# Add our user and group
+<%= @platform.add_group(@user) %>
+<%= @platform.add_user(@user) %>
+<%- end -%>

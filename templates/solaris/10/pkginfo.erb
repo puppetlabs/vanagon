@@ -1,0 +1,13 @@
+PKG="<%= @name %>"
+NAME="<%= @name %> - <%= @homepage %>"
+VERSION=<%= @version %>-1
+ARCH=<%= @platform.architecture %>
+CLASSES=none
+CATEGORY=application
+VENDOR=<%= @vendor %>
+PSTAMP=<%= Time.now.strftime('%Y-%m-%d.%H%M%S') %>
+EMAIL=<%= @vendor.match(/<([^>]*)>/)[1] %>
+ISTATES=S s 1 2 3
+RSTATES=S s 1 2 3
+BASEDIR=/
+

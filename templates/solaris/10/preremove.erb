@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+#
+<%- get_services.each do |service| -%>
+/usr/sbin/svcadm disable <%= service %> || true
+/usr/sbin/svccfg delete <%= service %> || true
+<%- end -%>

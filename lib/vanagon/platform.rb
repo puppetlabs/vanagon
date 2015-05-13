@@ -194,5 +194,12 @@ class Vanagon
     def is_osx?
       return !!@name.match(/^osx-.*$/)
     end
+
+    # Utility matcher to determine is the platform is a solaris variety
+    #
+    # @return [true, false] true if it is an solaris variety, false otherwise
+    def is_solaris?
+      return !!@name.match(/^solaris-.*$/)
+    end
   end
 end
