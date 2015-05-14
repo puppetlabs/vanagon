@@ -75,7 +75,7 @@ class Vanagon
         @project.make_bill_of_materials(@workdir)
         @project.generate_packaging_artifacts(@workdir)
         @engine.ship_workdir(@workdir)
-        @engine.dispatch(@platform.make)
+        @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
         @engine.retrieve_built_artifact
         @engine.teardown unless @preserve
         cleanup_workdir unless @preserve
@@ -99,7 +99,7 @@ class Vanagon
         @project.make_bill_of_materials(@workdir)
         # Builds only the project, skipping packaging into an artifact.
         @engine.ship_workdir(@workdir)
-        @engine.dispatch("#{@platform.make} #{@project.name}-project")
+        @engine.dispatch("(cd #{@target.remote_workdir}; #{@platform.make} #{@project.name}-project)")
       rescue => e
         puts e
         puts e.backtrace.join("\n")
