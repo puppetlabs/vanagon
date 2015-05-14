@@ -221,11 +221,20 @@ class Vanagon
     # @param port [Integer] port number for ssh (default 22)
     # @return [true] Returns true if the command was successful
     # @raise [RuntimeError] If there is no target given or the command fails an exception is raised
-    def remote_ssh_command(target, command, port = 22 )
+    def remote_ssh_command(target, command, port = 22, return_command_output: false)
       if target
         puts "Executing '#{command}' on #{target}"
-        Kernel.system("#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}'")
-        $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
+        if return_command_output
+          ret = %x{#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}'}.chomp
+          if $?.success?
+            return ret
+          else
+            raise "Remote ssh command (#{command}) failed on '#{target}'."
+          end
+        else
+          Kernel.system("#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}'")
+          $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
+        end
       else
         fail "Need a target to ssh to. Received none."
       end

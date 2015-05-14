@@ -20,8 +20,8 @@ class Vanagon
       end
 
       # Dispatches the command for execution
-      def dispatch(command)
-        Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", command, @platform.ssh_port)
+      def dispatch(command, return_output = false)
+        Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", command, @platform.ssh_port, return_command_output: return_output)
       end
 
       # Steps needed to tear down or clean up the system after the build is
