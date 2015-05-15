@@ -4,7 +4,7 @@ require 'vanagon/errors'
 class Vanagon
   class Engine
     class Base
-      attr_accessor :target
+      attr_accessor :target, :remote_workdir
 
       def initialize(platform, target = nil)
         @platform = platform
@@ -20,8 +20,8 @@ class Vanagon
       end
 
       # Dispatches the command for execution
-      def dispatch(command)
-        Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", command, @platform.ssh_port)
+      def dispatch(command, return_output = false)
+        Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", command, @platform.ssh_port, return_command_output: return_output)
       end
 
       # Steps needed to tear down or clean up the system after the build is
@@ -44,15 +44,20 @@ class Vanagon
         validate_platform
         select_target
         setup
+        get_remote_workdir
+      end
+
+      def get_remote_workdir
+        @remote_workdir ||= dispatch("mktemp -d 2>/dev/null || mktemp -d -t 'tmp'", true)
       end
 
       def ship_workdir(workdir)
-        Vanagon::Utilities.rsync_to("#{workdir}/*", "#{@target_user}@#{@target}", "~/", @platform.ssh_port)
+        Vanagon::Utilities.rsync_to("#{workdir}/*", "#{@target_user}@#{@target}", @remote_workdir, @platform.ssh_port)
       end
 
       def retrieve_built_artifact
         FileUtils.mkdir_p("output")
-        Vanagon::Utilities.rsync_from("output/*", "#{@target_user}@#{@target}", "output", @platform.ssh_port)
+        Vanagon::Utilities.rsync_from("output/*", "#{@target_user}@#{@target}", "#{@remote_workdir}/output", @platform.ssh_port)
       end
 
       # Ensures that the platform defines the attributes that the engine needs to function.
