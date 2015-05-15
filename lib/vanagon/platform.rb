@@ -37,17 +37,19 @@ class Vanagon
     # @param user [Vanagon::Common::User] the user to reference for the group
     # @return [String] the commands required to add a group to the system
     def add_group(user)
-      group_check = "getent group '#{user.group}' &> /dev/null"
-      cmd_args = ''
-      cmd_args << ' --system' if user.is_system
-      cmd_args << " '#{user.group}'"
-      return <<-HERE
-if #{group_check}; then
-  /usr/sbin/groupmod #{cmd_args}
-else
-  /usr/sbin/groupadd #{cmd_args}
-fi
-HERE
+      cmd_args = ["'#{user.group}'"]
+      cmd_args.unshift '--system' if user.is_system
+
+      groupadd_args = cmd_args.join "\s"
+      groupmod_args = (cmd_args - ["--system"]).join "\s"
+
+      return <<-HERE.undent
+        if getent group '#{user.group}' > /dev/null 2>&1; then
+          /usr/sbin/groupmod #{groupmod_args}
+        else
+          /usr/sbin/groupadd #{groupadd_args}
+        fi
+      HERE
     end
 
     # Generate the scripts required to add a user to the package generated.
@@ -56,24 +58,33 @@ HERE
     # @param user [Vanagon::Common::User] the user to create
     # @return [String] the commands required to add a user to the system
     def add_user(user)
-      user_check = "getent passwd '#{user.name}' &> /dev/null"
-      cmd_args = ''
-      cmd_args << ' --system' if user.is_system
-      cmd_args << " --gid '#{user.group}'" if user.group
-      cmd_args << " --home '#{user.homedir}'" if user.homedir
+      cmd_args = ["'#{user.name}'"]
+      cmd_args.unshift "--home '#{user.homedir}'" if user.homedir
       if user.shell
-        cmd_args << " --shell '#{user.shell}'"
+        cmd_args.unshift "--shell '#{user.shell}'"
       elsif user.is_system
-        cmd_args << " --shell '/usr/sbin/nologin'"
+        cmd_args.unshift "--shell '/usr/sbin/nologin'"
       end
-      cmd_args << " '#{user.name}'"
-      return <<-HERE
-if #{user_check}; then
-  /usr/sbin/usermod #{cmd_args}
-else
- /usr/sbin/useradd #{cmd_args}
-fi
-HERE
+      cmd_args.unshift "--gid '#{user.group}'" if user.group
+      cmd_args.unshift '--system' if user.is_system
+
+      # Collapse the cmd_args array into a string that can be used
+      # as an argument to `useradd`
+      useradd_args = cmd_args.join "\s"
+
+      # Collapse the cmd_args array into a string that can be used
+      # as an argument to `usermod`; If this is a system account,
+      # then specify it as such for user addition only (strip
+      # --system from usermod_args)
+      usermod_args = (cmd_args - ["--system"]).join "\s"
+
+      return <<-HERE.undent
+        if getent passwd '#{user.name}' > /dev/null 2>&1; then
+          /usr/sbin/usermod #{useradd_args}
+        else
+          /usr/sbin/useradd #{usermod_args}
+        fi
+      HERE
     end
 
     # Platform constructor. Takes just the name. Also sets the @name, @os_name,
