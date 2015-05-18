@@ -5,6 +5,7 @@ require 'json'
 require 'digest'
 require 'erb'
 require 'timeout'
+require 'vanagon/extensions/string'
 
 class Vanagon
   module Utilities
