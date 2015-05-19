@@ -18,6 +18,7 @@ class Vanagon
 
           # Unpack the project and stage the packaging artifacts
           "gunzip -c #{name_and_version}.tar.gz | '#{@tar}' -C '$(tempdir)' -xf -",
+          "rm #{name_and_version}.tar.gz",
           "cp -r packaging $(tempdir)/",
 
           # Here we are tweaking file/dir ownership and perms in the following ways
