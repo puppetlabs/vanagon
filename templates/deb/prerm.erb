@@ -10,8 +10,8 @@ if [ "$1" = remove ]; then
 fi
 
   <%- elsif @platform.servicetype == "sysv" -%>
-if [ -x "<%= @platform.servicedir %>/<%= service %>" ] && [ "$1" = remove ]; then
-  invoke-rc.d <%= service %> stop || true
+if [ -x "<%= service.service_file %>" ] && [ "$1" = remove ]; then
+  invoke-rc.d <%= service.name %> stop || true
 fi
   <%- end -%>
 <%- end -%>

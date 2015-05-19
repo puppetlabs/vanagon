@@ -1,7 +1,7 @@
 #!/bin/bash
 
 <%- get_services.each do |service| -%>
-if [ -f "<%= @platform.servicedir %>/<%= service %>.plist" ]; then
-  /bin/launchctl load -F "<%= @platform.servicedir %>/<%= service %>.plist"
+if [ -f "<%= service.service_file %>" ]; then
+  /bin/launchctl load -F "<%= service.service_file %>"
 fi
 <%- end -%>

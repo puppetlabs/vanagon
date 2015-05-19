@@ -146,7 +146,8 @@ class Vanagon
       # @param service_file [String] path to the service file relative to the source
       # @param default_file [String] path to the default file relative to the source
       # @param service_name [String] name of the service
-      def install_service(service_file, default_file = nil, service_name = @component.name)
+      # @param service_type [String] type of the service (network, application, system, etc)
+      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil)
         case @component.platform.servicetype
         when "sysv"
           target_service_file = File.join(@component.platform.servicedir, service_name)
@@ -158,6 +159,10 @@ class Vanagon
           target_mode = '0644'
         when "launchd"
           target_service_file = File.join(@component.platform.servicedir, "#{service_name}.plist")
+          target_mode = '0644'
+        when "smf"
+          target_service_file = File.join(@component.platform.servicedir, service_type.to_s, "#{service_name}.xml")
+          target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
@@ -172,7 +177,7 @@ class Vanagon
         end
 
         # Register the service for use in packaging
-        @component.service = service_name
+        @component.service = OpenStruct.new(:name => service_name, :service_file => target_service_file)
       end
 
       # Copies a file from source to target during the install phase of the component
@@ -192,7 +197,13 @@ class Vanagon
       #
       # @param file [String] name of the configfile
       def configfile(file)
-        @component.configfiles << Vanagon::Common::Pathname.new(file)
+        # I AM SO SORRY
+        if @component.platform.name =~ /solaris-10/
+          @component.install << "mv '#{file}' '#{file}.pristine'"
+          @component.configfiles << Vanagon::Common::Pathname.new("#{file}.pristine")
+        else
+          @component.configfiles << Vanagon::Common::Pathname.new(file)
+        end
       end
 
       # Shorthand to install a file and mark it as a configfile

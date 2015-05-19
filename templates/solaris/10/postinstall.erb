@@ -1,29 +1,20 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 <%- get_services.each do |service| -%>
-  # switch based on systemd vs systemv
-  #
-  <%- if @platform.servicetype == "systemd" -%>
-if [ -z "$2" ]; then
-  systemctl enable <%= service %>.service >/dev/null || :
-else
-  systemctl try-restart <%= service %>.service >/dev/null || :
-fi
-  <%- elsif @platform.servicetype == "sysv" -%>
-if [ -x "<%= service.service_file %>" ]; then
-  update-rc.d <%= service.name %> defaults > /dev/null
-
-  if [ -n "$2" ]; then
-    invoke-rc.d <%= service.name %> condrestart || true
-  fi
-fi
-  <%- end -%>
+# Importing service <%= service.name %>
+/usr/sbin/svccfg import <%= service.service_file %> || true
 <%- end -%>
 
-<%- if @user -%>
-# Add our user and group
-<%= @platform.add_group(@user) %>
-<%= @platform.add_user(@user) %>
+# Move any new configfiles into place
+<%- get_configfiles.each do |config|
+dest_file = config.path.gsub(/\.pristine$/, '') -%>
+
+if [ -f "<%= dest_file %>" ]; then
+  echo "Detected file at '<%= dest_file %>'; updated file at '<%= config.path %>'."
+else
+  cp -pr '<%= config.path %>' '<%= dest_file %>'
+fi
+
 <%- end -%>
 
 # Set up any specific permissions needed...
