@@ -6,7 +6,7 @@ class Vanagon
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
-    attr_accessor :configfiles, :directories, :replaces, :provides
+    attr_accessor :configfiles, :directories, :replaces, :provides, :cleanup_source
 
     # Loads a given component from the configdir
     #
@@ -63,6 +63,7 @@ class Vanagon
       @source.fetch
       @source.verify
       @extract_with = @source.extract(@platform.tar) if @source.respond_to?(:extract)
+      @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
       @dirname = @source.dirname
 
       # Git based sources probably won't set the version, so we load it if it hasn't been already set

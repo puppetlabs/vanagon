@@ -5,7 +5,7 @@ class Vanagon
     class Source
       class Git
         include Vanagon::Utilities
-        attr_accessor :url, :ref, :workdir, :version
+        attr_accessor :url, :ref, :workdir, :version, :cleanup
 
         # Constructor for the Git source type
         #
@@ -34,6 +34,13 @@ class Vanagon
               @version = git_version
             end
           end
+        end
+
+        # Return the correct incantation to cleanup the source directory for a given source
+        #
+        # @return [String] command to cleanup the source
+        def cleanup
+          "rm -rf #{dirname}"
         end
 
         # There is no md5 to manually verify here, so it is a noop.

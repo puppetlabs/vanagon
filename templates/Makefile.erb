@@ -21,7 +21,7 @@ file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 	(find -L <%= dirnames.join(' ') %> -type f 2>/dev/null || find <%= dirnames.join(' ') %> -follow -type f) | sort > file-list-after-build
 <%- end -%>
 
-<%= @name %>-<%= @version %>.tar.gz: file-list
+<%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
 	<%= pack_tarball_command %>
 
 file-list: <%= dirnames.join(' ') %> <%= @name %>-project
@@ -33,11 +33,22 @@ file-list: <%= dirnames.join(' ') %> <%= @name %>-project
 	mkdir -p <%= dir %>
 <%- end %>
 
+<%- if @cleanup -%>
+cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" ") %>
+	touch cleanup-components
+<%- end -%>
+
 <%= @name %>-project: file-list-after-build
 	touch <%= @name %>-project
 
 <%- @components.each do |comp| -%>
 <%= comp.name %>: <%= list_component_dependencies(comp).join(" ") %> <%= comp.name %>-install
+
+<%- if @cleanup -%>
+<%= comp.name %>-cleanup: <%= comp.name %>-install
+	<%= comp.cleanup_source %>
+	touch <%= comp.name %>-cleanup
+<%- end -%>
 
 <%= comp.name %>-unpack: file-list-before-build
 	<%= comp.extract_with %>

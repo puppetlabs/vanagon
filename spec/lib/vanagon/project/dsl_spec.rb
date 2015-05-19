@@ -64,6 +64,21 @@ end" }
     end
   end
 
+  describe '#cleanup_during_build' do
+    it 'sets @cleanup to true' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.cleanup_during_build
+      expect(proj._project.cleanup).to eq(true)
+    end
+
+    it 'defaults to nil' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      expect(proj._project.cleanup).to be_nil
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|

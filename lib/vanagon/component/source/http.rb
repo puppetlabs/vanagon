@@ -7,7 +7,7 @@ class Vanagon
     class Source
       class Http
         include Vanagon::Utilities
-        attr_accessor :url, :sum, :file, :extension, :workdir
+        attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup
 
         # Constructor for the Http source type
         #
@@ -101,6 +101,22 @@ class Vanagon
             return nil
           else
             fail "Extraction unimplemented for '#{@extension}' in source '#{@file}'. Please teach me."
+          end
+        end
+
+        # Return the correct incantation to cleanup the source archive and source directory for a given source
+        #
+        # @return [String] command to cleanup the source
+        # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
+        def cleanup
+          case @extension
+          when '.tar.gz', '.tgz'
+            return "rm #{@file}; rm -r #{dirname}"
+          when '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg'
+            # Because dirname will be ./ here, we don't want to try to nuke it
+            return "rm #{@file}"
+          else
+            fail "Don't know how to cleanup for '#{@file}' with extension: '#{@extension}'. Please teach me."
           end
         end
 
