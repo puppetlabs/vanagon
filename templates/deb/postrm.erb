@@ -4,7 +4,7 @@
   # switch based on systemd vs systemv
   #
   <%- if @platform.servicetype == "systemd" -%>
-    # TBD
+systemctl daemon-reload >/dev/null 2>&1 || :
   <%- elsif @platform.servicetype == "sysv" -%>
 if [ "$1" = "purge" ] ; then
   update-rc.d <%= service %> remove > /dev/null

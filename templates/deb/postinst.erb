@@ -4,7 +4,11 @@
   # switch based on systemd vs systemv
   #
   <%- if @platform.servicetype == "systemd" -%>
-    # TBD
+if [ -z "$2" ]; then
+  systemctl enable <%= service %>.service >/dev/null || :
+else
+  systemctl try-restart <%= service %>.service >/dev/null || :
+fi
   <%- elsif @platform.servicetype == "sysv" -%>
 if [ -x "<%= @platform.servicedir %>/<%= service %>" ]; then
   update-rc.d <%= service %> defaults > /dev/null

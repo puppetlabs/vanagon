@@ -4,7 +4,11 @@
   # switch based on systemd vs systemv
   #
   <%- if @platform.servicetype == "systemd" -%>
-    # TBD
+if [ "$1" = remove ]; then
+  systemctl --no-reload disable <%= service %>.service > /dev/null 2>&1 || :
+  systemctl stop <%= service %>.service > /dev/null 2>&1 || :
+fi
+
   <%- elsif @platform.servicetype == "sysv" -%>
 if [ -x "<%= @platform.servicedir %>/<%= service %>" ] && [ "$1" = remove ]; then
   invoke-rc.d <%= service %> stop || true
