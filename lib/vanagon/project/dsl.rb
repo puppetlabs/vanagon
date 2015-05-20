@@ -172,6 +172,11 @@ class Vanagon
       def register_rewrite_rule(protocol, rule)
         Vanagon::Component::Source.register_rewrite_rule(protocol, rule)
       end
+
+      # Toggle to apply additional cleanup during the build for space constrained systems
+      def cleanup_during_build
+        @project.cleanup = true
+      end
     end
   end
 end
