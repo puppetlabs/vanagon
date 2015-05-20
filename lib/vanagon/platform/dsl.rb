@@ -2,6 +2,7 @@ require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
+require 'vanagon/platform/solaris_11'
 require 'securerandom'
 require 'uri'
 
@@ -30,6 +31,8 @@ class Vanagon
                       Vanagon::Platform::OSX.new(@name)
                     when /^solaris-10/
                       Vanagon::Platform::Solaris10.new(@name)
+                    when /^solaris-11/
+                      Vanagon::Platform::Solaris11.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                     end
@@ -108,8 +111,9 @@ class Vanagon
       # Set the command to install any needed build dependencies for the target machine
       #
       # @param command [String] Command to install build dependencies for the target machine
-      def install_build_dependencies_with(command)
-        @platform.build_dependencies = command
+      # @param suffix [String] shell to be run after the main command
+      def install_build_dependencies_with(command, suffix = nil)
+        @platform.build_dependencies = OpenStruct.new({:command => command, :suffix => suffix})
       end
 
       # Set the directory where service files or init scripts live for the platform

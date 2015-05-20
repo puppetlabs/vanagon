@@ -89,7 +89,7 @@ class Vanagon
       #
       # @param ver [String] version of the project
       def version(ver)
-        @project.version = ver
+        @project.version = ver.gsub('-', '.')
       end
 
       # Sets the version for the project based on a git describe of the
