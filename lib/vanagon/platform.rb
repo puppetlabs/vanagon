@@ -202,16 +202,16 @@ class Vanagon
       return !!@name.match(/^solaris-.*$/)
     end
 
-    # Utility matcher to determine is the platform is a linux variety
+    # Utility matcher to determine is the platform is a unix variety
     #
-    # @return [true, false] true if it is a linux variety, false otherwise
+    # @return [true, false] true if it is a unix variety, false otherwise
     def is_unix?
       return !!@name.match(/^(solaris|aix|osx)-.*$/)
     end
 
-    # Utility matcher to determine is the platform is a linux variety
+    # Utility matcher to determine is the platform is a windows variety
     #
-    # @return [true, false] true if it is a linux variety, false otherwise
+    # @return [true, false] true if it is a windows variety, false otherwise
     def is_windows?
       return !!@name.match(/^win-.*$/)
     end
