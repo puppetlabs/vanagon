@@ -54,10 +54,17 @@ The name of the platform to build against, and a file named
 \<platform\_name\>.rb must be present in configs/platforms in the working
 directory.
 
+Platform can also be a comma separated list of platforms such as platform1,platform2.
+
 ##### target host [optional]
 Target host is an optional argument to override the host selection. Instead of using
 a vm collected from the pooler, the build will attempt to ssh to target as the
 root user.
+
+If building on multiple platforms, multiple targets can also be specified using
+a comma separated list such as host1,host2. If less targets are specified than
+platforms, the default engine (the pooler) will be used for platforms without a
+target. If more targets are specified than platforms, the extra will be ignored.
 
 #### Flagged arguments (can be anywhere in the command)
 

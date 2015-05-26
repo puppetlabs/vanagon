@@ -6,18 +6,28 @@ optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <pla
 options = optparse.parse! ARGV
 
 project = ARGV[0]
-platform = ARGV[1]
-target = ARGV[2]
+platforms = ARGV[1]
+targets = ARGV[2]
 
-if project.nil? or platform.nil?
+if project.nil? or platforms.nil?
   warn "project and platform are both required arguments."
   puts optparse
   exit 1
 end
 
-artifact = Vanagon::Driver.new(platform, project, options.merge({:target => target}))
+platform_list = platforms.split(',')
+if targets
+  target_list = targets.split(',')
+else
+  target_list = []
+end
 
-artifact.verbose = true if options[:verbose]
-artifact.preserve = true if options[:preserve]
+platform_list.zip(target_list).each do |pair|
+  platform, target = pair
+  artifact = Vanagon::Driver.new(platform, project, options.merge({:target => target}))
 
-artifact.run
+  artifact.verbose = true if options[:verbose]
+  artifact.preserve = true if options[:preserve]
+
+  artifact.run
+end
