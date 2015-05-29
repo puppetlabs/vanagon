@@ -25,7 +25,7 @@ class Vanagon
         @platform = case name
                     when /^(el|fedora|sles|eos|nxos|aix)-/
                       Vanagon::Platform::RPM.new(@name)
-                    when /^(debian|ubuntu)-/
+                    when /^(debian|ubuntu|cumulus)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^osx-/
                       Vanagon::Platform::OSX.new(@name)
