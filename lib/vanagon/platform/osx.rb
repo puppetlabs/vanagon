@@ -8,7 +8,7 @@ class Vanagon
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
          # Setup build directories
-        ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload}'",
+        ["bash -c 'mkdir -p $(tempdir)/osx/build/{pkg,scripts,resources,root,payload}'",
          "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
          # Grab distribution xml, scripts and other external resources
          "cp #{project.name}-installer.xml $(tempdir)/osx/build/",
@@ -23,17 +23,14 @@ class Vanagon
           --version #{project.version} \
           --install-location / \
           payload/#{project.name}-#{project.version}.pkg)",
-         # Create a custom installer using the pkg above
+         # Create a custom installer using the pkg above and ship it to the output dir
          "(cd $(tempdir)/osx/build/; #{@productbuild} --distribution #{project.name}-installer.xml \
           --identifier #{project.identifier}.#{project.name}-installer \
           --package-path payload/ \
           --resources $(tempdir)/osx/build/resources  \
-          pkg/#{project.name}-#{project.version}-installer.pkg)",
-         # Create a dmg and ship it to the output dir
-         "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \
-          -srcfolder pkg/ dmg/#{project.package_name})",
+	  pkg/#{project.package_name})",
          "mkdir -p output/#{target_dir}",
-         "cp $(tempdir)/osx/build/dmg/#{project.package_name} ./output/#{target_dir}"]
+         "cp $(tempdir)/osx/build/pkg/#{project.package_name} ./output/#{target_dir}"]
       end
 
       # Method to generate the files required to build a osx package for the project
@@ -63,7 +60,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the osx package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-#{@os_name}-#{@os_version}-#{@architecture}.dmg"
+        "#{project.name}-#{project.version}-#{@os_name}-#{@os_version}-#{@architecture}.pkg"
       end
 
       # Get the expected output dir for the osx packages. This allows us to
