@@ -48,7 +48,7 @@ class Vanagon
       end
 
       def get_remote_workdir
-        @remote_workdir ||= dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -p /var/tmp -t 'tmp'", true)
+        @remote_workdir ||= dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp'", true)
       end
 
       def ship_workdir(workdir)
