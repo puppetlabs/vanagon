@@ -71,7 +71,7 @@ class Vanagon
       #
       # @return [String] relative path to where osx packages should be staged
       def output_dir(target_repo = "")
-        File.join("osx", target_repo)
+        File.join("apple", target_repo)
       end
 
       # Constructor. Sets up some defaults for the osx platform and calls the parent constructor
