@@ -79,6 +79,17 @@ end" }
     end
   end
 
+  describe "#write_version_file" do
+    let(:version_file) { '/opt/puppetlabs/puppet/VERSION' }
+
+    it 'sets version_file for the project' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.write_version_file(version_file)
+      expect(proj._project.version_file.path).to eq(version_file)
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|
