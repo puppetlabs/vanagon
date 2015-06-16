@@ -10,7 +10,7 @@ class Vanagon
     attr_accessor :components, :settings, :platform, :configdir, :name
     attr_accessor :version, :directories, :license, :description, :vendor
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
-    attr_accessor :cleanup
+    attr_accessor :cleanup, :version_file
 
     # Loads a given project from the configdir
     #
@@ -69,7 +69,10 @@ class Vanagon
     #
     # @return [Array] array of files installed by components of the project
     def get_files
-      @components.map {|comp| comp.files }.flatten
+      files = []
+      files.push @version_file if @version_file
+      files.push @components.map {|comp| comp.files }.flatten
+      files.flatten
     end
 
     # Collects all of the requires for both the project and its components

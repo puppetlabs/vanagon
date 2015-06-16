@@ -177,6 +177,12 @@ class Vanagon
       def cleanup_during_build
         @project.cleanup = true
       end
+
+      # This method will write the projects version to a designated file during package creation
+      # @param target [String] a full path to the version file for the project
+      def write_version_file(target)
+        @project.version_file = Vanagon::Common::Pathname.new(target)
+      end
     end
   end
 end
