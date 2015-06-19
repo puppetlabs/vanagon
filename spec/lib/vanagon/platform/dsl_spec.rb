@@ -1,10 +1,11 @@
 require 'vanagon/platform/dsl'
 
 describe 'Vanagon::Platform::DSL' do
-  let (:deb_platform_block)  {  "platform 'debian-test-fixture' do |plat| end" }
-  let (:el_5_platform_block)   {  "platform 'el-5-fixture'     do |plat| end" }
-  let (:el_6_platform_block)   {  "platform 'el-6-fixture'     do |plat| end" }
-  let (:sles_platform_block) {  "platform 'sles-test-fixture'   do |plat| end" }
+  let (:deb_platform_block)    { "platform 'debian-test-fixture' do |plat| end" }
+  let (:el_5_platform_block)   { "platform 'el-5-fixture'        do |plat| end" }
+  let (:el_6_platform_block)   { "platform 'el-6-fixture'        do |plat| end" }
+  let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
+  let (:nxos_5_platform_block) { "platform 'nxos-5-fixture'      do |plat| end" }
 
   let(:apt_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy" }
   let(:apt_definition_deb) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.deb" }
@@ -13,14 +14,17 @@ describe 'Vanagon::Platform::DSL' do
   let(:el_definition_rpm) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
   let(:sles_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.2/repo_configs/rpm/pl-puppet-agent-0.2.2-sles-12-x86_64" }
   let(:sles_definition_rpm) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
+  let(:nxos_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-nxos-5-x86_64.repo" }
+
+  let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
   describe '#apt_repo' do
     it "grabs the file and adds .list to it" do
       plat = Vanagon::Platform::DSL.new('debian-test-fixture')
-      expect(SecureRandom).to receive(:hex).and_return("906264d248061b0edb1a576cc9c8f6c7")
+      expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/sources.list.d/906264d248061b0edb1a576cc9c8f6c7-pl-puppet-agent-0.2.1-wheezy.list' '#{apt_definition}'")
+      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/sources.list.d/#{hex_value}-pl-puppet-agent-0.2.1-wheezy.list' '#{apt_definition}'")
     end
 
     it "installs a deb when given a deb" do
@@ -32,20 +36,28 @@ describe 'Vanagon::Platform::DSL' do
 
     it "installs a gpg key if given one" do
       plat = Vanagon::Platform::DSL.new('debian-test-fixture')
-      expect(SecureRandom).to receive(:hex).and_return("906264d248061b0edb1a576cc9c8f6c7").twice
+      expect(SecureRandom).to receive(:hex).and_return(hex_value).twice
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition, apt_definition_gpg)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/trusted.gpg.d/906264d248061b0edb1a576cc9c8f6c7-keyring.gpg' '#{apt_definition_gpg}'")
+      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/trusted.gpg.d/#{hex_value}-keyring.gpg' '#{apt_definition_gpg}'")
     end
   end
 
   describe '#yum_repo' do
     it "grabs the file and adds .repo to it" do
       plat = Vanagon::Platform::DSL.new('el-5-fixture')
-      expect(SecureRandom).to receive(:hex).and_return("906264d248061b0edb1a576cc9c8f6c7")
+      expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(el_5_platform_block)
       plat.yum_repo(el_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/906264d248061b0edb1a576cc9c8f6c7-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
+      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
+    end
+
+    it "downloads the repo file to the correct yum location for nxos" do
+      plat = Vanagon::Platform::DSL.new('nxos-5-fixture')
+      expect(SecureRandom).to receive(:hex).and_return(hex_value)
+      plat.instance_eval(nxos_5_platform_block)
+      plat.yum_repo(nxos_definition)
+      expect(plat._platform.provisioning).to include("curl -o '/etc/yum/repos.d/#{hex_value}-pl-puppet-agent-0.2.1-nxos-5-x86_64.repo' '#{nxos_definition}'")
     end
 
     describe "installs a rpm when given a rpm" do

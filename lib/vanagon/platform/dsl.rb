@@ -243,7 +243,11 @@ class Vanagon
           else
             reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
             reponame = "#{reponame}.repo"  if File.extname(reponame) != '.repo'
-            self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
+            if @platform.is_nxos?
+              self.provision_with "curl -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
+            else
+              self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
+            end
           end
         end
       end
