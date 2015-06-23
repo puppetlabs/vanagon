@@ -46,7 +46,7 @@ class Vanagon
 
       def rpm_defines
         defines =  %Q{--define '_topdir $(tempdir)/rpmbuild' }
-        defines << %Q{--define 'dist .#{os_name}#{os_version}' }
+        defines << %Q{--define 'dist .#{@os_name}#{@os_version}' }
         defines
       end
 
