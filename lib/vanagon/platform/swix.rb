@@ -14,7 +14,7 @@ class Vanagon
           pkgname_swix = package_name(project)
           pkgname_rpm = pkgname_swix.sub(/swix$/, 'rpm')
           commands += ["echo 'format: 1' > ./output/#{target_dir}/manifest.txt",
-          "echo \"primaryRPM: #{pkgname_rpm}\" >> ./output/#{target_dir}/manifest.txt",
+          "echo \"primaryRpm: #{pkgname_rpm}\" >> ./output/#{target_dir}/manifest.txt",
           "echo #{pkgname_rpm}-sha1: `sha1sum ./output/#{target_dir}/#{pkgname_rpm}`",
           "cd ./output/#{target_dir}/ && zip #{pkgname_swix} manifest.txt #{pkgname_rpm}",
           "rm ./output/#{target_dir}/manifest.txt ./output/#{target_dir}/#{pkgname_rpm}"]
