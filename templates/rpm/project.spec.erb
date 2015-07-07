@@ -108,7 +108,11 @@ install -d %{buildroot}
       %systemd_post <%= service.name %>.service
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
-    chkconfig --add <%= service.name %>
+    <%- if @platform.is_sles? -%>
+      chkconfig --add <%= service.name %> >/dev/null 2>&1 || :
+    <%- else -%>
+      chkconfig --add <%= service.name %>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 
