@@ -71,17 +71,17 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 
 <%= comp.name %>-configure: <%= comp.name %>-patch
 	cd <%= comp.dirname %>; \
-	<%= comp.configure.join(";\\\n\t") %>
+	<%= comp.configure.join(" && \\\n\t") %>
 	touch <%= comp.name %>-configure
 
 <%= comp.name %>-build: <%= comp.name %>-configure
 	cd <%= comp.dirname %>; \
-	<%= comp.build.join(";\\\n\t") %>
+	<%= comp.build.join(" && \\\n\t") %>
 	touch <%= comp.name %>-build
 
 <%= comp.name %>-install: <%= comp.name %>-build
 	cd <%= comp.dirname %>; \
-	<%= comp.install.join(";\\\n\t") %>
+	<%= comp.install.join(" && \\\n\t") %>
 	touch <%= comp.name %>-install
 
 <%= comp.name %>-clean:
