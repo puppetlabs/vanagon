@@ -26,7 +26,7 @@ class Vanagon
       # once as an easy shorthand to call from the driver
       def startup(workdir)
         @workdir = workdir
-        script = @platform.provisioning.join(' ; ')
+        script = @platform.provisioning.join(' && ')
         dispatch(script)
       end
 
