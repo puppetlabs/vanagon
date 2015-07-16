@@ -33,7 +33,7 @@ class Vanagon
       # the target system
       def setup
         unless @platform.provisioning.empty?
-          script = @platform.provisioning.join(' ; ')
+          script = @platform.provisioning.join(' && ')
           dispatch(script)
         end
       end
