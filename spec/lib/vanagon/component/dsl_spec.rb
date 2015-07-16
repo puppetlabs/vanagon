@@ -332,6 +332,22 @@ end" }
     end
   end
 
+  describe '#environment' do
+    it 'adds an override to the environment for a component' do
+      comp = Vanagon::Component::DSL.new('env-test', {}, {})
+      comp.environment({'PATH' => '/usr/local/bin'})
+      expect(comp._component.environment).to eq({'PATH' => '/usr/local/bin'})
+    end
+
+    it 'merges against the existing environment' do
+      comp = Vanagon::Component::DSL.new('env-test', {}, {})
+      comp.environment({'PATH' => '/usr/local/bin'})
+      comp.environment({'PATH' => '/usr/bin'})
+      comp.environment({'CFLAGS' => '-I /usr/local/bin'})
+      expect(comp._component.environment).to eq({'PATH' => '/usr/bin', 'CFLAGS' => '-I /usr/local/bin'})
+    end
+  end
+
   describe '#directory' do
     it 'adds a directory with the desired path to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
