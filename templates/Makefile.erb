@@ -61,31 +61,32 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 
 <%= comp.name %>-patch: <%= comp.name %>-unpack
 	<%- unless comp.patches.empty? -%>
-		cd <%= comp.dirname %>; \
+		cd <%= comp.dirname %> && \
 		<%- comp.patches.each do |patch| -%>
-			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %>; \
+			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %> && \
 		<%- end -%>
+		:
 	<%- end -%>
 	
 	touch <%= comp.name %>-patch
 
 <%= comp.name %>-configure: <%= comp.name %>-patch
-	cd <%= comp.dirname %>; \
+	cd <%= comp.dirname %> && \
 	<%= comp.configure.join(" && \\\n\t") %>
 	touch <%= comp.name %>-configure
 
 <%= comp.name %>-build: <%= comp.name %>-configure
-	cd <%= comp.dirname %>; \
+	cd <%= comp.dirname %> && \
 	<%= comp.build.join(" && \\\n\t") %>
 	touch <%= comp.name %>-build
 
 <%= comp.name %>-install: <%= comp.name %>-build
-	cd <%= comp.dirname %>; \
+	cd <%= comp.dirname %> && \
 	<%= comp.install.join(" && \\\n\t") %>
 	touch <%= comp.name %>-install
 
 <%= comp.name %>-clean:
-	[ -d <%= comp.dirname %> ] && cd <%= comp.dirname %>; \
+	[ -d <%= comp.dirname %> ] && cd <%= comp.dirname %> && \
 	<%= @platform[:make] %> clean
 	<%- ["configure", "build", "install"].each do |type| -%>
 	[ -e <%= comp.name %>-<%= type %> ] && rm <%= comp.name %>-<%= type %>
