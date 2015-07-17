@@ -261,6 +261,14 @@ class Vanagon
       def directory(dir, mode: nil, owner: nil, group: nil)
         @component.directories << Vanagon::Common::Pathname.new(dir, mode, owner, group)
       end
+
+      # Adds a set of environment overrides to the environment for a component.
+      # This environment is included in the configure, build and install steps.
+      #
+      # @param env [Hash] mapping of keys to values to add to the environment for the component
+      def environment(env)
+        @component.environment.merge!(env)
+      end
     end
   end
 end

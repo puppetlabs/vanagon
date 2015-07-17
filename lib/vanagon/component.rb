@@ -6,7 +6,7 @@ class Vanagon
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
-    attr_accessor :configfiles, :directories, :replaces, :provides, :cleanup_source
+    attr_accessor :configfiles, :directories, :replaces, :provides, :cleanup_source, :environment
 
     # Loads a given component from the configdir
     #
@@ -51,6 +51,7 @@ class Vanagon
       @directories = []
       @replaces = []
       @provides = []
+      @environment = {}
     end
 
     # Fetches the primary source for the component. As a side effect, also sets
@@ -78,6 +79,19 @@ class Vanagon
         patchdir = File.join(workdir, "patches")
         FileUtils.mkdir_p(patchdir)
         FileUtils.cp(@patches, patchdir)
+      end
+    end
+
+    # Prints the environment in a way suitable for use in a Makefile
+    # or shell script.
+    #
+    # @return [String] environment suitable for inclusion in a Makefile
+    def get_environment
+      unless @environment.empty?
+        env = @environment.map { |key, value| %Q[#{key}="#{value}"] }
+        "export #{env.join(' ')}"
+      else
+        ":"
       end
     end
   end

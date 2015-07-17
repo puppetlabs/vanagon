@@ -73,6 +73,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 <%= comp.name %>-configure: <%= comp.name %>-patch
 	<%- unless comp.configure.empty? -%>
 	cd <%= comp.dirname %> && \
+	<%= comp.get_environment %> && \
 	<%= comp.configure.join(" && \\\n\t") %>
 	<%- end -%>
 	touch <%= comp.name %>-configure
@@ -80,6 +81,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 <%= comp.name %>-build: <%= comp.name %>-configure
 	<%- unless comp.build.empty? -%>
 	cd <%= comp.dirname %> && \
+	<%= comp.get_environment %> && \
 	<%= comp.build.join(" && \\\n\t") %>
 	<%- end -%>
 	touch <%= comp.name %>-build
@@ -87,6 +89,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 <%= comp.name %>-install: <%= comp.name %>-build
 	<%- unless comp.install.empty? -%>
 	cd <%= comp.dirname %> && \
+	<%= comp.get_environment %> && \
 	<%= comp.install.join(" && \\\n\t") %>
 	<%- end -%>
 	touch <%= comp.name %>-install
