@@ -198,7 +198,7 @@ class Vanagon
       # @param file [String] name of the configfile
       def configfile(file)
         # I AM SO SORRY
-        if @component.platform.name =~ /solaris-10/
+        if @component.platform.name =~ /solaris-10|osx/
           @component.install << "mv '#{file}' '#{file}.pristine'"
           @component.configfiles << Vanagon::Common::Pathname.new("#{file}.pristine")
         else

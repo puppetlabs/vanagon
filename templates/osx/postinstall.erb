@@ -1,7 +1,22 @@
 #!/bin/bash
 
-<%- get_services.each do |service| -%>
-if [ -f "<%= service.service_file %>" ]; then
-  /bin/launchctl load -F "<%= service.service_file %>"
+foundpkg=`/usr/sbin/pkgutil --volume "$3" --pkgs=<%= @identifier-%>.<%= @name -%>`
+
+# Move any new configfiles into place
+<%- get_configfiles.each do |config|
+dest_file = config.path.gsub(/\.pristine$/, '') -%>
+
+if [ -f "<%= dest_file %>" ]; then
+  echo "Detected file at '<%= dest_file %>'; updated file at '<%= config.path %>'."
+else
+  mv '<%= config.path %>' '<%= dest_file %>'
 fi
 <%- end -%>
+
+# If we appear to be in an upgrade load services.
+
+if [ -n "$foundpkg" ]; then
+<%- get_services.each do |service| -%>
+  /bin/launchctl load -F "<%= service.service_file %>"
+<%- end -%>
+fi
