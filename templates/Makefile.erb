@@ -1,4 +1,5 @@
 <% dirnames = get_directories.map {|d| d.path } %>
+export SHELL := $(shell which bash)
 
 tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
 workdir := $(PWD)
