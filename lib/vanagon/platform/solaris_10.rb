@@ -115,6 +115,42 @@ class Vanagon
         File.join("solaris", target_repo)
       end
 
+      # Because solaris has multiple terrible ways to install packages, we have
+      # this method which generates a shell script to be executed on the system
+      # which will install all of the build dependencies
+      #
+      # @param build_dependencies [Array] list of all build dependencies to install
+      # @return [String] a command to install all of the build dependencies
+      def install_build_dependencies(build_dependencies)
+        http = []
+        pkgutil = []
+        noasks = ["instance=overwrite", "partial=nocheck", "runlevel=nocheck", "idepend=nocheck", "rdepend=nocheck", "space=nocheck", "setuid=nocheck", "conflict=nocheck", "action=nocheck", "basedir=default"]
+        noask_command = noasks.map {|noask| "echo '#{noask}' >> /var/tmp/noask" }.join('; ')
+
+        build_dependencies.each do |build_dependency|
+          if build_dependency.match(/^http.*\.gz/)
+            # Fetch, unpack, install...this assumes curl is present.
+            package = build_dependency.sub(/^http.*\//, '')
+            http << "tmpdir=$(mktemp -p /var/tmp -d); (cd ${tmpdir} && curl -O #{build_dependency} && gunzip -c #{package} | pkgadd -d /dev/stdin -a /var/tmp/noask all)"
+          else
+            # Opencsw dependencies. At this point we assume that pkgutil is installed.
+            pkgutil << build_dependency
+          end
+        end
+
+        command = ''
+        unless pkgutil.empty?
+          command << "/opt/csw/bin/pkgutil -y -i #{pkgutil.join("\s")}; "
+        end
+
+        unless http.empty?
+          command << "echo -n > /var/tmp/noask; #{noask_command}"
+          command << http.join('; ')
+        end
+
+        command
+      end
+
       # Constructor. Sets up some defaults for the solaris 10 platform and calls the parent constructor
       #
       # @param name [String] name of the platform
