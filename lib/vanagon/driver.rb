@@ -54,7 +54,13 @@ class Vanagon
 
     def install_build_dependencies
       unless list_build_dependencies.empty?
-        @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
+        if @platform.build_dependencies && @platform.build_dependencies.command && !@platform.build_dependencies.command.empty?
+          @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
+        elsif @platform.respond_to?(:install_build_dependencies)
+          @engine.dispatch(@platform.install_build_dependencies(list_build_dependencies))
+        else
+          raise Vanagon::Error.new("No method defined to install build dependencies for #{@platform.name}")
+        end
       end
     end
 
