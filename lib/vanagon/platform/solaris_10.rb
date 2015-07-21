@@ -104,7 +104,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the solaris package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-#{@os_name}-#{@os_version}.#{@architecture}.pkg.gz"
+        "#{project.name}-#{project.version}.#{@architecture}.pkg.gz"
       end
 
       # Get the expected output dir for the solaris 10 packages. This allows us to
@@ -112,7 +112,7 @@ class Vanagon
       #
       # @return [String] relative path to where solaris 10 packages should be staged
       def output_dir(target_repo = "")
-        File.join("solaris", target_repo)
+        File.join("solaris", @os_version, target_repo)
       end
 
       # Because solaris has multiple terrible ways to install packages, we have
