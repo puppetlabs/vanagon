@@ -92,6 +92,13 @@ class Vanagon
         @project.version = ver.gsub('-', '.')
       end
 
+      # Sets the release for the project. Mainly for use in packaging.
+      #
+      # @param rel [String] release of the project
+      def release(rel)
+        @project.release = rel
+      end
+
       # Sets the version for the project based on a git describe of the
       # directory that holds the configs. Requires that a git tag be present
       # and reachable from the current commit in that repository.

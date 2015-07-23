@@ -27,7 +27,7 @@ class Vanagon
         # @param project [Vanagon::Project] project to name
         # @return [String] name of the SWIX package for this project
         def package_name(project)
-          "#{project.name}-#{project.version}-1.#{os_name}#{os_version}.#{project.noarch ? 'noarch' : @architecture}.swix"
+          "#{project.name}-#{project.version}-#{project.release}.#{os_name}#{os_version}.#{project.noarch ? 'noarch' : @architecture}.swix"
         end
       end
     end

@@ -10,7 +10,7 @@ class Vanagon
     attr_accessor :components, :settings, :platform, :configdir, :name
     attr_accessor :version, :directories, :license, :description, :vendor
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
-    attr_accessor :cleanup, :version_file
+    attr_accessor :cleanup, :version_file, :release
 
     # Loads a given project from the configdir
     #
@@ -46,6 +46,7 @@ class Vanagon
       @directories = []
       @settings = {}
       @platform = platform
+      @release = "1"
     end
 
     # Magic getter to retrieve settings in the project

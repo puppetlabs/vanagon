@@ -90,6 +90,21 @@ end" }
     end
   end
 
+  describe "#release" do
+    it 'sets the release for the project' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.release '12'
+      expect(proj._project.release).to eq('12')
+    end
+
+    it 'defaults to 1' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      expect(proj._project.release).to eq('1')
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|
