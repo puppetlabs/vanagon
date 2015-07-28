@@ -20,3 +20,5 @@ if [ -n "$foundpkg" ]; then
   /bin/launchctl load -F "<%= service.service_file %>"
 <%- end -%>
 fi
+
+<%= File.read("resources/osx/postinstall-extras") if File.exist?("resources/osx/postinstall-extras") %>
