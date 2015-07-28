@@ -159,9 +159,9 @@ class Vanagon
         @name = name
         @make = "/opt/csw/bin/gmake"
         @tar = "/usr/sfw/bin/gtar"
-        @patch = "/opt/csw/bin/gpatch"
+        @patch = "/usr/bin/gpatch"
         # solaris 10
-        @num_cores = "/usr/bin/kstat cpu_info | /usr/xpg4/bin/grep -E '[[:space:]]+core_id[[:space:]]' | wc -l"
+        @num_cores = "/usr/bin/kstat cpu_info | awk '{print $1}' | grep '^core_id$' | wc -l"
         super(name)
       end
     end
