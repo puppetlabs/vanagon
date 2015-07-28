@@ -8,12 +8,13 @@ class Vanagon
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
          # Setup build directories
-        ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload}'",
+        ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload,plugins}'",
          "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
          # Grab distribution xml, scripts and other external resources
          "cp #{project.name}-installer.xml $(tempdir)/osx/build/",
          "cp scripts/* $(tempdir)/osx/build/scripts/",
-         "if [ -d resources/osx/productbuild ] ; then cp resources/osx/productbuild/* $(tempdir)/osx/build/resources/; fi",
+         "if [ -d resources/osx/productbuild/resources ] ; then cp resources/osx/productbuild/resources/* $(tempdir)/osx/build/resources/; fi",
+         "if [ -d resources/osx/productbuild/plugins ] ; then cp -r resources/osx/productbuild/plugins/* $(tempdir)/osx/build/plugins/; fi",
          # Unpack the project
          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
          # Package the project
@@ -28,6 +29,7 @@ class Vanagon
           --identifier #{project.identifier}.#{project.name}-installer \
           --package-path payload/ \
           --resources $(tempdir)/osx/build/resources  \
+          --plugins $(tempdir)/osx/build/plugins  \
           pkg/#{project.name}-#{project.version}-installer.pkg)",
          # Create a dmg and ship it to the output dir
          "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \

@@ -11,3 +11,5 @@ if [ -n "$foundpkg" ]; then
   fi
 <%- end -%>
 fi
+
+<%= File.read("resources/osx/preinstall-extras") if File.exist?("resources/osx/preinstall-extras") %>
