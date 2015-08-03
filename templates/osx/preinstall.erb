@@ -1,7 +1,13 @@
 #!/bin/bash
 
+# If we appear to be in an upgrade unload services.
+
+foundpkg=`/usr/sbin/pkgutil --volume "$3" --pkgs=<%= @identifier-%>.<%= @name -%>`
+
+if [ -n "$foundpkg" ]; then
 <%- get_services.each do |service| -%>
-if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
-  /bin/launchctl unload "<%= service.service_file %>"
-fi
+  if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
+    /bin/launchctl unload "<%= service.service_file %>"
+  fi
 <%- end -%>
+fi
