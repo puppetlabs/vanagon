@@ -144,7 +144,7 @@ class Vanagon
         end
 
         unless http.empty?
-          command << "echo -n > /var/tmp/noask; #{noask_command}"
+          command << "echo -n > /var/tmp/noask; #{noask_command}; "
           command << http.join('; ')
         end
 
