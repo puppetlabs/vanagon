@@ -161,7 +161,7 @@ class Vanagon
         @tar = "/usr/sfw/bin/gtar"
         @patch = "/usr/bin/gpatch"
         # solaris 10
-        @num_cores = "/usr/bin/kstat cpu_info | awk '{print $1}' | grep '^core_id$' | wc -l"
+        @num_cores = "/usr/bin/kstat cpu_info | awk '{print $$1}' | grep '^core_id$$' | wc -l"
         super(name)
       end
     end
