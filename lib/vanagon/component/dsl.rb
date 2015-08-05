@@ -153,17 +153,21 @@ class Vanagon
           target_service_file = File.join(@component.platform.servicedir, service_name)
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0755'
+          default_mode = '0644'
         when "systemd"
           target_service_file = File.join(@component.platform.servicedir, "#{service_name}.service")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
+          default_mode = '0644'
         when "launchd"
           target_service_file = File.join(@component.platform.servicedir, "#{service_name}.plist")
           target_mode = '0644'
+          default_mode = '0644'
         when "smf"
           target_service_file = File.join(@component.platform.servicedir, service_type.to_s, "#{service_name}.xml")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
+          default_mode = '0755'
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
@@ -172,7 +176,7 @@ class Vanagon
         install_file(service_file, target_service_file, mode: target_mode)
 
         if default_file
-          install_file(default_file, target_default_file)
+          install_file(default_file, target_default_file, mode: default_mode)
           configfile(target_default_file)
         end
 
