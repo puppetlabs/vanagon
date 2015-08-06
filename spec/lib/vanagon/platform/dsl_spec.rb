@@ -7,14 +7,14 @@ describe 'Vanagon::Platform::DSL' do
   let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
   let (:nxos_5_platform_block) { "platform 'nxos-5-fixture'      do |plat| end" }
 
-  let(:apt_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy" }
-  let(:apt_definition_deb) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.deb" }
+  let(:apt_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy" }
+  let(:apt_definition_deb) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.deb" }
   let(:apt_definition_gpg) { "http://pl-build-tools.delivery.puppetlabs.net/debian/keyring.gpg" }
-  let(:el_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64" }
-  let(:el_definition_rpm) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
-  let(:sles_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.2/repo_configs/rpm/pl-puppet-agent-0.2.2-sles-12-x86_64" }
-  let(:sles_definition_rpm) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
-  let(:nxos_definition) { "http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-nxos-5-x86_64.repo" }
+  let(:el_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64" }
+  let(:el_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
+  let(:sles_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.2/repo_configs/rpm/pl-puppet-agent-0.2.2-sles-12-x86_64" }
+  let(:sles_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
+  let(:nxos_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-nxos-5-x86_64.repo" }
 
   let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
