@@ -195,7 +195,7 @@ class Vanagon
       # @param definition [String] the repo setup file, must be a valid uri, fetched with curl
       # @param gpg_key [String] optional gpg key to be fetched via curl and installed
       def apt_repo(definition, gpg_key = nil)
-        # i.e., definition = http://builds.puppetlabs.lan/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
+        # i.e., definition = http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
         # parse the definition and gpg_key if set to ensure they are both valid URIs
         definition = URI.parse definition
         gpg_key = URI.parse gpg_key if gpg_key
