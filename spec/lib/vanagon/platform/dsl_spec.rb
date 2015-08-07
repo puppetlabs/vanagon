@@ -31,7 +31,7 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('debian-test-fixture')
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition_deb)
-      expect(plat._platform.provisioning).to include("curl -o local.deb '#{apt_definition_deb}'; dpkg -i local.deb; rm -f local.deb")
+      expect(plat._platform.provisioning).to include("curl -o local.deb '#{apt_definition_deb}' && dpkg -i local.deb; rm -f local.deb")
     end
 
     it "installs a gpg key if given one" do

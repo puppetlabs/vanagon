@@ -200,11 +200,11 @@ class Vanagon
         definition = URI.parse definition
         gpg_key = URI.parse gpg_key if gpg_key
 
-        self.provision_with "apt-get -qq install curl"
+        self.provision_with "apt-get -qq update && apt-get -qq install curl"
         if definition.scheme =~ /^(http|ftp)/
           if File.extname(definition.path) == '.deb'
             # repo definition is an deb (like puppetlabs-release)
-            self.provision_with "curl -o local.deb '#{definition}'; dpkg -i local.deb; rm -f local.deb"
+            self.provision_with "curl -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
           else
             reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
             reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
