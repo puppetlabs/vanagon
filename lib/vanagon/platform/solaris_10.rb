@@ -35,6 +35,7 @@ class Vanagon
                -e '/^[fd] [^ ]\\+ .*[/]s\\?bin/ {s/root sys$$/root bin/}' \
                -e '/^[fd] [^ ]\\+ .*[/]lib[/][^/ ]\\+ / {s/root sys$$/root bin/}' \
                -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so / {s/root sys$$/root bin/}' >> ../packaging/proto) ],
+          %Q[(cd $(tempdir); #{project.get_directories.map {|dir| "/opt/csw/bin/ggrep -q 'd none #{dir.path.sub(/^\//,'')}' packaging/proto || echo 'd none #{dir.path.sub(/^\//,'')} #{dir.mode || '0755'} #{dir.owner || 'root'} #{dir.group || 'sys'}' >> packaging/proto"}.join('; ')})],
 
           # Actually build the package
           "pkgmk -f $(tempdir)/packaging/proto -b $(tempdir)/#{name_and_version} -o -d $(tempdir)/pkg/",
@@ -144,7 +145,7 @@ class Vanagon
         end
 
         unless http.empty?
-          command << "echo -n > /var/tmp/noask; #{noask_command}"
+          command << "echo -n > /var/tmp/noask; #{noask_command}; "
           command << http.join('; ')
         end
 
@@ -161,7 +162,7 @@ class Vanagon
         @tar = "/usr/sfw/bin/gtar"
         @patch = "/usr/bin/gpatch"
         # solaris 10
-        @num_cores = "/usr/bin/kstat cpu_info | awk '{print $1}' | grep '^core_id$' | wc -l"
+        @num_cores = "/usr/bin/kstat cpu_info | awk '{print $$1}' | grep '^core_id$$' | wc -l"
         super(name)
       end
     end
