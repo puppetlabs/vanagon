@@ -90,6 +90,14 @@ install -d %{buildroot}
   cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
+# Generate a list of directories and append it to the file list. RPMv4
+# automatically does this implicitly, but RPMv5 is more strict and you
+# need to list the dirs for them to be packaged properly.
+<%- get_directories.map {|d| "%{buildroot}#{d.path}"}.each do |dir| -%>
+  find <%= dir %> -type d | sed -e "s#%{buildroot}##" >> dir-list-rpm
+<%- end -%>
+cat dir-list-rpm | uniq >> %{SOURCE1}
+
 %pre
 <%- if @user -%>
 # Add our user and group
