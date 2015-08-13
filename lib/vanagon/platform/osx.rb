@@ -69,7 +69,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the osx package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-#{project.release}-#{@os_name}-#{@os_version}-#{@architecture}.dmg"
+        "#{project.name}-#{project.version}-#{project.release}.#{@codename}.dmg"
       end
 
       # Get the expected output dir for the osx packages. This allows us to
@@ -77,7 +77,7 @@ class Vanagon
       #
       # @return [String] relative path to where osx packages should be staged
       def output_dir(target_repo = "")
-        File.join("apple", target_repo)
+        File.join("apple", @os_version, target_repo, @architecture)
       end
 
       # Constructor. Sets up some defaults for the osx platform and calls the parent constructor
