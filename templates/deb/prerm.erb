@@ -5,8 +5,8 @@
   #
   <%- if @platform.servicetype == "systemd" -%>
 if [ "$1" = remove ]; then
-  systemctl --no-reload disable <%= service %>.service > /dev/null 2>&1 || :
-  systemctl stop <%= service %>.service > /dev/null 2>&1 || :
+  systemctl --no-reload disable <%= service.name %>.service > /dev/null 2>&1 || :
+  systemctl stop <%= service.name %>.service > /dev/null 2>&1 || :
 fi
 
   <%- elsif @platform.servicetype == "sysv" -%>
