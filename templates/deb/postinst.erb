@@ -5,9 +5,9 @@
   #
   <%- if @platform.servicetype == "systemd" -%>
 if [ -z "$2" ]; then
-  systemctl enable <%= service %>.service >/dev/null || :
+  systemctl enable <%= service.name %>.service >/dev/null || :
 else
-  systemctl try-restart <%= service %>.service >/dev/null || :
+  systemctl try-restart <%= service.name %>.service >/dev/null || :
 fi
   <%- elsif @platform.servicetype == "sysv" -%>
 if [ -x "<%= service.service_file %>" ]; then
