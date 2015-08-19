@@ -60,15 +60,19 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_source(workdir)
-      @source = Vanagon::Component::Source.source(@url, @options, workdir)
-      @source.fetch
-      @source.verify
-      @extract_with = @source.extract(@platform.tar) if @source.respond_to?(:extract)
-      @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
-      @dirname = @source.dirname
+      if @url
+        @source = Vanagon::Component::Source.source(@url, @options, workdir)
+        @source.fetch
+        @source.verify
+        @extract_with = @source.extract(@platform.tar) if @source.respond_to?(:extract)
+        @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
+        @dirname = @source.dirname
 
-      # Git based sources probably won't set the version, so we load it if it hasn't been already set
-      @version ||= @source.version
+        # Git based sources probably won't set the version, so we load it if it hasn't been already set
+        @version ||= @source.version
+      else
+        warn "No source given for component '#{@name}'"
+      end
     end
 
     # Fetches patches if any are provided for the project.
