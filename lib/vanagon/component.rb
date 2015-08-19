@@ -7,6 +7,7 @@ class Vanagon
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
     attr_accessor :configfiles, :directories, :replaces, :provides, :cleanup_source, :environment
+    attr_accessor :sources
 
     # Loads a given component from the configdir
     #
@@ -52,6 +53,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @environment = {}
+      @sources = []
     end
 
     # Fetches the primary source for the component. As a side effect, also sets
@@ -69,6 +71,18 @@ class Vanagon
 
       # Git based sources probably won't set the version, so we load it if it hasn't been already set
       @version ||= @source.version
+    end
+
+
+    # Fetches secondary sources for the component. These are just dumped into the workdir currently.
+    #
+    # @param workdir [String] working directory to put the source into
+    def get_sources(workdir)
+      @sources.each do |source|
+        cur_source = Vanagon::Component::Source.source(source.url, {:ref => source.ref, :sum => source.sum}, workdir)
+        cur_source.fetch
+        cur_source.verify
+      end
     end
 
     # Fetches patches if any are provided for the project.
