@@ -61,6 +61,8 @@ class Vanagon
     def fetch_sources(workdir)
       @components.each do |component|
         component.get_source(workdir)
+        # Fetch secondary sources
+        component.get_sources(workdir)
         component.get_patches(workdir)
       end
     end
