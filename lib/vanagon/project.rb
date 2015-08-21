@@ -74,7 +74,7 @@ class Vanagon
       files = []
       files.push @version_file if @version_file
       files.push @components.map {|comp| comp.files }.flatten
-      files.flatten
+      files.flatten.uniq
     end
 
     # Collects all of the requires for both the project and its components
@@ -105,7 +105,7 @@ class Vanagon
     #
     # @return [Array] array of configfiles installed by components of the project
     def get_configfiles
-      @components.map {|comp| comp.configfiles }.flatten
+      @components.map {|comp| comp.configfiles }.flatten.uniq
     end
 
     # Collects any directories declared by the project and components
@@ -115,7 +115,7 @@ class Vanagon
       dirs = []
       dirs.push @directories
       dirs.push @components.map {|comp| comp.directories }.flatten
-      dirs.flatten
+      dirs.flatten.uniq
     end
 
     # Gets the highest level directories declared by the project

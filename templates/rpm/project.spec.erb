@@ -90,13 +90,22 @@ install -d %{buildroot}
   cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
-# Generate a list of directories and append it to the file list. RPMv4
-# automatically does this implicitly, but RPMv5 is more strict and you
-# need to list the dirs for them to be packaged properly.
-<%- get_directories.map {|d| "%{buildroot}#{d.path}"}.each do |dir| -%>
-  find <%= dir %> -type d | sed -e "s#%{buildroot}##" >> dir-list-rpm
+<%- if @platform.is_cisco_wrlinux? -%>
+  # Generate a list of directories and append it to the file list. RPMv4
+  # automatically does this implicitly, but RPMv5 is more strict and you
+  # need to list the dirs for them to be packaged properly.
+  <%- get_directories.map {|d| "%{buildroot}#{d.path}"}.each do |dir| -%>
+    find <%= dir %> -type d | sed -e "s#%{buildroot}##" | sed -e 's/\(^.*\s.*$\)/"\1"/g' >> dir-list-rpm
+  <%- end -%>
+  cat dir-list-rpm | sort | uniq >> %{SOURCE1}
 <%- end -%>
-cat dir-list-rpm | uniq >> %{SOURCE1}
+
+# Here we explicitly remove the directories and files that we list in the
+# %files section separately because rpm3 on aix errors on duplicate files in
+# the package.
+<%- (get_directories + get_files + get_configfiles).map do |filething| -%>
+  PATH=/opt/freeware/bin:$PATH sed -i 's|^<%= filething.path.include?(" ") ? %Q["#{filething.path}"] : filething.path %>$||g' %{SOURCE1}
+<%- end -%>
 
 %pre
 <%- if @user -%>

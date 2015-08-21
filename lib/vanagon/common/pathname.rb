@@ -3,7 +3,7 @@ class Vanagon
     class Pathname
       attr_accessor :path, :mode, :owner, :group
       def initialize(path, mode = nil, owner = nil, group = nil)
-        @path = path
+        @path = File.expand_path(path)
         @mode = mode if mode
         @owner = owner if owner
         @group = group if group
@@ -24,6 +24,21 @@ class Vanagon
           other.mode == self.mode && \
           other.owner == self.owner && \
           other.group == self.group
+      end
+
+      # Override hash for this object, so that we can sanely remove duplicate pathnames
+      #
+      # @return [Fixnum] a hash for the Pathname, derived from the hashes of its attributes
+      def hash
+        [@path, @mode, @owner, @group].hash
+      end
+
+      # Override eql? for this object, so that we can sanely remove duplicate pathnames
+      #
+      # @param other [Vanagon::Common::Pathname] the other Pathname object to compare against
+      # @return [true, false] true if all attributes have equal values. false otherwise.
+      def eql?(other)
+        self == other
       end
     end
   end
