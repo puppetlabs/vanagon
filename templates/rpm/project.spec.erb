@@ -98,7 +98,13 @@ install -d %{buildroot}
     find <%= dir %> -type d | sed -e "s#%{buildroot}##" | sed -e 's/\(^.*\s.*$\)/"\1"/g' >> dir-list-rpm
   <%- end -%>
   cat dir-list-rpm | sort | uniq >> %{SOURCE1}
+<%- end -%>
 
+# Here we explicitly remove the directories and files that we list in the
+# %files section separately because rpm3 on aix errors on duplicate files in
+# the package.
+<%- (get_directories + get_files + get_configfiles).map do |filething| -%>
+  PATH=/opt/freeware/bin:$PATH sed -i 's|^<%= filething.path.include?(" ") ? %Q["#{filething.path}"] : filething.path %>$||g' %{SOURCE1}
 <%- end -%>
 
 %pre
