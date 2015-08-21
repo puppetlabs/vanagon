@@ -13,6 +13,18 @@ describe "Vanagon::Common::Pathname" do
     end
   end
 
+  describe "#initialize" do
+    it 'strips trailing slashes off of the path to normalize it' do
+      dir = Vanagon::Common::Pathname.new("/a/b/c/")
+      expect(dir.path).to eq("/a/b/c")
+    end
+
+    it 'removes extra / from the pathname to normalize it' do
+      dir = Vanagon::Common::Pathname.new("/a//b///c///")
+      expect(dir.path).to eq("/a/b/c")
+    end
+  end
+
   describe "equality" do
     it "is not equal if the paths differ" do
       dir1 = Vanagon::Common::Pathname.new("/a/b/c")
