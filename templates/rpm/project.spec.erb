@@ -125,11 +125,7 @@ install -d %{buildroot}
       %systemd_post <%= service.name %>.service
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
-    <%- if @platform.is_sles? -%>
-      chkconfig --add <%= service.name %> >/dev/null 2>&1 || :
-    <%- else -%>
-      chkconfig --add <%= service.name %>
-    <%- end -%>
+    chkconfig --add <%= service.name %> >/dev/null 2>&1 || :
   <%- end -%>
 <%- end -%>
 
@@ -145,7 +141,7 @@ install -d %{buildroot}
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
     if [ $1 -ge 1 ]; then
-      /sbin/service <%= service.name %> condrestart
+      /sbin/service <%= service.name %> condrestart || :
     fi
   <%- end -%>
 
@@ -162,8 +158,10 @@ install -d %{buildroot}
       %systemd_preun <%= service.name %>.service
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
-    /sbin/service <%= service.name %> stop >/dev/null 2>&1
-    chkconfig --del <%= service.name %>
+    if [ $1 = 0 ]; then
+      /sbin/service <%= service.name %> stop >/dev/null 2>&1 || :
+      chkconfig --del <%= service.name %> || :
+    fi
   <%- end -%>
 <%- end -%>
 
