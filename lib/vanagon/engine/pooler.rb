@@ -20,8 +20,8 @@ class Vanagon
           '{"' + @platform.vcloud_name + '":"1"}'
         )
         if response and response["ok"]
-          Vanagon::Driver.logger.info "Reserving #{response[@platform.vcloud_name]['hostname']} (#{@platform.vcloud_name})"
           @target = response[@platform.vcloud_name]['hostname'] + '.' + response['domain']
+          Vanagon::Driver.logger.info "Reserving #{@target} (#{@platform.vcloud_name})"
 
           tags = {
             'tags' => {
