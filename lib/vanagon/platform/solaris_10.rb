@@ -18,6 +18,11 @@ class Vanagon
 
           # Unpack the project and stage the packaging artifacts
           "gunzip -c #{name_and_version}.tar.gz | '#{@tar}' -C '$(tempdir)' -xf -",
+
+          # Move bill-of-materials into a docdir
+          "mkdir -p $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}",
+          "mv $(tempdir)/#{name_and_version}/bill-of-materials $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}/bill-of-materials",
+
           "rm #{name_and_version}.tar.gz",
           "cp -r packaging $(tempdir)/",
 
