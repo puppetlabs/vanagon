@@ -8,13 +8,19 @@ set name=description value="<%= @description %>"
 set name=variant.opensolaris.zone value=global value=nonglobal
 set name=variant.arch value="<%= @platform.architecture %>"
 
+<%
+  def strip_and_escape(str)
+    Regexp.escape(str.sub(/^\//, ''))
+  end
+%>
+
 # Add any needed dependencies
 <%- get_requires.each do |requirement| -%>
 depend fmri=pkg:/<%= requirement %> type=require
 <%- end -%>
 
 <%- get_root_directories.each do |dir| -%>
-<transform dir path=<%= dir.split('/')[0..-2].join('/').gsub(/^\//, '') %>$ -> drop>
+<transform dir path=<%= strip_and_escape(dir.split('/')[0..-2].join('/')) %>$ -> drop>
 <%- end -%>
 
 <%- if has_services? -%>
@@ -24,32 +30,32 @@ depend fmri=pkg:/<%= requirement %> type=require
 
 <%- get_configfiles.each do |config| -%>
 # Preserve the old conf file on upgrade
-<transform file path=<%= config.path.gsub(/^\//, '') %>$ -> add preserve renamenew>
+<transform file path=<%= strip_and_escape(config.path) %>$ -> add preserve renamenew>
 <%- end -%>
 
 # Set any required owner, group or mode transformations
 <%- (get_configfiles + get_files).select { |pathname| pathname.has_overrides? }.uniq.each do |file| -%>
   <%- if file.group -%>
-    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set group <%= file.group %>>
+    <transform file path=<%= strip_and_escape(file.path) %>$ -> set group <%= file.group %>>
   <%- end -%>
   <%- if file.owner -%>
-    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set owner <%= file.owner %>>
+    <transform file path=<%= strip_and_escape(file.path) %>$ -> set owner <%= file.owner %>>
   <%- end -%>
   <%- if file.mode -%>
-    <transform file path=<%= file.path.gsub(/^\//, '') %>$ -> set mode <%= file.mode %>>
+    <transform file path=<%= strip_and_escape(file.path) %>$ -> set mode <%= file.mode %>>
   <%- end -%>
 <%- end -%>
 
 # Set any required owner, group or mode transformations
 <%- get_directories.select { |pathname| pathname.has_overrides? }.uniq.each do |dir| -%>
   <%- if dir.group -%>
-    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set group <%= dir.group %>>
+    <transform dir path=<%= strip_and_escape(dir.path) %>$ -> set group <%= dir.group %>>
   <%- end -%>
   <%- if dir.owner -%>
-    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set owner <%= dir.owner %>>
+    <transform dir path=<%= strip_and_escape(dir.path) %>$ -> set owner <%= dir.owner %>>
   <%- end -%>
   <%- if dir.mode -%>
-    <transform dir path=<%= dir.path.gsub(/^\//, '') %>$ -> set mode <%= dir.mode %>>
+    <transform dir path=<%= strip_and_escape(dir.path) %>$ -> set mode <%= dir.mode %>>
   <%- end -%>
 <%- end -%>
 
