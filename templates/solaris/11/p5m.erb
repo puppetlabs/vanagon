@@ -28,6 +28,9 @@ depend fmri=pkg:/<%= requirement %> type=require
 <transform file path=(var|lib)/svc/manifest/.*\.xml$ -> default restart_fmri svc:/system/manifest-import:default>
 <%- end -%>
 
+# Move the bill-of-materials into a docdir for the package to avoid conflicts
+<transform file path=bill-of-materials$ -> set path usr/share/doc/<%= @name %>/bill-of-materials>
+
 <%- get_configfiles.each do |config| -%>
 # Preserve the old conf file on upgrade
 <transform file path=<%= strip_and_escape(config.path) %>$ -> add preserve renamenew>

@@ -16,6 +16,11 @@ class Vanagon
          "if [ -d resources/osx/productbuild ] ; then cp -r resources/osx/productbuild/* $(tempdir)/osx/build/; fi",
          # Unpack the project
          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
+
+         # Move bill-of-materials into a docdir
+         "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/share/doc/#{project.name}",
+         "mv $(tempdir)/osx/build/root/#{project.name}-#{project.version}/bill-of-materials $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/share/doc/#{project.name}/bill-of-materials",
+
          # Package the project
          "(cd $(tempdir)/osx/build/; #{@pkgbuild} --root root/#{project.name}-#{project.version} \
           --scripts $(tempdir)/osx/build/scripts \
