@@ -48,7 +48,9 @@ class Vanagon
         defines =  %Q{--define '_topdir $(tempdir)/rpmbuild' }
         # RPM doesn't allow dashes in the os_name. This was added to
         # convert cisco-wrlinux to cisco_wrlinux
-        defines << %Q{--define 'dist .#{@os_name.gsub('-','_')}#{@os_version}' }
+        unless is_aix?
+          defines << %Q{--define 'dist .#{@os_name.gsub('-','_')}#{@os_version}' }
+        end
         defines
       end
 
