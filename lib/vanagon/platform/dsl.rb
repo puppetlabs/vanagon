@@ -272,6 +272,18 @@ class Vanagon
           end
         end
       end
+
+      # Generic adder for build repositories
+      #
+      # @param *args [Array<String>] List of arguments to pass on to the platform specific method
+      # @raise [Vanagon::Error] an arror is raised if the current platform does not define add_repository
+      def add_build_repository(*args)
+        if @platform.respond_to?(:add_repository)
+          self.provision_with @platform.send(:add_repository, *args)
+        else
+          raise Vanagon::Error.new("Adding a build repository not defined for #{@platform.name}")
+        end
+      end
     end
   end
 end
