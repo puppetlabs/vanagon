@@ -84,14 +84,14 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('sles-test-fixture')
       plat.instance_eval(sles_platform_block)
       plat.zypper_repo(sles_definition)
-      expect(plat._platform.provisioning).to be_include("yes | zypper -n --no-gpg-checks ar -t YUM --repo '#{sles_definition}'")
+      expect(plat._platform.provisioning).to include("yes | zypper -n --no-gpg-checks ar -t YUM --repo '#{sles_definition}'")
     end
 
     it "installs a sles rpm when given a rpm" do
       plat = Vanagon::Platform::DSL.new('sles-test-fixture')
       plat.instance_eval(sles_platform_block)
       plat.zypper_repo(sles_definition_rpm)
-      expect(plat._platform.provisioning).to be_include("curl -o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+      expect(plat._platform.provisioning).to include("curl -o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
     end
   end
 
