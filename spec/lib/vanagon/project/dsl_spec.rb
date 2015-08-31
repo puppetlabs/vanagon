@@ -24,7 +24,7 @@ end" }
       proj = Vanagon::Project::DSL.new('test-fixture', {})
       proj.instance_eval(project_block)
       proj.directory('/a/b/c/d', mode: '0755')
-      expect(proj._project.directories).to be_include(Vanagon::Common::Pathname.new('/a/b/c/d', '0755'))
+      expect(proj._project.directories).to include(Vanagon::Common::Pathname.new('/a/b/c/d', '0755'))
     end
   end
 

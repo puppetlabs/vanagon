@@ -6,6 +6,8 @@ describe 'Vanagon::Platform::DSL' do
   let (:el_6_platform_block)   { "platform 'el-6-fixture'        do |plat| end" }
   let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
   let (:nxos_5_platform_block) { "platform 'nxos-5-fixture'      do |plat| end" }
+  let (:solaris_10_platform_block) { "platform 'solaris-10-fixture'      do |plat| end" }
+  let (:solaris_11_platform_block) { "platform 'solaris-11-fixture'      do |plat| end" }
 
   let(:apt_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy" }
   let(:apt_definition_deb) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.deb" }
@@ -82,14 +84,29 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('sles-test-fixture')
       plat.instance_eval(sles_platform_block)
       plat.zypper_repo(sles_definition)
-      expect(plat._platform.provisioning).to be_include("yes | zypper -n --no-gpg-checks ar -t YUM --repo '#{sles_definition}'")
+      expect(plat._platform.provisioning).to include("yes | zypper -n --no-gpg-checks ar -t YUM --repo '#{sles_definition}'")
     end
 
     it "installs a sles rpm when given a rpm" do
       plat = Vanagon::Platform::DSL.new('sles-test-fixture')
       plat.instance_eval(sles_platform_block)
       plat.zypper_repo(sles_definition_rpm)
-      expect(plat._platform.provisioning).to be_include("curl -o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+      expect(plat._platform.provisioning).to include("curl -o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+    end
+  end
+
+  describe '#add_build_repository' do
+    it 'hands off to the platform specific method if defined' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_11_platform_block)
+      plat.add_build_repository("http://solaris-repo.puppetlabs.com", "puppetlabs.com")
+      expect(plat._platform.provisioning).to include("pkg set-publisher -G '*' -g http://solaris-repo.puppetlabs.com puppetlabs.com")
+    end
+
+    it 'raises an error if the platform does not define "add_repository"' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_10_platform_block)
+      expect {plat.add_build_repository("anything")}.to raise_error(Vanagon::Error, /Adding a build repository not defined/)
     end
   end
 end

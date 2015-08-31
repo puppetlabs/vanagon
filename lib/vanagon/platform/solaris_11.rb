@@ -55,6 +55,16 @@ class Vanagon
         "group groupname=#{user.group}"
       end
 
+      # Helper to setup an IPS build repo on a target system
+      # http://docs.oracle.com/cd/E36784_01/html/E36802/gkkek.html
+      #
+      # @param uri [String] uri of the repository to add
+      # @param origin [String] origin of the repository
+      # @return [String] the command required to add an ips build repository
+      def add_repository(uri, origin)
+        "pkg set-publisher -G '*' -g #{uri} #{origin}"
+      end
+
       # Generate the scripts required to add a user to the package generated.
       # This will also update the user if it has changed.
       #
