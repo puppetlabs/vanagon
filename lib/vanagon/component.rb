@@ -74,6 +74,9 @@ class Vanagon
         @version ||= @source.version
       else
         warn "No source given for component '#{@name}'"
+
+        # If there is no source, we don't want to try to change directories, so we just change to the current directory.
+        @dirname = './'
       end
     end
 
