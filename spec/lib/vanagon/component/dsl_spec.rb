@@ -43,6 +43,24 @@ end" }
     plat._platform
   }
 
+  let (:dummy_platform_aix) {
+    plat = Vanagon::Platform::DSL.new('aix-7.1-ppc')
+    plat.instance_eval("platform 'aix-7.1-ppc' do |plat|
+                       plat.servicetype 'aix'
+                       plat.servicedir '/etc/rc.d'
+                       plat.defaultdir '/etc/rc.d'
+                    end")
+    plat._platform
+  }
+
+
+
+  let(:platform) { double(Vanagon::Platform) }
+
+  before do
+    allow(platform).to receive(:install).and_return('install')
+  end
+
   describe '#load_from_json' do
     it "sets the ref and url based on the json fixture" do
       comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
@@ -245,15 +263,22 @@ end" }
   end
 
   describe '#install_file' do
+    it 'installs correctly using GNU install on AIX' do
+      comp = Vanagon::Component::DSL.new('install-file-test', {}, dummy_platform_aix)
+      comp.install_file('thing1', 'place/to/put/thing1')
+      expect(comp._component.install).to include("/opt/freeware/bin/install -d 'place/to/put'")
+      expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+    end
+
     it 'adds the correct commands to the install to copy the file' do
-      comp = Vanagon::Component::DSL.new('install-file-test', {}, {})
+      comp = Vanagon::Component::DSL.new('install-file-test', {}, platform)
       comp.install_file('thing1', 'place/to/put/thing1')
       expect(comp._component.install).to include("install -d 'place/to/put'")
       expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
     end
 
     it 'adds an owner and group to the installation' do
-      comp = Vanagon::Component::DSL.new('install-file-test', {}, {})
+      comp = Vanagon::Component::DSL.new('install-file-test', {}, platform)
       comp.install_file('thing1', 'place/to/put/thing1', owner: 'bob', group: 'timmy', mode: '0022')
       expect(comp._component.install).to include("install -d 'place/to/put'")
       expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
@@ -325,7 +350,7 @@ end" }
 
   describe '#link' do
     it 'adds the correct command to the install for the component' do
-      comp = Vanagon::Component::DSL.new('link-test', {}, {})
+      comp = Vanagon::Component::DSL.new('link-test', {}, platform)
       comp.link('link-source', '/place/to/put/things')
       expect(comp._component.install).to include("install -d '/place/to/put'")
       expect(comp._component.install).to include("ln -s 'link-source' '/place/to/put/things'")

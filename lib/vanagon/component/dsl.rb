@@ -191,7 +191,7 @@ class Vanagon
       # @param owner  [String] owner of the file
       # @param group  [String] group owner of the file
       def install_file(source, target, mode: '0644', owner: nil, group:  nil )
-        @component.install << "install -d '#{File.dirname(target)}'"
+        @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
         @component.files << Vanagon::Common::Pathname.new(target, mode, owner, group)
       end
@@ -224,7 +224,7 @@ class Vanagon
       # @param source [String] path to the file to symlink
       # @param target [String] path to the desired symlink
       def link(source, target)
-        @component.install << "install -d '#{File.dirname(target)}'"
+        @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "ln -s '#{source}' '#{target}'"
       end
 

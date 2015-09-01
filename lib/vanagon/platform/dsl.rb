@@ -90,6 +90,12 @@ class Vanagon
         @platform.rpmbuild = rpmbuild_cmd
       end
 
+      # Set the path to the install command
+      # @param install_cmd [String] Full path to install with arguments to be used by default
+      def install(install_cmd)
+        @platform.install = install_cmd
+      end
+
       # Set the path to patch for the platform
       #
       # @param patch_cmd [String] Full path to the patch command for the platform
