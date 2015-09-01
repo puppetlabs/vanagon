@@ -26,6 +26,7 @@ depend fmri=pkg:/<%= requirement %> type=require
 <%- if has_services? -%>
 # Make sure smf manifests cause manifest-import to happen
 <transform file path=(var|lib)/svc/manifest/.*\.xml$ -> default restart_fmri svc:/system/manifest-import:default>
+<transform dir path=(var|lib)/svc/manifest$ -> drop>
 <%- end -%>
 
 # Move the bill-of-materials into a docdir for the package to avoid conflicts
