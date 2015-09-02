@@ -6,7 +6,7 @@
 
 Name:           <%= @name %>
 Version:        <%= @version %>
-Release:        1%{?dist}
+Release:        <%= @release %>%{?dist}
 Summary:        <%= @description.lines.first.chomp %>
 Vendor:         <%= @vendor.match(/^(.*) <.*>$/)[1] %>
 License:        <%= @license %>
@@ -180,5 +180,5 @@ install -d %{buildroot}
 <%- end -%>
 
 %changelog
-* <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-1
-- Build for <%= @version %>
+* <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-<%= @release %>
+- Build for <%= @version %>-<%= @release %>

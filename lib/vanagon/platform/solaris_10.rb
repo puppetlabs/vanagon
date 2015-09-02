@@ -110,7 +110,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the solaris package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}.#{@architecture}.pkg.gz"
+        "#{project.name}-#{project.version}-#{project.release}.#{@architecture}.pkg.gz"
       end
 
       # Get the expected output dir for the solaris 10 packages. This allows us to

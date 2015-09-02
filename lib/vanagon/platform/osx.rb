@@ -27,14 +27,14 @@ class Vanagon
           --identifier #{project.identifier}.#{project.name} \
           --version #{project.version} \
           --install-location / \
-          payload/#{project.name}-#{project.version}.pkg)",
+          payload/#{project.name}-#{project.version}-#{project.release}.pkg)",
          # Create a custom installer using the pkg above
          "(cd $(tempdir)/osx/build/; #{@productbuild} --distribution #{project.name}-installer.xml \
           --identifier #{project.identifier}.#{project.name}-installer \
           --package-path payload/ \
           --resources $(tempdir)/osx/build/resources  \
           --plugins $(tempdir)/osx/build/plugins  \
-          pkg/#{project.name}-#{project.version}-installer.pkg)",
+          pkg/#{project.name}-#{project.version}-#{project.release}-installer.pkg)",
          # Create a dmg and ship it to the output dir
          "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \
           -srcfolder pkg/ dmg/#{project.package_name})",
@@ -69,7 +69,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the osx package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-#{@os_name}-#{@os_version}-#{@architecture}.dmg"
+        "#{project.name}-#{project.version}-#{project.release}-#{@os_name}-#{@os_version}-#{@architecture}.dmg"
       end
 
       # Get the expected output dir for the osx packages. This allows us to

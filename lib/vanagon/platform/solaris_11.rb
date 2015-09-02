@@ -88,21 +88,22 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the solaris package for this project
       def package_name(project)
-        "#{project.name}@#{ips_version(project.version)}.#{@architecture}.p5p"
+        "#{project.name}@#{ips_version(project.version, project.release)}.#{@architecture}.p5p"
       end
 
       # Method to transform a standard version into the format expected by IPS
       # packages
       #
       # @param version [String] Standard package version
+      # @param release [String] Standard package release
       # @return [String] version in IPS format
-      def ips_version(version)
+      def ips_version(version, release)
         version.gsub!(/[a-zA-Z]/, '')
         version.gsub!(/(^-)|(-$)/, '')
 
         # Here we strip leading 0 from version components but leave singular 0 on their own.
         version = version.split('.').map {|elem| elem.to_i }.join('.')
-        "#{version},5.11-1"
+        "#{version},5.11-#{release}"
       end
 
       # Get the expected output dir for the solaris 11 packages. This allows us to

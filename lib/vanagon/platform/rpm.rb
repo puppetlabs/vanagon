@@ -33,7 +33,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the rpm package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-1.#{project.noarch ? 'noarch' : @architecture}.rpm"
+        "#{project.name}-#{project.version}-#{project.release}.#{project.noarch ? 'noarch' : @architecture}.rpm"
       end
 
       # Get the expected output dir for the rpm packages. This allows us to
