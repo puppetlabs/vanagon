@@ -5,7 +5,7 @@ class Vanagon
     attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores, :tar
     attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
-    attr_accessor :docker_image, :ssh_port, :rpmbuild
+    attr_accessor :docker_image, :ssh_port, :rpmbuild, :install
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
@@ -99,6 +99,7 @@ class Vanagon
       @architecture = architecture
       @ssh_port = 22
       @provisioning = []
+      @install ||= "install"
     end
 
     # This allows instance variables to be accessed using the hash lookup syntax

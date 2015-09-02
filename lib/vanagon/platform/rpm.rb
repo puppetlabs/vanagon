@@ -66,6 +66,7 @@ class Vanagon
         @num_cores = "/bin/grep -c 'processor' /proc/cpuinfo"
         if is_aix?
           @num_cores = "lsdev -Cc processor |wc -l"
+          @install = "/opt/freeware/bin/install"
         end
         @rpmbuild = "/usr/bin/rpmbuild"
         super(name)
