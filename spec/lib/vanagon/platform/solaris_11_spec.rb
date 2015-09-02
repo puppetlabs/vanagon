@@ -27,7 +27,17 @@ describe "Vanagon::Platform::Solaris_11" do
       versions.each do |ver|
         plat = Vanagon::Platform::DSL.new(platform[:name])
         plat.instance_eval(platform[:block])
-        expect(plat._platform.ips_version(ver[:original])).to eq("#{ver[:final]},5.11-1")
+        expect(plat._platform.ips_version(ver[:original], '1')).to eq("#{ver[:final]},5.11-1")
+      end
+    end
+
+    it 'handles the release field correctly' do
+      1.upto(3) do |i|
+        versions.each do |ver|
+          plat = Vanagon::Platform::DSL.new(platform[:name])
+          plat.instance_eval(platform[:block])
+          expect(plat._platform.ips_version(ver[:original], i)).to eq("#{ver[:final]},5.11-#{i}")
+        end
       end
     end
   end
