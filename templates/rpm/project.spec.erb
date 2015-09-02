@@ -107,6 +107,13 @@ install -d %{buildroot}
   PATH=/opt/freeware/bin:$PATH sed -i 's|^<%= filething.path.include?(" ") ? %Q["#{filething.path}"] : filething.path %>$||g' %{SOURCE1}
 <%- end -%>
 
+# Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
+for entry in `cat %{SOURCE1}`; do
+  if [ -n "$entry" -a -d "$entry" ]; then
+    PATH=/opt/freeware/bin:$PATH sed -i "s|^\($entry\)\$|%dir \1|g" %{SOURCE1}
+  fi
+done
+
 %pre
 <%- if @user -%>
 # Add our user and group
