@@ -99,6 +99,9 @@ class Vanagon
       def ips_version(version)
         version.gsub!(/[a-zA-Z]/, '')
         version.gsub!(/(^-)|(-$)/, '')
+
+        # Here we strip leading 0 from version components but leave singular 0 on their own.
+        version = version.split('.').map {|elem| elem.to_i }.join('.')
         "#{version},5.11-1"
       end
 
