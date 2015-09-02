@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.11] - 2015-09-02
+### Added
+- Solaris 11 support
+- Support a custom release string in package names
+- Support platform-specific 'install' commands
+- Miscellaneous updates to better support Mac OS X, Solaris, and AIX
+
+### Changed
+- Updated Mac OS X package name and directory structure to match other platforms 
+
 ## [0.3.10] - 2015-08-26
 ### Added
 - Added a CHANGELOG.md to track high level user facing changes
@@ -17,4 +27,4 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.9...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.11...HEAD
