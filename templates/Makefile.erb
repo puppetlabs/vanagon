@@ -13,14 +13,14 @@ file-list-before-build:
 <%- if dirnames.empty? -%>
 	touch file-list-before-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %> -type f 2>/dev/null || find <%= dirnames.join(' ') %> -follow -type f) | sort | uniq > file-list-before-build
+	(find -L <%= dirnames.join(' ') %> 2>/dev/null || find <%= dirnames.join(' ') %> -follow) | sort | uniq > file-list-before-build
 <%- end -%>
 
 file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%- if dirnames.empty? -%>
 	touch file-list-after-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %> -type f 2>/dev/null || find <%= dirnames.join(' ') %> -follow -type f) | sort | uniq > file-list-after-build
+	(find -L <%= dirnames.join(' ') %>  2>/dev/null || find <%= dirnames.join(' ') %> -follow) | sort | uniq > file-list-after-build
 <%- end -%>
 
 <%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
