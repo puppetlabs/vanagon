@@ -1,4 +1,4 @@
-set name=pkg.fmri value="<%= @name %>@<%= @platform.ips_version(@version) %>"
+set name=pkg.fmri value="<%= @name %>@<%= @platform.ips_version(@version, @release) %>"
 set name=pkg.summary value="<%= @description.lines.first.chomp %>"
 set name=pkg.human-version value="<%= @version %>"
 set name=pkg.description value="<%= @description %>"

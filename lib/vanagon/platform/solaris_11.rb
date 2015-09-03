@@ -28,10 +28,10 @@ class Vanagon
           "(cd $(tempdir)/packaging; pkgmogrify -DARCH=`uname -p` #{project.name}.p5m.1 #{project.name}.p5m | pkgfmt > #{project.name}.p5m.2)",
           "pkglint $(tempdir)/packaging/#{project.name}.p5m.2",
           "pkgsend -s 'file://$(tempdir)/repo' publish -d '$(tempdir)/#{name_and_version}' --fmri-in-manifest '$(tempdir)/packaging/#{project.name}.p5m.2'",
-          "pkgrecv -s 'file://$(tempdir)/repo' -a -d 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version)}'",
+          "pkgrecv -s 'file://$(tempdir)/repo' -a -d 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'",
 
           # Now make sure the package we built isn't totally broken
-          "pkg install -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version)}'",
+          "pkg install -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'",
         ]
       end
 
