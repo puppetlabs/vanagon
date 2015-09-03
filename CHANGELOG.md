@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.12] - 2015-09-03
+###
+## Changed
+- Empty directories now included in vanagon builds
+
+## Fixed
+- Broken usage of ips_version fixed for solaris 11
+
 ## [0.3.11] - 2015-09-02
 ### Added
 - Solaris 11 support
@@ -27,4 +35,4 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.11...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.12...HEAD
