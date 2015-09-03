@@ -55,7 +55,17 @@ class Vanagon
     def install_build_dependencies
       unless list_build_dependencies.empty?
         if @platform.build_dependencies && @platform.build_dependencies.command && !@platform.build_dependencies.command.empty?
-          @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
+          if @platform.supports_remote_package_installs?
+            @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
+          else
+            # Download the packages to a tmpdir first and then install them
+            download_tmpdir = @engine.dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp'", true)
+            download_status = @engine.dispatch("cd #{download_tmpdir} && curl --remote-name --location --fail --silent #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix} && echo 'OK'", true)
+            unless download_status == 'OK'
+              raise Vanagon:Error.new("Error downloading build dependencies for #{@platform.name}")
+            end
+            @engine.dispatch("#{@platform.build_dependencies.command} #{download_tmpdir}/*")
+          end
         elsif @platform.respond_to?(:install_build_dependencies)
           @engine.dispatch(@platform.install_build_dependencies(list_build_dependencies))
         else
