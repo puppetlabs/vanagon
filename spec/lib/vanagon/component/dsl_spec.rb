@@ -204,6 +204,13 @@ end" }
       expect(comp._component.service.name).to eq('service-test')
     end
 
+    it 'reads from a file when the OS AIX for services' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_aix)
+      comp.install_service('spec/fixures/component/mcollective.service', nil, 'mcollective')
+      expect(comp._component.service.name).to eq('mcollective')
+      expect(comp._component.service.service_command).to include('/opt/puppetlabs/puppet/bin/ruby')
+    end
+
     it 'adds the correct command to the install for the component for systemd platforms' do
       comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_systemd)
       comp.install_service('component-client.service', 'component-client.sysconfig')
