@@ -177,28 +177,6 @@ class Vanagon
         @platform.codename = name
       end
 
-      # Allow package installation on AIX.
-      #   Since AIX doesn't have network dependency resolution, we'll just use
-      #   rpm. This method basically just accepts a mirror and then the
-      #   complete RPM filenames to install. If the package requires other
-      #   packages, you should specificy them as an array. Otherwise you can
-      #   install a signle or multiple packages at a time.
-      #
-      # @param mirror [String]  The url where you have your AIX rpm packages
-      #   (e.g. http://int-resources.corp.puppetlabs.net/AIX_MIRROR)
-      # @param packages [String or Array] Single string or list of packages to install
-      def aix_package(mirror, packages)
-        installation_string = ""
-        if packages.respond_to? :each
-          packages.each do |pkg|
-            installation_string << " " +  mirror + '/' +  pkg
-          end
-          self.provision_with "rpm -Uvh --replacepkgs #{installation_string}"
-        else
-          self.provision_with "rpm -Uvh --replacepkgs #{mirror}/#{packages}"
-        end
-      end
-
       # Helper to setup a apt repository on a target system
       #
       # @param definition [String] the repo setup file, must be a valid uri, fetched with curl
