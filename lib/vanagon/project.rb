@@ -74,7 +74,7 @@ class Vanagon
     def get_files
       files = []
       files.push @version_file if @version_file
-      files.push @components.map { |comp| comp.files }.flatten
+      files.push @components.map(&:files).flatten
       files.flatten.uniq
     end
 
@@ -83,7 +83,7 @@ class Vanagon
     # @return [Array] array of runtime requirements for the project
     def get_requires
       req = []
-      req << @components.map { |comp| comp.requires }.flatten
+      req << @components.map(&:requires).flatten
       req << @requires
       req.flatten.uniq
     end
@@ -92,21 +92,21 @@ class Vanagon
     #
     # @return [Array] array of package level replacements for the project
     def get_replaces
-      @components.map { |comp| comp.replaces }.flatten.uniq
+      @components.map(&:replaces).flatten.uniq
     end
 
     # Collects all of the provides for the project and its components
     #
     # @return [Array] array of package level provides for the project
     def get_provides
-      @components.map { |comp| comp.provides }.flatten.uniq
+      @components.map(&:provides).flatten.uniq
     end
 
     # Collects any configfiles supplied by components
     #
     # @return [Array] array of configfiles installed by components of the project
     def get_configfiles
-      @components.map { |comp| comp.configfiles }.flatten.uniq
+      @components.map(&:configfiles).flatten.uniq
     end
 
     # Collects any directories declared by the project and components
@@ -115,7 +115,7 @@ class Vanagon
     def get_directories
       dirs = []
       dirs.push @directories
-      dirs.push @components.map { |comp| comp.directories }.flatten
+      dirs.push @components.map(&:directories).flatten
       dirs.flatten.uniq
     end
 
@@ -139,7 +139,7 @@ class Vanagon
     #
     # @return [Array] the services provided by components in the project
     def get_services
-      @components.map { |comp| comp.service }.flatten.compact
+      @components.map(&:service).flatten.compact
     end
 
     # Simple utility for determining if the components in the project declare
@@ -156,8 +156,8 @@ class Vanagon
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
       files = ['file-list', 'bill-of-materials']
-      files.push get_files.map { |file| file.path }
-      files.push get_configfiles.map { |file| file.path }
+      files.push get_files.map(&:path)
+      files.push get_configfiles.map(&:path)
     end
 
     # Generate a bill-of-materials: a listing of the components and their
@@ -201,7 +201,7 @@ class Vanagon
     # @param component [Vanagon::Component] component to check for already satisfied build dependencies
     # @return [Array] a list of the build dependencies for the given component that are satisfied by other components in the project
     def list_component_dependencies(component)
-      component.build_requires.select { |dep| @components.map { |comp| comp.name }.include?(dep) }
+      component.build_requires.select { |dep| @components.map(&:name).include?(dep) }
     end
 
     # Get the package name for the project on the current platform

@@ -102,7 +102,7 @@ class Vanagon
         version.gsub!(/(^-)|(-$)/, '')
 
         # Here we strip leading 0 from version components but leave singular 0 on their own.
-        version = version.split('.').map { |elem| elem.to_i }.join('.')
+        version = version.split('.').map(&:to_i).join('.')
         "#{version},5.11-#{release}"
       end
 
