@@ -111,7 +111,7 @@ class Vanagon
       if @environment.empty?
         ":"
       else
-        env = @environment.map { |key, value| %Q[#{key}="#{value}"] }
+        env = @environment.map { |key, value| %(#{key}="#{value}") }
         "export #{env.join(' ')}"
       end
     end

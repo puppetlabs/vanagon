@@ -32,15 +32,15 @@ class Vanagon
           # - The bin directory and all bin files are owned by root:bin instead of root:sys
           # - All files under lib are owned by root:bin instead of root:sys
           # - All .so files are owned by root:bin instead of root:sys
-          %Q[(cd $(tempdir)/#{name_and_version}; pkgproto . | sort | awk ' \
+          %((cd $(tempdir)/#{name_and_version}; pkgproto . | sort | awk ' \
             $$1 ~ /^d$$/ {print "d",$$2,$$3,"0755 root sys";} \
             $$1 ~ /^s$$/ {print;} \
             $$1 ~ /^f$$/ {print "f",$$2,$$3,$$4,"root sys";} \
             $$1 !~ /^[dfs]$$/ {print;} ' | /opt/csw/bin/gsed \
                -e '/^[fd] [^ ]\\+ .*[/]s\\?bin/ {s/root sys$$/root bin/}' \
                -e '/^[fd] [^ ]\\+ .*[/]lib[/][^/ ]\\+ / {s/root sys$$/root bin/}' \
-               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so / {s/root sys$$/root bin/}' >> ../packaging/proto) ],
-          %Q[(cd $(tempdir); #{project.get_directories.map { |dir| "/opt/csw/bin/ggrep -q 'd none #{dir.path.sub(/^\//, '')}' packaging/proto || echo 'd none #{dir.path.sub(/^\//, '')} #{dir.mode || '0755'} #{dir.owner || 'root'} #{dir.group || 'sys'}' >> packaging/proto" }.join('; ')})],
+               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so / {s/root sys$$/root bin/}' >> ../packaging/proto) ),
+          %((cd $(tempdir); #{project.get_directories.map { |dir| "/opt/csw/bin/ggrep -q 'd none #{dir.path.sub(/^\//, '')}' packaging/proto || echo 'd none #{dir.path.sub(/^\//, '')} #{dir.mode || '0755'} #{dir.owner || 'root'} #{dir.group || 'sys'}' >> packaging/proto" }.join('; ')})),
 
           # Actually build the package
           "pkgmk -f $(tempdir)/packaging/proto -b $(tempdir)/#{name_and_version} -o -d $(tempdir)/pkg/",

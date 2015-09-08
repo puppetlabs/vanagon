@@ -234,7 +234,7 @@ class Vanagon
       if target
         puts "Executing '#{command}' on #{target}"
         if return_command_output
-          ret = %x{#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}'}.chomp
+          ret = %x(#{ssh_command(port)} -t #{target} '#{command.gsub("'", "'\\\\''")}').chomp
           if $?.success?
             return ret
           else
