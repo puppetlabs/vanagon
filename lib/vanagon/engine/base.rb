@@ -66,7 +66,7 @@ class Vanagon
       def validate_platform
         missing_attrs = []
         @required_attributes.each do |attr|
-          if (not @platform.instance_variables.include?("@#{attr}".to_sym)) or @platform.instance_variable_get("@#{attr}".to_sym).nil?
+          if (!@platform.instance_variables.include?("@#{attr}".to_sym)) or @platform.instance_variable_get("@#{attr}".to_sym).nil?
             missing_attrs << attr
           end
         end

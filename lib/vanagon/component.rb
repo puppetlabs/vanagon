@@ -108,11 +108,11 @@ class Vanagon
     #
     # @return [String] environment suitable for inclusion in a Makefile
     def get_environment
-      unless @environment.empty?
+      if @environment.empty?
+        ":"
+      else
         env = @environment.map { |key, value| %Q[#{key}="#{value}"] }
         "export #{env.join(' ')}"
-      else
-        ":"
       end
     end
   end
