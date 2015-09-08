@@ -287,7 +287,7 @@ class Vanagon
         if @platform.respond_to?(:add_repository)
           self.provision_with @platform.send(:add_repository, *args)
         else
-          raise Vanagon::Error.new("Adding a build repository not defined for #{@platform.name}")
+          raise Vanagon::Error, "Adding a build repository not defined for #{@platform.name}"
         end
       end
     end

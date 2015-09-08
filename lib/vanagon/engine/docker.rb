@@ -31,7 +31,7 @@ class Vanagon
       def teardown
         Vanagon::Utilities.ex("#{@docker_cmd} stop #{@platform.docker_image}-builder")
         Vanagon::Utilities.ex("#{@docker_cmd} rm #{@platform.docker_image}-builder")
-      rescue RuntimeError => e
+      rescue Vanagon::Error => e
         warn "There was a problem tearing down the docker container #{@platform.docker_image}-builder (#{e.message})."
       end
     end

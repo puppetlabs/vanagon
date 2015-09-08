@@ -12,10 +12,10 @@ class Vanagon
           if SUPPORTED_PROTOCOLS.include?(protocol)
             @@rewrite_rule[protocol] = rule
           else
-            raise Vanagon::Error.new("#{protocol} is not a supported protocol for rewriting")
+            raise Vanagon::Error, "#{protocol} is not a supported protocol for rewriting"
           end
         else
-          raise Vanagon::Error.new("String or Proc is required as a rewrite_rule. ")
+          raise Vanagon::Error, "String or Proc is required as a rewrite_rule."
         end
       end
 
@@ -30,7 +30,7 @@ class Vanagon
               target = target_match[1]
               return File.join(rule, target)
             else
-              raise Vanagon::Error.new("Unable to apply url rewrite to '#{url}', expected to find at least one '/' in the url.")
+              raise Vanagon::Error, "Unable to apply url rewrite to '#{url}', expected to find at least one '/' in the url."
             end
           else
           end

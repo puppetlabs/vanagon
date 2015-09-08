@@ -83,11 +83,11 @@ class Vanagon
     #
     # @param command [String] The command to be executed
     # @return [String] The standard output of the executed command
-    # @raise [RuntimeError] If the command fails an exception is raised
+    # @raise [Vanagon::Error] If the command fails an exception is raised
     def ex(command)
       ret = `#{command}`
       unless $?.success?
-        raise RuntimeError, "'#{command}' did not succeed"
+        raise Vanagon::Error, "'#{command}' did not succeed"
       end
       ret
     end
@@ -132,7 +132,7 @@ class Vanagon
         end
       end
 
-      raise Vanagon::Error.new("Block failed maximum of #{tries} tries. Exiting..")
+      raise Vanagon::Error, "Block failed maximum of #{tries} tries. Exiting.."
     end
 
     # Simple wrapper around git command line executes the given commands and

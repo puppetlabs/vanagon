@@ -59,7 +59,7 @@ class Vanagon
         elsif @platform.respond_to?(:install_build_dependencies)
           @engine.dispatch(@platform.install_build_dependencies(list_build_dependencies))
         else
-          raise Vanagon::Error.new("No method defined to install build dependencies for #{@platform.name}")
+          raise Vanagon::Error, "No method defined to install build dependencies for #{@platform.name}"
         end
       end
     end
@@ -68,7 +68,7 @@ class Vanagon
       begin
         # Simple sanity check for the project
         if @project.version.nil? or @project.version.empty?
-          raise Vanagon::Error.new "Project requires a version set, all is lost."
+          raise Vanagon::Error, "Project requires a version set, all is lost."
         end
         @workdir = Dir.mktmpdir
         @engine.startup(@workdir)

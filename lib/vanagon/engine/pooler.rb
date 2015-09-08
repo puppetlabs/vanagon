@@ -37,7 +37,7 @@ class Vanagon
             tags.to_json
           )
         else
-          raise Vanagon::Error.new("Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vcloud_name} is empty?")
+          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vcloud_name} is empty?"
         end
       end
 

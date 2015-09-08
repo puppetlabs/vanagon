@@ -16,7 +16,7 @@ class Vanagon
       # This method is used to obtain a vm to build upon
       # For the base class we just return the target that was passed in
       def select_target
-        @target or raise Vanagon::Error.new('#select_target has not been implemented for your engine.')
+        @target or raise Vanagon::Error, '#select_target has not been implemented for your engine.'
       end
 
       # Dispatches the command for execution
@@ -74,7 +74,7 @@ class Vanagon
         if missing_attrs.empty?
           return true
         else
-          raise Vanagon::Error.new("The following required attributes were not set in '#{@platform.name}': #{missing_attrs.join(', ')}.")
+          raise Vanagon::Error, "The following required attributes were not set in '#{@platform.name}': #{missing_attrs.join(', ')}."
         end
       end
     end
