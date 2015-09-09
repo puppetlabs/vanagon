@@ -71,6 +71,13 @@ class Vanagon
         @project.description = descr
       end
 
+      # Resets the name of the project. Is useful for dynamically changing the project name.
+      #
+      # @param the_name [String] name of the project
+      def name(the_name)
+        @project.name = the_name
+      end
+
       # Sets the homepage for the project. Mainly for use in packaging.
       #
       # @param page [String] url of homepage of the project
