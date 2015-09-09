@@ -6,7 +6,7 @@ ENV["PROJECT_ROOT"] = Dir.pwd
 # This is not intended to function outside of Puppet Labs' infrastructure.
 # End of warning.
 
-unless Dir["output/**/*"].select {|entry| File.file?(entry) }.empty?
+unless Dir["output/**/*"].select { |entry| File.file?(entry) }.empty?
   require 'packaging'
   Pkg::Util::RakeUtils.load_packaging_tasks
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship', 'artifacts', 'output')

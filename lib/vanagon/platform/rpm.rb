@@ -25,7 +25,7 @@ class Vanagon
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
-        erb_file(File.join(VANAGON_ROOT, "templates/rpm/project.spec.erb"), File.join(workdir, "#{name}.spec"), false, {:binding => binding})
+        erb_file(File.join(VANAGON_ROOT, "templates/rpm/project.spec.erb"), File.join(workdir, "#{name}.spec"), false, { :binding => binding })
       end
 
       # Method to derive the package name for the project
@@ -49,7 +49,7 @@ class Vanagon
         # RPM doesn't allow dashes in the os_name. This was added to
         # convert cisco-wrlinux to cisco_wrlinux
         unless is_aix?
-          defines << %Q{--define 'dist .#{@os_name.gsub('-','_')}#{@os_version}' }
+          defines << %Q{--define 'dist .#{@os_name.gsub('-', '_')}#{@os_version}' }
         end
         defines
       end

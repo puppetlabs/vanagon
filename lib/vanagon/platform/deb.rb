@@ -29,13 +29,13 @@ class Vanagon
 
         # Lots of templates here
         ["changelog", "conffiles", "control", "docs", "dirs", "install", "postinst", "postrm", "prerm", "rules"].each do |deb_file|
-          erb_file(File.join(VANAGON_ROOT, "templates/deb/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, {:binding => binding})
+          erb_file(File.join(VANAGON_ROOT, "templates/deb/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, { :binding => binding })
         end
 
         # These could be templates, but their content is static, so that seems weird.
-        File.open(File.join(deb_dir, "compat"), "w") {|f| f.puts("7") }
+        File.open(File.join(deb_dir, "compat"), "w") { |f| f.puts("7") }
         FileUtils.mkdir_p(File.join(deb_dir, "source"))
-        File.open(File.join(deb_dir, "source", "format"), "w") {|f| f.puts("3.0 (quilt)") }
+        File.open(File.join(deb_dir, "source", "format"), "w") { |f| f.puts("3.0 (quilt)") }
       end
 
       # Method to derive the package name for the project

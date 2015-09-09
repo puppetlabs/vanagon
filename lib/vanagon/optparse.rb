@@ -3,7 +3,7 @@ require 'optparse'
 class Vanagon
   class OptParse
     def initialize(banner, options = [])
-      @options = Hash[options.map{|v| [v, nil]}]
+      @options = Hash[options.map { |v| [v, nil] }]
       @optparse = OptionParser.new do |opts|
         opts.banner = banner
 

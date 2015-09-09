@@ -51,17 +51,17 @@ class Vanagon
       http = Net::HTTP.new(uri.host, uri.port)
       case type.downcase
       when "get"
-      response = http.request(Net::HTTP::Get.new(uri.request_uri))
+        response = http.request(Net::HTTP::Get.new(uri.request_uri))
       when "post"
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request.body = payload
-      response = http.request(request)
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.body = payload
+        response = http.request(request)
       when "put"
-      request = Net::HTTP::Put.new(uri.request_uri)
-      request.body = payload
-      response = http.request(request)
+        request = Net::HTTP::Put.new(uri.request_uri)
+        request.body = payload
+        response = http.request(request)
       when "delete"
-      response = http.request(Net::HTTP::Delete.new(uri.request_uri))
+        response = http.request(Net::HTTP::Delete.new(uri.request_uri))
       else
         fail "ACTION: #{type} not supported by #http_request method. Maybe you should add it?"
       end
@@ -197,7 +197,7 @@ class Vanagon
     #
     # @param port [Integer] Port number for ssh (default 22)
     # @return [String] start of ssh command, including flags for ssh keys
-    def ssh_command(port = 22 )
+    def ssh_command(port = 22)
       ssh = find_program_on_path('ssh')
       args = ENV['VANAGON_SSH_KEY'] ? " -i #{ENV['VANAGON_SSH_KEY']}" : ""
       args << " -p #{port} "
