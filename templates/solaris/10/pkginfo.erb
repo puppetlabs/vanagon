@@ -1,7 +1,7 @@
 PKG="<%= @name %>"
 NAME="<%= @name %> - <%= @homepage %>"
 VERSION=<%= @version %>-<%= @release %>
-ARCH=<%= @platform.architecture %>
+ARCH=<%= @noarch ? 'all' : @platform.architecture %>
 CLASSES=none
 CATEGORY=application
 VENDOR=<%= @vendor %>
