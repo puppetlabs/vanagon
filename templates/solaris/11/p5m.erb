@@ -6,7 +6,9 @@ set name=info.classification value="org.opensolaris.category.2008:System/Adminis
 set name=org.opensolaris.consolidation value="<%= @name %>"
 set name=description value="<%= @description %>"
 set name=variant.opensolaris.zone value=global value=nonglobal
-set name=variant.arch value="<%= @platform.architecture %>"
+<%- unless @noarch -%>
+  set name=variant.arch value="<%= @platform.architecture %>"
+<%- end -%>
 
 <%
   def strip_and_escape(str)
