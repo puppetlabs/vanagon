@@ -41,30 +41,38 @@ class Vanagon
     # @param url [String] The url to make the request against (needs to be parsable by URI
     # @param type [String] One of the supported request types (currently 'get', 'post', 'delete')
     # @param payload [String] The request body data payload used for POST and PUT
+    # @param header [Hash] Send additional information in the HTTP request header
     # @return [Hash] The response body is parsed by JSON and returned
     # @raise [RuntimeError, Vanagon::Error] an exception is raised if the
     # action is not supported, or if there is a problem with the http request,
     # or if the response is not JSON
-    def http_request(url, type, payload = {}.to_json)
-
+    def http_request(url, type, payload = {}.to_json, header = nil)
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
+
       case type.downcase
       when "get"
-        response = http.request(Net::HTTP::Get.new(uri.request_uri))
+        request = Net::HTTP::Get.new(uri.request_uri)
       when "post"
         request = Net::HTTP::Post.new(uri.request_uri)
         request.body = payload
-        response = http.request(request)
       when "put"
         request = Net::HTTP::Put.new(uri.request_uri)
         request.body = payload
-        response = http.request(request)
       when "delete"
-        response = http.request(Net::HTTP::Delete.new(uri.request_uri))
+        request = Net::HTTP::Delete.new(uri.request_uri)
       else
         fail "ACTION: #{type} not supported by #http_request method. Maybe you should add it?"
       end
+
+      # Add any headers to the request
+      if header && header.is_a?(Hash)
+        header.each do |key, val|
+          request[key] = val
+        end
+      end
+
+      response = http.request(request)
 
       JSON.parse(response.body)
 
