@@ -19,12 +19,19 @@ describe 'Vanagon::Engine::Pooler' do
 
   describe "#load_token" do
     after(:each) { ENV['VMPOOLER_TOKEN'] = nil }
+    after(:each) { ENV['VMPOOL_TOKEN'] = nil }
 
     let(:token_file) { double(File) }
     let(:token_filename) { 'abcd' }
 
     it 'prefers an env var to a file' do
       ENV['VMPOOLER_TOKEN'] = 'abcd'
+      expect(File).to_not receive(:expand_path).with('~/.vanagon-token')
+      expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
+    end
+
+    it 'prefers an alternative env var to a file' do
+      ENV['VMPOOL_TOKEN'] = 'abcd'
       expect(File).to_not receive(:expand_path).with('~/.vanagon-token')
       expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
     end

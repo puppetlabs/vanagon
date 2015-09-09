@@ -16,9 +16,8 @@ class Vanagon
       # This method loads the pooler token from one of two locations
       # @return [String, nil] token for use with the vmpooler
       def load_token
-        if ENV['VMPOOLER_TOKEN']
-          token = ENV['VMPOOLER_TOKEN']
-        else
+        token = ENV['VMPOOLER_TOKEN'] || ENV['VMPOOL_TOKEN']
+        if token.nil?
           token_file = File.expand_path("~/.vanagon-token")
           if File.exist?(token_file)
             token = File.open(token_file).read.chomp
