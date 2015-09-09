@@ -177,7 +177,7 @@ class Vanagon
 
         if default_file
           install_file(default_file, target_default_file, mode: default_mode)
-          configfile(target_default_file)
+          configfile target_default_file
         end
 
         # Register the service for use in packaging
@@ -193,7 +193,7 @@ class Vanagon
       def install_file(source, target, mode: '0644', owner: nil, group:  nil)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
-        @component.files << Vanagon::Common::Pathname.new(target, mode, owner, group)
+        @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
       end
 
       # Marks a file as a configfile to ensure that it is not overwritten on
@@ -202,11 +202,12 @@ class Vanagon
       # @param file [String] name of the configfile
       def configfile(file)
         # I AM SO SORRY
+        @component.delete_file "#{file}"
         if @component.platform.name =~ /solaris-10|osx/
           @component.install << "mv '#{file}' '#{file}.pristine'"
-          @component.configfiles << Vanagon::Common::Pathname.new("#{file}.pristine")
+          @component.add_file Vanagon::Common::Pathname.configfile("#{file}.pristine")
         else
-          @component.configfiles << Vanagon::Common::Pathname.new(file)
+          @component.add_file Vanagon::Common::Pathname.configfile(file)
         end
       end
 
@@ -272,7 +273,7 @@ class Vanagon
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
       def directory(dir, mode: nil, owner: nil, group: nil)
-        @component.directories << Vanagon::Common::Pathname.new(dir, mode, owner, group)
+        @component.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
       end
 
       # Adds a set of environment overrides to the environment for a component.
