@@ -3,8 +3,18 @@ bundler_args: --without development
 before_script:
   - 'git config --global user.email "you@example.com"'
   - 'git config --global user.name "Your Name"'
-script: "bundle exec rspec spec"
+script: "bundle exec $CHECK"
 notifications:
   email: false
 rvm:
   - 2.1.5
+  - 2.2.0
+
+env:
+  - "CHECK='rspec spec --color --format documentation --order random'"
+  - "CHECK='rubocop -D'"
+
+matrix:
+  exclude:
+    - rvm: 2.1.5
+      env: "CHECK='rubocop -D'"

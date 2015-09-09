@@ -79,7 +79,7 @@ class Vanagon
               target_file = File.basename(source_file)
               FileUtils.cp(source_file, File.join(@workdir, target_file))
             else
-              raise Vanagon::Error.new("Unable to parse '#{@url}' for local file path.")
+              raise Vanagon::Error, "Unable to parse '#{@url}' for local file path."
             end
           else
             fail "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"

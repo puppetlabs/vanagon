@@ -86,7 +86,7 @@ class Vanagon
     # @param workdir [String] working directory to put the source into
     def get_sources(workdir)
       @sources.each do |source|
-        cur_source = Vanagon::Component::Source.source(source.url, {:ref => source.ref, :sum => source.sum}, workdir)
+        cur_source = Vanagon::Component::Source.source(source.url, { :ref => source.ref, :sum => source.sum }, workdir)
         cur_source.fetch
         cur_source.verify
       end
@@ -108,11 +108,11 @@ class Vanagon
     #
     # @return [String] environment suitable for inclusion in a Makefile
     def get_environment
-      unless @environment.empty?
-        env = @environment.map { |key, value| %Q[#{key}="#{value}"] }
-        "export #{env.join(' ')}"
-      else
+      if @environment.empty?
         ":"
+      else
+        env = @environment.map { |key, value| %(#{key}="#{value}") }
+        "export #{env.join(' ')}"
       end
     end
   end

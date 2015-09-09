@@ -12,7 +12,7 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
 
-    def initialize(platform, project, options = {:configdir => nil, :target => nil, :engine => nil, :components => nil})
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil })
       @verbose = false
       @preserve = false
 
@@ -49,7 +49,7 @@ class Vanagon
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
     def list_build_dependencies
-      @project.components.map {|comp| comp.build_requires }.flatten.uniq - @project.components.map {|comp| comp.name }
+      @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)
     end
 
     def install_build_dependencies
@@ -59,58 +59,54 @@ class Vanagon
         elsif @platform.respond_to?(:install_build_dependencies)
           @engine.dispatch(@platform.install_build_dependencies(list_build_dependencies))
         else
-          raise Vanagon::Error.new("No method defined to install build dependencies for #{@platform.name}")
+          raise Vanagon::Error, "No method defined to install build dependencies for #{@platform.name}"
         end
       end
     end
 
     def run
-      begin
-        # Simple sanity check for the project
-        if @project.version.nil? or @project.version.empty?
-          raise Vanagon::Error.new "Project requires a version set, all is lost."
-        end
-        @workdir = Dir.mktmpdir
-        @engine.startup(@workdir)
-
-        puts "Target is #{@engine.target}"
-
-        install_build_dependencies
-        @project.fetch_sources(@workdir)
-        @project.make_makefile(@workdir)
-        @project.make_bill_of_materials(@workdir)
-        @project.generate_packaging_artifacts(@workdir)
-        @engine.ship_workdir(@workdir)
-        @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
-        @engine.retrieve_built_artifact
-        @engine.teardown unless @preserve
-        cleanup_workdir unless @preserve
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
+      # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
       end
+      @workdir = Dir.mktmpdir
+      @engine.startup(@workdir)
+
+      puts "Target is #{@engine.target}"
+
+      install_build_dependencies
+      @project.fetch_sources(@workdir)
+      @project.make_makefile(@workdir)
+      @project.make_bill_of_materials(@workdir)
+      @project.generate_packaging_artifacts(@workdir)
+      @engine.ship_workdir(@workdir)
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      @engine.retrieve_built_artifact
+      @engine.teardown unless @preserve
+      cleanup_workdir unless @preserve
+    rescue => e
+      puts e
+      puts e.backtrace.join("\n")
+      raise e
     end
 
     def prepare(workdir = nil)
-      begin
-        @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
-        @engine.startup(@workdir)
+      @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
+      @engine.startup(@workdir)
 
-        puts "Devkit on #{@engine.target}"
+      puts "Devkit on #{@engine.target}"
 
-        install_build_dependencies
-        @project.fetch_sources(@workdir)
-        @project.make_makefile(@workdir)
-        @project.make_bill_of_materials(@workdir)
-        # Builds only the project, skipping packaging into an artifact.
-        @engine.ship_workdir(@workdir)
-        @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{@project.name}-project)")
-      rescue => e
-        puts e
-        puts e.backtrace.join("\n")
-        raise e
-      end
+      install_build_dependencies
+      @project.fetch_sources(@workdir)
+      @project.make_makefile(@workdir)
+      @project.make_bill_of_materials(@workdir)
+      # Builds only the project, skipping packaging into an artifact.
+      @engine.ship_workdir(@workdir)
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{@project.name}-project)")
+    rescue => e
+      puts e
+      puts e.backtrace.join("\n")
+      raise e
     end
   end
 end

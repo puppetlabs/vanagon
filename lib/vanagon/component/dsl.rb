@@ -190,7 +190,7 @@ class Vanagon
       # @param target [String] path to the desired target of the file
       # @param owner  [String] owner of the file
       # @param group  [String] group owner of the file
-      def install_file(source, target, mode: '0644', owner: nil, group:  nil )
+      def install_file(source, target, mode: '0644', owner: nil, group:  nil)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "cp -p '#{source}' '#{target}'"
         @component.files << Vanagon::Common::Pathname.new(target, mode, owner, group)

@@ -122,7 +122,7 @@ class Vanagon
       # @param command [String] Command to install build dependencies for the target machine
       # @param suffix [String] shell to be run after the main command
       def install_build_dependencies_with(command, suffix = nil)
-        @platform.build_dependencies = OpenStruct.new({:command => command, :suffix => suffix})
+        @platform.build_dependencies = OpenStruct.new({ :command => command, :suffix => suffix })
       end
 
       # Set the directory where service files or init scripts live for the platform
@@ -287,7 +287,7 @@ class Vanagon
         if @platform.respond_to?(:add_repository)
           self.provision_with @platform.send(:add_repository, *args)
         else
-          raise Vanagon::Error.new("Adding a build repository not defined for #{@platform.name}")
+          raise Vanagon::Error, "Adding a build repository not defined for #{@platform.name}"
         end
       end
     end

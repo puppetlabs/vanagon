@@ -15,7 +15,7 @@ if project.nil? or platform.nil?
   exit 1
 end
 
-artifact = Vanagon::Driver.new(platform, project, options.merge({:components => components}))
+artifact = Vanagon::Driver.new(platform, project, options.merge({ :components => components }))
 
 artifact.preserve = true
 

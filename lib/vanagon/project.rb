@@ -74,7 +74,7 @@ class Vanagon
     def get_files
       files = []
       files.push @version_file if @version_file
-      files.push @components.map {|comp| comp.files }.flatten
+      files.push @components.map(&:files).flatten
       files.flatten.uniq
     end
 
@@ -83,7 +83,7 @@ class Vanagon
     # @return [Array] array of runtime requirements for the project
     def get_requires
       req = []
-      req << @components.map {|comp| comp.requires }.flatten
+      req << @components.map(&:requires).flatten
       req << @requires
       req.flatten.uniq
     end
@@ -92,21 +92,21 @@ class Vanagon
     #
     # @return [Array] array of package level replacements for the project
     def get_replaces
-      @components.map {|comp| comp.replaces }.flatten.uniq
+      @components.map(&:replaces).flatten.uniq
     end
 
     # Collects all of the provides for the project and its components
     #
     # @return [Array] array of package level provides for the project
     def get_provides
-      @components.map {|comp| comp.provides }.flatten.uniq
+      @components.map(&:provides).flatten.uniq
     end
 
     # Collects any configfiles supplied by components
     #
     # @return [Array] array of configfiles installed by components of the project
     def get_configfiles
-      @components.map {|comp| comp.configfiles }.flatten.uniq
+      @components.map(&:configfiles).flatten.uniq
     end
 
     # Collects any directories declared by the project and components
@@ -115,7 +115,7 @@ class Vanagon
     def get_directories
       dirs = []
       dirs.push @directories
-      dirs.push @components.map {|comp| comp.directories }.flatten
+      dirs.push @components.map(&:directories).flatten
       dirs.flatten.uniq
     end
 
@@ -139,7 +139,7 @@ class Vanagon
     #
     # @return [Array] the services provided by components in the project
     def get_services
-      @components.map {|comp| comp.service }.flatten.compact
+      @components.map(&:service).flatten.compact
     end
 
     # Simple utility for determining if the components in the project declare
@@ -147,7 +147,7 @@ class Vanagon
     #
     # @return [True, False] Whether or not there are services declared for this project or not
     def has_services?
-      ! get_services.empty?
+      !get_services.empty?
     end
 
     # Generate a list of all files and directories to be included in a tarball
@@ -156,8 +156,8 @@ class Vanagon
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
       files = ['file-list', 'bill-of-materials']
-      files.push get_files.map {|file| file.path }
-      files.push get_configfiles.map {|file| file.path }
+      files.push get_files.map(&:path)
+      files.push get_configfiles.map(&:path)
     end
 
     # Generate a bill-of-materials: a listing of the components and their
@@ -165,7 +165,7 @@ class Vanagon
     #
     # @return [Array] a listing of component names and versions
     def generate_bill_of_materials
-      @components.map {|comp| "#{comp.name} #{comp.version}" }.sort
+      @components.map { |comp| "#{comp.name} #{comp.version}" }.sort
     end
 
     # Method to generate the command to create a tarball of the project
@@ -174,8 +174,8 @@ class Vanagon
     def pack_tarball_command
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
-       %Q['#{@platform.tar}' -cf - -T #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)],
-       %Q['#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz]].join("\n\t")
+       %('#{@platform.tar}' -cf - -T #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
+       %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
     end
 
     # Evaluates the makefile template and writes the contents to the workdir
@@ -193,7 +193,7 @@ class Vanagon
     # @param workdir [String] full path to the workdir to send the bill-of-materials
     # @return [String] full path to the generated bill-of-materials
     def make_bill_of_materials(workdir)
-      File.open(File.join(workdir, 'bill-of-materials'), 'w') {|f| f.puts(generate_bill_of_materials.join("\n"))}
+      File.open(File.join(workdir, 'bill-of-materials'), 'w') { |f| f.puts(generate_bill_of_materials.join("\n")) }
     end
 
     # Return a list of the build_dependencies that are satisfied by an internal component
@@ -201,7 +201,7 @@ class Vanagon
     # @param component [Vanagon::Component] component to check for already satisfied build dependencies
     # @return [Array] a list of the build dependencies for the given component that are satisfied by other components in the project
     def list_component_dependencies(component)
-      component.build_requires.select {|dep| @components.map {|comp| comp.name}.include?(dep) }
+      component.build_requires.select { |dep| @components.map(&:name).include?(dep) }
     end
 
     # Get the package name for the project on the current platform

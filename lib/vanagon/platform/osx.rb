@@ -53,10 +53,10 @@ class Vanagon
         script_dir = File.join(workdir, "scripts")
         FileUtils.mkdir_p(script_dir)
 
-        erb_file(File.join(VANAGON_ROOT, "templates/osx/project-installer.xml.erb"), File.join(workdir, "#{name}-installer.xml"), false, {:binding => binding})
+        erb_file(File.join(VANAGON_ROOT, "templates/osx/project-installer.xml.erb"), File.join(workdir, "#{name}-installer.xml"), false, { :binding => binding })
 
         ["postinstall", "preinstall"].each do |script_file|
-          erb_file(File.join(VANAGON_ROOT, "templates/osx/#{script_file}.erb"), File.join(script_dir, script_file), false, {:binding => binding})
+          erb_file(File.join(VANAGON_ROOT, "templates/osx/#{script_file}.erb"), File.join(script_dir, script_file), false, { :binding => binding })
           FileUtils.chmod 0755, File.join(script_dir, script_file)
         end
 
