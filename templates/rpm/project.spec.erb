@@ -41,7 +41,7 @@ Requires(postun): systemd
   <%- elsif @platform.servicetype == "sysv" -%>
     <%- if @platform.is_sles? -%>
 Requires: aaa_base
-    <%- else -%>
+    <%- elsif @platform.is_linux? -%>
 Requires: chkconfig
     <%- end -%>
   <%- end -%>
