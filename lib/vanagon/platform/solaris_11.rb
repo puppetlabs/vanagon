@@ -30,8 +30,8 @@ class Vanagon
           "pkgsend -s 'file://$(tempdir)/repo' publish -d '$(tempdir)/#{name_and_version}' --fmri-in-manifest '$(tempdir)/packaging/#{project.name}.p5m.2'",
           "pkgrecv -s 'file://$(tempdir)/repo' -a -d 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'",
 
-          # Now make sure the package we built isn't totally broken
-          "pkg install -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'",
+          # Now make sure the package we built isn't totally broken (but not when cross-compiling)
+          %(if [ "#{@architecture}" = `uname -p` ]; then pkg install -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'; fi),
         ]
       end
 
