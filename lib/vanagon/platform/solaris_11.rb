@@ -31,7 +31,7 @@ class Vanagon
           "pkgrecv -s 'file://$(tempdir)/repo' -a -d 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'",
 
           # Now make sure the package we built isn't totally broken (but not when cross-compiling)
-          %(if [ "#{@architecture}" = `uname -p` ]; then pkg install -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'; fi),
+          %(if [ "#{@architecture}" = `uname -p` ]; then pkg install -nv -g 'output/#{target_dir}/#{pkg_name}' '#{project.name}@#{ips_version(project.version, project.release)}'; fi),
         ]
       end
 
