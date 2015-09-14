@@ -103,6 +103,11 @@ A full path on disk for a private ssh key to be used in ssh and rsync
 communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
+##### VMPOOLER\_TOKEN
+Used in conjunction with the pooler engine, this is a token to pass to the
+vmpooler to access the API. Without this token, the default lifetime of vms
+will be much shorter.
+
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
 on the el-6-i386 platform and leave the host intact afterward.
