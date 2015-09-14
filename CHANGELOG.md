@@ -19,8 +19,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   VMPOOLER_TOKEN environment variable or write token into ~/.vanagon-token
 
 ## [0.3.12] - 2015-09-03
-###
-## Changed
+### Changed
 - Empty directories now included in vanagon builds
 
 ## Fixed
@@ -34,7 +33,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - Miscellaneous updates to better support Mac OS X, Solaris, and AIX
 
 ### Changed
-- Updated Mac OS X package name and directory structure to match other platforms 
+- Updated Mac OS X package name and directory structure to match other platforms
 
 ## [0.3.10] - 2015-08-26
 ### Added
@@ -49,3 +48,6 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 [Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.13...HEAD
 [0.3.13]: https://github.com/puppetlabs/vanagon/compare/0.3.12...0.3.13
+[0.3.12]: https://github.com/puppetlabs/vanagon/compare/0.3.11...0.3.12
+[0.3.11]: https://github.com/puppetlabs/vanagon/compare/0.3.10...0.3.11
+[0.3.10]: https://github.com/puppetlabs/vanagon/compare/0.3.9...0.3.10
