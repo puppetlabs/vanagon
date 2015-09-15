@@ -69,7 +69,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the osx package for this project
       def package_name(project)
-        "#{project.name}-#{project.version}-#{project.release}.#{@codename}.dmg"
+        "#{project.name}-#{project.version}-#{project.release}.#{@os_name}#{@os_version}.dmg"
       end
 
       # Get the expected output dir for the osx packages. This allows us to
