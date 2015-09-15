@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.14] - 2015-09-15
+### Changed
+- OSX packages no longer include the platform codename and instead use
+  the platform version.
+
 ## [0.3.13] - 2015-09-14
 ### Changed
 - Noarch project method is now applied to solaris packages
@@ -46,7 +51,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.13...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.14...HEAD
+[0.3.14]: https://github.com/puppetlabs/vanagon/compare/0.3.13...0.3.14
 [0.3.13]: https://github.com/puppetlabs/vanagon/compare/0.3.12...0.3.13
 [0.3.12]: https://github.com/puppetlabs/vanagon/compare/0.3.11...0.3.12
 [0.3.11]: https://github.com/puppetlabs/vanagon/compare/0.3.10...0.3.11
