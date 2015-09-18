@@ -1,5 +1,6 @@
 require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
+require 'vanagon/platform/rpm/wrl'
 require 'vanagon/platform/swix'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
@@ -24,8 +25,10 @@ class Vanagon
       # @param block [Proc] DSL definition of the platform to call
       def platform(name, &block)
         @platform = case name
-                    when /^(aix|cisco-wrlinux|el|fedora|huaweios|nxos|sles)-/
+                    when /^(aix|cisco-wrlinux|el|fedora|nxos|sles)-/
                       Vanagon::Platform::RPM.new(@name)
+                    when /^huaweios-/
+                      Vanagon::Platform::RPM::WRL.new(@name)
                     when /^(cumulus|debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^eos-/
