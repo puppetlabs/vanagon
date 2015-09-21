@@ -128,7 +128,7 @@ class Vanagon
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
       def directory(dir, mode: nil, owner: nil, group: nil)
-        @project.directories << Vanagon::Common::Pathname.new(dir, mode, owner, group)
+        @project.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
       end
 
       # Add a user to the project
@@ -195,7 +195,7 @@ class Vanagon
       # This method will write the projects version to a designated file during package creation
       # @param target [String] a full path to the version file for the project
       def write_version_file(target)
-        @project.version_file = Vanagon::Common::Pathname.new(target)
+        @project.version_file = Vanagon::Common::Pathname.file(target)
       end
     end
   end

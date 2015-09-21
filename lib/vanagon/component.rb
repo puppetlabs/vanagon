@@ -3,10 +3,13 @@ require 'vanagon/component/dsl'
 
 class Vanagon
   class Component
+    # @!attribute [r] files
+    #   @return [Set] the list of files marked for installation
+
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires
-    attr_accessor :settings, :platform, :files, :patches, :requires, :service, :options
-    attr_accessor :configfiles, :directories, :replaces, :provides, :cleanup_source, :environment
+    attr_accessor :settings, :platform, :patches, :requires, :service, :options
+    attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
     attr_accessor :sources
 
     # Loads a given component from the configdir
@@ -47,13 +50,46 @@ class Vanagon
       @install = []
       @build = []
       @patches = []
-      @files = []
-      @configfiles = []
+      @files = Set.new
       @directories = []
       @replaces = []
       @provides = []
       @environment = {}
       @sources = []
+    end
+
+    # Adds the given file to the list of files and returns @files.
+    #
+    # @param file [Vanagon::Common::Pathname] file to add to a component's list of files
+    # @return [Set, nil] Returns @files if file is successfully added to @files
+    #   or nil if file already exists
+    def add_file(file)
+      @files.add file
+    end
+
+    # Deletes the given file from the list of files and returns @files.
+    #
+    # @param file [String] path of file to delete from a component's list of files
+    # @return [Set, nil] Returns @files if file is successfully deleted
+    #   from @files or nil if file doesn't exist; this matches strictly on
+    #   the path of a given file, and ignores other attributes like :mode,
+    #   :owner, or :group.
+    def delete_file(file)
+      @files.delete_if { |this_file| this_file.path == file }
+    end
+
+    # Retrieve all items from @files not marked as configuration files
+    #
+    # @return [Set] all files not marked as configuration files
+    def files
+      @files.reject(&:configfile?)
+    end
+
+    # Retrieve all items from @files explicitly marked as configuration files
+    #
+    # @return [Set] all files explicitly marked as configuration files
+    def configfiles
+      @files.select(&:configfile?)
     end
 
     # Fetches the primary source for the component. As a side effect, also sets

@@ -85,7 +85,7 @@ install -d %{buildroot}
 <%- end -%>
 
 # Copy each of the extra files into place
-<%- get_files.map {|f| f.path.sub(/^\//,'')}.each do |file| -%>
+<%- (get_files + get_configfiles).map {|f| f.path.sub(/^\//,'')}.each do |file| -%>
   install -d %{buildroot}/<%= File.dirname(file) %>
   cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
@@ -182,7 +182,7 @@ done
 <%- get_configfiles.each do |configfile| -%>
 %config(noreplace) %attr(<%= configfile.mode || "-" %>, <%= configfile.owner || "-" %>, <%= configfile.group || "-" %>) <%= configfile.path %>
 <%- end -%>
-<%- (get_files - get_configfiles).each do |file| -%>
+<%- get_files.each do |file| -%>
 %attr(<%= file.mode || "-" %>, <%= file.owner || "-" %>, <%= file.group || "-" %>) <%= file.path %>
 <%- end -%>
 

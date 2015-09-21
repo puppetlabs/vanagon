@@ -197,8 +197,8 @@ end" }
       expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
 
       # Look for files and configfiles
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/etc/default/service-test'))
-      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/etc/init.d/service-test', '0755'))
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/etc/init.d/service-test', mode: '0755'))
 
       # The component should now have a service registered
       expect(comp._component.service.name).to eq('service-test')
@@ -216,8 +216,8 @@ end" }
       expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
 
       # Look for files and configfiles
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/etc/default/service-test'))
-      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/usr/lib/systemd/system/service-test.service', '0644'))
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/usr/lib/systemd/system/service-test.service', mode: '0644'))
 
       # The component should now have a service registered
       expect(comp._component.service.name).to eq('service-test')
@@ -235,8 +235,8 @@ end" }
       expect(comp._component.install).to include("cp -p 'service-default-file' '/lib/svc/method/service-test'")
 
       # Look for files and configfiles
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/lib/svc/method/service-test'))
-      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/network/service-test.xml', '0644'))
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/lib/svc/method/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/var/svc/manifest/network/service-test.xml', mode: '0644'))
 
       # The component should now have a service registered
       expect(comp._component.service.name).to eq('service-test')
@@ -254,8 +254,8 @@ end" }
       expect(comp._component.install).to include("cp -p 'service-default-file' '/lib/svc/method/service-test'")
 
       # Look for files and configfiles
-      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/lib/svc/method/service-test'))
-      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('/var/svc/manifest/service-test.xml', '0644'))
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/lib/svc/method/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/var/svc/manifest/service-test.xml', mode: '0644'))
 
       # The component should now have a service registered
       expect(comp._component.service.name).to eq('service-test')
@@ -282,7 +282,7 @@ end" }
       comp.install_file('thing1', 'place/to/put/thing1', owner: 'bob', group: 'timmy', mode: '0022')
       expect(comp._component.install).to include("install -d 'place/to/put'")
       expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
-      expect(comp._component.files).to include(Vanagon::Common::Pathname.new('place/to/put/thing1', '0022', 'bob', 'timmy'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('place/to/put/thing1', mode: '0022', owner: 'bob', group: 'timmy'))
     end
   end
 
@@ -298,7 +298,8 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('config-file-test', {}, platform)
           comp.configfile('/place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/place/to/put/thing1'))
+          expect(comp._component.configfiles).not_to include(Vanagon::Common::Pathname.file('/place/to/put/thing1'))
         end
       end
 
@@ -313,7 +314,8 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
           comp.install_configfile('thing1', 'place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1'))
+          expect(comp._component.files).not_to include(Vanagon::Common::Pathname.file('place/to/put/thing1'))
         end
       end
     end
@@ -327,7 +329,7 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('config-file-test', {}, platform)
           comp.configfile('/place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('/place/to/put/thing1.pristine'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/place/to/put/thing1.pristine'))
         end
       end
 
@@ -342,7 +344,8 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
           comp.install_configfile('thing1', 'place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.new('place/to/put/thing1.pristine'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1.pristine'))
+          expect(comp._component.configfiles).not_to include(Vanagon::Common::Pathname.file('place/to/put/thing1'))
         end
       end
     end
@@ -383,25 +386,25 @@ end" }
     it 'adds a directory with the desired mode to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
       comp.directory('/a/b/c', mode: '0755')
-      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', '0755'))
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0755'))
     end
 
     it 'adds a directory with the desired owner to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
       comp.directory('/a/b/c', owner: 'olivia')
-      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', nil, 'olivia'))
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', owner: 'olivia'))
     end
 
     it 'adds a directory with the desired group to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
       comp.directory('/a/b/c', group: 'release-engineering')
-      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', nil, nil, 'release-engineering'))
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', group: 'release-engineering'))
     end
 
     it 'adds a directory with the desired attributes to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, {})
       comp.directory('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering')
-      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', '0400', 'olivia', 'release-engineering'))
+      expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering'))
     end
   end
 end
