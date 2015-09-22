@@ -168,6 +168,10 @@ class Vanagon
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
           default_mode = '0755'
+        when "aix"
+          @component.service = OpenStruct.new(:name => service_name, :service_command => File.read(service_file))
+          # Return here because there is no file to install, just a string read in
+          return
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
