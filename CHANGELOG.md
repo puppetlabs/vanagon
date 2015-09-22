@@ -12,12 +12,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - .sh and .csh added as valid plaintext file sources
 - WindRiver Linux added as a distinct platform type subclassing RPM
 
-### Fixed
-- AIX rpm spec no longer requires chkconfig
-
 ### Changed
 - File/configfile implementation refactored to remove duplicate file issues in
   rpm packaging.
+
+### Fixed
+- AIX rpm spec no longer requires chkconfig
 
 ### Removed
 - aix_package dsl method was removed. Packages desired for a build should be
@@ -29,16 +29,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   the platform version.
 
 ## [0.3.13] - 2015-09-14
+### Added
+- Pooler engine now has token support to ensure long template life. Use
+  VMPOOLER_TOKEN environment variable or write token into ~/.vanagon-token
+
 ### Changed
 - Noarch project method is now applied to solaris packages
 
 ### Fixed
 - Cross compiles will no longer attempt to install the produced package on
   solaris 11.
-
-### Added
-- Pooler engine now has token support to ensure long template life. Use
-  VMPOOLER_TOKEN environment variable or write token into ~/.vanagon-token
 
 ## [0.3.12] - 2015-09-03
 ### Changed
