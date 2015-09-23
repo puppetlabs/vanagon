@@ -209,6 +209,7 @@ class Vanagon
       ssh = find_program_on_path('ssh')
       args = ENV['VANAGON_SSH_KEY'] ? " -i #{ENV['VANAGON_SSH_KEY']}" : ""
       args << " -p #{port} "
+      args << " -T "
       args << " -o UserKnownHostsFile=/dev/null"
       args << " -o StrictHostKeyChecking=no"
       return ssh + args
