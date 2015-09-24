@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.16] - 2015-09-24
+### Fixed
+- Configfiles installed explicitly on debian
+
 ## [0.3.15] - 2015-09-22
 ### Added
 - Support for AIX services
@@ -68,7 +72,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.15...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.16...HEAD
+[0.3.16]: https://github.com/puppetlabs/vanagon/compare/0.3.15...0.3.16
 [0.3.15]: https://github.com/puppetlabs/vanagon/compare/0.3.14...0.3.15
 [0.3.14]: https://github.com/puppetlabs/vanagon/compare/0.3.13...0.3.14
 [0.3.13]: https://github.com/puppetlabs/vanagon/compare/0.3.12...0.3.13
