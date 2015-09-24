@@ -24,7 +24,7 @@ class Vanagon
       projfile = File.join(configdir, "#{name}.rb")
       code = File.read(projfile)
       dsl = Vanagon::Project::DSL.new(name, platform, include_components)
-      dsl.instance_eval(code)
+      dsl.instance_eval(code, __FILE__, __LINE__)
       dsl._project
     rescue => e
       puts "Error loading project '#{name}' using '#{projfile}':"

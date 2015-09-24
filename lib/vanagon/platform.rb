@@ -22,7 +22,7 @@ class Vanagon
       platfile = File.join(configdir, "#{name}.rb")
       code = File.read(platfile)
       dsl = Vanagon::Platform::DSL.new(name)
-      dsl.instance_eval(code)
+      dsl.instance_eval(code, __FILE__, __LINE__)
       dsl._platform
     rescue => e
       puts "Error loading platform '#{name}' using '#{platfile}':"
