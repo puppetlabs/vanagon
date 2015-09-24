@@ -24,7 +24,7 @@ class Vanagon
       compfile = File.join(configdir, "#{name}.rb")
       code = File.read(compfile)
       dsl = Vanagon::Component::DSL.new(name, settings, platform)
-      dsl.instance_eval(code)
+      dsl.instance_eval(code, __FILE__, __LINE__)
       dsl._component
     rescue => e
       puts "Error loading project '#{name}' using '#{compfile}':"
