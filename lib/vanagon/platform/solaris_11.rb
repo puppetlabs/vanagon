@@ -125,6 +125,11 @@ class Vanagon
         @patch = "/usr/bin/gpatch"
         @num_cores = "/usr/bin/kstat cpu_info | /usr/bin/ggrep -E '[[:space:]]+core_id[[:space:]]' | wc -l"
         super(name)
+        if @architecture == "sparc"
+          @platform_triple = "sparc-sun-solaris2.#{@os_version}"
+        elsif @architecture == "i386"
+          @platform_triple = "i386-pc-solaris2.#{@os_version}"
+        end
       end
     end
   end
