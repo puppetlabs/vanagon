@@ -170,6 +170,14 @@ class Vanagon
         @platform.ssh_port = port
       end
 
+      # Set the platform_triple for the platform
+      #
+      # @param triple[String] platform_triple for use in building out compiled
+      # tools and cross-compilation
+      def platform_triple(triple)
+        @platform.platform_triple = triple
+      end
+
       # Set any codename this platform may have (debian for example)
       #
       # @param name [String] codename for this platform (squeeze for example)
