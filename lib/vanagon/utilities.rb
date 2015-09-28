@@ -236,7 +236,9 @@ class Vanagon
     # @param target [String] ssh host to run command on (user@machine)
     # @param command [String] command to run on the target
     # @param port [Integer] port number for ssh (default 22)
-    # @return [true] Returns true if the command was successful
+    # @param return_command_output [Boolean] whether or not command output should be returned
+    # @return [true, String] Returns true if the command was successful or the
+    #                        output of the command if return_command_output is true
     # @raise [RuntimeError] If there is no target given or the command fails an exception is raised
     def remote_ssh_command(target, command, port = 22, return_command_output: false)
       if target
