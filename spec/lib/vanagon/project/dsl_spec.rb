@@ -105,6 +105,68 @@ end" }
     end
   end
 
+  describe "#provides" do
+    it 'adds the package provide to the list of provides' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.provides('thing1')
+      proj.provides('thing2')
+      expect(proj._project.get_provides.count).to eq(2)
+      expect(proj._project.get_provides.first.provide).to eq('thing1')
+      expect(proj._project.get_provides.last.provide).to eq('thing2')
+    end
+
+    it 'supports versioned provides' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.provides('thing1', '1.2.3')
+      expect(proj._project.get_provides.count).to eq(1)
+      expect(proj._project.get_provides.first.provide).to eq('thing1')
+      expect(proj._project.get_provides.first.version).to eq('1.2.3')
+     end
+
+    it 'gets rid of duplicates' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.provides('thing1', '1.2.3')
+      proj.provides('thing1', '1.2.3')
+      expect(proj._project.get_provides.count).to eq(1)
+      expect(proj._project.get_provides.first.provide).to eq('thing1')
+      expect(proj._project.get_provides.first.version).to eq('1.2.3')
+    end
+  end
+
+  describe "#replaces" do
+    it 'adds the package replacement to the list of replacements' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.replaces('thing1')
+      proj.replaces('thing2')
+      expect(proj._project.get_replaces.count).to eq(2)
+      expect(proj._project.get_replaces.first.replacement).to eq('thing1')
+      expect(proj._project.get_replaces.last.replacement).to eq('thing2')
+     end
+
+    it 'supports versioned replaces' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.replaces('thing1', '1.2.3')
+      expect(proj._project.get_replaces.count).to eq(1)
+      expect(proj._project.get_replaces.first.replacement).to eq('thing1')
+      expect(proj._project.get_replaces.first.version).to eq('1.2.3')
+     end
+
+    it 'gets rid of duplicates' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.replaces('thing1', '1.2.3')
+      proj.replaces('thing1', '1.2.3')
+      expect(proj._project.get_replaces.count).to eq(1)
+      expect(proj._project.get_replaces.first.replacement).to eq('thing1')
+      expect(proj._project.get_replaces.first.version).to eq('1.2.3')
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|
