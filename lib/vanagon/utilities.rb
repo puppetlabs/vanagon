@@ -243,11 +243,16 @@ class Vanagon
     def remote_ssh_command(target, command, port = 22, return_command_output: false)
       if target
         puts "Executing '#{command}' on #{target}"
-        ret = %x(#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}').chomp
-        if $?.success?
-          return return_command_output ? ret : true
+        if return_command_output
+          ret = %x(#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}').chomp
+          if $?.success?
+            return ret
+          else
+            raise "Remote ssh command (#{command}) failed on '#{target}'."
+          end
         else
-          raise "Remote ssh command (#{command}) failed on '#{target}'."
+          Kernel.system("#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}'")
+          $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
         end
       else
         fail "Need a target to ssh to. Received none."
