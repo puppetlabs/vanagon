@@ -65,7 +65,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	<%- unless comp.patches.empty? -%>
 		cd <%= comp.dirname %> && \
 		<%- comp.patches.each do |patch| -%>
-			<%= @platform.patch %> -p1 < ../patches/<%= File.basename(patch) %> && \
+			<%= @platform.patch %> --strip=<%= patch.strip %> --fuzz=<%= patch.fuzz %> --ignore-whitespace < ../patches/<%= File.basename(patch.path) %> && \
 		<%- end -%>
 		:
 	<%- end -%>
