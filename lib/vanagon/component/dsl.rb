@@ -80,9 +80,10 @@ class Vanagon
       # Add a patch to the list of patches to apply to the component's source after unpacking
       #
       # @param patch [String] Path to the patch that should be applied
-      # @param flag [String] Any extra flags to add to the patch call (not yet implemented)
-      def apply_patch(patch, flag = nil)
-        @component.patches << patch
+      # @param strip [String, Integer] directory levels to skip in applying patch
+      # @param fuzz [String, Integer] levels of context miss to ignore in applying patch
+      def apply_patch(patch, strip: 1, fuzz: 0)
+        @component.patches << OpenStruct.new('path' => patch, 'strip' => strip.to_s, 'fuzz' => fuzz.to_s)
       end
 
       # Loads and parses json from a file. Will treat the keys in the

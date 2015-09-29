@@ -135,7 +135,7 @@ class Vanagon
       unless @patches.empty?
         patchdir = File.join(workdir, "patches")
         FileUtils.mkdir_p(patchdir)
-        FileUtils.cp(@patches, patchdir)
+        FileUtils.cp(@patches.map(&:path), patchdir)
       end
     end
 

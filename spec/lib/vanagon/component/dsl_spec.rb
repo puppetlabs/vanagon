@@ -125,8 +125,19 @@ end" }
       comp = Vanagon::Component::DSL.new('patch-test', {}, {})
       comp.apply_patch('patch_file1')
       comp.apply_patch('patch_file2')
-      expect(comp._component.patches).to include('patch_file1')
-      expect(comp._component.patches).to include('patch_file2')
+      expect(comp._component.patches.count).to eq 2
+      expect(comp._component.patches.first.path).to eq 'patch_file1'
+      expect(comp._component.patches.last.path).to eq 'patch_file2'
+    end
+
+    it 'can specify strip and fuzz' do
+      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
+      # This patch must be amazing
+      comp.apply_patch('patch_file1', fuzz: 12, strip: 1000000)
+      expect(comp._component.patches.count).to eq 1
+      expect(comp._component.patches.first.path).to eq 'patch_file1'
+      expect(comp._component.patches.first.fuzz).to eq '12'
+      expect(comp._component.patches.first.strip).to eq '1000000'
     end
   end
 
