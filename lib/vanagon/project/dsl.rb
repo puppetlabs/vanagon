@@ -92,6 +92,22 @@ class Vanagon
         @project.requires << req
       end
 
+      # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
+      #
+      # @param replacement [String] a package that is replaced with this component
+      # @param version [String] the version of the package that is replaced
+      def replaces(replacement, version = nil)
+        @project.replaces << OpenStruct.new(:replacement => replacement, :version => version)
+      end
+
+      # Indicates that this component provides a system level package. Provides can be collected and used by the project and package.
+      #
+      # @param provide [String] a package that is provided with this component
+      # @param version [String] the version of the package that is provided with this component
+      def provides(provide, version = nil)
+        @project.provides << OpenStruct.new(:provide => provide, :version => version)
+      end
+
       # Sets the version for the project. Mainly for use in packaging.
       #
       # @param ver [String] version of the project

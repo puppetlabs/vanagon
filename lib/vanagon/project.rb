@@ -10,7 +10,7 @@ class Vanagon
     attr_accessor :components, :settings, :platform, :configdir, :name
     attr_accessor :version, :directories, :license, :description, :vendor
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
-    attr_accessor :cleanup, :version_file, :release
+    attr_accessor :cleanup, :version_file, :release, :replaces, :provides
 
     # Loads a given project from the configdir
     #
@@ -47,6 +47,8 @@ class Vanagon
       @settings = {}
       @platform = platform
       @release = "1"
+      @replaces = []
+      @provides = []
     end
 
     # Magic getter to retrieve settings in the project
@@ -92,14 +94,20 @@ class Vanagon
     #
     # @return [Array] array of package level replacements for the project
     def get_replaces
-      @components.map(&:replaces).flatten.uniq
+      replaces = []
+      replaces.push @replaces.flatten
+      replaces.push @components.map(&:replaces).flatten
+      replaces.flatten.uniq
     end
 
     # Collects all of the provides for the project and its components
     #
     # @return [Array] array of package level provides for the project
     def get_provides
-      @components.map(&:provides).flatten.uniq
+      provides = []
+      provides.push @provides.flatten
+      provides.push @components.map(&:provides).flatten
+      provides.flatten.uniq
     end
 
     # Collects any configfiles supplied by components
