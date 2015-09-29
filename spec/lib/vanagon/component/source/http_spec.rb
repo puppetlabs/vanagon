@@ -2,6 +2,7 @@ require 'vanagon/component/source/git'
 
 describe "Vanagon::Component::Source::Http" do
   let (:base_url) { 'http://buildsources.delivery.puppetlabs.net' }
+  let (:file_base) { 'thing-1.2.3' }
   let (:tar_filename) { 'thing-1.2.3.tar.gz' }
   let (:tar_url) { "#{base_url}/#{tar_filename}" }
   let (:tar_dirname) { 'thing-1.2.3' }
@@ -27,4 +28,16 @@ describe "Vanagon::Component::Source::Http" do
     end
   end
 
+  describe "#get_extension" do
+    it "returns the extension for valid extensions" do
+      (Vanagon::Component::Source::Http::ARCHIVE_EXTENSIONS + Vanagon::Component::Source::Http::NON_ARCHIVE_EXTENSIONS).each do |ext|
+        filename = "#{file_base}#{ext}"
+        url = File.join(base_url, filename)
+        http_source = Vanagon::Component::Source::Http.new(url, md5sum, workdir)
+        expect(http_source).to receive(:download).and_return(filename)
+        http_source.fetch
+        expect(http_source.get_extension).to eq(ext)
+      end
+    end
+  end
 end
