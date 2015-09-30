@@ -169,6 +169,11 @@ class Vanagon
         # solaris 10
         @num_cores = "/usr/bin/kstat cpu_info | awk '{print $$1}' | grep '^core_id$$' | wc -l"
         super(name)
+        if @architecture == "sparc"
+          @platform_triple = "sparc-sun-solaris2.#{@os_version}"
+        elsif @architecture == "i386"
+          @platform_triple = "i386-pc-solaris2.#{@os_version}"
+        end
       end
     end
   end
