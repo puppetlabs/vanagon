@@ -288,6 +288,20 @@ class Vanagon
       def environment(env)
         @component.environment.merge!(env)
       end
+
+      # Adds actions to run at the beginning of a package install
+      #
+      # @param action [String] Bourne shell compatible scriptlets to execute
+      def add_preinstall_action(action)
+        @component.preinstall_actions << action
+      end
+
+      # Adds actions to run at the end of a package install
+      #
+      # @param action [String] Bourne shell compatible scriptlets to execute
+      def add_postinstall_action(action)
+        @component.postinstall_actions << action
+      end
     end
   end
 end

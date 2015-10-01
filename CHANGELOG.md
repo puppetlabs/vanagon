@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.17] - 2015-10-02
+### Added
+- Initial support for custom pre- and post-install actions from the component
+  level. Currently implemented for RPM, we will expand that as needed.
+
 ## [0.3.16] - 2015-09-24
 ### Fixed
 - Configfiles installed explicitly on debian

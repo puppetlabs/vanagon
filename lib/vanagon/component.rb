@@ -10,7 +10,7 @@ class Vanagon
     attr_accessor :environment, :extract_with, :dirname, :build_requires
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
     attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
-    attr_accessor :sources
+    attr_accessor :sources, :preinstall_actions, :postinstall_actions
 
     # Loads a given component from the configdir
     #
@@ -56,6 +56,8 @@ class Vanagon
       @provides = []
       @environment = {}
       @sources = []
+      @preinstall_actions = []
+      @postinstall_actions = []
     end
 
     # Adds the given file to the list of files and returns @files.

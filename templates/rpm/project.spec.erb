@@ -115,6 +115,10 @@ for entry in `cat %{SOURCE1}`; do
 done
 
 %pre
+<%- get_preinstall_actions.each do |task| -%>
+<%= task %>
+<%- end -%>
+
 <%- if @user -%>
 # Add our user and group
 <%= @platform.add_group(@user) %>
@@ -122,6 +126,12 @@ done
 <%- end -%>
 
 %post
+<%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
+  ## EL-4 and AIX RPM don't have %posttrans, so we'll put them here
+  <%- get_postinstall_actions.each do |task| -%>
+    <%= task %>
+  <%- end -%>
+<%- end -%>
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
   #
@@ -182,6 +192,12 @@ done
   <%- end -%>
 <%- end -%>
 
+<%- unless @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
+%posttrans
+  <%- get_postinstall_actions.each do |task| -%>
+    <%= task %>
+  <%- end -%>
+<%- end -%>
 
 %files -f %{SOURCE1}
 %doc bill-of-materials
