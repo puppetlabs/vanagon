@@ -110,6 +110,20 @@ class Vanagon
       provides.flatten.uniq
     end
 
+    # Collects the pre-install actions for the project and it's components
+    #
+    # @return [Array] array of Bourne shell compatible scriptlets to execute
+    def get_preinstall_actions
+      @components.map(&:preinstall_actions).flatten
+    end
+
+    # Collects the post-install actions for the project and it's components
+    #
+    # @return [Array] array of Bourne shell compatible scriptlets to execute
+    def get_postinstall_actions
+      @components.map(&:postinstall_actions).flatten
+    end
+
     # Collects any configfiles supplied by components
     #
     # @return [Array] array of configfiles installed by components of the project

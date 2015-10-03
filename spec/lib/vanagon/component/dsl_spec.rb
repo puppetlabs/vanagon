@@ -195,6 +195,20 @@ end" }
     end
   end
 
+  describe '#add_actions' do
+    it 'adds the corect preinstall action to the component for rpm platforms' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      comp.add_preinstall_action('chkconfig --list')
+      expect(comp._component.preinstall_actions).to include("chkconfig --list")
+    end
+
+    it 'adds the corect postinstall action to the component for rpm platforms' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      comp.add_postinstall_action('chkconfig --list')
+      expect(comp._component.postinstall_actions).to include("chkconfig --list")
+    end
+  end
+
   describe '#install_service' do
     it 'adds the correct command to the install for the component for sysv platforms' do
       comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_sysv)
