@@ -10,6 +10,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ### Added
 - Initial support for custom pre- and post-install actions from the component
   level. Currently implemented for RPM, we will expand that as needed.
+- platform_triple now available as a platform DSL method. Very useful when
+  cross-compiling.
+- replaces and provides are now available in the project DSL (they were
+  previously only available in the component DSL)
+
+### Changed
+- apply_patch component DSL method now accepts fuzz and strip as arguments for
+  patches that don't apply cleanly with just -p1. patch application now ignores
+  whitespace by default
 
 ## [0.3.16] - 2015-09-24
 ### Fixed
@@ -77,7 +86,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.16...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.17...HEAD
+[0.3.17]: https://github.com/puppetlabs/vanagon/compare/0.3.16...0.3.17
 [0.3.16]: https://github.com/puppetlabs/vanagon/compare/0.3.15...0.3.16
 [0.3.15]: https://github.com/puppetlabs/vanagon/compare/0.3.14...0.3.15
 [0.3.14]: https://github.com/puppetlabs/vanagon/compare/0.3.13...0.3.14
