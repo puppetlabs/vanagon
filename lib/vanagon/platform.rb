@@ -3,7 +3,7 @@ require 'vanagon/platform/dsl'
 class Vanagon
   class Platform
     attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores, :tar
-    attr_accessor :build_dependencies, :name, :vcloud_name, :cflags, :ldflags, :settings
+    attr_accessor :build_dependencies, :name, :vmpooler_template, :cflags, :ldflags, :settings
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
     attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple
 
