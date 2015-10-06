@@ -109,4 +109,20 @@ describe 'Vanagon::Platform::DSL' do
       expect {plat.add_build_repository("anything")}.to raise_error(Vanagon::Error, /Adding a build repository not defined/)
     end
   end
+
+  describe '#vmpooler_template' do
+    it 'sets the instance variable on platform' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_10_platform_block)
+      plat.vmpooler_template 'solaris-10-x86_64'
+      expect(plat._platform.vmpooler_template).to eq('solaris-10-x86_64')
+    end
+
+    it 'is called by vcloud_name as a deprecation' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_10_platform_block)
+      plat.vcloud_name 'solaris-11-x86_64'
+      expect(plat._platform.vmpooler_template).to eq('solaris-11-x86_64')
+    end
+  end
 end

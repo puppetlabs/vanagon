@@ -5,12 +5,12 @@ class Vanagon
     class Pooler < Base
       attr_reader :token
 
-      # The vcloud_name is required to use the pooler engine
+      # The vmpooler_template is required to use the pooler engine
       def initialize(platform, target = nil)
         @pooler = "http://vmpooler.delivery.puppetlabs.net"
         @token = load_token
         super
-        @required_attributes << "vcloud_name"
+        @required_attributes << "vmpooler_template"
       end
 
       # This method loads the pooler token from one of two locations
@@ -34,12 +34,12 @@ class Vanagon
         response = Vanagon::Utilities.http_request(
           "#{@pooler}/vm",
           'POST',
-          '{"' + @platform.vcloud_name + '":"1"}',
+          '{"' + @platform.vmpooler_template + '":"1"}',
           { 'X-AUTH-TOKEN' => @token }
         )
         if response and response["ok"]
-          @target = response[@platform.vcloud_name]['hostname'] + '.' + response['domain']
-          Vanagon::Driver.logger.info "Reserving #{@target} (#{@platform.vcloud_name}) [#{@token ? 'token used' : 'no token used'}]"
+          @target = response[@platform.vmpooler_template]['hostname'] + '.' + response['domain']
+          Vanagon::Driver.logger.info "Reserving #{@target} (#{@platform.vmpooler_template}) [#{@token ? 'token used' : 'no token used'}]"
 
           tags = {
             'tags' => {
@@ -50,13 +50,13 @@ class Vanagon
           }
 
           response_tag = Vanagon::Utilities.http_request(
-            "#{@pooler}/vm/#{response[@platform.vcloud_name]['hostname']}",
+            "#{@pooler}/vm/#{response[@platform.vmpooler_template]['hostname']}",
             'PUT',
             tags.to_json,
             { 'X-AUTH-TOKEN' => @token }
           )
         else
-          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vcloud_name} is empty?"
+          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vmpooler_template} is empty?"
         end
       end
 

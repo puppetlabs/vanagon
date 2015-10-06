@@ -151,9 +151,18 @@ class Vanagon
 
       # Set the name of this platform as the vm pooler expects it
       #
+      # @param name [String] name of the target template to use from the vmpooler
+      def vmpooler_template(name)
+        @platform.vmpooler_template = name
+      end
+
+      # Set the name of this platform as the vm pooler expects it
+      #
       # @param name [String] name that the pooler uses for this platform
+      # @deprecated Please use vmpooler_template instead, this will be removed in a future vanagon release.
       def vcloud_name(name)
-        @platform.vcloud_name = name
+        warn "vcloud_name is a deprecated platform DSL method, and will be removed in a future vanagon release. Please use vmpooler_template instead."
+        self.vmpooler_template(name)
       end
 
       # Set the name of the docker image to use
