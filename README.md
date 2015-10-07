@@ -5,6 +5,7 @@ The Vanagon Project
  * Runtime requirements
  * Configuration and Usage
  * Overview
+ * Contributing
  * License
  * Maintainers
 
@@ -146,6 +147,12 @@ As in the `build` target host optional argument.
 
 ##### -h, --help
 Display command-line help.
+
+Contributing
+---
+We'd love to get contributions from you! Once you are up and running, take a look at the
+[Contribution Documents](CONTRIBUTING.md) to see how to get your changes merged
+in.
 
 License
 ---
