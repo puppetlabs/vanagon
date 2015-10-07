@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.version = %x(git describe --tags).gsub('-', '.').chomp
   gem.date    = Date.today.to_s
 
-  gem.summary = "Another mega-package build tool, now with more Make"
+  gem.summary = "All of your packages will fit into this van with this one simple trick."
   gem.description = "Vanagon is a tool to build a single package out of a project, which can itself contain one or more components."
   gem.license = "Apache-2.0"
 
