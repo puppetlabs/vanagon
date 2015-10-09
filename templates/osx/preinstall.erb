@@ -3,11 +3,15 @@
 # If we appear to be in an upgrade unload services.
 
 foundpkg=`/usr/sbin/pkgutil --volume "$3" --pkgs=<%= @identifier-%>.<%= @name -%>`
+oldbom="/usr/share/doc/<%= @name %>/bill-of-materials"
 
 if [ -n "$foundpkg" ]; then
 <%- get_services.each do |service| -%>
   if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
     /bin/launchctl unload "<%= service.service_file %>"
+  fi
+  if [ -f "$oldbom"]; then
+    /bin/rm "$oldbom"
   fi
 <%- end -%>
 fi
