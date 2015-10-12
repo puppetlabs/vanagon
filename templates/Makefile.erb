@@ -49,7 +49,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch <%= @name %>-project
 
 <%- @components.each do |comp| -%>
-<%= comp.name %>: <%= list_component_dependencies(comp).join(" ") %> <%= comp.name %>-install
+<%= comp.name %>: <%= comp.name %>-install
 
 <%- if @cleanup -%>
 <%= comp.name %>-cleanup: <%= comp.name %>-install
@@ -72,7 +72,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	
 	touch <%= comp.name %>-patch
 
-<%= comp.name %>-configure: <%= comp.name %>-patch
+<%= comp.name %>-configure: <%= comp.name %>-patch <%= list_component_dependencies(comp).join(" ") %>
 	<%- unless comp.configure.empty? -%>
 	cd <%= comp.dirname %> && \
 	<%= comp.get_environment %> && \
