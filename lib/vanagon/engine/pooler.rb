@@ -49,7 +49,7 @@ class Vanagon
             }
           }
 
-          response_tag = Vanagon::Utilities.http_request(
+          Vanagon::Utilities.http_request(
             "#{@pooler}/vm/#{response[@platform.vmpooler_template]['hostname']}",
             'PUT',
             tags.to_json,
