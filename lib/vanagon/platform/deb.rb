@@ -54,6 +54,53 @@ class Vanagon
         File.join("deb", @codename, target_repo)
       end
 
+      # Returns the string to add a target repo to the platforms' provisioning
+      #
+      # @param definition [URI] A URI to a deb or list file
+      # @return [String] The command to add the repo target to the system
+      def add_repo_target(definition)
+        if File.extname(definition.path) == '.deb'
+          # repo definition is an deb (like puppetlabs-release)
+          "curl -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
+        else
+          reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
+          reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
+          "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
+        end
+      end
+
+      # Returns the string to add a gpg key to the platforms' provisioning
+      #
+      # @param gpg_key [URI] A URI to the gpg key
+      # @return [String] The command to add the gpg key to the system
+      def add_gpg_key(gpg_key)
+        gpgname = "#{SecureRandom.hex}-#{File.basename(gpg_key.path)}"
+        gpgname = "#{gpgname}.gpg" if gpgname !~ /\.gpg$/
+        "curl -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
+      end
+
+      # Returns the commands to add a given repo target and optionally a gpg key to the build system
+      #
+      # @param definition [String] URI to the repo (.deb or .list)
+      # @param gpg_key [String, nil] URI to a gpg key for the repo
+      def add_repository(definition, gpg_key = nil)
+        # i.e., definition = http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
+        # parse the definition and gpg_key if set to ensure they are both valid URIs
+        definition = URI.parse(definition)
+        gpg_key = URI.parse(gpg_key) if gpg_key
+        provisioning = ["apt-get -qq update && apt-get -qq install curl"]
+
+        if definition.scheme =~ /^(http|ftp)/
+          provisioning << add_repo_target(definition)
+        end
+
+        if gpg_key
+          provisioning << add_gpg_key(gpg_key)
+        end
+
+        provisioning << "apt-get -qq update"
+      end
+
       # Constructor. Sets up some defaults for the debian platform and calls the parent constructor
       #
       # @param name [String] name of the platform

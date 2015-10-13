@@ -118,6 +118,7 @@ class Vanagon
       # @param command [String] Command to enable the target machine to build packages for the platform
       def provision_with(command)
         @platform.provisioning << command
+        @platform.provisioning.flatten!
       end
 
       # Set the command to install any needed build dependencies for the target machine
@@ -198,31 +199,9 @@ class Vanagon
       #
       # @param definition [String] the repo setup file, must be a valid uri, fetched with curl
       # @param gpg_key [String] optional gpg key to be fetched via curl and installed
+      # @deprecated Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release.
       def apt_repo(definition, gpg_key = nil)
-        # i.e., definition = http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
-        # parse the definition and gpg_key if set to ensure they are both valid URIs
-        definition = URI.parse definition
-        gpg_key = URI.parse gpg_key if gpg_key
-
-        self.provision_with "apt-get -qq update && apt-get -qq install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.deb'
-            # repo definition is an deb (like puppetlabs-release)
-            self.provision_with "curl -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
-          else
-            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
-            reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
-            self.provision_with "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
-          end
-        end
-
-        if gpg_key
-          gpgname = "#{SecureRandom.hex}-#{File.basename(gpg_key.path)}"
-          gpgname = "#{gpgname}.gpg" if gpgname !~ /\.gpg$/
-          self.provision_with "curl -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
-        end
-
-        self.provision_with "apt-get -qq update"
+        self.add_build_repository(definition, gpg_key)
       end
 
       # Helper to setup a yum repository on a target system
