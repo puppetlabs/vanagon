@@ -231,7 +231,7 @@ class Vanagon
       def yum_repo(definition)
         definition = URI.parse definition
 
-        self.provision_with "yum -y install curl"
+        self.provision_with "rpm -q curl || yum -y install curl"
         if definition.scheme =~ /^(http|ftp)/
           if File.extname(definition.path) == '.rpm'
             # repo definition is an rpm (like puppetlabs-release)
