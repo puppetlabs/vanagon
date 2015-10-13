@@ -37,7 +37,7 @@ class Vanagon
           '{"' + @platform.vmpooler_template + '":"1"}',
           { 'X-AUTH-TOKEN' => @token }
         )
-        if response and response["ok"]
+        if response["ok"]
           @target = response[@platform.vmpooler_template]['hostname'] + '.' + response['domain']
           Vanagon::Driver.logger.info "Reserving #{@target} (#{@platform.vmpooler_template}) [#{@token ? 'token used' : 'no token used'}]"
 
