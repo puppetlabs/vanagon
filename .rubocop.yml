@@ -511,4 +511,4 @@ Style/Encoding:
 # We have 4 violations here currently. Fixes these will take a bit of work,
 # so once RE-5565 is resolved, this should be enabled.
 Metrics/PerceivedComplexity:
-  Enabled: false
+  Enabled: true
