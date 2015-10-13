@@ -21,21 +21,33 @@ class Vanagon
 
       def self.rewrite(url, protocol)
         rule = @@rewrite_rule[protocol]
+
         if rule
-          if rule.is_a?(Proc) and rule.arity == 1
-            return rule.call(url)
+          if rule.is_a?(Proc)
+            return proc_rewrite(rule, url)
           elsif rule.is_a?(String)
-            target_match = url.match(/.*\/([^\/]*)$/)
-            if target_match
-              target = target_match[1]
-              return File.join(rule, target)
-            else
-              raise Vanagon::Error, "Unable to apply url rewrite to '#{url}', expected to find at least one '/' in the url."
-            end
-          else
+            return string_rewrite(rule, url)
           end
+        end
+
+        return url
+      end
+
+      def self.proc_rewrite(rule, url)
+        if rule.arity == 1
+          rule.call(url)
         else
-          return url
+          raise Vanagon::Error, "Unable to use provided rewrite rule. Expected Proc with one argument, Proc has #{rule.arity} arguments"
+        end
+      end
+
+      def self.string_rewrite(rule, url)
+        target_match = url.match(/.*\/([^\/]*)$/)
+        if target_match
+          target = target_match[1]
+          return File.join(rule, target)
+        else
+          raise Vanagon::Error, "Unable to apply url rewrite to '#{url}', expected to find at least one '/' in the url."
         end
       end
 
