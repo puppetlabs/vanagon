@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.18] - 2015-10-14
+### Changed
+- Move Vanagon bill-of-materials location on OSX from /usr to /usr/local
+- Rename vcloud_name to vmpooler_template in platform DSL
+
+### Fixed
+- Ensure AIX doesn't include newlines when adding AIX services
+- Only install curl if missing when adding yum repositories in platform provisioning
+- Update Makefile targets to finish build dependencies before configuring dependents
+
 ## [0.3.17] - 2015-10-02
 ### Added
 - Initial support for custom pre- and post-install actions from the component
@@ -86,7 +96,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.17...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.18...HEAD
+[0.3.18]: https://github.com/puppetlabs/vanagon/compare/0.3.17...0.3.18
 [0.3.17]: https://github.com/puppetlabs/vanagon/compare/0.3.16...0.3.17
 [0.3.16]: https://github.com/puppetlabs/vanagon/compare/0.3.15...0.3.16
 [0.3.15]: https://github.com/puppetlabs/vanagon/compare/0.3.14...0.3.15
