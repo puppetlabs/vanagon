@@ -1,6 +1,7 @@
 require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
 require 'vanagon/platform/rpm/aix'
+require 'vanagon/platform/rpm/sles'
 require 'vanagon/platform/rpm/wrl'
 require 'vanagon/platform/swix'
 require 'vanagon/platform/osx'
@@ -28,8 +29,10 @@ class Vanagon
         @platform = case name
                     when /^aix-/
                       Vanagon::Platform::RPM::AIX.new(@name)
-                    when /^(cisco-wrlinux|el|fedora|sles)-/
+                    when /^(cisco-wrlinux|el|fedora)-/
                       Vanagon::Platform::RPM.new(@name)
+                    when /^sles-/
+                      Vanagon::Platform::RPM::SLES.new(@name)
                     when /^huaweios-/
                       Vanagon::Platform::RPM::WRL.new(@name)
                     when /^(cumulus|debian|ubuntu)-/
@@ -210,53 +213,17 @@ class Vanagon
       # Helper to setup a yum repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
+      # @deprecated Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release.
       def yum_repo(definition)
-        definition = URI.parse definition
-
-        self.provision_with "rpm -q curl > /dev/null || yum -y install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.rpm'
-            # repo definition is an rpm (like puppetlabs-release)
-            if @platform.os_version.to_i < 6
-              # This can likely be done with just rpm itself (minus curl) however
-              # with a http_proxy curl has many more options avavailable for
-              # usage than rpm raw does. So for the most compatibility, we have
-              # chosen curl.
-              self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
-            else
-              self.provision_with "yum localinstall -y '#{definition}'"
-            end
-          else
-            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
-            reponame = "#{reponame}.repo"  if File.extname(reponame) != '.repo'
-            if @platform.is_cisco_wrlinux?
-              self.provision_with "curl -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
-            else
-              self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
-            end
-          end
-        end
+        self.add_build_repository(definition)
       end
 
       # Helper to setup a zypper repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
+      # @deprecated Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release.
       def zypper_repo(definition)
-        definition = URI.parse definition
-        if @platform.os_version == '10'
-          flag = 'sa'
-        else
-          flag = 'ar'
-        end
-        self.provision_with "yes | zypper -n --no-gpg-checks install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.rpm'
-            # repo definition is an rpm (like puppetlabs-release)
-            self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
-          else
-            self.provision_with "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
-          end
-        end
+        self.add_build_repository(definition)
       end
 
       # Generic adder for build repositories
