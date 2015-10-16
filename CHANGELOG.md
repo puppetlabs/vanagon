@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.19] - 2015-10-16
+### Fixed
+- Solaris 11 manifests now correctly handle services installed into
+  subdirectories such as network
+
 ## [0.3.18] - 2015-10-14
 ### Changed
 - Move Vanagon bill-of-materials location on OSX from /usr to /usr/local
@@ -96,7 +101,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.18...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.19...HEAD
+[0.3.19]: https://github.com/puppetlabs/vanagon/compare/0.3.18...0.3.19
 [0.3.18]: https://github.com/puppetlabs/vanagon/compare/0.3.17...0.3.18
 [0.3.17]: https://github.com/puppetlabs/vanagon/compare/0.3.16...0.3.17
 [0.3.16]: https://github.com/puppetlabs/vanagon/compare/0.3.15...0.3.16
