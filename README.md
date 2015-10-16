@@ -151,12 +151,12 @@ Display command-line help.
 Contributing
 ---
 We'd love to get contributions from you! Once you are up and running, take a look at the
-[Contribution Documents](CONTRIBUTING.md) to see how to get your changes merged
+[Contribution Documents](https://github.com/puppetlabs/vanagon/blob/master/CONTRIBUTING.md) to see how to get your changes merged
 in.
 
 License
 ---
-See [LICENSE](LICENSE) file.
+See [LICENSE](https://github.com/puppetlabs/vanagon/blob/master/LICENSE) file.
 
 Overview
 ---
@@ -168,7 +168,7 @@ If I wanted to build it for debian wheezy, I would define a platform called
 wheezy and build my project against it.
 
 For more detailed examples of the DSLs available, please see the
-[examples](examples) directory and the YARD documentation for vanagon.
+[examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
 
 Maintainers
 ---
