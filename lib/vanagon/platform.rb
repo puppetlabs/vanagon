@@ -80,9 +80,9 @@ class Vanagon
 
       return <<-HERE.undent
         if getent passwd '#{user.name}' > /dev/null 2>&1; then
-          /usr/sbin/usermod #{useradd_args}
+          /usr/sbin/usermod #{usermod_args}
         else
-          /usr/sbin/useradd #{usermod_args}
+          /usr/sbin/useradd #{useradd_args}
         fi
       HERE
     end
