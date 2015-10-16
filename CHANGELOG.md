@@ -10,6 +10,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ### Fixed
 - Solaris 11 manifests now correctly handle services installed into
   subdirectories such as network
+- User creation now correctly includes --system if needed
 
 ## [0.3.18] - 2015-10-14
 ### Changed
