@@ -27,7 +27,10 @@ depend fmri=pkg:/<%= requirement %> type=require
 
 <%- if has_services? -%>
 # Make sure smf manifests cause manifest-import to happen
-<transform file path=(var|lib)/svc/manifest/.*\.xml$ -> default restart_fmri svc:/system/manifest-import:default>
+<%- get_services.each do |service| -%>
+  <transform file path=<%= strip_and_escape(service.service_file) -%>$ -> default restart_fmri svc:/system/manifest-import:default>
+  <transform dir path=<%= strip_and_escape(File.dirname(service.service_file)) -%>$ -> drop>
+<%- end -%>
 <transform dir path=(var|lib)/svc/manifest$ -> drop>
 set name=org.opensolaris.smf.fmri <%= get_services.map {|service| "value=svc:/#{service.name}"}.join(" ") %>
 <%- end -%>
