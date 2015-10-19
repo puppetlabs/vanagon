@@ -25,7 +25,7 @@ class Vanagon
       # @param block [Proc] DSL definition of the platform to call
       def platform(name, &block)
         @platform = case name
-                    when /^(aix|cisco-wrlinux|el|fedora|nxos|sles)-/
+                    when /^(aix|cisco-wrlinux|el|fedora|sles)-/
                       Vanagon::Platform::RPM.new(@name)
                     when /^huaweios-/
                       Vanagon::Platform::RPM::WRL.new(@name)
@@ -247,7 +247,7 @@ class Vanagon
           else
             reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
             reponame = "#{reponame}.repo"  if File.extname(reponame) != '.repo'
-            if @platform.is_nxos? or @platform.is_cisco_wrlinux?
+            if @platform.is_cisco_wrlinux?
               self.provision_with "curl -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
             else
               self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"

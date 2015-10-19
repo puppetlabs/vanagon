@@ -146,7 +146,7 @@ class Vanagon
     # @return [true, false] true if it is a redhat variety or uses rpm
     # under the hood, false otherwise
     def is_rpm?
-      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|huaweios|nxos|sles)-.*$/)
+      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|huaweios|sles)-.*$/)
     end
 
     # Utility matcher to determine is the platform is an enterprise linux variety
@@ -189,13 +189,6 @@ class Vanagon
     # @return [true, false] true if it is a HuaweiOS variety, false otherwise
     def is_huaweios?
       return !!@name.match(/^huaweios-.*$/)
-    end
-
-    # Utility matcher to determine is the platform is an nxos variety
-    #
-    # @return [true, false] true if it is an nxos variety, false otherwise
-    def is_nxos?
-      return !!@name.match(/^nxos-.*$/)
     end
 
     # Utility matcher to determine is the platform is a cisco-wrlinux
