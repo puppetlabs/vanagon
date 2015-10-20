@@ -5,7 +5,7 @@ describe 'Vanagon::Platform::DSL' do
   let (:el_5_platform_block)   { "platform 'el-5-fixture'        do |plat| end" }
   let (:el_6_platform_block)   { "platform 'el-6-fixture'        do |plat| end" }
   let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
-  let (:nxos_5_platform_block) { "platform 'nxos-5-fixture'      do |plat| end" }
+  let (:cicso_wrlinux_platform_block) { "platform 'cisco-wrlinux-fixture'      do |plat| end" }
   let (:solaris_10_platform_block) { "platform 'solaris-10-fixture'      do |plat| end" }
   let (:solaris_11_platform_block) { "platform 'solaris-11-fixture'      do |plat| end" }
 
@@ -16,7 +16,7 @@ describe 'Vanagon::Platform::DSL' do
   let(:el_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
   let(:sles_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.2/repo_configs/rpm/pl-puppet-agent-0.2.2-sles-12-x86_64" }
   let(:sles_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
-  let(:nxos_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-nxos-5-x86_64.repo" }
+  let(:cisco_wrlinux_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-cisco-wrlinux-5-x86_64.repo" }
 
   let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
@@ -54,12 +54,13 @@ describe 'Vanagon::Platform::DSL' do
       expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
     end
 
-    it "downloads the repo file to the correct yum location for nxos" do
-      plat = Vanagon::Platform::DSL.new('nxos-5-fixture')
+    # This test currently covers wrlinux 5 and 7
+    it "downloads the repo file to the correct yum location for wrlinux" do
+      plat = Vanagon::Platform::DSL.new('cisco-wrlinux-fixture')
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
-      plat.instance_eval(nxos_5_platform_block)
-      plat.yum_repo(nxos_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/yum/repos.d/#{hex_value}-pl-puppet-agent-0.2.1-nxos-5-x86_64.repo' '#{nxos_definition}'")
+      plat.instance_eval(cicso_wrlinux_platform_block)
+      plat.yum_repo(cisco_wrlinux_definition)
+      expect(plat._platform.provisioning).to include("curl -o '/etc/yum/repos.d/#{hex_value}-pl-puppet-agent-0.2.1-cisco-wrlinux-5-x86_64.repo' '#{cisco_wrlinux_definition}'")
     end
 
     describe "installs a rpm when given a rpm" do
