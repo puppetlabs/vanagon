@@ -295,7 +295,10 @@ class Vanagon
       #   one or multiple of 'install' and 'upgrade'.
       # @param block [Array] the Bourne shell compatible scriptlet(s) to execute
       def add_preinstall_action(pkg_state, block)
-        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']") unless !pkg_state.empty? && (Array(pkg_state) - ["install", "upgrade"]).empty?
+        pkg_state = Array(pkg_state)
+        block = Array(block)
+
+        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']" unless !pkg_state.empty? && (pkg_state - ["install", "upgrade"]).empty?
         @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :script => block)
       end
 
@@ -305,7 +308,10 @@ class Vanagon
       #   one or multiple of 'install' and 'upgrade'.
       # @param block [Array] the Bourne shell compatible scriptlet(s) to execute
       def add_postinstall_action(pkg_state, block)
-        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']" unless !pkg_state.empty? && (Array(pkg_state) - ["install", "upgrade"]).empty?
+        pkg_state = Array(pkg_state)
+        block = Array(block)
+
+        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']" unless !pkg_state.empty? && (pkg_state - ["install", "upgrade"]).empty?
         @component.postinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :script => block)
       end
 
@@ -315,7 +321,10 @@ class Vanagon
       #   one or multiple of 'removal' and 'upgrade'.
       # @param block [Array] the Bourne shell compatible scriptlet(s) to execute
       def add_preremove_action(pkg_state, block)
-        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']" unless !pkg_state.empty? && (Array(pkg_state) - ["upgrade", "removal"]).empty?
+        pkg_state = Array(pkg_state)
+        block = Array(block)
+
+        raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']" unless !pkg_state.empty? && (pkg_state - ["upgrade", "removal"]).empty?
         @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :script => block)
       end
 
@@ -325,6 +334,9 @@ class Vanagon
       #   one or multiple of 'removal' and 'upgrade'.
       # @param block [Array] the Bourne shell compatible scriptlet(s) to execute
       def add_postremove_action(pkg_state, block)
+        pkg_state = Array(pkg_state)
+        block = Array(block)
+
         raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']" unless !pkg_state.empty? && (Array(pkg_state) - ["upgrade", "removal"]).empty?
         @component.postremove_actions << OpenStruct.new(:pkg_state => pkg_state, :script => block)
       end
