@@ -198,14 +198,26 @@ end" }
   describe '#add_actions' do
     it 'adds the corect preinstall action to the component for rpm platforms' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
-      comp.add_preinstall_action('chkconfig --list')
-      expect(comp._component.preinstall_actions).to include("chkconfig --list")
+      comp.add_preinstall_action(['install'], ['chkconfig --list'])
+      expect(comp._component.preinstall_actions).to include(OpenStruct.new(:pkg_state => ["install"], :script => ["chkconfig --list"]))
     end
 
     it 'adds the corect postinstall action to the component for rpm platforms' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
-      comp.add_postinstall_action('chkconfig --list')
-      expect(comp._component.postinstall_actions).to include("chkconfig --list")
+      comp.add_postinstall_action(['upgrade'], ['chkconfig --list'])
+      expect(comp._component.postinstall_actions).to include(OpenStruct.new(:pkg_state => ["upgrade"], :script => ["chkconfig --list"]))
+    end
+
+    it 'adds the corect preremove action to the component for rpm platforms' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      comp.add_preremove_action(['upgrade'], ['chkconfig --list'])
+      expect(comp._component.preremove_actions).to include(OpenStruct.new(:pkg_state => ["upgrade"], :script => ["chkconfig --list"]))
+    end
+
+    it 'adds the corect postremove action to the component for rpm platforms' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      comp.add_postremove_action(['removal'], ['chkconfig --list'])
+      expect(comp._component.postremove_actions).to include(OpenStruct.new(:pkg_state => ["removal"], :script => ["chkconfig --list"]))
     end
   end
 
