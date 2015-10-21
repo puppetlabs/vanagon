@@ -1,5 +1,4 @@
 #!/bin/bash
-
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
@@ -43,4 +42,20 @@ fi
       echo "Error updating '<%= file_or_directory.path %>': group '<%= file_or_directory.group %>' does not exist."
     fi
   <%- end -%>
+<%- end -%>
+
+# Run postinstall scripts on install if defined
+<%- scripts = get_postinstall_actions("install") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = configure ] && [ -z $2] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run postinstall scripts on upgrade if defined
+<%- scripts = get_postinstall_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = configure ] && [ -n $2] ; then
+  <%= scripts %>
+fi
 <%- end -%>

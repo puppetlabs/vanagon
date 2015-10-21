@@ -110,18 +110,65 @@ class Vanagon
       provides.flatten.uniq
     end
 
-    # Collects the pre-install actions for the project and it's components
+    # Collects the preinstall packaging actions for the project and it's components
+    # for the specified packaging state
     #
-    # @return [Array] array of Bourne shell compatible scriptlets to execute
-    def get_preinstall_actions
-      @components.map(&:preinstall_actions).flatten
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one or more of 'install' or 'upgrade'
+    # @return [Array] array of Bourne shell compatible scriptlets to execute during the preinstall
+    #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
+    def get_preinstall_actions(pkg_state)
+      scripts = []
+      @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
+        scripts << action.scripts
+      end
+      scripts.join("\n")
     end
 
-    # Collects the post-install actions for the project and it's components
+
+    # Collects the postinstall packaging actions for the project and it's components
+    # for the specified packaging state
     #
-    # @return [Array] array of Bourne shell compatible scriptlets to execute
-    def get_postinstall_actions
-      @components.map(&:postinstall_actions).flatten
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one or more of 'install' or 'upgrade'
+    # @return [Array] array of Bourne shell compatible scriptlets to execute during the postinstall
+    #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
+    def get_postinstall_actions(pkg_state)
+      scripts = []
+      @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
+        scripts << action.scripts
+      end
+      scripts.join("\n")
+    end
+
+    # Collects the preremove packaging actions for the project and it's components
+    # for the specified packaging state
+    #
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one or more of 'removal' or 'upgrade'
+    # @return [Array] array of Bourne shell compatible scriptlets to execute during the preremove
+    #   phase of packaging during the state of the system defined by pkg_state (either removal or upgrade)
+    def get_preremove_actions(pkg_state)
+      scripts = []
+      @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
+        scripts << action.scripts
+      end
+      scripts.join("\n")
+    end
+
+    # Collects the postremove packaging actions for the project and it's components
+    # for the specified packaging state
+    #
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one or more of 'removal' or 'upgrade'
+    # @return [Array] array of Bourne shell compatible scriptlets to execute during the postremove
+    #   phase of packaging during the state of the system defined by pkg_state (either removal or upgrade)
+    def get_postremove_actions(pkg_state)
+      scripts = []
+      @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
+        scripts << action.scripts
+      end
+      scripts.join("\n")
     end
 
     # Collects any configfiles supplied by components

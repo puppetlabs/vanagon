@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Run pre-removal scripts on upgrade if defined
+<%- scripts = get_preremove_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = upgrade ] && [ -n $2] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run pre-removal scripts on removal if defined
+<%- scripts = get_preremove_actions("removal") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = remove ] && [ -z $2] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #

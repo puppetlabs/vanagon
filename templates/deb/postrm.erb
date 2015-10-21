@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Run post-removal scripts on upgrade if defined
+<%- scripts = get_postremove_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = upgrade ] && [ -n $2] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run post-removal scripts on removal if defined
+<%- scripts = get_postremove_actions("removal") -%>
+<%- unless scripts.empty? -%>
+if [ $1 = remove ] && [ -z $2] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
@@ -11,5 +27,3 @@ if [ "$1" = "purge" ] ; then
 fi
   <%- end -%>
 <%- end -%>
-
-

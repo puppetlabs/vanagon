@@ -115,9 +115,14 @@ for entry in `cat %{SOURCE1}`; do
 done
 
 %pre
-<%- get_preinstall_actions.each do |task| -%>
-<%= task %>
-<%- end -%>
+# Save state so we know later if this is an upgrade or an install
+mkdir -p %{_localstatedir}/lib/rpm-state/%{name}
+if [ $1 -eq 1 ] ; then
+  touch %{_localstatedir}/lib/rpm-state/%{name}/install
+fi
+if [ $1 -eq 2 ] ; then
+  touch %{_localstatedir}/lib/rpm-state/%{name}/upgrade
+fi
 
 <%- if @user -%>
 # Add our user and group
@@ -125,12 +130,43 @@ done
 <%= @platform.add_user(@user) %>
 <%- end -%>
 
+# Run preinstall scripts on install if defined
+<%- scripts = get_preinstall_actions("install") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 1 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run preinstall scripts on upgrade if defined
+<%- scripts = get_preinstall_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 2 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+
+
 %post
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
   ## EL-4 and AIX RPM don't have %posttrans, so we'll put them here
-  <%- get_postinstall_actions.each do |task| -%>
-    <%= task %>
+  # Run postinstall scripts on install if defined
+  <%- scripts = get_postinstall_actions("install") -%>
+  <%- unless scripts.empty? -%>
+if [ $1 -eq 1 ] ; then
+  <%= scripts %>
+fi
   <%- end -%>
+
+  # Run postinstall scripts on upgrade if defined
+  <%- scripts = get_postinstall_actions("upgrade") -%>
+  <%- unless scripts.empty? -%>
+if [ $1 -eq 2 ] ; then
+  <%= scripts %>
+fi
+  <%- end -%>
+
 <%- end -%>
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
@@ -153,6 +189,23 @@ done
 <%- end -%>
 
 %postun
+# Run post-uninstall scripts on upgrade if defined
+<%- scripts = get_postremove_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 1 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run post-uninstall scripts on removal if defined
+<%- scripts = get_postremove_actions("removal") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 0 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
   #
@@ -175,6 +228,23 @@ done
 <%- end -%>
 
 %preun
+# Run pre-uninstall scripts on upgrade if defined
+<%- scripts = get_preremove_actions("upgrade") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 1 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+# Run pre-uninstall scripts on removal if defined
+<%- scripts = get_preremove_actions("removal") -%>
+<%- unless scripts.empty? -%>
+if [ $1 -eq 0 ] ; then
+  <%= scripts %>
+fi
+<%- end -%>
+
+
 <%- get_services.each do |service| -%>
   <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
@@ -194,8 +264,22 @@ done
 
 <%- unless @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
 %posttrans
-  <%- get_postinstall_actions.each do |task| -%>
-    <%= task %>
+# Run post-transaction scripts on install if defined
+  <%- scripts = get_postinstall_actions("install") -%>
+  <%- unless scripts.empty? -%>
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/install ] ; then
+  <%= scripts %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/install
+fi
+  <%- end -%>
+
+# Run post-transaction scripts on upgrade if defined
+  <%- scripts = get_postinstall_actions("upgrade") -%>
+  <%- unless scripts.empty? -%>
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/upgrade ] ; then
+  <%= scripts %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/upgrade
+fi
   <%- end -%>
 <%- end -%>
 
