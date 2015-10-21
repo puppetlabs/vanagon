@@ -120,7 +120,7 @@ class Vanagon
     def get_preinstall_actions(pkg_state)
       scripts = []
       @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
-        scripts << action.script
+        scripts << action.scripts
       end
       scripts
     end
@@ -136,7 +136,7 @@ class Vanagon
     def get_postinstall_actions(pkg_state)
       scripts = []
       @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
-        scripts << action.script
+        scripts << action.scripts
       end
       scripts
     end
@@ -151,7 +151,7 @@ class Vanagon
     def get_preremove_actions(pkg_state)
       scripts = []
       @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
-        scripts << action.script
+        scripts << action.scripts
       end
       scripts
     end
@@ -166,7 +166,7 @@ class Vanagon
     def get_postremove_actions(pkg_state)
       scripts = []
       @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
-        scripts << action.script
+        scripts << action.scripts
       end
       scripts
     end

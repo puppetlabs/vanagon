@@ -301,7 +301,7 @@ class Vanagon
         if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
         end
-        @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :script => scripts)
+        @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
       # Adds action to run during the postinstall phase of packaging
@@ -316,7 +316,7 @@ class Vanagon
         if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
         end
-        @component.postinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :script => scripts)
+        @component.postinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
       # Adds action to run during the preremoval phase of packaging
@@ -331,7 +331,7 @@ class Vanagon
         if pkg_state.empty? || !(pkg_state - ["upgrade", "removal"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']"
         end
-        @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :script => scripts)
+        @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
       # Adds action to run during the postremoval phase of packaging
@@ -346,7 +346,7 @@ class Vanagon
         if pkg_state.empty? || !(pkg_state - ["upgrade", "removal"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']"
         end
-        @component.postremove_actions << OpenStruct.new(:pkg_state => pkg_state, :script => scripts)
+        @component.postremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
     end
   end

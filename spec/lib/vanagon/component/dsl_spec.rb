@@ -201,17 +201,17 @@ end" }
       comp.add_preinstall_action(['install', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_preinstall_action('install', 'echo "hello, world"')
       expect(comp._component.preinstall_actions.count).to eq(2)
-      expect(comp._component.preinstall_actions.first.script.count).to eq(2)
+      expect(comp._component.preinstall_actions.first.scripts.count).to eq(2)
       expect(comp._component.preinstall_actions.first.pkg_state.count).to eq(2)
       expect(comp._component.preinstall_actions.first.pkg_state.first).to eq('install')
       expect(comp._component.preinstall_actions.first.pkg_state.last).to eq('upgrade')
-      expect(comp._component.preinstall_actions.first.script.first).to eq('chkconfig --list')
-      expect(comp._component.preinstall_actions.first.script.last).to eq('/bin/true')
+      expect(comp._component.preinstall_actions.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.preinstall_actions.first.scripts.last).to eq('/bin/true')
 
-      expect(comp._component.preinstall_actions.last.script.count).to eq(1)
+      expect(comp._component.preinstall_actions.last.scripts.count).to eq(1)
       expect(comp._component.preinstall_actions.last.pkg_state.count).to eq(1)
       expect(comp._component.preinstall_actions.last.pkg_state.first).to eq('install')
-      expect(comp._component.preinstall_actions.last.script.first).to eq('echo "hello, world"')
+      expect(comp._component.preinstall_actions.last.scripts.first).to eq('echo "hello, world"')
     end
 
     it 'fails with bad preinstall action' do
@@ -229,17 +229,17 @@ end" }
       comp.add_postinstall_action(['install', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_postinstall_action('install', 'echo "hello, world"')
       expect(comp._component.postinstall_actions.count).to eq(2)
-      expect(comp._component.postinstall_actions.first.script.count).to eq(2)
+      expect(comp._component.postinstall_actions.first.scripts.count).to eq(2)
       expect(comp._component.postinstall_actions.first.pkg_state.count).to eq(2)
       expect(comp._component.postinstall_actions.first.pkg_state.first).to eq('install')
       expect(comp._component.postinstall_actions.first.pkg_state.last).to eq('upgrade')
-      expect(comp._component.postinstall_actions.first.script.first).to eq('chkconfig --list')
-      expect(comp._component.postinstall_actions.first.script.last).to eq('/bin/true')
+      expect(comp._component.postinstall_actions.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.postinstall_actions.first.scripts.last).to eq('/bin/true')
 
-      expect(comp._component.postinstall_actions.last.script.count).to eq(1)
+      expect(comp._component.postinstall_actions.last.scripts.count).to eq(1)
       expect(comp._component.postinstall_actions.last.pkg_state.count).to eq(1)
       expect(comp._component.postinstall_actions.last.pkg_state.first).to eq('install')
-      expect(comp._component.postinstall_actions.last.script.first).to eq('echo "hello, world"')
+      expect(comp._component.postinstall_actions.last.scripts.first).to eq('echo "hello, world"')
     end
 
     it 'fails with bad postinstall action' do
@@ -257,17 +257,17 @@ end" }
       comp.add_preremove_action(['removal', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_preremove_action('removal', 'echo "hello, world"')
       expect(comp._component.preremove_actions.count).to eq(2)
-      expect(comp._component.preremove_actions.first.script.count).to eq(2)
+      expect(comp._component.preremove_actions.first.scripts.count).to eq(2)
       expect(comp._component.preremove_actions.first.pkg_state.count).to eq(2)
       expect(comp._component.preremove_actions.first.pkg_state.first).to eq('removal')
       expect(comp._component.preremove_actions.first.pkg_state.last).to eq('upgrade')
-      expect(comp._component.preremove_actions.first.script.first).to eq('chkconfig --list')
-      expect(comp._component.preremove_actions.first.script.last).to eq('/bin/true')
+      expect(comp._component.preremove_actions.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.preremove_actions.first.scripts.last).to eq('/bin/true')
 
-      expect(comp._component.preremove_actions.last.script.count).to eq(1)
+      expect(comp._component.preremove_actions.last.scripts.count).to eq(1)
       expect(comp._component.preremove_actions.last.pkg_state.count).to eq(1)
       expect(comp._component.preremove_actions.last.pkg_state.first).to eq('removal')
-      expect(comp._component.preremove_actions.last.script.first).to eq('echo "hello, world"')
+      expect(comp._component.preremove_actions.last.scripts.first).to eq('echo "hello, world"')
     end
 
     it 'fails with bad preremove action' do
@@ -285,17 +285,17 @@ end" }
       comp.add_postremove_action(['removal', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_postremove_action('removal', 'echo "hello, world"')
       expect(comp._component.postremove_actions.count).to eq(2)
-      expect(comp._component.postremove_actions.first.script.count).to eq(2)
+      expect(comp._component.postremove_actions.first.scripts.count).to eq(2)
       expect(comp._component.postremove_actions.first.pkg_state.count).to eq(2)
       expect(comp._component.postremove_actions.first.pkg_state.first).to eq('removal')
       expect(comp._component.postremove_actions.first.pkg_state.last).to eq('upgrade')
-      expect(comp._component.postremove_actions.first.script.first).to eq('chkconfig --list')
-      expect(comp._component.postremove_actions.first.script.last).to eq('/bin/true')
+      expect(comp._component.postremove_actions.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.postremove_actions.first.scripts.last).to eq('/bin/true')
 
-      expect(comp._component.postremove_actions.last.script.count).to eq(1)
+      expect(comp._component.postremove_actions.last.scripts.count).to eq(1)
       expect(comp._component.postremove_actions.last.pkg_state.count).to eq(1)
       expect(comp._component.postremove_actions.last.pkg_state.first).to eq('removal')
-      expect(comp._component.postremove_actions.last.script.first).to eq('echo "hello, world"')
+      expect(comp._component.postremove_actions.last.scripts.first).to eq('echo "hello, world"')
     end
 
     it 'fails with bad postremove action' do
