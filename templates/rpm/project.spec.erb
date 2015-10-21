@@ -114,7 +114,7 @@ for entry in `cat %{SOURCE1}`; do
   fi
 done
 
-%pre -p /bin/bash
+%pre
 # Save state so we know later if this is an upgrade or an install
 mkdir -p %{_localstatedir}/lib/rpm-state/%{name}
 if [ $1 -eq 1 ] ; then
