@@ -115,6 +115,15 @@ for entry in `cat %{SOURCE1}`; do
 done
 
 %pre -p /bin/bash
+# Save state so we know later if this is an upgrade or an install
+mkdir -p %{_localstatedir}/lib/rpm-state/%{name}
+if [ $1 -eq 1 ] ; then
+  touch %{_localstatedir}/lib/rpm-state/%{name}/install
+fi
+if [ $1 -eq 2 ] ; then
+  touch %{_localstatedir}/lib/rpm-state/%{name}/upgrade
+fi
+
 <%- if @user -%>
 # Add our user and group
 <%= @platform.add_group(@user) %>
@@ -255,8 +264,23 @@ fi
 
 <%- unless @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
 %posttrans
-# Run post transaction scripts if defined
-<%= (get_postinstall_actions("install") + get_postinstall_actions("upgrade")).uniq.join("\n") %>
+# Run post-transaction scripts on install if defined
+  <%- scripts = get_postinstall_actions("install") -%>
+  <%- unless scripts.empty? -%>
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/install ] ; then
+  <%= scripts.join("\n") %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/install
+fi
+  <%- end -%>
+
+# Run post-transaction scripts on upgrade if defined
+  <%- scripts = get_postinstall_actions("upgrade") -%>
+  <%- unless scripts.empty? -%>
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/upgrade ] ; then
+  <%= scripts.join("\n") %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/upgrade
+fi
+  <%- end -%>
 <%- end -%>
 
 %files -f %{SOURCE1}
