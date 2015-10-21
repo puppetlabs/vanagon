@@ -207,6 +207,7 @@ class Vanagon
       # @param gpg_key [String] optional gpg key to be fetched via curl and installed
       # @deprecated Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release.
       def apt_repo(definition, gpg_key = nil)
+        warn "Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release."
         self.add_build_repository(definition, gpg_key)
       end
 
@@ -215,6 +216,7 @@ class Vanagon
       # @param definition [String] the repo setup URI or RPM file
       # @deprecated Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release.
       def yum_repo(definition)
+        warn "Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release."
         self.add_build_repository(definition)
       end
 
@@ -223,6 +225,7 @@ class Vanagon
       # @param definition [String] the repo setup URI or RPM file
       # @deprecated Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release.
       def zypper_repo(definition)
+        warn "Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release."
         self.add_build_repository(definition)
       end
 
