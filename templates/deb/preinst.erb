@@ -4,7 +4,7 @@
 <%- scripts = get_preinstall_actions("install") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = install ] && [ -z $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -12,6 +12,6 @@ fi
 <%- scripts = get_preinstall_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = upgrade ] && [ -n $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>

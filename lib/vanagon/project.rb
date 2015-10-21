@@ -122,7 +122,7 @@ class Vanagon
       @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
         scripts << action.scripts
       end
-      scripts
+      scripts.join("\n")
     end
 
 
@@ -138,7 +138,7 @@ class Vanagon
       @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
         scripts << action.scripts
       end
-      scripts
+      scripts.join("\n")
     end
 
     # Collects the preremove packaging actions for the project and it's components
@@ -153,7 +153,7 @@ class Vanagon
       @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
         scripts << action.scripts
       end
-      scripts
+      scripts.join("\n")
     end
 
     # Collects the postremove packaging actions for the project and it's components
@@ -168,7 +168,7 @@ class Vanagon
       @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.each do |action|
         scripts << action.scripts
       end
-      scripts
+      scripts.join("\n")
     end
 
     # Collects any configfiles supplied by components

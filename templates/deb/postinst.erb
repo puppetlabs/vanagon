@@ -48,7 +48,7 @@ fi
 <%- scripts = get_postinstall_actions("install") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = configure ] && [ -z $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -56,6 +56,6 @@ fi
 <%- scripts = get_postinstall_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = configure ] && [ -n $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>

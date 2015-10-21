@@ -134,7 +134,7 @@ fi
 <%- scripts = get_preinstall_actions("install") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 1 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -142,7 +142,7 @@ fi
 <%- scripts = get_preinstall_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 2 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -155,7 +155,7 @@ fi
   <%- scripts = get_postinstall_actions("install") -%>
   <%- unless scripts.empty? -%>
 if [ $1 -eq 1 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
   <%- end -%>
 
@@ -163,7 +163,7 @@ fi
   <%- scripts = get_postinstall_actions("upgrade") -%>
   <%- unless scripts.empty? -%>
 if [ $1 -eq 2 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
   <%- end -%>
 
@@ -193,7 +193,7 @@ fi
 <%- scripts = get_postremove_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 1 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -201,7 +201,7 @@ fi
 <%- scripts = get_postremove_actions("removal") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 0 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -232,7 +232,7 @@ fi
 <%- scripts = get_preremove_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 1 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -240,7 +240,7 @@ fi
 <%- scripts = get_preremove_actions("removal") -%>
 <%- unless scripts.empty? -%>
 if [ $1 -eq 0 ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -268,7 +268,7 @@ fi
   <%- scripts = get_postinstall_actions("install") -%>
   <%- unless scripts.empty? -%>
 if [ -e %{_localstatedir}/lib/rpm-state/%{name}/install ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
   rm %{_localstatedir}/lib/rpm-state/%{name}/install
 fi
   <%- end -%>
@@ -277,7 +277,7 @@ fi
   <%- scripts = get_postinstall_actions("upgrade") -%>
   <%- unless scripts.empty? -%>
 if [ -e %{_localstatedir}/lib/rpm-state/%{name}/upgrade ] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
   rm %{_localstatedir}/lib/rpm-state/%{name}/upgrade
 fi
   <%- end -%>

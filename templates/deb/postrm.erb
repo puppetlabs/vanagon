@@ -4,7 +4,7 @@
 <%- scripts = get_postremove_actions("upgrade") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = upgrade ] && [ -n $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
@@ -12,7 +12,7 @@ fi
 <%- scripts = get_postremove_actions("removal") -%>
 <%- unless scripts.empty? -%>
 if [ $1 = remove ] && [ -z $2] ; then
-  <%= scripts.join("\n") %>
+  <%= scripts %>
 fi
 <%- end -%>
 
