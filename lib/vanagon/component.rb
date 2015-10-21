@@ -11,6 +11,7 @@ class Vanagon
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
     attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
     attr_accessor :sources, :preinstall_actions, :postinstall_actions
+    attr_accessor :preremove_actions, :postremove_actions
 
     # Loads a given component from the configdir
     #
@@ -58,6 +59,8 @@ class Vanagon
       @sources = []
       @preinstall_actions = []
       @postinstall_actions = []
+      @preremove_actions = []
+      @postremove_actions = []
     end
 
     # Adds the given file to the list of files and returns @files.
