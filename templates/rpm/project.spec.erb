@@ -87,7 +87,7 @@ install -d %{buildroot}
 # Copy each of the extra files into place
 <%- (get_files + get_configfiles).map {|f| f.path.sub(/^\//,'')}.each do |file| -%>
   install -d %{buildroot}/<%= File.dirname(file) %>
-  cp -p <%= file %> %{buildroot}/<%= File.dirname(file) %>
+  cp -Rp <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
 <%- if @platform.is_cisco_wrlinux? || @platform.is_huaweios? -%>
