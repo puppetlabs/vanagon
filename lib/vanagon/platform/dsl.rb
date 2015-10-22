@@ -85,6 +85,13 @@ class Vanagon
         @platform.make = make_cmd
       end
 
+      # Set the path to make for the platform
+      #
+      # @param make_cmd [String] Full path to the make command for the platform
+      def bash(bash_cmd)
+        @platform.bash = bash_cmd
+      end
+
       # Set the path to tar for the platform
       #
       # @param tar [String] Full path to the tar command for the platform

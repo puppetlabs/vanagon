@@ -5,7 +5,7 @@ class Vanagon
     attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores, :tar
     attr_accessor :build_dependencies, :name, :vmpooler_template, :cflags, :ldflags, :settings
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
-    attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple
+    attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple, :bash
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to

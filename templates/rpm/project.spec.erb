@@ -114,7 +114,7 @@ for entry in `cat %{SOURCE1}`; do
   fi
 done
 
-%pre
+%pre -p <%= @platform.bash %>
 <%- get_preinstall_actions.each do |task| -%>
 <%= task %>
 <%- end -%>
@@ -125,7 +125,7 @@ done
 <%= @platform.add_user(@user) %>
 <%- end -%>
 
-%post
+%post -p <%= @platform.bash %>
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
   ## EL-4 and AIX RPM don't have %posttrans, so we'll put them here
   <%- get_postinstall_actions.each do |task| -%>
@@ -152,7 +152,7 @@ done
   <%- end -%>
 <%- end -%>
 
-%postun
+%postun -p <%= @platform.bash %>
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
   #
@@ -174,7 +174,7 @@ done
   <%- end -%>
 <%- end -%>
 
-%preun
+%preun -p <%= @platform.bash %>
 <%- get_services.each do |service| -%>
   <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
@@ -193,7 +193,7 @@ done
 <%- end -%>
 
 <%- unless @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
-%posttrans
+%posttrans -p <%= @platform.bash %>
   <%- get_postinstall_actions.each do |task| -%>
     <%= task %>
   <%- end -%>
