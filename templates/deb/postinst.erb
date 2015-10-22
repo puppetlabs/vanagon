@@ -1,5 +1,4 @@
 #!/bin/bash
-
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
@@ -44,3 +43,13 @@ fi
     fi
   <%- end -%>
 <%- end -%>
+
+# Run postinstall scripts on install if defined
+if [ $1 = configure ] && [ -z $2 ] ; then
+  <%= get_postinstall_actions("install") %>
+fi
+
+# Run postinstall scripts on upgrade if defined
+if [ $1 = configure ] && [ -n $2 ] ; then
+  <%= get_postinstall_actions("upgrade") %>
+fi
