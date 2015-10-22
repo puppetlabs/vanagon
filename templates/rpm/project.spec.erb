@@ -90,6 +90,11 @@ install -d %{buildroot}
   cp -Rp <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
+<%- if @platform.is_eos? -%>
+  # Symlink /etc/puppetlabs to the persistent storage area
+  ln -s /persist/sys/etc/puppetlabs %{buildroot}/etc/puppetlabs
+<%- end -%>
+
 <%- if @platform.is_cisco_wrlinux? || @platform.is_huaweios? -%>
   # Generate a list of directories and append it to the file list. RPMv4
   # automatically does this implicitly, but RPMv5 is more strict and you
@@ -152,6 +157,12 @@ done
   <%- end -%>
 <%- end -%>
 
+<%- if @platform.is_eos? -%>
+  # Explicity configure puppet to run as root:root
+  /opt/puppetlabs/bin/puppet config set user root
+  /opt/puppetlabs/bin/puppet config set group root
+<%- end -%>
+
 %postun
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
@@ -204,6 +215,10 @@ done
 %defattr(-, root, root, 0755)
 <%- get_directories.each do |dir| -%>
 %dir %attr(<%= dir.mode || "-" %>, <%= dir.owner || "-" %>, <%= dir.group || "-" %>) <%= dir.path %>
+<%- end -%>
+<%- if @platform.is_eos? -%>
+# We created this symlink after the file lists were generated
+/etc/puppetlabs
 <%- end -%>
 <%- get_configfiles.each do |configfile| -%>
 %config(noreplace) %attr(<%= configfile.mode || "-" %>, <%= configfile.owner || "-" %>, <%= configfile.group || "-" %>) <%= configfile.path %>
