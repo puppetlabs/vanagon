@@ -232,6 +232,7 @@ class Vanagon
       def link(source, target)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "ln -s '#{source}' '#{target}'"
+        @component.add_file Vanagon::Common::Pathname.file(target)
       end
 
       # Sets the version for the component
