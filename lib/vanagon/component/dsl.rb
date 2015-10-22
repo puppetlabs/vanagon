@@ -290,18 +290,64 @@ class Vanagon
         @component.environment.merge!(env)
       end
 
-      # Adds actions to run at the beginning of a package install
+      # Adds action to run during the preinstall phase of packaging
       #
-      # @param action [String] Bourne shell compatible scriptlets to execute
-      def add_preinstall_action(action)
-        @component.preinstall_actions << action
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'install' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      def add_preinstall_action(pkg_state, scripts)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+
+        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+        end
+        @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
-      # Adds actions to run at the end of a package install
+      # Adds action to run during the postinstall phase of packaging
       #
-      # @param action [String] Bourne shell compatible scriptlets to execute
-      def add_postinstall_action(action)
-        @component.postinstall_actions << action
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'install' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      def add_postinstall_action(pkg_state, scripts)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+
+        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+        end
+        @component.postinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
+      end
+
+      # Adds action to run during the preremoval phase of packaging
+      #
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'removal' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      def add_preremove_action(pkg_state, scripts)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+
+        if pkg_state.empty? || !(pkg_state - ["upgrade", "removal"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']"
+        end
+        @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
+      end
+
+      # Adds action to run during the postremoval phase of packaging
+      #
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'removal' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      def add_postremove_action(pkg_state, scripts)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+
+        if pkg_state.empty? || !(pkg_state - ["upgrade", "removal"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']"
+        end
+        @component.postremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
     end
   end
