@@ -20,6 +20,7 @@ class Vanagon
           @num_cores = "lsdev -Cc processor |wc -l"
           @install = "/opt/freeware/bin/install"
           @rpmbuild = "/usr/bin/rpm"
+          @bash = "/usr/bin/bash"
           super(name)
         end
       end

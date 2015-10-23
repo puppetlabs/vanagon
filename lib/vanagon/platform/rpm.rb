@@ -84,6 +84,7 @@ class Vanagon
         @patch ||= "/usr/bin/patch"
         @num_cores ||= "/bin/grep -c 'processor' /proc/cpuinfo"
         @rpmbuild ||= "/usr/bin/rpmbuild"
+        @bash = "/bin/bash"
         super(name)
       end
     end
