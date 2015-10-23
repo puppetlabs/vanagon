@@ -15,11 +15,12 @@ describe 'Vanagon::Platform::DSL' do
   let(:el_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-el-7-x86_64" }
   let(:el_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
   let(:sles_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.2/repo_configs/rpm/pl-puppet-agent-0.2.2-sles-12-x86_64" }
-  let(:sles_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release.rpm" }
+  let(:sles_definition_rpm) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-release-sles.rpm" }
   let(:cisco_wrlinux_definition) { "http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/rpm/pl-puppet-agent-0.2.1-cisco-wrlinux-5-x86_64.repo" }
 
   let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
+  # These apt_repo, yum_repo, and zypper_repo methods are all deprecated.
   describe '#apt_repo' do
     it "grabs the file and adds .list to it" do
       plat = Vanagon::Platform::DSL.new('debian-test-fixture')
@@ -64,17 +65,11 @@ describe 'Vanagon::Platform::DSL' do
     end
 
     describe "installs a rpm when given a rpm" do
-      it 'uses yum on el 6 and higher' do
-        plat = Vanagon::Platform::DSL.new('el-6-fixture')
-        plat.instance_eval(el_6_platform_block)
-        plat.yum_repo(el_definition_rpm)
-        expect(plat._platform.provisioning).to include("yum localinstall -y '#{el_definition_rpm}'")
-      end
-
-      it 'uses rpm on el 5 and lower' do
+      it 'uses rpm everywhere' do
         plat = Vanagon::Platform::DSL.new('el-5-fixture')
         plat.instance_eval(el_5_platform_block)
         plat.yum_repo(el_definition_rpm)
+        expect(plat._platform.provisioning).to include("rpm -q curl > /dev/null || yum -y install curl")
         expect(plat._platform.provisioning).to include("curl -o local.rpm '#{el_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
       end
     end

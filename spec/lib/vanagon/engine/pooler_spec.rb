@@ -38,6 +38,8 @@ describe 'Vanagon::Engine::Pooler' do
     end
 
     it 'returns nil if there is no env var or file' do
+      expect(File).to receive(:expand_path).with('~/.vanagon-token').and_return(token_filename)
+      expect(File).to receive(:exist?).with(token_filename).and_return(false)
       expect(Vanagon::Engine::Pooler.new(platform).token).to be_nil
     end
   end

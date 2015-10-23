@@ -1,5 +1,7 @@
 require 'vanagon/platform/deb'
 require 'vanagon/platform/rpm'
+require 'vanagon/platform/rpm/aix'
+require 'vanagon/platform/rpm/sles'
 require 'vanagon/platform/rpm/wrl'
 require 'vanagon/platform/swix'
 require 'vanagon/platform/osx'
@@ -25,8 +27,12 @@ class Vanagon
       # @param block [Proc] DSL definition of the platform to call
       def platform(name, &block)
         @platform = case name
-                    when /^(aix|cisco-wrlinux|el|fedora|sles)-/
+                    when /^aix-/
+                      Vanagon::Platform::RPM::AIX.new(@name)
+                    when /^(cisco-wrlinux|el|fedora)-/
                       Vanagon::Platform::RPM.new(@name)
+                    when /^sles-/
+                      Vanagon::Platform::RPM::SLES.new(@name)
                     when /^huaweios-/
                       Vanagon::Platform::RPM::WRL.new(@name)
                     when /^(cumulus|debian|ubuntu)-/
@@ -118,6 +124,7 @@ class Vanagon
       # @param command [String] Command to enable the target machine to build packages for the platform
       def provision_with(command)
         @platform.provisioning << command
+        @platform.provisioning.flatten!
       end
 
       # Set the command to install any needed build dependencies for the target machine
@@ -198,83 +205,28 @@ class Vanagon
       #
       # @param definition [String] the repo setup file, must be a valid uri, fetched with curl
       # @param gpg_key [String] optional gpg key to be fetched via curl and installed
+      # @deprecated Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release.
       def apt_repo(definition, gpg_key = nil)
-        # i.e., definition = http://builds.delivery.puppetlabs.net/puppet-agent/0.2.1/repo_configs/deb/pl-puppet-agent-0.2.1-wheezy.list
-        # parse the definition and gpg_key if set to ensure they are both valid URIs
-        definition = URI.parse definition
-        gpg_key = URI.parse gpg_key if gpg_key
-
-        self.provision_with "apt-get -qq update && apt-get -qq install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.deb'
-            # repo definition is an deb (like puppetlabs-release)
-            self.provision_with "curl -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
-          else
-            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
-            reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
-            self.provision_with "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
-          end
-        end
-
-        if gpg_key
-          gpgname = "#{SecureRandom.hex}-#{File.basename(gpg_key.path)}"
-          gpgname = "#{gpgname}.gpg" if gpgname !~ /\.gpg$/
-          self.provision_with "curl -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
-        end
-
-        self.provision_with "apt-get -qq update"
+        warn "Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release."
+        self.add_build_repository(definition, gpg_key)
       end
 
       # Helper to setup a yum repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
+      # @deprecated Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release.
       def yum_repo(definition)
-        definition = URI.parse definition
-
-        self.provision_with "rpm -q curl > /dev/null || yum -y install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.rpm'
-            # repo definition is an rpm (like puppetlabs-release)
-            if @platform.os_version.to_i < 6
-              # This can likely be done with just rpm itself (minus curl) however
-              # with a http_proxy curl has many more options avavailable for
-              # usage than rpm raw does. So for the most compatibility, we have
-              # chosen curl.
-              self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
-            else
-              self.provision_with "yum localinstall -y '#{definition}'"
-            end
-          else
-            reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
-            reponame = "#{reponame}.repo"  if File.extname(reponame) != '.repo'
-            if @platform.is_cisco_wrlinux?
-              self.provision_with "curl -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
-            else
-              self.provision_with "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
-            end
-          end
-        end
+        warn "Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release."
+        self.add_build_repository(definition)
       end
 
       # Helper to setup a zypper repository on a target system
       #
       # @param definition [String] the repo setup URI or RPM file
+      # @deprecated Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release.
       def zypper_repo(definition)
-        definition = URI.parse definition
-        if @platform.os_version == '10'
-          flag = 'sa'
-        else
-          flag = 'ar'
-        end
-        self.provision_with "yes | zypper -n --no-gpg-checks install curl"
-        if definition.scheme =~ /^(http|ftp)/
-          if File.extname(definition.path) == '.rpm'
-            # repo definition is an rpm (like puppetlabs-release)
-            self.provision_with "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
-          else
-            self.provision_with "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
-          end
-        end
+        warn "Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release."
+        self.add_build_repository(definition)
       end
 
       # Generic adder for build repositories
