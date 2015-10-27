@@ -4,7 +4,7 @@ export SHELL := $(shell which bash)
 tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
 workdir := $(PWD)
 
-all: <%= package_name %>
+all: file-list-before-build <%= package_name %>
 
 <%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
 	<%= generate_package.join("\n\t") %>
@@ -13,20 +13,20 @@ file-list-before-build:
 <%- if dirnames.empty? -%>
 	touch file-list-before-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %> 2>/dev/null || find <%= dirnames.join(' ') %> -follow) | sort | uniq > file-list-before-build
+	(find -L <%= dirnames.join(' ') %> 2>/dev/null || find <%= dirnames.join(' ') %> -follow 2>/dev/null) | sort | uniq > file-list-before-build
 <%- end -%>
 
 file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%- if dirnames.empty? -%>
 	touch file-list-after-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %>  2>/dev/null || find <%= dirnames.join(' ') %> -follow) | sort | uniq > file-list-after-build
+	(find -L <%= dirnames.join(' ') %>  2>/dev/null || find <%= dirnames.join(' ') %> -follow 2>/dev/null) | sort | uniq > file-list-after-build
 <%- end -%>
 
 <%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
 	<%= pack_tarball_command %>
 
-file-list: <%= dirnames.join(' ') %> <%= @name %>-project <%= @version_file ? @version_file.path : '' %>
+file-list: file-list-before-build <%= @name %>-project <%= @version_file ? @version_file.path : '' %>
 	comm -23 file-list-after-build file-list-before-build > file-list
 	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*[[:space:]].*$$\)/"\1"/g' > file-list-for-rpm
 
@@ -36,7 +36,7 @@ file-list: <%= dirnames.join(' ') %> <%= @name %>-project <%= @version_file ? @v
 <%- end -%>
 
 <%- dirnames.each do |dir| -%>
-<%= dir %>:
+<%= dir %>: file-list-before-build
 	mkdir -p <%= dir %>
 <%- end %>
 
@@ -45,7 +45,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch cleanup-components
 <%- end -%>
 
-<%= @name %>-project: file-list-after-build
+<%= @name %>-project: <%= dirnames.join(' ') %> file-list-after-build
 	touch <%= @name %>-project
 
 <%- @components.each do |comp| -%>
