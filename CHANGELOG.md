@@ -6,6 +6,28 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2015-11-03
+### Added
+- xml files are now valid http component sources
+- bill_of_materials method added to project DSL to allow BOM to be placed in a
+  specific location instead of the system docdir
+- post and pre package install actions available for deb and rpm packages in
+  the component DSL
+
+### Changed
+- Platform DSL methods apt_repo, zypper_repo and yum_repo deprecated in favor
+  of the generic add_build_repository that is platform agnostic
+- The add_pre_install_action component DSL method has a new signature that has
+  two required arguments (script and package state).
+
+### Fixed
+- Empty directories will now be included when they previously may not have been
+- /var/run moved to /system/volatile on solaris 11
+- Links outside of the project directories will now be included in packages
+
+### Removed
+- Nxos support has been removed and replaced by cisco-wrlinux
+
 ## [0.3.19] - 2015-10-16
 ### Fixed
 - Solaris 11 manifests now correctly handle services installed into
@@ -102,7 +124,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.3.19...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/puppetlabs/vanagon/compare/0.3.19...0.4.0
 [0.3.19]: https://github.com/puppetlabs/vanagon/compare/0.3.18...0.3.19
 [0.3.18]: https://github.com/puppetlabs/vanagon/compare/0.3.17...0.3.18
 [0.3.17]: https://github.com/puppetlabs/vanagon/compare/0.3.16...0.3.17
