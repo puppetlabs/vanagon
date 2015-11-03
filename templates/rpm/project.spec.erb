@@ -254,7 +254,9 @@ fi
 <%- end -%>
 
 %files -f %{SOURCE1}
+<%- unless @bill_of_materials -%>
 %doc bill-of-materials
+<%- end -%>
 %defattr(-, root, root, 0755)
 <%- get_directories.each do |dir| -%>
 %dir %attr(<%= dir.mode || "-" %>, <%= dir.owner || "-" %>, <%= dir.group || "-" %>) <%= dir.path %>

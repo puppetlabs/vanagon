@@ -7,6 +7,21 @@ class Vanagon
       # @return [Array] list of commands required to build a osx package for the given project from a tarball
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
+
+        # Here we maintain backward compatibility with older vanagon versions
+        # that did this by default.  This shim should get removed at some point
+        # in favor of just letting the makefile deliver the bill-of-materials
+        # to the correct directory. This shouldn't be required at all then.
+        if project.bill_of_materials.nil?
+          bom_install = [# Move bill-of-materials into a docdir
+           "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}",
+           "mv $(tempdir)/osx/build/root/#{project.name}-#{project.version}/bill-of-materials $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}/bill-of-materials",]
+
+        else
+          bom_install = []
+        end
+
+
          # Setup build directories
         ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload,plugins}'",
          "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
@@ -17,9 +32,7 @@ class Vanagon
          # Unpack the project
          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
 
-         # Move bill-of-materials into a docdir
-         "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}",
-         "mv $(tempdir)/osx/build/root/#{project.name}-#{project.version}/bill-of-materials $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}/bill-of-materials",
+         bom_install,
 
          # Package the project
          "(cd $(tempdir)/osx/build/; #{@pkgbuild} --root root/#{project.name}-#{project.version} \
@@ -39,7 +52,7 @@ class Vanagon
          "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \
           -srcfolder pkg/ dmg/#{project.package_name})",
          "mkdir -p output/#{target_dir}",
-         "cp $(tempdir)/osx/build/dmg/#{project.package_name} ./output/#{target_dir}"]
+         "cp $(tempdir)/osx/build/dmg/#{project.package_name} ./output/#{target_dir}"].flatten.compact
       end
 
       # Method to generate the files required to build a osx package for the project

@@ -26,13 +26,19 @@ file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
 	<%= pack_tarball_command %>
 
-file-list: file-list-before-build <%= @name %>-project <%= @version_file ? @version_file.path : '' %>
+file-list: file-list-before-build <%= @name %>-project
 	comm -23 file-list-after-build file-list-before-build > file-list
 	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*[[:space:]].*$$\)/"\1"/g' > file-list-for-rpm
 
 <%- if @version_file -%>
 <%= @version_file.path %>:
 	echo <%= @version %> > '<%= @version_file.path %>'
+<%- end -%>
+
+<%- if @bill_of_materials -%>
+<%= @bill_of_materials %>:
+	mkdir -p '<%= @bill_of_materials.path %>'
+	mv bill-of-materials '<%= @bill_of_materials.path %>'
 <%- end -%>
 
 <%- dirnames.each do |dir| -%>
@@ -45,7 +51,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch cleanup-components
 <%- end -%>
 
-<%= @name %>-project: <%= dirnames.join(' ') %> file-list-after-build
+<%= @name %>-project: <%= dirnames.join(' ') %> <%= @version_file ? @version_file.path : '' %> <%= @bill_of_materials ? @bill_of_materials.path : '' %> file-list-after-build
 	touch <%= @name %>-project
 
 <%- @components.each do |comp| -%>

@@ -10,6 +10,18 @@ class Vanagon
         name_and_version = "#{project.name}-#{project.version}"
         pkg_name = package_name(project)
 
+        # Here we maintain backward compatibility with older vanagon versions
+        # that did this by default.  This shim should get removed at some point
+        # in favor of just letting the makefile deliver the bill-of-materials
+        # to the correct directory. This shouldn't be required at all then.
+        if project.bill_of_materials.nil?
+          bom_install = [# Move bill-of-materials into a docdir
+          "mkdir -p $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}",
+          "mv $(tempdir)/#{name_and_version}/bill-of-materials $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}/bill-of-materials",]
+        else
+          bom_install = []
+        end
+
         [
           # Set up our needed directories
           "mkdir -p $(tempdir)/#{name_and_version}",
@@ -19,9 +31,7 @@ class Vanagon
           # Unpack the project and stage the packaging artifacts
           "gunzip -c #{name_and_version}.tar.gz | '#{@tar}' -C '$(tempdir)' -xf -",
 
-          # Move bill-of-materials into a docdir
-          "mkdir -p $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}",
-          "mv $(tempdir)/#{name_and_version}/bill-of-materials $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}/bill-of-materials",
+          bom_install,
 
           "rm #{name_and_version}.tar.gz",
           "cp -r packaging $(tempdir)/",
@@ -46,7 +56,7 @@ class Vanagon
           "pkgmk -f $(tempdir)/packaging/proto -b $(tempdir)/#{name_and_version} -o -d $(tempdir)/pkg/",
           "pkgtrans -s $(tempdir)/pkg/ $(tempdir)/pkg/#{pkg_name.gsub(/\.gz$/, '')} #{project.name}",
           "gzip -c $(tempdir)/pkg/#{pkg_name.gsub(/\.gz$/, '')} > output/#{target_dir}/#{pkg_name}",
-        ]
+        ].flatten.compact
       end
 
       # Method to generate the files required to build a solaris package for the project
