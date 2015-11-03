@@ -208,10 +208,16 @@ class Vanagon
         @project.cleanup = true
       end
 
-      # This method will write the projects version to a designated file during package creation
+      # This method will write the project's version to a designated file during package creation
       # @param target [String] a full path to the version file for the project
       def write_version_file(target)
         @project.version_file = Vanagon::Common::Pathname.file(target)
+      end
+
+      # This method will write the project's bill-of-materials to a designated directory during package creation.
+      # @param target [String] a full path to the directory for the bill-of-materials for the project
+      def bill_of_materials(target)
+        @project.bill_of_materials = Vanagon::Common::Pathname.new(target)
       end
     end
   end
