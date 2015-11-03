@@ -12,6 +12,8 @@ Gem::Specification.new do |gem|
   gem.authors  = ['Puppet Labs']
   gem.email    = 'info@puppetlabs.com'
   gem.homepage = 'http://github.com/puppetlabs/vanagon'
+  gem.specification_version = 3
+  gem.required_ruby_version = '~> 2.1.0'
 
   gem.add_development_dependency('rspec', ["~> 3.0"])
   gem.add_development_dependency('yard', '~> 0.8')
