@@ -38,7 +38,14 @@ class Vanagon
                     when /^(cumulus|debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^eos-/
-                      Vanagon::Platform::RPM::Swix.new(@name)
+                      case @platform.package_type
+                      when 'swix' || 'default'
+                        Vanagon::Platform::RPM::Swix.new(@name)
+                      when 'rpm'
+                        Vanagon::Platform::RPM.new(@name)
+                      else
+                        fail "'#{@platform.package_type}' is not a valid package format for '#{@name}'"
+                      end
                     when /^osx-/
                       Vanagon::Platform::OSX.new(@name)
                     when /^solaris-10/
@@ -90,6 +97,13 @@ class Vanagon
       # @param tar [String] Full path to the tar command for the platform
       def tar(tar_cmd)
         @platform.tar = tar_cmd
+      end
+
+      # Set the type of package we are going to build for this platform
+      #
+      # @param pkg_type [String] The type of package we are going to build for this platform
+      def package_type(pkg_type)
+        @platform.package_type = pkg_type
       end
 
       # Set the path to rpmbuild for the platform
