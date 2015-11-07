@@ -3,7 +3,7 @@ require 'vanagon/platform/rpm'
 require 'vanagon/platform/rpm/aix'
 require 'vanagon/platform/rpm/sles'
 require 'vanagon/platform/rpm/wrl'
-require 'vanagon/platform/swix'
+require 'vanagon/platform/rpm/eos'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
 require 'vanagon/platform/solaris_11'
@@ -38,7 +38,7 @@ class Vanagon
                     when /^(cumulus|debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^eos-/
-                      Vanagon::Platform::RPM::Swix.new(@name)
+                      Vanagon::Platform::RPM::EOS.new(@name)
                     when /^osx-/
                       Vanagon::Platform::OSX.new(@name)
                     when /^solaris-10/
