@@ -92,6 +92,13 @@ class Vanagon
         @platform.tar = tar_cmd
       end
 
+      # Set the type of package we are going to build for this platform
+      #
+      # @param pkg_type [String] The type of package we are going to build for this platform
+      def package_type(pkg_type)
+        @platform.package_type = pkg_type
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default
