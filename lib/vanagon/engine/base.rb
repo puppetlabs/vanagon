@@ -10,7 +10,7 @@ class Vanagon
         @platform = platform
         @required_attributes = ["ssh_port"]
         @target = target if target
-        @target_user = "root"
+        @target_user = @platform.target_user
       end
 
       # This method is used to obtain a vm to build upon
