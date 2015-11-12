@@ -132,7 +132,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.1...HEAD
+[0.4.1]: https://github.com/puppetlabs/vanagon/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/puppetlabs/vanagon/compare/0.3.19...0.4.0
 [0.3.19]: https://github.com/puppetlabs/vanagon/compare/0.3.18...0.3.19
 [0.3.18]: https://github.com/puppetlabs/vanagon/compare/0.3.17...0.3.18
