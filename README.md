@@ -8,6 +8,7 @@ The Vanagon Project
  * Contributing
  * License
  * Maintainers
+ * Support
 
 What is vanagon?
 ---
@@ -173,3 +174,7 @@ For more detailed examples of the DSLs available, please see the
 Maintainers
 ---
 The Release Engineering team at Puppet Labs
+
+Support
+---
+Please log tickets and issues at our [Issue Tracker](https://tickets.puppetlabs.com/browse/CPR). In addition there is an active #puppet-dev channel on Freenode.
