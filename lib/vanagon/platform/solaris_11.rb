@@ -98,8 +98,8 @@ class Vanagon
       # @param release [String] Standard package release
       # @return [String] version in IPS format
       def ips_version(version, release)
-        version.gsub!(/[a-zA-Z]/, '')
-        version.gsub!(/(^-)|(-$)/, '')
+        version = version.gsub(/[a-zA-Z]/, '')
+        version = version.gsub(/(^-)|(-$)/, '')
 
         # Here we strip leading 0 from version components but leave singular 0 on their own.
         version = version.split('.').map(&:to_i).join('.')
@@ -134,5 +134,3 @@ class Vanagon
     end
   end
 end
-
-
