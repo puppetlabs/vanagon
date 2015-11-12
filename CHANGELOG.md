@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2015-11-12
+### Changed
+- Fixed an issue where, with test builds when the version string contains
+  a git sha alphanumeric component, the Solaris 11 VERSION file contains 
+  the transformed IPS-compatible version string (with the alpha characters
+  stripped). Now the VERSION file will be consistent across all of the
+  platforms.
+
 ## [0.4.0] - 2015-11-03
 ### Added
 - xml files are now valid http component sources
