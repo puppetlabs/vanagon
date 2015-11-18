@@ -102,6 +102,20 @@ class Vanagon
         @platform.package_type = pkg_type
       end
 
+      # Set the path to find for the platform
+      #
+      # @param find_cmd [String] Full path to the find command for the platform
+      def find(find_cmd)
+        @platform.find = find_cmd
+      end
+
+      # Set the path to sort for the platform
+      #
+      # @param sort_cmd [String] Full path to the find command for the platform
+      def sort(sort_cmd)
+        @platform.sort = sort_cmd
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default

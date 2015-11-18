@@ -74,6 +74,8 @@ class Vanagon
       # @return [Vanagon::Platform::DEB] the win derived platform with the given name
       def initialize(name)
         @target_user = "Administrator"
+        @find = "/usr/bin/find"
+        @sort = "/usr/bin/sort"
         super(name)
       end
     end
