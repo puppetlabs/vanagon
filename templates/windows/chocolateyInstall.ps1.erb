@@ -1,0 +1,26 @@
+$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+
+<%- dirnames = get_directories.map {|d| d.path } -%>
+<%- dirnames.each do |dir| -%>
+  <%- windows_path = platform.convert_to_windows_path(dir) -%>
+if (Test-Path -path "<%= windows_path %>") {
+  Write-Debug "Warning: copying over '<%= windows_path %>'"
+} else {
+  New-Item -ItemType directory -Path "<%= windows_path %>"
+}
+$origin = Join-Path -path "$toolsDir" -childpath "<%= dir.gsub('/', '\\') %>"
+Copy-Item -path "$origin\*" -destination "<%= windows_path.gsub('/', '\\') %>\" -Recurse -Force
+<%- end -%>
+
+<%- filenames = get_files.map {|f| f.path} -%>
+<%- configfilenames = get_configfiles.map {|cf| cf.path} -%>
+<%- (filenames + configfilenames).each do |file| -%>
+  <%- windows_path = platform.convert_to_windows_path(file) -%>
+if (Test-Path -path "<%= windows_path %>") {
+  Write-Debug "Warning: copying over '<%= windows_path %>'"
+} elseif (!(Test-Path -path "<%= File.dirname windows_path %>")) {
+  New-Item -ItemType directory -Path "<%= File.dirname windows_path %>"
+}
+$origin = Join-Path -path "$toolsDir" -childpath "<%= file.gsub('/', '\\') %>"
+Copy-Item -path "$origin" -destination "<%= windows_path.gsub('/', '\\') %>" -Force
+<%- end -%>
