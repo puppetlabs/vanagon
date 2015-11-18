@@ -34,6 +34,30 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}-#{@architecture}.msi"
       end
 
+      # Add a repository (or install Chocolatey)
+      # Note - this only prepares the list of commands to be executed once the Platform
+      # has been setup
+      #
+      # @param definition [String] Definition for adding repo, can be a Repo URL (including file:)
+      #    If file suffix is 'ps1' it is downloaded and executed to install chocolatey
+      # @return [Array]  Commands to executed after platform startup
+      def add_repository(definition)
+        definition = URI.parse(definition)
+        commands = []
+
+        if definition.scheme =~ /^(http|ftp|file)/
+          if File.extname(definition.path) == '.ps1'
+            commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'iex ((new-object net.webclient).DownloadString(\"#{definition}\"))')
+          else
+            commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.gsub('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
+          end
+        else
+          fail "Invalid repo specification #{definition}"
+        end
+
+        commands
+      end
+
       # Get the expected output dir for the windows packages. This allows us to
       # use some standard tools to ship internally.
       #
