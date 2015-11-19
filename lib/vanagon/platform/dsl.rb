@@ -161,6 +161,13 @@ class Vanagon
         @platform.servicetype = type
       end
 
+      # Set the name of host to perform a build on (when not using pooler or CLI flags)
+      #
+      # @param type [String] the name of the host (must be resolvable)
+      def build_host(name)
+        @platform.build_host = name
+      end
+
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name of the target template to use from the vmpooler
