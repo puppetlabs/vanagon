@@ -52,7 +52,7 @@ class Vanagon
             commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.gsub('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
         else
-          fail "Invalid repo specification #{definition}"
+          raise Vanagon::Error "Invalid repo specification #{definition}"
         end
 
         commands
