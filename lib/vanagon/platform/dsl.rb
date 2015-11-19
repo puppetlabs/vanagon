@@ -3,7 +3,7 @@ require 'vanagon/platform/rpm'
 require 'vanagon/platform/rpm/aix'
 require 'vanagon/platform/rpm/sles'
 require 'vanagon/platform/rpm/wrl'
-require 'vanagon/platform/swix'
+require 'vanagon/platform/rpm/eos'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
 require 'vanagon/platform/solaris_11'
@@ -39,7 +39,7 @@ class Vanagon
                     when /^(cumulus|debian|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^eos-/
-                      Vanagon::Platform::RPM::Swix.new(@name)
+                      Vanagon::Platform::RPM::EOS.new(@name)
                     when /^osx-/
                       Vanagon::Platform::OSX.new(@name)
                     when /^solaris-10/
@@ -93,6 +93,13 @@ class Vanagon
       # @param tar [String] Full path to the tar command for the platform
       def tar(tar_cmd)
         @platform.tar = tar_cmd
+      end
+
+      # Set the type of package we are going to build for this platform
+      #
+      # @param pkg_type [String] The type of package we are going to build for this platform
+      def package_type(pkg_type)
+        @platform.package_type = pkg_type
       end
 
       # Set the path to rpmbuild for the platform

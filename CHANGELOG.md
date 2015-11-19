@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2015-11-12
+### Changed
+- Fixed an issue where, with test builds when the version string contains
+  a git sha alphanumeric component, the Solaris 11 VERSION file contains 
+  the transformed IPS-compatible version string (with the alpha characters
+  stripped). Now the VERSION file will be consistent across all of the
+  platforms.
+
 ## [0.4.0] - 2015-11-03
 ### Added
 - xml files are now valid http component sources
@@ -124,7 +132,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.1...HEAD
+[0.4.1]: https://github.com/puppetlabs/vanagon/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/puppetlabs/vanagon/compare/0.3.19...0.4.0
 [0.3.19]: https://github.com/puppetlabs/vanagon/compare/0.3.18...0.3.19
 [0.3.18]: https://github.com/puppetlabs/vanagon/compare/0.3.17...0.3.18
