@@ -10,6 +10,22 @@ class Vanagon
         name_and_version = "#{project.name}-#{project.version}"
         pkg_name = package_name(project)
 
+        # Generate list of dirs in the package and create an exlplicit search
+        # string for AWK to use in order to explicitly define which directories
+        # to put in to the prototype file. Note that the Regexp object was avoided
+        # because the output from Regexp would create failures from AWK as the conversion
+        # from a Regexp obj to a string is formatted in a sub-optimal way that would have
+        # required more string manipulation anyway. the string should be formatted like so:
+        #         && ($$3 ~ /directory\/regex.*/ || $$3 ~ /another\/directory\/regex.*/)
+        # for as many iterations as there are directries in the package
+        pkgdirs = project.get_root_directories.map{ |dir| dir.sub(/^\//, "").gsub(/[\/]/, "\\/").gsub(/\./, "\\.") + '.*'}
+        explicit_search_string = "&& ("
+        pkgdirs.each do |dir_regex|
+          explicit_search_string += "|| $$3 ~ /" + dir_regex + "/"
+        end
+        # remove first "||" as it is unnecessary, and finish off parens
+        explicit_search_string = explicit_search_string.sub(/\|\|/, "").concat(")")
+
         # Here we maintain backward compatibility with older vanagon versions
         # that did this by default.  This shim should get removed at some point
         # in favor of just letting the makefile deliver the bill-of-materials
@@ -42,14 +58,16 @@ class Vanagon
           # - The bin directory and all bin files are owned by root:bin instead of root:sys
           # - All files under lib are owned by root:bin instead of root:sys
           # - All .so files are owned by root:bin instead of root:sys
+          # - Explicity only include directories in the package contents
+          #   (this should exclude things like root/bin root/var and such)
           %((cd $(tempdir)/#{name_and_version}; pkgproto . | sort | awk ' \
-            $$1 ~ /^d$$/ {print "d",$$2,$$3,"0755 root sys";} \
+            $$1 ~ /^d$$/ #{explicit_search_string} {print "d",$$2,$$3,"0755 root sys";} \
             $$1 ~ /^s$$/ {print;} \
             $$1 ~ /^f$$/ {print "f",$$2,$$3,$$4,"root sys";} \
             $$1 !~ /^[dfs]$$/ {print;} ' | /opt/csw/bin/gsed \
-               -e '/^[fd] [^ ]\\+ .*[/]s\\?bin/ {s/root sys$$/root bin/}' \
-               -e '/^[fd] [^ ]\\+ .*[/]lib[/][^/ ]\\+ / {s/root sys$$/root bin/}' \
-               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so / {s/root sys$$/root bin/}' >> ../packaging/proto) ),
+               -e '/^[fd] [^ ]\\+ .*[/]s\\?bin[^ ]\\+/ {s/root sys$$/root bin/}' \
+               -e '/^[fd] [^ ]\\+ .*[/]lib[/][^ ]\\+/ {s/root sys$$/root bin/}' \
+               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so/ {s/root sys$$/root bin/}' >> ../packaging/proto)),
           %((cd $(tempdir); #{project.get_directories.map { |dir| "/opt/csw/bin/ggrep -q 'd none #{dir.path.sub(/^\//, '')}' packaging/proto || echo 'd none #{dir.path.sub(/^\//, '')} #{dir.mode || '0755'} #{dir.owner || 'root'} #{dir.group || 'sys'}' >> packaging/proto" }.join('; ')})),
 
           # Actually build the package
