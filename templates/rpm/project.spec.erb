@@ -90,7 +90,7 @@ install -d %{buildroot}
   cp -Rp <%= file %> %{buildroot}/<%= File.dirname(file) %>
 <%- end -%>
 
-<%- if @platform.is_cisco_wrlinux? || @platform.is_huaweios? -%>
+<%- if @platform.is_cisco_wrlinux? -%>
   # Generate a list of directories and append it to the file list. RPMv4
   # automatically does this implicitly, but RPMv5 is more strict and you
   # need to list the dirs for them to be packaged properly.

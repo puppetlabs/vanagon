@@ -138,7 +138,7 @@ class Vanagon
     #
     # @return [true, false] true if it is a debian variety, false otherwise
     def is_deb?
-      return !!@name.match(/^(debian|ubuntu|cumulus)-.*$/)
+      return !!@name.match(/^(debian|ubuntu|cumulus|huaweios)-.*$/)
     end
 
     # Utility matcher to determine is the platform is a redhat variety or
@@ -147,7 +147,7 @@ class Vanagon
     # @return [true, false] true if it is a redhat variety or uses rpm
     # under the hood, false otherwise
     def is_rpm?
-      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|huaweios|sles)-.*$/)
+      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|sles)-.*$/)
     end
 
     # Utility matcher to determine is the platform is an enterprise linux variety
