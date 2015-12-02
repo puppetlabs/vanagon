@@ -33,9 +33,7 @@ class Vanagon
                       Vanagon::Platform::RPM.new(@name)
                     when /^sles-/
                       Vanagon::Platform::RPM::SLES.new(@name)
-                    when /^huaweios-/
-                      Vanagon::Platform::RPM::WRL.new(@name)
-                    when /^(cumulus|debian|ubuntu)-/
+                    when /^(cumulus|debian|huaweios|ubuntu)-/
                       Vanagon::Platform::DEB.new(@name)
                     when /^eos-/
                       Vanagon::Platform::RPM::EOS.new(@name)
