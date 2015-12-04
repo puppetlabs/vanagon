@@ -35,21 +35,21 @@ class Vanagon
 
           "rm #{name_and_version}.tar.gz",
           "cp -r packaging $(tempdir)/",
-
+          
           # Here we are tweaking file/dir ownership and perms in the following ways
           # - All directories default to 0755 and root:sys
           # - All files default to root:sys
           # - The bin directory and all bin files are owned by root:bin instead of root:sys
           # - All files under lib are owned by root:bin instead of root:sys
           # - All .so files are owned by root:bin instead of root:sys
-          %((cd $(tempdir)/#{name_and_version}; pkgproto . | sort | awk ' \
-            $$1 ~ /^d$$/ {print "d",$$2,$$3,"0755 root sys";} \
+          %(cd $(tempdir)/#{name_and_version}; pkgproto . | sort | awk ' \
+            $$1 ~ /^d$$/ && $$3 !~ /^bin/ && $$3 !~ /^lib/ {print "d",$$2,$$3,"0755 root sys";} \
             $$1 ~ /^s$$/ {print;} \
             $$1 ~ /^f$$/ {print "f",$$2,$$3,$$4,"root sys";} \
             $$1 !~ /^[dfs]$$/ {print;} ' | /opt/csw/bin/gsed \
-               -e '/^[fd] [^ ]\\+ .*[/]s\\?bin/ {s/root sys$$/root bin/}' \
-               -e '/^[fd] [^ ]\\+ .*[/]lib[/][^/ ]\\+ / {s/root sys$$/root bin/}' \
-               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so / {s/root sys$$/root bin/}' >> ../packaging/proto) ),
+               -e '/^[fd] [^ ]\\+ .*[/]s?bin/ {s/root sys$$/root bin/}' \
+               -e '/^[fd] [^ ]\\+ .*[/]lib[/]\\+/ {s/root sys$$/root bin/}' \
+               -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so/ {s/root sys$$/root bin/}' >> ../packaging/proto; cat ../packaging/proto),
           %((cd $(tempdir); #{project.get_directories.map { |dir| "/opt/csw/bin/ggrep -q 'd none #{dir.path.sub(/^\//, '')}' packaging/proto || echo 'd none #{dir.path.sub(/^\//, '')} #{dir.mode || '0755'} #{dir.owner || 'root'} #{dir.group || 'sys'}' >> packaging/proto" }.join('; ')})),
 
           # Actually build the package
