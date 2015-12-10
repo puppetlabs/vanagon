@@ -79,8 +79,11 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch <%= comp.name %>-patch
 
 <%= comp.name %>-configure: <%= comp.name %>-patch <%= list_component_dependencies(comp).join(" ") %>
+	<%- if comp.get_build_dir -%>
+	[ -d <%= comp.get_build_dir %> ] || mkdir -p <%= comp.get_build_dir %>
+	<%- end -%>
 	<%- unless comp.configure.empty? -%>
-	cd <%= comp.dirname %> && \
+	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
 	<%= comp.configure.join(" && \\\n\t") %>
 	<%- end -%>
@@ -88,7 +91,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 
 <%= comp.name %>-build: <%= comp.name %>-configure
 	<%- unless comp.build.empty? -%>
-	cd <%= comp.dirname %> && \
+	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
 	<%= comp.build.join(" && \\\n\t") %>
 	<%- end -%>
@@ -96,14 +99,14 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 
 <%= comp.name %>-install: <%= comp.name %>-build
 	<%- unless comp.install.empty? -%>
-	cd <%= comp.dirname %> && \
+	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
 	<%= comp.install.join(" && \\\n\t") %>
 	<%- end -%>
 	touch <%= comp.name %>-install
 
 <%= comp.name %>-clean:
-	[ -d <%= comp.dirname %> ] && cd <%= comp.dirname %> && \
+	[ -d <%= comp.get_build_dir %> ] && cd <%= comp.get_build_dir %> && \
 	<%= @platform[:make] %> clean
 	<%- ["configure", "build", "install"].each do |type| -%>
 	[ -e <%= comp.name %>-<%= type %> ] && rm <%= comp.name %>-<%= type %>
