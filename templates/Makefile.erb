@@ -64,6 +64,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 <%- end -%>
 
 <%= comp.name %>-unpack: file-list-before-build
+	<%= comp.get_environment %> && \
 	<%= comp.extract_with %>
 	touch <%= comp.name %>-unpack
 

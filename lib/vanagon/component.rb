@@ -107,7 +107,7 @@ class Vanagon
         @source = Vanagon::Component::Source.source(@url, @options, workdir)
         @source.fetch
         @source.verify
-        @extract_with = @source.extract(@platform.tar) if @source.respond_to?(:extract)
+        @extract_with = @source.respond_to?(:extract) ? @source.extract(@platform.tar) : ':'
         @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
         @dirname = @source.dirname
 
