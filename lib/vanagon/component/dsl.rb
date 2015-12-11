@@ -263,6 +263,27 @@ class Vanagon
         @component.options[:ref] = the_ref
       end
 
+      # Set a build dir relative to the source directory.
+      #
+      # The build dir will be created before the configure block runs and configure/build/install commands will be run
+      # in the build dir.
+      #
+      # @example
+      #   pkg.build_dir "build"
+      #   pkg.source "my-cmake-project" # Will create the path "my-cmake-project/build"
+      #   pkg.configure { ["cmake .."] }
+      #   pkg.build { ["make -j 3"] }
+      #   pkg.install { ["make install"] }
+      #
+      # @param path [String] The build directory to use for building the project
+      def build_dir(path)
+        if Pathname.new(path).relative?
+          @component.build_dir = path
+        else
+          raise Vanagon::Error, "build_dir should be a relative path, but '#{path}' looks to be absolute."
+        end
+      end
+
       # This will add a source to the project and put it in the workdir alongside the other sources
       #
       # @param url [String] url of the source
