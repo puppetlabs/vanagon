@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id><%= "#{@name}-#{@platform.architecture}" %></id>
-    <version><%= "#{@version}.#{@release}" %></version>
+    <version><%= @platform.nuget_package_version(@version, @release) %></version>
     <title><%= @name %></title>
     <authors><%= @vendor.match(/^(.*) <.*>$/)[1] %></authors>
     <owners><%= @vendor.match(/^(.*) <.*>$/)[1] %></owners>

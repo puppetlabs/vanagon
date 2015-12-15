@@ -72,7 +72,7 @@ class Vanagon
         "cp file-list $(tempdir)/#{project.name}/tools/file-list.txt",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name} ; #{self.drive_root}/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
-        "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{project.version}.#{project.release}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
+        "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
       # Method to derive the package name for the project.
@@ -85,7 +85,50 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
       def nuget_package_name(project)
-        "#{project.name}-#{@architecture}-#{project.version}.#{project.release}.nupkg"
+        "#{project.name}-#{@architecture}-#{nuget_package_version(project.version, project.release)}.nupkg"
+      end
+
+      # Nuget versioning is awesome!
+      #
+      # Nuget and chocolatey have some expectations about version numbers.
+      #
+      # First, if this is a final package (built from a tag), the version must
+      # only contain digits with each element of the version separated by
+      # periods.
+      #
+      # If we are creating the version for a prerelease package (built from a
+      # commit that does not have a corresponding tag), we have the
+      # option to append a string to the version. The string must start with a
+      # letter, be separated from the rest of the version with a dash, and
+      # contain no punctuation.
+      #
+      # We assume we are working from a semver tag as the base of our version.
+      # If this is a final release, we only have to worry about that tag. We
+      # can also include the release number in the package version. If this is
+      # a prerelease package, then we assume we have a semver compliant tag,
+      # followed by the number of commits beyond the tag and the short sha of
+      # the latest change. Because we are working with git, if the version
+      # contains a short sha, it will begin with 'g'. We check for this to
+      # determine what version type to deliver.
+      #
+      # Examples of final versions:
+      #   1.2.3
+      #   1.5.3.1
+      #
+      # Examples of prerelease versions:
+      #   1.2.3.1234-g124dm9302
+      #   3.2.5.23-gd329nd
+      #
+      # @param project [Vanagon::Project] project to version
+      # @return [String] the version of the nuget package for this project
+      def nuget_package_version(version, release)
+        version_elements = version.split('.')
+        if version_elements[-1].start_with?('g')
+          # Version for the prerelease package
+          "#{version_elements[0..-2].join('.').gsub(/[a-zA-Z]/, '')}-#{version_elements[-1]}"
+        else
+          "#{version}.#{release}".gsub(/[a-zA-Z]/, '')
+        end
       end
 
       # Add a repository (or install Chocolatey)
