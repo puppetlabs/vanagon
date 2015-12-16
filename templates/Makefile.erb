@@ -97,7 +97,15 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	<%- end -%>
 	touch <%= comp.name %>-build
 
-<%= comp.name %>-install: <%= comp.name %>-build
+<%= comp.name %>-check: <%= comp.name %>-build
+	<%- unless comp.check.empty? -%>
+	cd <%= comp.get_build_dir %> && \
+	<%= comp.get_environment %> && \
+	<%= comp.check.join(" && \\\n\t") %>
+	<%- end -%>
+	touch <%= comp.name %>-check
+
+<%= comp.name %>-install: <%= comp.name %>-check
 	<%- unless comp.install.empty? -%>
 	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
