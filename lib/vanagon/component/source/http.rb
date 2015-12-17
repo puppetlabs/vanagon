@@ -103,7 +103,7 @@ class Vanagon
             return "gunzip -c '#{@file}' | '#{tar}' xf -"
           elsif NON_ARCHIVE_EXTENSIONS.include?(@extension)
             # Don't need to unpack gems, ru, txt, conf, ini, gpg
-            return nil
+            return ':'
           else
             fail "Extraction unimplemented for '#{@extension}' in source '#{@file}'. Please teach me."
           end
