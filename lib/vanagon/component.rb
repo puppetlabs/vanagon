@@ -1,5 +1,6 @@
 require 'vanagon/component/source'
 require 'vanagon/component/dsl'
+require 'vanagon/component/rules'
 
 class Vanagon
   class Component
@@ -164,6 +165,10 @@ class Vanagon
         env = @environment.map { |key, value| %(#{key}="#{value}") }
         "export #{env.join(' ')}"
       end
+    end
+
+    def rules(project, platform)
+      Vanagon::Component::Rules.new(self, project, platform)
     end
   end
 end
