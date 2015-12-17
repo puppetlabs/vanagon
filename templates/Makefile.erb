@@ -98,7 +98,7 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch <%= comp.name %>-build
 
 <%= comp.name %>-check: <%= comp.name %>-build
-	<%- unless comp.check.empty? -%>
+	<%- unless comp.check.empty? || settings[:skipcheck] -%>
 	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
 	<%= comp.check.join(" && \\\n\t") %>

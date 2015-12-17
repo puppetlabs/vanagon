@@ -43,6 +43,12 @@ class Vanagon
           end
         end
 
+        if @options.include?(:skipcheck)
+          opts.on('--skipcheck', 'Ship the `check` stage when building components') do |flag|
+            @options[:skipcheck] = flag
+          end
+        end
+
         opts.on('-h', '--help', 'Display help') do
           puts opts
           exit 1
