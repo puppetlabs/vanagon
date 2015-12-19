@@ -9,8 +9,10 @@ if (Test-Path -path "$contentFile") {
     $fileInstalled=$fileInstalled.Replace("/", "\")
     if (Test-Path -path "$fileInstalled" -PathType Container) {
       Write-Debug "Not removing directory $fileInstalled"
-    } else {
+    } elseif (Test-Path -path "$fileInstalled") {
       remove-item -Path "$fileInstalled" -Force
+    } else {
+      Write-Debug "Skipping missing file $fileInstalled"
     }
   }
 } else {
