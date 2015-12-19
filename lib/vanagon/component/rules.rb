@@ -85,13 +85,9 @@ class Vanagon
 
         after_unpack_patches = @component.patches.select { |patch| patch.after == "unpack" }
         unless after_unpack_patches.empty?
-          patch_cmds = after_unpack_patches.map do |patch|
-            # TODO: make the patch object build the command
-            "#{@platform.patch} --strip=#{patch.strip} --fuzz=#{patch.fuzz} --ignore-whitespace < ../patches/#{File.basename(patch.path)}"
-          end
           r.recipe << andand_multiline(
             "cd #{@component.dirname}",
-            patch_cmds
+            after_unpack_patches.map { |patch| patch.cmd(@platform) }
           )
         end
 
@@ -164,7 +160,7 @@ class Vanagon
         after_install_patches.each do |patch|
           r.recipe << andand(
             "cd #{patch.destination}",
-            "#{@platform.patch} --strip=#{patch.strip} --fuzz=#{patch.fuzz} --ignore-whitespace < $(workdir)/patches/#{File.basename(patch.path)}"
+            patch.cmd(@platform),
           )
         end
 

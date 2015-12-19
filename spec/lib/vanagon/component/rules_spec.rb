@@ -3,6 +3,7 @@ require 'vanagon/component/dsl'
 require 'vanagon/component/rules'
 require 'vanagon/platform/osx'
 require 'vanagon/project'
+require 'vanagon/patch'
 require 'ostruct'
 
 RSpec.shared_examples "a rule that touches the target file" do
@@ -59,15 +60,15 @@ describe Vanagon::Component::Rules do
 
     it "applies each listed patch in order when patches are set" do
       component.patches = [
-        OpenStruct.new('path' => '/foo/patch0', 'strip' => '1', 'fuzz' => '0', 'after' => 'unpack'),
-        OpenStruct.new('path' => '/foo/patch1', 'strip' => '2', 'fuzz' => '1', 'after' => 'unpack'),
-        OpenStruct.new('path' => '/foo/postinstall/patch1', 'strip' => '2', 'fuzz' => '1', 'after' => 'install')
+        Vanagon::Patch.new('/foo/patch0', '1', '0', 'unpack', '/foo/bar'),
+        Vanagon::Patch.new('/foo/patch1', '2', '1', 'unpack', '/foo/bar'),
+        Vanagon::Patch.new('/foo/postinstall/patch1', '2', '1', 'install', '/foo/bar')
       ]
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace < ../patches/patch0",
-          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace < ../patches/patch1"
+          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace < $(workdir)/patches/patch0",
+          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace < $(workdir)/patches/patch1"
         ].join(" && \\\n")
       )
     end
@@ -236,9 +237,9 @@ describe Vanagon::Component::Rules do
     it "applies any after-install patches" do
       component.install = ["make install"]
       component.patches = [
-        OpenStruct.new('path' => '/foo/patch0', 'strip' => '1', 'fuzz' => '0', 'after' => 'unpack'),
-        OpenStruct.new('path' => '/foo/postinstall/patch0', 'strip' => '3', 'fuzz' => '9', 'after' => 'install', 'destination' => '/foo/baz'),
-        OpenStruct.new('path' => '/foo/postinstall/patch1', 'strip' => '4', 'fuzz' => '10', 'after' => 'install', 'destination' => '/foo/quux')
+        Vanagon::Patch.new('/foo/patch0', 1, 0, 'unpack', '/foo/bar'),
+        Vanagon::Patch.new('/foo/postinstall/patch0', 3, 9, 'install', '/foo/baz'),
+        Vanagon::Patch.new('/foo/postinstall/patch1', 4, 10, 'install', '/foo/quux'),
       ]
 
       expect(rule.recipe[1]).to eq("cd /foo/baz && /usr/bin/patch --strip=3 --fuzz=9 --ignore-whitespace < $(workdir)/patches/patch0")
