@@ -68,14 +68,15 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	touch <%= comp.name %>-unpack
 
 <%= comp.name %>-patch: <%= comp.name %>-unpack
-	<%- unless comp.patches.empty? -%>
-		cd <%= comp.dirname %> && \
-		<%- comp.patches.each do |patch| -%>
-			<%= @platform.patch %> --strip=<%= patch.strip %> --fuzz=<%= patch.fuzz %> --ignore-whitespace < ../patches/<%= File.basename(patch.path) %> && \
-		<%- end -%>
-		:
+<%- unless comp.patches.empty? -%>
+	cd <%= comp.dirname %> && \
+	<%- comp.patches.each do |patch| -%>
+	<%- if patch.after == "unpack" -%>
+		<%= @platform.patch %> --strip=<%= patch.strip %> --fuzz=<%= patch.fuzz %> --ignore-whitespace < ../patches/<%= File.basename(patch.path) %> && \
 	<%- end -%>
-	
+	<%- end -%>
+	:
+	<%- end -%>
 	touch <%= comp.name %>-patch
 
 <%= comp.name %>-configure: <%= comp.name %>-patch <%= list_component_dependencies(comp).join(" ") %>
@@ -110,6 +111,15 @@ cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" 
 	cd <%= comp.get_build_dir %> && \
 	<%= comp.get_environment %> && \
 	<%= comp.install.join(" && \\\n\t") %>
+	<%- end -%>
+	:
+	<%- unless comp.patches.empty? -%>
+	<%- comp.patches.each do |patch| -%>
+	<%- if patch.after == "install" -%>
+	cd <%= patch.destination %> && \
+		<%= @platform.patch %> --strip=<%= patch.strip %> --fuzz=<%= patch.fuzz %> --ignore-whitespace < $(workdir)/patches/<%= File.basename(patch.path) %>
+	<%- end -%>
+	<%- end -%>
 	<%- end -%>
 	touch <%= comp.name %>-install
 
