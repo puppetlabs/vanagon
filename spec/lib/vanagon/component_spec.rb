@@ -19,4 +19,21 @@ describe "Vanagon::Component" do
       expect(comp.get_environment).to eq(':')
     end
   end
+
+  describe "#get_build_dir" do
+    subject(:comp) do
+      Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
+        comp.dirname = "build-dir-test"
+      end
+    end
+
+    it "uses the dirname when no build_dir was set" do
+      expect(comp.get_build_dir).to eq "build-dir-test"
+    end
+
+    it "joins the dirname and the build dir when a build_dir was set" do
+      comp.build_dir = "cmake-build"
+      expect(comp.get_build_dir).to eq File.join("build-dir-test", "cmake-build")
+    end
+  end
 end

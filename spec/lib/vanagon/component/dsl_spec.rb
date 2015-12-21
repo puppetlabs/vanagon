@@ -484,6 +484,21 @@ end" }
     end
   end
 
+  describe "#build_dir" do
+    it "sets the build_dir when given a relative path" do
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, platform)
+      comp.build_dir("build")
+      expect(comp._component.build_dir).to eq("build")
+    end
+
+    it "raises an error when given an absolute path" do
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, platform)
+      expect {
+        comp.build_dir("/build")
+      }.to raise_error(Vanagon::Error, %r[build_dir should be a relative path, but '/build' looks to be absolute\.])
+    end
+  end
+
   describe '#link' do
     it 'adds the correct command to the install for the component' do
       comp = Vanagon::Component::DSL.new('link-test', {}, platform)

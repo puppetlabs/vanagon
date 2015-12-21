@@ -7,7 +7,7 @@ class Vanagon
     #   @return [Set] the list of files marked for installation
 
     attr_accessor :name, :version, :source, :url, :configure, :build, :install
-    attr_accessor :environment, :extract_with, :dirname, :build_requires
+    attr_accessor :environment, :extract_with, :dirname, :build_requires, :build_dir
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
     attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
     attr_accessor :sources, :preinstall_actions, :postinstall_actions
@@ -124,6 +124,14 @@ class Vanagon
       end
     end
 
+    # Expands the build directory
+    def get_build_dir
+      if @build_dir
+        File.join(@dirname, @build_dir)
+      else
+        @dirname
+      end
+    end
 
     # Fetches secondary sources for the component. These are just dumped into the workdir currently.
     #
