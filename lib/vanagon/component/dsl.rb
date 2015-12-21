@@ -80,10 +80,13 @@ class Vanagon
       # Add a patch to the list of patches to apply to the component's source after unpacking
       #
       # @param patch [String] Path to the patch that should be applied
+      # @param destination [String] Path to the location where the patch should be applied
       # @param strip [String, Integer] directory levels to skip in applying patch
       # @param fuzz [String, Integer] levels of context miss to ignore in applying patch
-      def apply_patch(patch, strip: 1, fuzz: 0)
-        @component.patches << OpenStruct.new('path' => patch, 'strip' => strip.to_s, 'fuzz' => fuzz.to_s)
+      # @param after [String] the location in the makefile where the patch command should be run
+      def apply_patch(patch, destination: @component.dirname, strip: 1, fuzz: 0, after: 'unpack')
+        raise Vanagon::Error, "We can only apply patches after the source is unpacked or after installation" unless ['unpack', 'install'].include?(after)
+        @component.patches << OpenStruct.new('path' => patch, 'strip' => strip.to_s, 'fuzz' => fuzz.to_s, 'destination' => destination, 'after' => after)
       end
 
       # Loads and parses json from a file. Will treat the keys in the
