@@ -5,11 +5,28 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+## [0.5.0] - 2015-12-22
+### Changed
+- Replaced the ERB template based Makefile generation with a procedural
+  Makefile backend
+
+### Fixed
+- Added build_dir function for when tools need to be moved away from the
+  regular build directory to avoid conflicts with build files and source
+  files
+- Vanagon-generated packages no longer change group
+  ownership of files when installed on Solaris 10
+
+### Added
+- Added lock_manager gem to vanagon project
+- Added hardware engine
+- Added support for .vim, .json and .service config files
+- Added support for zip files
 
 ## [0.4.1] - 2015-11-12
 ### Changed
 - Fixed an issue where, with test builds when the version string contains
-  a git sha alphanumeric component, the Solaris 11 VERSION file contains 
+  a git sha alphanumeric component, the Solaris 11 VERSION file contains
   the transformed IPS-compatible version string (with the alpha characters
   stripped). Now the VERSION file will be consistent across all of the
   platforms.
@@ -132,7 +149,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.4.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/puppetlabs/vanagon/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/puppetlabs/vanagon/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/puppetlabs/vanagon/compare/0.3.19...0.4.0
 [0.3.19]: https://github.com/puppetlabs/vanagon/compare/0.3.18...0.3.19
