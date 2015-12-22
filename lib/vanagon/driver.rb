@@ -23,16 +23,18 @@ class Vanagon
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @@logger = Logger.new('vanagon_hosts.log')
+      @@logger.progname = 'vanagon'
 
       # If a target has been given, we don't want to make any assumptions about how to tear it down.
       engine = 'base' if target
+      # Hardware has explicit teardown to unlock the node
+      engine = 'hardware' if @platform.build_hosts
       require "vanagon/engine/#{engine}"
       @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target)
 
-      @@logger = Logger.new('vanagon_hosts.log')
-      @@logger.progname = 'vanagon'
     rescue LoadError => e
-      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{@engine_name}'.")
+      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
     end
 
     def cleanup_workdir
@@ -88,7 +90,11 @@ class Vanagon
       puts e
       puts e.backtrace.join("\n")
       raise e
-    end
+    ensure
+      if @engine == "hardware"
+        @engine.teardown
+      end
+  end
 
     def prepare(workdir = nil)
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir

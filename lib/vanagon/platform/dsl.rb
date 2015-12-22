@@ -161,6 +161,19 @@ class Vanagon
         @platform.servicetype = type
       end
 
+      # Set the list of possible host to perform a build on (when not using
+      # pooler or CLI flags)
+      #
+      # @param type [Array] the names of the hosts (must be resolvable)
+      # @rase ArgumentError if builds_hosts has no arguments
+      def build_hosts(*args)
+        raise ArgumentError, "build_hosts requires at least one host to be a build target." if args.empty?
+        @platform.build_hosts = Array(args).flatten
+      end
+
+      # Because single vs plural is annoying to remember
+      alias_method :build_host, :build_hosts
+
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name of the target template to use from the vmpooler
