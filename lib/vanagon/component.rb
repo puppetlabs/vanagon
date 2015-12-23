@@ -6,7 +6,7 @@ class Vanagon
     # @!attribute [r] files
     #   @return [Set] the list of files marked for installation
 
-    attr_accessor :name, :version, :source, :url, :configure, :build, :install
+    attr_accessor :name, :version, :source, :url, :configure, :build, :check, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires, :build_dir
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
     attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
@@ -50,6 +50,7 @@ class Vanagon
       @configure = []
       @install = []
       @build = []
+      @check = []
       @patches = []
       @files = Set.new
       @directories = []

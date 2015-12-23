@@ -12,7 +12,7 @@ class Vanagon
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil })
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
       @verbose = false
       @preserve = false
 
@@ -23,6 +23,7 @@ class Vanagon
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @project.settings[:skipcheck] = options[:skipcheck]
       @@logger = Logger.new('vanagon_hosts.log')
       @@logger.progname = 'vanagon'
 

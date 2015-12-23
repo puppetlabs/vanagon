@@ -105,6 +105,21 @@ end" }
     end
   end
 
+  describe '#check' do
+    it 'sets check to the value if check is empty' do
+      comp = Vanagon::Component::DSL.new('check-test', {}, {})
+      comp.check { './check' }
+      expect(comp._component.check).to eq(['./check'])
+    end
+
+    it 'appends to the existing check if not empty' do
+      comp = Vanagon::Component::DSL.new('check-test', {}, {})
+      comp.check { 'make test' }
+      comp.check { 'make cpplint' }
+      expect(comp._component.check).to eq(['make test', 'make cpplint'])
+    end
+  end
+
   describe '#install' do
     it 'sets install to the value if install is empty' do
       comp = Vanagon::Component::DSL.new('install-test', {}, {})

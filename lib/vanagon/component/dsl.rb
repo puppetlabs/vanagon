@@ -56,11 +56,18 @@ class Vanagon
         @component.configure << block.call
       end
 
-      # Set or add to the build call for the component. The commands required to build the component before installing it.
+      # Set or add to the build call for the component. The commands required to build the component before testing/installing it.
       #
       # @param block [Proc] the command(s) required to build the component
       def build(&block)
         @component.build << block.call
+      end
+
+      # Set or add to the check call for the component. The commands required to test the component before installing it.
+      #
+      # @param block [Proc] the command(s) required to test the component
+      def check(&block)
+        @component.check << block.call
       end
 
       # Set or add to the install call for the component. The commands required to install the component.
