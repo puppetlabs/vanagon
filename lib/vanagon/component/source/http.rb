@@ -10,7 +10,7 @@ class Vanagon
         attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup
 
         # Extensions for files we intend to unpack during the build
-        ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz'
+        ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
 
         # Extensions for files we aren't going to unpack during the build
         NON_ARCHIVE_EXTENSIONS = '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg', '.rb', '.sh', '.csh', '.xml'
@@ -100,7 +100,12 @@ class Vanagon
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
         def extract(tar)
           if ARCHIVE_EXTENSIONS.include?(@extension)
-            return "gunzip -c '#{@file}' | '#{tar}' xf -"
+            case @extension
+            when "tar.gz" || ".tgz"
+              return "gunzip -c '#{@file}' | '#{tar}' xf -"
+            when ".zip"
+              return "unzip '#{@file}'"
+            end
           elsif NON_ARCHIVE_EXTENSIONS.include?(@extension)
             # Don't need to unpack gems, ru, txt, conf, ini, gpg
             return nil
