@@ -101,7 +101,7 @@ class Vanagon
         def extract(tar)
           if ARCHIVE_EXTENSIONS.include?(@extension)
             case @extension
-            when "tar.gz" || ".tgz"
+            when ".tar.gz" || ".tgz"
               return "gunzip -c '#{@file}' | '#{tar}' xf -"
             when ".zip"
               return "unzip '#{@file}'"
