@@ -84,6 +84,7 @@ Currently supported engines are:
 * `local` - Build on the local machine; platform name must match the local machine
 * `docker` - Builds in a docker container
 * `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
+* `hardware` - Build on a specific taget and lock it in redis
 
 #### Flags (can be anywhere in the command)
 
@@ -109,6 +110,13 @@ in .ssh/config.
 Used in conjunction with the pooler engine, this is a token to pass to the
 vmpooler to access the API. Without this token, the default lifetime of vms
 will be much shorter.
+
+##### LOCK\_MANAGER\_HOST
+The name of the host where redis is running. Redis is used to handle a lock
+when using the hardware engine. It defaults to *redis*, with no domain.
+
+#### LOCK\_MANAGER\_PORT
+Port of the system where redis is running. Defaults to *6379*.
 
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
