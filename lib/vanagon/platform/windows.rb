@@ -189,7 +189,7 @@ class Vanagon
       # @return [Vanagon::Platform::DEB] the win derived platform with the given name
       def initialize(name)
         @target_user = "Administrator"
-        @make = "(#{self.drive_root}/tools/mingw64/bin/mingw32-make || #{self.drive_root}/tools/mingw32/bin/mingw32-make)"
+        @make = "/usr/bin/make"
         @tar = "/usr/bin/tar"
         @find = "/usr/bin/find"
         @sort = "/usr/bin/sort"
