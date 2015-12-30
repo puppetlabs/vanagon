@@ -193,6 +193,7 @@ class Vanagon
         @tar = "/usr/bin/tar"
         @find = "/usr/bin/find"
         @sort = "/usr/bin/sort"
+        @num_cores = "/usr/bin/nproc"
         super(name)
       end
     end
