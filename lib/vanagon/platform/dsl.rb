@@ -114,6 +114,13 @@ class Vanagon
         @platform.sort = sort_cmd
       end
 
+      # Set the path to copy for the platform
+      #
+      # @param copy_cmd [String] Full path to the copy command for the platform
+      def copy(copy_cmd)
+        @platform.copy = copy_cmd
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default

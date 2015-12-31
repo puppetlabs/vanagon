@@ -59,6 +59,7 @@ end" }
 
   before do
     allow(platform).to receive(:install).and_return('install')
+    allow(platform).to receive(:copy).and_return('cp')
   end
 
   describe '#load_from_json' do
