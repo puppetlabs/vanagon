@@ -109,7 +109,7 @@ class Vanagon
 
       # Set the path to sort for the platform
       #
-      # @param sort_cmd [String] Full path to the find command for the platform
+      # @param sort_cmd [String] Full path to the sort command for the platform
       def sort(sort_cmd)
         @platform.sort = sort_cmd
       end
