@@ -151,8 +151,8 @@ end" }
       comp.apply_patch('patch_file1', fuzz: 12, strip: 1000000)
       expect(comp._component.patches.count).to eq 1
       expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.fuzz).to eq '12'
-      expect(comp._component.patches.first.strip).to eq '1000000'
+      expect(comp._component.patches.first.fuzz).to eq 12
+      expect(comp._component.patches.first.strip).to eq 1000000
     end
 
     it 'can specify a directory where the patch should be applied' do
