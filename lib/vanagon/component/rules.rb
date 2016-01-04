@@ -75,7 +75,7 @@ class Vanagon
       #
       # @see [Vanagon::Component::Source]
       rule("unpack", dependencies: ['file-list-before-build']) do |r|
-        r.recipe << @component.extract_with
+        r.recipe << andand(@component.get_environment, @component.extract_with)
         r.recipe << "touch #{r.target}"
       end
 

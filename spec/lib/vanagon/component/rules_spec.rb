@@ -43,7 +43,18 @@ describe Vanagon::Component::Rules do
 
     it "extracts the source" do
       component.extract_with = "/usr/bin/tar"
-      expect(rule.recipe.first).to eq "/usr/bin/tar"
+      expect(rule.recipe.first).to eq ": && /usr/bin/tar"
+    end
+
+    it "sets environment variables before running the unpack steps" do
+      component.extract_with = "/usr/bin/tar"
+      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
+      expect(rule.recipe.first).to eq(
+        [
+          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
+          "/usr/bin/tar"
+        ].join(" && ")
+      )
     end
 
     it_behaves_like "a rule that touches the target file"
