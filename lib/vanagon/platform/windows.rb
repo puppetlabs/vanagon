@@ -194,6 +194,8 @@ class Vanagon
         @find = "/usr/bin/find"
         @sort = "/usr/bin/sort"
         @num_cores = "/usr/bin/nproc"
+        @install = "/usr/bin/install"
+        @copy = "/usr/bin/cp"
         super(name)
       end
     end
