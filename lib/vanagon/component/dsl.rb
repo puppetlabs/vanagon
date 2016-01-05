@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/patch'
 require 'ostruct'
 require 'json'
 
@@ -92,8 +93,7 @@ class Vanagon
       # @param fuzz [String, Integer] levels of context miss to ignore in applying patch
       # @param after [String] the location in the makefile where the patch command should be run
       def apply_patch(patch, destination: @component.dirname, strip: 1, fuzz: 0, after: 'unpack')
-        raise Vanagon::Error, "We can only apply patches after the source is unpacked or after installation" unless ['unpack', 'install'].include?(after)
-        @component.patches << OpenStruct.new('path' => patch, 'strip' => strip.to_s, 'fuzz' => fuzz.to_s, 'destination' => destination, 'after' => after)
+        @component.patches << Vanagon::Patch.new(patch, strip, fuzz, after, destination)
       end
 
       # Loads and parses json from a file. Will treat the keys in the
