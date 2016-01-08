@@ -13,7 +13,7 @@ class Vanagon
         ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
 
         # Extensions for files we aren't going to unpack during the build
-        NON_ARCHIVE_EXTENSIONS = '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg', '.rb', '.sh', '.csh', '.xml'
+        NON_ARCHIVE_EXTENSIONS = '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg', '.rb', '.sh', '.csh', '.xml', '.vim', '.json', '.service'
 
         # Constructor for the Http source type
         #
