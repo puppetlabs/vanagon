@@ -6,9 +6,9 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a windows package of
       # @return [Array] list of commands required to build a windows package for the given project from a tarball
       def generate_package(project)
-        # If nothing is passed in as platform type, default to building a nuget package
-        # We should default to building an MSI once that code has been implemented
         case project.platform.package_type
+        when "msi"
+          return generate_msi_package(project)
         when "nuget"
           return generate_nuget_package(project)
         else
@@ -21,9 +21,9 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
       def package_name(project)
-        # If nothing is passed in as platform type, default to a nuget package
-        # We should default to an MSI once that code has been implemented
         case project.platform.package_type
+        when "msi"
+          return msi_package_name(project)
         when "nuget"
           return nuget_package_name(project)
         else
@@ -66,10 +66,30 @@ class Vanagon
         "#{@copy} $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
+      # The specific bits used to generate a windows msi package for a given project
+      #
+      # @param project [Vanagon::Project] project to build a msi package of
+      # @return [Array] list of commands required to build an msi package for the given project from a tarball
+      def generate_msi_package(project)
+        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        ["mkdir -p output/#{target_dir}",
+        "mkdir -p $(tempdir)/tools",
+        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
+        ]
+      end
+
+      # Method to derive the msi (Windows Installer) package name for the project.
+      #
+      # @param project [Vanagon::Project] project to name
+      # @return [String] name of the windows package for this project
+      def msi_package_name(project)
+        # Decided to use native project version in hope msi versioning doesn't have same resrictions as nuget
+        "#{project.name}-#{@architecture}-#{project.version}.msi"
+      end
+
       # Method to derive the package name for the project.
       # Neither chocolatey nor nexus know how to deal with architecture, so
       # we are just pretending it's part of the package name.
-      #
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
       def nuget_package_name(project)
