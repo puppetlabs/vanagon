@@ -9,7 +9,7 @@ class Vanagon
     attr_accessor :name, :version, :source, :url, :configure, :build, :check, :install
     attr_accessor :environment, :extract_with, :dirname, :build_requires, :build_dir
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
-    attr_accessor :directories, :replaces, :provides, :cleanup_source, :environment
+    attr_accessor :directories, :replaces, :provides, :cleanup_source
     attr_accessor :sources, :preinstall_actions, :postinstall_actions
     attr_accessor :preremove_actions, :postremove_actions
 
