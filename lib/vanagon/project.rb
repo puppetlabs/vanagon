@@ -232,6 +232,11 @@ class Vanagon
       files = ['file-list', 'bill-of-materials']
       files.push get_files.map(&:path)
       files.push get_configfiles.map(&:path)
+      if @platform.is_windows?
+        files.flatten.map { |f| "$$(cygpath --mixed --long-name '#{f}')" }
+      else
+        files.flatten
+      end
     end
 
     # Generate a bill-of-materials: a listing of the components and their
