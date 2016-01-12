@@ -1,3 +1,5 @@
+require 'pathname'
+
 class Vanagon
   class Common
     class Pathname
@@ -28,7 +30,7 @@ class Vanagon
       #   and exposed through the {#configfile?} method.
       # @return [Vanagon::Common::Pathname] Returns a new Pathname instance.
       def initialize(path, mode: nil, owner: nil, group: nil, config: false)
-        @path = File.expand_path(path)
+        @path = ::Pathname.new(path).cleanpath.to_s
         @mode ||= mode
         @owner ||= owner
         @group ||= group
