@@ -1,26 +1,28 @@
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$fileList = Join-Path -path $toolsDir -childpath "file-list.txt"
 
-<%- dirnames = get_directories.map {|d| d.path } -%>
-<%- dirnames.each do |dir| -%>
-  <%- windows_path = platform.convert_to_windows_path(dir) -%>
-if (Test-Path -path "<%= windows_path %>") {
-  Write-Debug "Warning: copying over '<%= windows_path %>'"
-} else {
-  New-Item -ItemType directory -Path "<%= windows_path %>"
+if (!(Test-Path -path "$fileList")) {
+  Throw "Unable to find file '$fileList', cannot proceed with install"
 }
-$origin = Join-Path -path "$toolsDir" -childpath "<%= dir.gsub('/', '\\') %>"
-Copy-Item -path "$origin\*" -destination "<%= windows_path.gsub('/', '\\') %>\" -Recurse -Force
-<%- end -%>
 
-<%- filenames = get_files.map {|f| f.path} -%>
-<%- configfilenames = get_configfiles.map {|cf| cf.path} -%>
-<%- (filenames + configfilenames).each do |file| -%>
-  <%- windows_path = platform.convert_to_windows_path(file) -%>
-if (Test-Path -path "<%= windows_path %>") {
-  Write-Debug "Warning: copying over '<%= windows_path %>'"
-} elseif (!(Test-Path -path "<%= File.dirname windows_path %>")) {
-  New-Item -ItemType directory -Path "<%= File.dirname windows_path %>"
+$lines = Get-Content "$fileList"
+foreach ($destination in $lines) {
+  $originFile = "$destination" -replace '^[a-zA-Z]:/',''
+  $origin = Join-Path -path "$toolsDir" -childpath "$originFile"
+  if (Test-Path -path "$origin") {
+    $parent = Split-Path -path "$destination" -parent
+    if (!(Test-Path -path "$parent")) {
+      New-Item -ItemType directory -Path "$parent"
+    }
+    if (Test-Path -path "$destination") {
+      Write-Debug "Overwriting '$destination'"
+    }
+    Copy-Item -path "$origin" -destination "$destination" -Force
+  } else {
+    # If the item we are trying to copy over does not exist in our source directory,
+    # we assume it is an empty directory and simply create one in its place. There is
+    # a possibility that this will hide an error where there is actually a missing
+    # file. However, this is such a slim possibity, this action was deemed safe.
+    New-Item -ItemType directory -Path "$destination"
+  }
 }
-$origin = Join-Path -path "$toolsDir" -childpath "<%= file.gsub('/', '\\') %>"
-Copy-Item -path "$origin" -destination "<%= windows_path.gsub('/', '\\') %>" -Force
-<%- end -%>

@@ -1,54 +1,24 @@
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$fileList = Join-Path -path $toolsDir -childpath "file-list.txt"
 
-$contentFile=(join-path -path "$toolsDir" -childpath "file-list") + ".txt"
-if (Test-Path -path "$contentFile") {
-  Write-Debug "Removing files defiend in `'$contentFile`'"
-  $contents=get-content "$contentFile"
-  foreach ($fileInstalled in $contents) {
-    $fileInstalled=$fileInstalled.Replace("/cygdrive/c", "C:")
-    $fileInstalled=$fileInstalled.Replace("/", "\")
-    if (Test-Path -path "$fileInstalled" -PathType Container) {
-      Write-Debug "Not removing directory $fileInstalled"
-    } elseif (Test-Path -path "$fileInstalled") {
-      remove-item -Path "$fileInstalled" -Force
-    } else {
-      Write-Debug "Skipping missing file $fileInstalled"
+if (!(Test-Path -path "$fileList")) {
+  Throw "Unable to find file '$fileList', cannot proceed with uninstall"
+}
+
+$lines = Get-Content "$fileList"
+foreach ($file in $lines) {
+  if (Test-Path -path "$file") {
+    # We cannot guarentee a directory is only populated with files from
+    # this package, so we cannot whole-sale remove directories. We could
+    # check to see if a directory is empty after we remove all the files,
+    # but that would still end up with some reminantes of our skeletal
+    # directory structure. It doesn't seem worth it ATM. As is, only remove
+    # things that are files, and do not remove any directories.
+    if (!((Get-Item "$file") -is [System.IO.DirectoryInfo])) {
+      Write-Debug "Removing '$file'"
+      remove-item -Path "$file" -Force
     }
-  }
-} else {
-  Write-Debug "'$contentFile' not found, not removing any files in non-standard chocolatey location"
-}
-
-<%- dirnames = get_directories.map {|d| d.path } -%>
-<%- dirnames.each do |dir| -%>
-  <%- windows_path = platform.convert_to_windows_path(dir) -%>
-if (Test-Path -path "<%= windows_path %>") {
-  # If this directory is empty, let's just delete it
-  if (!(Test-Path -Path "<%= windows_path %>\*")) {
-    Remove-Item -Path "<%= windows_path %>" -Force
   } else {
-    # We need to try to remove all directories added in this package. We don't
-    # want to force remove a directory in case a different package has also
-    # installed files into that directory. We've already removed all the files
-    # for this package we are trying to remove. This half-way works, in that
-    # order matters, but is not well defined here.
-    Write-Debug "Removing any empty directories in '<%= windows_path %>'"
-    # Remove any empty subdirectories
-    $SearchRoot = "<%= windows_path %>"
-    Get-ChildItem -Path $SearchRoot -Recurse |
-      Where-Object {$_.PSIsContainer -eq $true -and (Get-ChildItem -Path $_.FullName) -eq $null} |
-        Remove-Item
-    # Remove the main directory if it's now empty after removing all empty subdirectories
-    Where-Object {(Get-ChildItem -Path "<%= windows_path %>" -Recurse) -eq $null} | Remove-Item
+    Write-Debug "Skipping missing file '$file'"
   }
 }
-<%- end -%>
-
-<%- filenames = get_files.map {|f| f.path} -%>
-<%- configfilenames = get_configfiles.map {|cf| cf.path} -%>
-<%- (filenames + configfilenames).each do |file| -%>
-  <%- windows_path = platform.convert_to_windows_path(file) -%>
-if (Test-Path -path "<%= windows_path %>") {
-  Remove-Item -Path "<%= windows_path %>" -Force
-}
-<%- end -%>
