@@ -8,15 +8,11 @@ class Vanagon
       def generate_package(project)
         # If nothing is passed in as platform type, default to building a nuget package
         # We should default to building an MSI once that code has been implimented
-        if project.platform.package_type.nil? || project.platform.package_type.empty?
+        case project.platform.package_type
+        when "nuget"
           return generate_nuget_package(project)
         else
-          case project.platform.package_type
-          when "nuget", "nupkg"
-            return generate_nuget_package(project)
-          else
-            raise Vanagon::Error "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
-          end
+          raise Vanagon::Error "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -27,15 +23,11 @@ class Vanagon
       def package_name(project)
         # If nothing is passed in as platform type, default to a nuget package
         # We should default to an MSI once that code has been implimented
-        if project.platform.package_type.nil? || project.platform.package_type.empty?
+        case project.platform.package_type
+        when "nuget"
           return nuget_package_name(project)
         else
-          case project.platform.package_type
-          when "nuget", "nupkg"
-            return nuget_package_name(project)
-          else
-            raise Vanagon::Error "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
-          end
+          raise Vanagon::Error "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -196,6 +188,7 @@ class Vanagon
         @num_cores = "/usr/bin/nproc"
         @install = "/usr/bin/install"
         @copy = "/usr/bin/cp"
+        @package_type = "msi"
         super(name)
       end
     end
