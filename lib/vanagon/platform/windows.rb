@@ -115,7 +115,7 @@ class Vanagon
       # @return [String] the version of the nuget package for this project
       def nuget_package_version(version, release)
         version_elements = version.split('.')
-        if version_elements[-1].start_with?('g')
+        if version_elements.last.start_with?('g')
           # Version for the prerelease package
           "#{version_elements[0..-2].join('.').gsub(/[a-zA-Z]/, '')}-#{version_elements[-1]}"
         else
