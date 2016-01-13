@@ -12,9 +12,6 @@ class Vanagon
         # Extensions for files we intend to unpack during the build
         ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
 
-        # Extensions for files we aren't going to unpack during the build
-        NON_ARCHIVE_EXTENSIONS = '.gem', '.ru', '.txt', '.conf', '.ini', '.gpg', '.rb', '.sh', '.csh', '.xml', '.vim', '.json', '.service'
-
         # Constructor for the Http source type
         #
         # @param url [String] url of the http source to fetch
@@ -106,11 +103,9 @@ class Vanagon
             when ".zip"
               return "unzip '#{@file}'"
             end
-          elsif NON_ARCHIVE_EXTENSIONS.include?(@extension)
-            # Don't need to unpack gems, ru, txt, conf, ini, gpg
-            return ':'
           else
-            fail "Extraction unimplemented for '#{@extension}' in source '#{@file}'. Please teach me."
+            # Extension does not appear to be an archive
+            return ':'
           end
         end
 
@@ -121,24 +116,25 @@ class Vanagon
         def cleanup
           if ARCHIVE_EXTENSIONS.include?(@extension)
             return "rm #{@file}; rm -r #{dirname}"
-          elsif NON_ARCHIVE_EXTENSIONS.include?(@extension)
+          else
             # Because dirname will be ./ here, we don't want to try to nuke it
             return "rm #{@file}"
-          else
-            fail "Don't know how to cleanup for '#{@file}' with extension: '#{@extension}'. Please teach me."
           end
         end
 
         # Returns the extension for @file
         #
         # @return [String] the extension of @file
-        # @raise [RuntimeError] an exception is raised if the extension isn't in the current list
         def get_extension
-          extension_match = @file.match(/.*(#{Regexp.union(ARCHIVE_EXTENSIONS + NON_ARCHIVE_EXTENSIONS)})/)
+          extension_match = @file.match(/.*(#{Regexp.union(ARCHIVE_EXTENSIONS)})/)
           unless extension_match
-            fail "Unrecognized extension for '#{@file}'. Don't know how to extract this format. Please teach me."
+            if @file.split('.').last.include?('.')
+              return '.' +  @file.split('.').last
+            else
+              # This is the case where the file has no extension
+              return @file
+            end
           end
-
           extension_match[1]
         end
 
@@ -149,12 +145,8 @@ class Vanagon
         def dirname
           if ARCHIVE_EXTENSIONS.include?(@extension)
             return @file.chomp(@extension)
-          elsif NON_ARCHIVE_EXTENSIONS.include?(@extension)
-            # Because we cd into the source dir, using ./ here avoids special casing single file
-            # sources in the Makefile
-            return './'
           else
-            fail "Don't know how to guess dirname for '#{@file}' with extension: '#{@extension}'. Please teach me."
+            return './'
           end
         end
       end
