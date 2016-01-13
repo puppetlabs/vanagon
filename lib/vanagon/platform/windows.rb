@@ -162,7 +162,7 @@ class Vanagon
       #
       # @return [String] the cygwin drive root
       def drive_root
-        "/cygdrive/c"
+        "C:"
       end
 
       # Get the windows path equivelant using cygpath
