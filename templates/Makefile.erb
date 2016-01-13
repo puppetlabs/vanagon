@@ -37,13 +37,13 @@ file-list: file-list-before-build <%= @name %>-project
 
 <%- if @bill_of_materials -%>
 <%= @bill_of_materials %>:
-	mkdir -p "<%= @bill_of_materials.path %>"
-	mv bill-of-materials "<%= @bill_of_materials.path %>"
+	mkdir -p '<%= @bill_of_materials.path %>'
+	mv bill-of-materials '<%= @bill_of_materials.path %>'
 <%- end -%>
 
 <%- dirnames.each do |dir| -%>
 <%= dir %>: file-list-before-build
-	mkdir -p "<%= dir %>"
+	mkdir -p <%= dir %>
 <%- end %>
 
 <%- if @cleanup -%>
