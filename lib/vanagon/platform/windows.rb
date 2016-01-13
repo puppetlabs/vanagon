@@ -63,7 +63,7 @@ class Vanagon
         "cp chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
         "cp file-list $(tempdir)/#{project.name}/tools/file-list.txt",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
-        "(cd $(tempdir)/#{project.name} ; #{self.drive_root}/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
+        "(cd $(tempdir)/#{project.name} ; C:/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
         "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
