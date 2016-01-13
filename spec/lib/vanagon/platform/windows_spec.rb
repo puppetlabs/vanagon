@@ -3,14 +3,14 @@ require 'vanagon/platform'
 describe "Vanagon::Platform::Windows" do
   platforms =[
     {
-      :name                   => "win-2012r2-x64",
-      :os_name                => "win",
+      :name                   => "windows-2012r2-x64",
+      :os_name                => "windows",
       :os_version             => "2012r2",
       :architecture           => "x64",
       :output_dir             => "windows/x64",
       :output_dir_with_target => "windows/thing/x64",
       :target_user            => "Administrator",
-      :block                  => %Q[ platform "win-2012-x64" do |plat| end ]
+      :block                  => %Q[ platform "windows-2012r2-x64" do |plat| end ]
     },
   ]
 

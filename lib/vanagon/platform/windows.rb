@@ -8,15 +8,11 @@ class Vanagon
       def generate_package(project)
         # If nothing is passed in as platform type, default to building a nuget package
         # We should default to building an MSI once that code has been implimented
-        if project.platform.package_type.nil? || project.platform.package_type.empty?
+        case project.platform.package_type
+        when "nuget"
           return generate_nuget_package(project)
         else
-          case project.platform.package_type
-          when "nuget", "nupkg"
-            return generate_nuget_package(project)
-          else
-            raise Vanagon::Error "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
-          end
+          raise Vanagon::Error, "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -27,15 +23,11 @@ class Vanagon
       def package_name(project)
         # If nothing is passed in as platform type, default to a nuget package
         # We should default to an MSI once that code has been implimented
-        if project.platform.package_type.nil? || project.platform.package_type.empty?
+        case project.platform.package_type
+        when "nuget"
           return nuget_package_name(project)
         else
-          case project.platform.package_type
-          when "nuget", "nupkg"
-            return nuget_package_name(project)
-          else
-            raise Vanagon::Error "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
-          end
+          raise Vanagon::Error, "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -71,7 +63,7 @@ class Vanagon
         "cp chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
         "cp file-list $(tempdir)/#{project.name}/tools/file-list.txt",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
-        "(cd $(tempdir)/#{project.name} ; #{self.drive_root}/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
+        "(cd $(tempdir)/#{project.name} ; C:/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
         "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
@@ -123,7 +115,7 @@ class Vanagon
       # @return [String] the version of the nuget package for this project
       def nuget_package_version(version, release)
         version_elements = version.split('.')
-        if version_elements[-1].start_with?('g')
+        if version_elements.last.start_with?('g')
           # Version for the prerelease package
           "#{version_elements[0..-2].join('.').gsub(/[a-zA-Z]/, '')}-#{version_elements[-1]}"
         else
@@ -149,7 +141,7 @@ class Vanagon
             commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.gsub('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
         else
-          raise Vanagon::Error "Invalid repo specification #{definition}"
+          raise Vanagon::Error, "Invalid repo specification #{definition}"
         end
 
         commands
@@ -163,22 +155,6 @@ class Vanagon
       # @return [String] relative path to where windows packages should be staged
       def output_dir(target_repo = "")
         File.join("windows", target_repo, @architecture)
-      end
-
-      # Return the drive root currently used on windows. At the moment, this is cygwin, but
-      # may at some unknown date change to bitvise.
-      #
-      # @return [String] the cygwin drive root
-      def drive_root
-        "/cygdrive/c"
-      end
-
-      # Get the windows path equivelant using cygpath
-      #
-      # @param path [String] the path to convert to windows style pathing
-      # @return [String] the windows style path for the given path
-      def convert_to_windows_path(path)
-        path.sub("/cygdrive/c", "C:")
       end
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
@@ -196,6 +172,7 @@ class Vanagon
         @num_cores = "/usr/bin/nproc"
         @install = "/usr/bin/install"
         @copy = "/usr/bin/cp"
+        @package_type = "msi"
         super(name)
       end
     end
