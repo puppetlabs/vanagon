@@ -12,7 +12,7 @@ class Vanagon
         when "nuget"
           return generate_nuget_package(project)
         else
-          raise Vanagon::Error "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
+          raise Vanagon::Error, "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -27,7 +27,7 @@ class Vanagon
         when "nuget"
           return nuget_package_name(project)
         else
-          raise Vanagon::Error "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
+          raise Vanagon::Error, "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
       end
 
@@ -141,7 +141,7 @@ class Vanagon
             commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.gsub('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
         else
-          raise Vanagon::Error "Invalid repo specification #{definition}"
+          raise Vanagon::Error, "Invalid repo specification #{definition}"
         end
 
         commands
