@@ -157,22 +157,6 @@ class Vanagon
         File.join("windows", target_repo, @architecture)
       end
 
-      # Return the drive root currently used on windows. At the moment, this is cygwin, but
-      # may at some unknown date change to bitvise.
-      #
-      # @return [String] the cygwin drive root
-      def drive_root
-        "C:"
-      end
-
-      # Get the windows path equivelant using cygpath
-      #
-      # @param path [String] the path to convert to windows style pathing
-      # @return [String] the windows style path for the given path
-      def convert_to_windows_path(path)
-        path.sub("/cygdrive/c", "C:")
-      end
-
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
       #
       # Mingw varies on where it is installed based on architecure. We want to use which ever is on the system.
