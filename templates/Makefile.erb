@@ -43,7 +43,7 @@ file-list: file-list-before-build <%= @name %>-project
 
 <%- dirnames.each do |dir| -%>
 <%= dir %>: file-list-before-build
-	mkdir -p <%= dir %>
+	mkdir -p '<%= dir %>'
 <%- end %>
 
 <%- if @cleanup -%>
