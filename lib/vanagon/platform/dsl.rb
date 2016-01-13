@@ -44,7 +44,7 @@ class Vanagon
                       Vanagon::Platform::Solaris10.new(@name)
                     when /^solaris-11/
                       Vanagon::Platform::Solaris11.new(@name)
-                    when /^win-/
+                    when /^windows-/
                       Vanagon::Platform::Windows.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
