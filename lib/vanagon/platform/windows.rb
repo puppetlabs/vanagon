@@ -84,7 +84,7 @@ class Vanagon
       # @return [String] name of the windows package for this project
       def msi_package_name(project)
         # Decided to use native project version in hope msi versioning doesn't have same resrictions as nuget
-        "#{project.name}-#{@architecture}-#{project.version}.msi"
+        "#{project.name}-#{project.version}.#{project.release}-#{@architecture}.msi"
       end
 
       # Method to derive the package name for the project.
