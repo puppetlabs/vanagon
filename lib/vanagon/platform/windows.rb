@@ -7,7 +7,7 @@ class Vanagon
       # @return [Array] list of commands required to build a windows package for the given project from a tarball
       def generate_package(project)
         # If nothing is passed in as platform type, default to building a nuget package
-        # We should default to building an MSI once that code has been implimented
+        # We should default to building an MSI once that code has been implemented
         case project.platform.package_type
         when "nuget"
           return generate_nuget_package(project)
@@ -22,7 +22,7 @@ class Vanagon
       # @return [String] name of the windows package for this project
       def package_name(project)
         # If nothing is passed in as platform type, default to a nuget package
-        # We should default to an MSI once that code has been implimented
+        # We should default to an MSI once that code has been implemented
         case project.platform.package_type
         when "nuget"
           return nuget_package_name(project)
@@ -159,7 +159,7 @@ class Vanagon
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
       #
-      # Mingw varies on where it is installed based on architecure. We want to use which ever is on the system.
+      # Mingw varies on where it is installed based on architecture. We want to use which ever is on the system.
       #
       # @param name [String] name of the platform
       # @return [Vanagon::Platform::DEB] the win derived platform with the given name
