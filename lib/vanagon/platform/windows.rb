@@ -49,12 +49,11 @@ class Vanagon
       # The specific bits used to generate a windows nuget package for a given project
       # Nexus expects packages to be named #{name}-#{version}.nupkg. However, chocolatey
       # will generate them to be #{name}.#{version}.nupkg. So, we have to rename the
-      # package after we build it. We also take advantage of the rename to sneak the
-      # architecture in the package name. Neither chocolatey nor nexus know how to deal
-      # with architecture, so we are just pretending it's part of the package name.
+      # package after we build it.
       #
       # @param project [Vanagon::Project] project to build a nuget package of
-      # @return [Array] list of commands required to build a nuget package for the given project from a tarball
+      # @return [Array] list of commands required to build a nuget package for
+      # the given project from a tarball
       def generate_nuget_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p output/#{target_dir}",
@@ -68,11 +67,8 @@ class Vanagon
       end
 
       # Method to derive the package name for the project.
-      # Nexus expects packages to be named #{name}-#{version}.nupkg. However, chocolatey
-      # will generate them to be #{name}.#{version}.nupkg. So, we have to rename the
-      # package after we build it. We also take advantage of the rename to sneak the
-      # architecture in the package name. Neither chocolatey nor nexus know how to deal
-      # with architecture, so we are just pretending it's part of the package name.
+      # Neither chocolatey nor nexus know how to deal with architecture, so
+      # we are just pretending it's part of the package name.
       #
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
@@ -162,7 +158,7 @@ class Vanagon
       # Mingw varies on where it is installed based on architecture. We want to use which ever is on the system.
       #
       # @param name [String] name of the platform
-      # @return [Vanagon::Platform::DEB] the win derived platform with the given name
+      # @return [Vanagon::Platform::Windows] the win derived platform with the given name
       def initialize(name)
         @target_user = "Administrator"
         @make = "/usr/bin/make"
