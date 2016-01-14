@@ -7,7 +7,7 @@ class Vanagon
       # @return [Array] list of commands required to build a windows package for the given project from a tarball
       def generate_package(project)
         # If nothing is passed in as platform type, default to building a nuget package
-        # We should default to building an MSI once that code has been implimented
+        # We should default to building an MSI once that code has been implemented
         case project.platform.package_type
         when "nuget"
           return generate_nuget_package(project)
@@ -22,7 +22,7 @@ class Vanagon
       # @return [String] name of the windows package for this project
       def package_name(project)
         # If nothing is passed in as platform type, default to a nuget package
-        # We should default to an MSI once that code has been implimented
+        # We should default to an MSI once that code has been implemented
         case project.platform.package_type
         when "nuget"
           return nuget_package_name(project)
@@ -59,12 +59,12 @@ class Vanagon
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/tools",
-        "cp #{project.name}.nuspec $(tempdir)/#{project.name}/",
-        "cp chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
-        "cp file-list $(tempdir)/#{project.name}/tools/file-list.txt",
+        "#{@copy} #{project.name}.nuspec $(tempdir)/#{project.name}/",
+        "#{@copy} chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
+        "#{@copy} file-list $(tempdir)/#{project.name}/tools/file-list.txt",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name} ; C:/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
-        "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
+        "#{@copy} $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
       # Method to derive the package name for the project.
@@ -159,7 +159,7 @@ class Vanagon
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
       #
-      # Mingw varies on where it is installed based on architecure. We want to use which ever is on the system.
+      # Mingw varies on where it is installed based on architecture. We want to use which ever is on the system.
       #
       # @param name [String] name of the platform
       # @return [Vanagon::Platform::DEB] the win derived platform with the given name
