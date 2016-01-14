@@ -59,12 +59,12 @@ class Vanagon
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/tools",
-        "cp #{project.name}.nuspec $(tempdir)/#{project.name}/",
-        "cp chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
-        "cp file-list $(tempdir)/#{project.name}/tools/file-list.txt",
+        "#{@copy} #{project.name}.nuspec $(tempdir)/#{project.name}/",
+        "#{@copy} chocolateyInstall.ps1 chocolateyUninstall.ps1 $(tempdir)/#{project.name}/tools/",
+        "#{@copy} file-list $(tempdir)/#{project.name}/tools/file-list.txt",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name} ; C:/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
-        "cp $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
+        "#{@copy} $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
       end
 
       # Method to derive the package name for the project.
