@@ -67,14 +67,25 @@ class Vanagon
       end
 
       # The specific bits used to generate a windows msi package for a given project
+      # Have changed this to reflect the overall commands we need to generate the package.
+      # Question - should we break this down into some simpler Make tasks ?
+      # 1. Heat the directory tree to produce the file list
+      # 2. Compile (candle) all the wxs files into wixobj files
+      # 3. Run light to produce the final MSI
       #
       # @param project [Vanagon::Project] project to build a msi package of
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
       def generate_msi_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
+        cg_name = "compfiles"
+        dir_ref = "INSTALLDIR"
+        filters_xslt = ""  # will set this when we have setup erb for xslt file (RE-6236)
+        # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
-        "mkdir -p $(tempdir)/tools",
-        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
+        "mkdir -p $(tempdir)/#{project.name}/staging",
+        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/staging' --strip-components 1 -xf -",
+        # Run the Heat command in a single pass - use the filter.xslt to filter out components for "special" treatment (i.e. services)
+        "cd $(tempdir)/pl-libffi/staging; \"$$WIX/bin/heat.exe\" dir tools -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
         ]
       end
 
@@ -90,6 +101,7 @@ class Vanagon
       # Method to derive the package name for the project.
       # Neither chocolatey nor nexus know how to deal with architecture, so
       # we are just pretending it's part of the package name.
+      #
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
       def nuget_package_name(project)
