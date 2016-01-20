@@ -92,7 +92,7 @@ class Vanagon
         #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
         #   -sreg           - Suppress registry harvesting.
         #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
-        "cd $(tempdir)/pl-libffi/staging; \"$$WIX/bin/heat.exe\" dir tools -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
+        "cd $(tempdir)/#{project.name}; \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
         ]
       end
 
