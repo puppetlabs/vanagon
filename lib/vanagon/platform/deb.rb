@@ -29,7 +29,7 @@ class Vanagon
 
         # Lots of templates here
         ["changelog", "conffiles", "control", "docs", "dirs", "install", "preinst", "postinst", "postrm", "prerm", "rules"].each do |deb_file|
-          erb_file(File.join(VANAGON_ROOT, "templates/deb/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, { :binding => binding })
+          erb_file(File.join(VANAGON_ROOT, "resources/deb/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, { :binding => binding })
         end
 
         # These could be templates, but their content is static, so that seems weird.
