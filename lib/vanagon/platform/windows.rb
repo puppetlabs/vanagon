@@ -83,18 +83,15 @@ class Vanagon
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/staging",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/staging' --strip-components 1 -xf -",
-        # Run the Heat command in a single pass - use the filter.xslt to filter out components for "special" treatment (i.e. services)
+        # Run the Heat command in a single pass
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
         #   dir <directory> - Traverse directory to find all sub-files and directories.
-        #   -v              - verbose
         #   -ke             - Keep Empty directories
-        #   -indent <n>     - Indentation multiple (overrides default of 4)
         #   -cg             - Component Group Name
         #   -gg             - Generate GUIDS now
         #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
         #   -sreg           - Suppress registry harvesting.
         #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
-        #   -out <file>     - Output File
         "cd $(tempdir)/pl-libffi/staging; \"$$WIX/bin/heat.exe\" dir tools -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
         ]
       end
