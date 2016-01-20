@@ -38,11 +38,11 @@ class Vanagon
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
         # templates that do require a name change
-        erb_file(File.join(VANAGON_ROOT, "templates/windows/project.nuspec.erb"), File.join(workdir, "#{name}.nuspec"), false, { :binding => binding })
+        erb_file(File.join(VANAGON_ROOT, "resources/windows/project.nuspec.erb"), File.join(workdir, "#{name}.nuspec"), false, { :binding => binding })
 
-        # templates that don't require a name change
+        # Resources to be moved into place
         ["chocolateyInstall.ps1", "chocolateyUninstall.ps1"].each do |win_file|
-          erb_file(File.join(VANAGON_ROOT, "templates/windows/#{win_file}.erb"), File.join(workdir, win_file), false, { :binding => binding })
+          FileUtils.cp(File.join(VANAGON_ROOT, "resources/windows/#{win_file}"), File.join(workdir, win_file))
         end
       end
 

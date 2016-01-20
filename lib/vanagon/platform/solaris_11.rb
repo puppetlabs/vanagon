@@ -43,7 +43,7 @@ class Vanagon
       def generate_packaging_artifacts(workdir, name, binding)
         target_dir = File.join(workdir, 'packaging')
         FileUtils.mkdir_p(target_dir)
-        erb_file(File.join(VANAGON_ROOT, "templates/solaris/11/p5m.erb"), File.join(target_dir, "#{name}.p5m"), false, { :binding => binding })
+        erb_file(File.join(VANAGON_ROOT, "resources/solaris/11/p5m.erb"), File.join(target_dir, "#{name}.p5m"), false, { :binding => binding })
       end
 
       # Generate the scripts required to add a group to the package generated.

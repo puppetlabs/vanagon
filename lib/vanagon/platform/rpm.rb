@@ -25,7 +25,7 @@ class Vanagon
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
-        erb_file(File.join(VANAGON_ROOT, "templates/rpm/project.spec.erb"), File.join(workdir, "#{name}.spec"), false, { :binding => binding })
+        erb_file(File.join(VANAGON_ROOT, "resources/rpm/project.spec.erb"), File.join(workdir, "#{name}.spec"), false, { :binding => binding })
       end
 
       # Method to derive the package name for the project
