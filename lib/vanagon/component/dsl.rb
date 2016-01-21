@@ -183,6 +183,9 @@ class Vanagon
           @component.service = OpenStruct.new(:name => service_name, :service_command => File.read(service_file).chomp)
           # Return here because there is no file to install, just a string read in
           return
+        when "windows"
+          # Placeholder for Windows
+          return
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end

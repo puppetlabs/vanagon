@@ -6,9 +6,9 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a windows package of
       # @return [Array] list of commands required to build a windows package for the given project from a tarball
       def generate_package(project)
-        # If nothing is passed in as platform type, default to building a nuget package
-        # We should default to building an MSI once that code has been implemented
         case project.platform.package_type
+        when "msi"
+          return generate_msi_package(project)
         when "nuget"
           return generate_nuget_package(project)
         else
@@ -21,9 +21,9 @@ class Vanagon
       # @param project [Vanagon::Project] project to name
       # @return [String] name of the windows package for this project
       def package_name(project)
-        # If nothing is passed in as platform type, default to a nuget package
-        # We should default to an MSI once that code has been implemented
         case project.platform.package_type
+        when "msi"
+          return msi_package_name(project)
         when "nuget"
           return nuget_package_name(project)
         else
@@ -64,6 +64,45 @@ class Vanagon
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/tools' --strip-components 1 -xf -",
         "(cd $(tempdir)/#{project.name} ; C:/ProgramData/chocolatey/bin/choco.exe pack #{project.name}.nuspec)",
         "#{@copy} $(tempdir)/#{project.name}/#{project.name}-#{@architecture}.#{nuget_package_version(project.version, project.release)}.nupkg ./output/#{target_dir}/#{nuget_package_name(project)}"]
+      end
+
+      # The specific bits used to generate a windows msi package for a given project
+      # Have changed this to reflect the overall commands we need to generate the package.
+      # Question - should we break this down into some simpler Make tasks ?
+      # 1. Heat the directory tree to produce the file list
+      # 2. Compile (candle) all the wxs files into wixobj files
+      # 3. Run light to produce the final MSI
+      #
+      # @param project [Vanagon::Project] project to build a msi package of
+      # @return [Array] list of commands required to build an msi package for the given project from a tarball
+      def generate_msi_package(project)
+        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        cg_name = "compfiles"
+        dir_ref = "INSTALLDIR"
+        # Actual array of commands to be written to the Makefile
+        ["mkdir -p output/#{target_dir}",
+        "mkdir -p $(tempdir)/#{project.name}/staging",
+        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/staging' --strip-components 1 -xf -",
+        # Run the Heat command in a single pass
+        # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
+        #   dir <directory> - Traverse directory to find all sub-files and directories.
+        #   -ke             - Keep Empty directories
+        #   -cg             - Component Group Name
+        #   -gg             - Generate GUIDS now
+        #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
+        #   -sreg           - Suppress registry harvesting.
+        #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
+        "cd $(tempdir)/#{project.name}; \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
+        ]
+      end
+
+      # Method to derive the msi (Windows Installer) package name for the project.
+      #
+      # @param project [Vanagon::Project] project to name
+      # @return [String] name of the windows package for this project
+      def msi_package_name(project)
+        # Decided to use native project version in hope msi versioning doesn't have same resrictions as nuget
+        "#{project.name}-#{project.version}.#{project.release}-#{@architecture}.msi"
       end
 
       # Method to derive the package name for the project.
