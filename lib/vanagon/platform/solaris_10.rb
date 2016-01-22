@@ -83,7 +83,7 @@ class Vanagon
         ["pkginfo", "depend", "preinstall", "preremove", "postinstall", "proto"].each do |template|
           target_dir = File.join(workdir, 'packaging')
           FileUtils.mkdir_p(target_dir)
-          erb_file(File.join(VANAGON_ROOT, "templates/solaris/10/#{template}.erb"), File.join(target_dir, template), false, { :binding => binding })
+          erb_file(File.join(VANAGON_ROOT, "resources/solaris/10/#{template}.erb"), File.join(target_dir, template), false, { :binding => binding })
         end
       end
 

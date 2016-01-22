@@ -258,7 +258,7 @@ class Vanagon
     # @param workdir [String] full path to the workdir to send the evaluated template
     # @return [String] full path to the generated Makefile
     def make_makefile(workdir)
-      erb_file(File.join(VANAGON_ROOT, "templates/Makefile.erb"), File.join(workdir, "Makefile"))
+      erb_file(File.join(VANAGON_ROOT, "resources/Makefile.erb"), File.join(workdir, "Makefile"))
     end
 
     # Generates a bill-of-materials and writes the contents to the workdir for use in
