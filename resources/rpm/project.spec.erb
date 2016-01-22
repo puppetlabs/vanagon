@@ -253,7 +253,8 @@ if [ -e %{_localstatedir}/lib/rpm-state/%{name}/upgrade ] ; then
 fi
 <%- end -%>
 
-%files -f %{SOURCE1}
+%files <%- unless get_directories.empty? -%>-f %{SOURCE1}<%- end -%>
+
 <%- unless @bill_of_materials -%>
 %doc bill-of-materials
 <%- end -%>

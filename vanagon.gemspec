@@ -23,6 +23,6 @@ Gem::Specification.new do |gem|
   gem.executables  = ['build', 'ship', 'repo', 'devkit']
 
   # Ensure the gem is built out of versioned files
-  gem.files = Dir['{bin,lib,spec,templates}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
+  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
   gem.test_files = Dir['spec/**/*_spec.rb']
 end
