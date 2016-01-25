@@ -244,7 +244,10 @@ class Vanagon
       # @param target [String] path to the desired symlink
       def link(source, target)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
-        @component.install << "ln -s '#{source}' '#{target}'"
+        # Use a bash conditional to only create the link if it doesn't already point to the correct source.
+        # This allows rerunning the install step to be idempotent, rather than failing because the link
+        # already exists.
+        @component.install << "([[ `readlink '#{target}'` == '#{source}' ]] || ln -s '#{source}' '#{target}')"
         @component.add_file Vanagon::Common::Pathname.file(target)
       end
 

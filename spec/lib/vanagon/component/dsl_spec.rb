@@ -578,7 +578,7 @@ end" }
       comp = Vanagon::Component::DSL.new('link-test', {}, platform)
       comp.link('link-source', '/place/to/put/things')
       expect(comp._component.install).to include("install -d '/place/to/put'")
-      expect(comp._component.install).to include("ln -s 'link-source' '/place/to/put/things'")
+      expect(comp._component.install).to include("([[ `readlink '/place/to/put/things'` == 'link-source' ]] || ln -s 'link-source' '/place/to/put/things')")
     end
   end
 
