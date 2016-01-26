@@ -105,7 +105,7 @@ class Vanagon
             end
           else
             # Extension does not appear to be an archive
-            return nil
+            return ':'
           end
         end
 

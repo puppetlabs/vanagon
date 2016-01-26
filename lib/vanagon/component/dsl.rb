@@ -183,6 +183,9 @@ class Vanagon
           @component.service = OpenStruct.new(:name => service_name, :service_command => File.read(service_file).chomp)
           # Return here because there is no file to install, just a string read in
           return
+        when "windows"
+          # Placeholder for Windows
+          return
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
@@ -207,7 +210,7 @@ class Vanagon
       # @param group  [String] group owner of the file
       def install_file(source, target, mode: '0644', owner: nil, group:  nil)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
-        @component.install << "cp -p '#{source}' '#{target}'"
+        @component.install << "#{@component.platform.copy} -p '#{source}' '#{target}'"
         @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
       end
 

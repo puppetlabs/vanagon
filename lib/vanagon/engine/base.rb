@@ -10,7 +10,7 @@ class Vanagon
         @platform = platform
         @required_attributes = ["ssh_port"]
         @target = target if target
-        @target_user = "root"
+        @target_user = @platform.target_user
       end
 
       # This method is used to obtain a vm to build upon
@@ -57,7 +57,7 @@ class Vanagon
 
       def retrieve_built_artifact
         FileUtils.mkdir_p("output")
-        Vanagon::Utilities.rsync_from("#{@remote_workdir}/output/*", "#{@target_user}@#{@target}", "output", @platform.ssh_port)
+        Vanagon::Utilities.rsync_from("#{@remote_workdir}/output/*", "#{@target_user}@#{@target}", "output/", @platform.ssh_port)
       end
 
       # Ensures that the platform defines the attributes that the engine needs to function.

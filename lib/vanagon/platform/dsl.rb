@@ -7,6 +7,7 @@ require 'vanagon/platform/rpm/eos'
 require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
 require 'vanagon/platform/solaris_11'
+require 'vanagon/platform/windows'
 require 'securerandom'
 require 'uri'
 
@@ -43,6 +44,8 @@ class Vanagon
                       Vanagon::Platform::Solaris10.new(@name)
                     when /^solaris-11/
                       Vanagon::Platform::Solaris11.new(@name)
+                    when /^windows-/
+                      Vanagon::Platform::Windows.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                     end
@@ -95,6 +98,27 @@ class Vanagon
       # @param pkg_type [String] The type of package we are going to build for this platform
       def package_type(pkg_type)
         @platform.package_type = pkg_type
+      end
+
+      # Set the path to find for the platform
+      #
+      # @param find_cmd [String] Full path to the find command for the platform
+      def find(find_cmd)
+        @platform.find = find_cmd
+      end
+
+      # Set the path to sort for the platform
+      #
+      # @param sort_cmd [String] Full path to the sort command for the platform
+      def sort(sort_cmd)
+        @platform.sort = sort_cmd
+      end
+
+      # Set the path to copy for the platform
+      #
+      # @param copy_cmd [String] Full path to the copy command for the platform
+      def copy(copy_cmd)
+        @platform.copy = copy_cmd
       end
 
       # Set the path to rpmbuild for the platform

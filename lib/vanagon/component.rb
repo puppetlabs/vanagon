@@ -109,7 +109,7 @@ class Vanagon
         @source = Vanagon::Component::Source.source(@url, @options, workdir)
         @source.fetch
         @source.verify
-        @extract_with = @source.extract(@platform.tar) if @source.respond_to?(:extract)
+        @extract_with = @source.respond_to?(:extract) ? @source.extract(@platform.tar) : ':'
         @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
         @dirname = @source.dirname
 
@@ -120,6 +120,9 @@ class Vanagon
 
         # If there is no source, we don't want to try to change directories, so we just change to the current directory.
         @dirname = './'
+
+        # If there is no source, there is nothing to do to extract
+        @extract_with = ':'
       end
     end
 

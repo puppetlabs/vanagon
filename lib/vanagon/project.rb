@@ -232,6 +232,11 @@ class Vanagon
       files = ['file-list', 'bill-of-materials']
       files.push get_files.map(&:path)
       files.push get_configfiles.map(&:path)
+      if @platform.is_windows?
+        files.flatten.map { |f| "$$(cygpath --mixed --long-name '#{f}')" }
+      else
+        files.flatten
+      end
     end
 
     # Generate a bill-of-materials: a listing of the components and their
@@ -248,7 +253,7 @@ class Vanagon
     def pack_tarball_command
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
-       %('#{@platform.tar}' -cf - -T #{get_tarball_files.join(" ")} | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
+       %('#{@platform.tar}' -cf - -T "#{get_tarball_files.join('" "')}" | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
        %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
     end
 

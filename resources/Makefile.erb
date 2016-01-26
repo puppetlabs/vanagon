@@ -13,14 +13,14 @@ file-list-before-build:
 <%- if dirnames.empty? -%>
 	touch file-list-before-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %> 2>/dev/null || find <%= dirnames.join(' ') %> -follow 2>/dev/null) | sort | uniq > file-list-before-build
+	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-before-build
 <%- end -%>
 
 file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%- if dirnames.empty? -%>
 	touch file-list-after-build
 <%- else -%>
-	(find -L <%= dirnames.join(' ') %>  2>/dev/null || find <%= dirnames.join(' ') %> -follow 2>/dev/null) | sort | uniq > file-list-after-build
+	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-after-build
 <%- end -%>
 
 <%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
@@ -43,7 +43,7 @@ file-list: file-list-before-build <%= @name %>-project
 
 <%- dirnames.each do |dir| -%>
 <%= dir %>: file-list-before-build
-	mkdir -p <%= dir %>
+	mkdir -p '<%= dir %>'
 <%- end %>
 
 <%- if @cleanup -%>

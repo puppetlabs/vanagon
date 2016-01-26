@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id><%= "#{@name}-#{@platform.architecture}" %></id>
+    <version><%= @platform.nuget_package_version(@version, @release) %></version>
+    <title><%= @name %></title>
+    <authors><%= @vendor.match(/^(.*) <.*>$/)[1] %></authors>
+    <owners><%= @vendor.match(/^(.*) <.*>$/)[1] %></owners>
+    <projectUrl><%= @homepage %></projectUrl>
+    <packageSourceUrl><%= "https://github.com/puppetlabs/#{project}-vanagon" %></packageSourceUrl>
+    <projectSourceUrl><%= "https://github.com/puppetlabs/#{project}" %></projectSourceUrl>
+    <docsUrl><%= @homepage %></docsUrl>
+    <mailingListUrl><%= @homepage %></mailingListUrl>
+    <bugTrackerUrl><%= @homepage %></bugTrackerUrl>
+    <licenseUrl><%= @homepage %></licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+<%= @description %>
+    </description>
+    <summary><%= @description.lines.first.chomp %></summary>
+    <releaseNotes><%= @homepage %></releaseNotes>
+    <copyright><%= @vendor.match(/^(.*) <.*>$/)[1] %></copyright>
+    <tags>puppet configuration management infrastructure automation facter hiera mco mcollective marionette collective</tags>
+    <provides><%= get_replaces.map { |replace| "#{replace.replacement}" }.join(" ") %></provides>
+    <replaces><%= get_replaces.map { |replace| "#{replace.replacement}" }.join(" ") %></replaces>
+  </metadata>
+  <files>
+  <file src="tools\**" target="tools" />
+  </files>
+</package>
+<!-- character encoding: “UTF-8” -->
