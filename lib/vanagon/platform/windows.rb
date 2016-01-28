@@ -32,6 +32,7 @@ class Vanagon
       end
 
       # Method to generate the files required to build a windows package for the project
+      # Both the MSI and nuget generic articfacts are created for simplicity.
       #
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
@@ -55,6 +56,7 @@ class Vanagon
       def generate_msi_packaging_artifacts(workdir, name, binding)
         FileUtils.mkdir_p(File.join(workdir, "wix"))
         erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/service.component.wxs.erb"), File.join(workdir, "wix", "service.#{name}.wxs"), false, { :binding => binding })
+        erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/service-filter.xslt.erb"), File.join(workdir, "wix", "#{name}.service-filter.xslt"), false, { :binding => binding })
       end
 
       # Method to generate the files required to build a nuget package for the project
