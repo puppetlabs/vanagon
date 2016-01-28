@@ -150,7 +150,12 @@ class Vanagon
     # @return [String] The output of the command
     def git(*commands)
       git_bin = find_program_on_path('git')
-      %x(#{git_bin} #{commands.join(' ')})
+      output = %x(#{git_bin} #{commands.join(' ')})
+      if !$?.success?
+        raise %(git #{commands.join(' ')} failed)
+      else
+        return output
+      end
     end
 
     # Determines if the given directory is a git repo or not
