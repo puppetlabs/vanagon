@@ -37,6 +37,32 @@ class Vanagon
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_packaging_artifacts(workdir, name, binding)
+        case @package_type
+        when "msi"
+          return generate_msi_packaging_artifacts(workdir, name, binding)
+        when "nuget"
+          return generate_nuget_packaging_artifacts(workdir, name, binding)
+        else
+          raise Vanagon::Error, "I don't know how create packaging artifacts for package type '#{project.platform.package_type}' for Windows. Teach me?"
+        end
+      end
+
+      # Method to generate the files required to build an MSI  package for the project
+      #
+      # @param workdir [String] working directory to stage the evaluated templates in
+      # @param name [String] name of the project
+      # @param binding [Binding] binding to use in evaluating the packaging templates
+      def generate_msi_packaging_artifacts(workdir, name, binding)
+        FileUtils.mkdir_p(File.join(workdir, "wix"))
+        erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/service.component.wxs.erb"), File.join(workdir, "wix", "service.#{name}.wxs"), false, { :binding => binding })
+      end
+
+      # Method to generate the files required to build a nuget package for the project
+      #
+      # @param workdir [String] working directory to stage the evaluated templates in
+      # @param name [String] name of the project
+      # @param binding [Binding] binding to use in evaluating the packaging templates
+      def generate_nuget_packaging_artifacts(workdir, name, binding)
         # nuget templates that do require a name change
         erb_file(File.join(VANAGON_ROOT, "resources/windows/nuget/project.nuspec.erb"), File.join(workdir, "#{name}.nuspec"), false, { :binding => binding })
 
