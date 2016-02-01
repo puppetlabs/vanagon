@@ -107,8 +107,8 @@ class Vanagon
         dir_ref = "INSTALLDIR"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
-        "mkdir -p $(tempdir)/#{project.name}/staging",
-        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}/staging' --strip-components 1 -xf -",
+        "mkdir -p $(tempdir)/staging",
+        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/staging' --strip-components 1 -xf -",
         # Run the Heat command in a single pass
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
         #   dir <directory> - Traverse directory to find all sub-files and directories.
@@ -118,7 +118,7 @@ class Vanagon
         #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
         #   -sreg           - Suppress registry harvesting.
         #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
-        "cd $(tempdir)/#{project.name}; \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
+        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
         ]
       end
 
