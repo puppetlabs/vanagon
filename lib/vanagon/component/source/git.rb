@@ -27,10 +27,10 @@ class Vanagon
         def fetch
           puts "Cloning ref '#{@ref}' from url '#{@url}'"
           Dir.chdir(@workdir) do
-            git('clone', @url)
+            git("clone #{@url}", true)
             Dir.chdir(dirname) do
-              git('checkout', @ref)
-              git('submodule', 'update', '--init', '--recursive')
+              git("checkout #{@ref}", true)
+              git("submodule update --init --recursive", true)
               @version = git_version
             end
           end
