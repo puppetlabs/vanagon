@@ -146,16 +146,19 @@ class Vanagon
     # Simple wrapper around git command line executes the given commands and
     # returns the results.
     #
-    # @param commands [String] The commands to be run
+    # @param command_string [String] The commands to be run
+    # @param raise_error [boolean] if this function should raise an error
+    #                              on a git failure
     # @return [String] The output of the command
-    def git(*commands)
+    def git(command_string, raise_error = false)
       git_bin = find_program_on_path('git')
-      output = %x(#{git_bin} #{commands.join(' ')})
-      if !$?.success?
-        raise %(git #{commands.join(' ')} failed)
-      else
-        return output
+      output = %x(#{git_bin} #{command_string})
+      if raise_error
+        unless $?.success?
+          raise %(git #{command_string} failed)
+        end
       end
+      return output
     end
 
     # Determines if the given directory is a git repo or not
@@ -164,7 +167,7 @@ class Vanagon
     # @return [true, false] True if the directory is a git repo, false otherwise
     def is_git_repo?(directory = Dir.pwd)
       Dir.chdir(directory) do
-        git('rev-parse', '--git-dir', '> /dev/null 2>&1')
+        git('rev-parse --git-dir > /dev/null 2>&1')
         $?.success?
       end
     end
@@ -178,7 +181,7 @@ class Vanagon
     def git_version(directory = Dir.pwd)
       if is_git_repo?(directory)
         Dir.chdir(directory) do
-          version = git('describe', '--tags', '2> /dev/null').chomp
+          version = git('describe --tags 2> /dev/null').chomp
           if version.empty?
             warn "Directory '#{directory}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
           end
