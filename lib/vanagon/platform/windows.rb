@@ -32,7 +32,6 @@ class Vanagon
       end
 
       # Method to generate the files required to build a windows package for the project
-      # Both the MSI and nuget generic articfacts are created for simplicity.
       #
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
@@ -109,7 +108,8 @@ class Vanagon
         dir_ref = "INSTALLDIR"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
-        "mkdir -p $(tempdir)/staging",
+        "mkdir -p $(tempdir)/{staging,wix}",
+        "#{@copy} -r wix/* $(tempdir)/wix/",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/staging' --strip-components 1 -xf -",
         # Run the Heat command in a single pass
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
@@ -120,7 +120,7 @@ class Vanagon
         #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
         #   -sreg           - Suppress registry harvesting.
         #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
-        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
+        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.service-filter.xslt -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
         ]
       end
 

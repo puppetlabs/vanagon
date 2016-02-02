@@ -13,7 +13,9 @@
   </xsl:template>
 
   <!-- Loop through the list of services and add filters for each component requiring Service type special treatment -->
-  <%- service_files.each do |service| -%>
-    <xsl:template match="wix:Component[wix:File[@Source='<%=  service.path %>']]" />
+  <%- get_services.each do |service| -%>
+
+      <xsl:template match="wix:Component[wix:File[@Source='<%= service.options.first[:file][:source] %>"']]" />
+
   <%- end -%>
 </xsl:stylesheet>
