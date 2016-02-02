@@ -7,6 +7,7 @@ class Vanagon
       # the docker engine to work
       def initialize(platform, target = nil)
         @docker_cmd = Vanagon::Utilities.find_program_on_path('docker')
+        @name = 'docker'
         super
         @required_attributes << "docker_image"
       end

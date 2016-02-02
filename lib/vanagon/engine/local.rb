@@ -10,6 +10,7 @@ class Vanagon
       def initialize(platform, target = nil)
         @platform = platform
         @target = "local machine"
+        @name = 'local'
       end
 
       # Dispatches the command for execution
