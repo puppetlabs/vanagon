@@ -92,7 +92,7 @@ class Vanagon
       puts e.backtrace.join("\n")
       raise e
     ensure
-      if @engine == "hardware"
+      if @engine.name == "hardware"
         @engine.teardown
       end
   end

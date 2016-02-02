@@ -11,6 +11,7 @@ class Vanagon
         @token = load_token
         super
         @required_attributes << "vmpooler_template"
+        @name = 'pooler'
       end
 
       # This method loads the pooler token from one of two locations
