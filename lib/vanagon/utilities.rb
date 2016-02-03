@@ -219,6 +219,7 @@ class Vanagon
       args << " -p #{port} "
       args << " -o UserKnownHostsFile=/dev/null"
       args << " -o StrictHostKeyChecking=no"
+      args << " -o ForwardAgent=yes" if ENV['VANAGON_SSH_AGENT']
       return ssh + args
     end
 

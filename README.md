@@ -106,6 +106,9 @@ A full path on disk for a private ssh key to be used in ssh and rsync
 communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
+##### VANAGON\_SSH\_AGENT
+When set, Vanagon will forward the ssh authentication agent connection. 
+
 ##### VMPOOLER\_TOKEN
 Used in conjunction with the pooler engine, this is a token to pass to the
 vmpooler to access the API. Without this token, the default lifetime of vms

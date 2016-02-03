@@ -117,6 +117,13 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
       expect(Vanagon::Utilities.ssh_command).to include('-o UserKnownHostsFile=/dev/null')
     end
+
+    it 'adds the correct flags to the command if VANAGON_SSH_AGENT is set' do
+      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('ssh').and_return('/tmp/ssh')
+      ENV['VANAGON_SSH_AGENT'] = 'true'
+      expect(Vanagon::Utilities.ssh_command).to include('-o ForwardAgent=yes')
+      ENV['VANAGON_SSH_AGENT'] = nil
+    end
   end
 
   describe '#retry_with_timeout' do
