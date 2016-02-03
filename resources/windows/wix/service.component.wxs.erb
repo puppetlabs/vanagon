@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Fragment>
+  <%- get_services.each do |service| -%>
+    <%- service.options.each do |component| -%>
+    <DirectoryRef Id="<%= component[:directory_ref] %>">
+      <Component Id='<%= component[:id] %>' Guid="<%= component[:guid] %>" <%= "Win64=\"#{component[:win64]}\"" unless component[:win64].nil? %>>
+        <%- unless component[:conditions].nil? -%>
+          <%- component[:conditions].each do |condition| -%>
+        <Condition>
+          <%= condition %>
+        </Condition>
+          <%- end -%>
+        <%- end -%>
+        <File Id="<%= component[:file][:id] %>" KeyPath="yes" Source="<%= component[:file][:source] %>" />
+        <ServiceInstall Id="<%= component[:serviceinstall][:id] %>"
+          Account="[PUPPET_AGENT_ACCOUNT_DOMAIN]\[PUPPET_AGENT_ACCOUNT_USER]"
+          Password="[PUPPET_AGENT_ACCOUNT_PASSWORD]"
+          Description="<%= component[:serviceinstall][:description] %>"
+          DisplayName="<%= component[:serviceinstall][:displayname] %>"
+          Interactive="no"
+          Name="<%= component[:serviceinstall][:name] %>"
+          Start="<%= component[:serviceinstall][:start] %>"
+          Type="ownProcess"
+          ErrorControl="normal"
+          Vital="yes"
+          <%- unless component[:serviceinstall][:arguments].nil? -%>
+          Arguments="<%= component[:serviceinstall][:arguments] %>"
+          <%- end -%>
+        />
+        <%- unless component[:registries].nil? -%>
+        <RegistryKey Root="<%= component[:registries][:root] %>" Key="<%= component[:registries][:key] %>">
+        <%- unless component[:registries][:values].nil? -%>
+          <%- component[:registries][:values].each do |value|  -%>
+          <RegistryValue Name="<%= value[:name] %>" Value="<%= value[:value] %>" Type="<%= value[:type] %>" <%= "Action=\"#{value[:action]}\"" unless value[:action].nil? %> />
+          <%- end -%>
+        <%- end -%>
+        <%- unless component[:registries][:keys].nil? -%>
+          <%- component[:registries][:keys].each do |key| -%>
+          <RegistryKey Key="<%= key[:name] %>">
+            <%- key[:values].each do |value| -%>
+            <RegistryValue <%= "Name=\"#{value[:name]}\"" unless value[:name].nil? %> Value="<%= value[:value] %>" Type="<%= value[:type] %>" />
+            <%- end -%>
+          </RegistryKey>
+          <%- end -%>
+        <%- end -%>
+        </RegistryKey>
+        <%- end -%>
+        <ServiceControl Id="<%= component[:servicecontrol][:id] %>" <%= "Start=\"#{component[:servicecontrol][:start]}\"" unless component[:servicecontrol][:start].nil? %> Stop="both" Remove="uninstall" Name="<%= component[:servicecontrol][:name] %>" Wait="yes" />
+      </Component>
+    </DirectoryRef>
+    <%- end -%>
+  <%- end -%>
+  </Fragment>
+</Wix>
