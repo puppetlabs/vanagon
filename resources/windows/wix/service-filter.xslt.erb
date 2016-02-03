@@ -11,11 +11,15 @@
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-
-  <!-- Loop through the list of services and add filters for each component requiring Service type special treatment -->
+  <!-- Filter out all Service File Executables from the Harvest (heat) run as these are specified in the transformed service.components.wxs file -->
+  <!-- The list of component service files are collected in an array so that a set of unique names can be extracted -->
+  <%- service_files = Array.new -%>
   <%- get_services.each do |service| -%>
-
-      <xsl:template match="wix:Component[wix:File[@Source='<%= service.options.first[:file][:source] %>"']]" />
-
+    <%- service.options.each do |service_option| -%>
+      <%- service_files << service_option[:file][:source] -%>
+    <%- end -%>
+  <%- end -%>
+  <%- service_files.uniq.each do |service_file|  -%>
+        <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
   <%- end -%>
 </xsl:stylesheet>
