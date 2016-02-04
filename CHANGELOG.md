@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-## [0.5.0] - 2015-12-22
+## [0.5.0] - 2016-1-06
 ### Changed
 - Replaced the ERB template based Makefile generation with a procedural
   Makefile backend
