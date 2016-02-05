@@ -5,7 +5,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-## [0.5.0] - 2015-12-22
+
+## [0.5.1] - 2016-2-04
+### Changed
+- Vanagon now assumes anything that is not listed as an archive is just
+  a file, and thus NON-ARCHIVE-EXTENSIONS no longer needs to be updated
+  for new extentions.
+
+### Fixed
+- Builds will halt if any git command fails
+- Hardware engine will release locks on failures
+- Builds no longer fail if things items were in /usr/local on debian
+- on RPM builds, if there are no directories to package builds no longer
+  fail
+- Repeated builds no longer fail due to a symlink issue
+
+### Added
+- Added functionality to enable SSH forwarding in to vanagon pooler hosts
+- Added functionality to build nuget archives
+- Added support for patching gems
+
+## [0.5.0] - 2016-1-06
 ### Changed
 - Replaced the ERB template based Makefile generation with a procedural
   Makefile backend
@@ -149,7 +169,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/puppetlabs/vanagon/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/puppetlabs/vanagon/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/puppetlabs/vanagon/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/puppetlabs/vanagon/compare/0.3.19...0.4.0
