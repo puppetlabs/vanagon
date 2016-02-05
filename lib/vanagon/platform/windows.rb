@@ -120,8 +120,7 @@ class Vanagon
         #   -gg             - Generate GUIDS now
         #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
         #   -sreg           - Suppress registry harvesting.
-        #   -var <variable> - Substitute File/@Source="SourceDir" with a preprocessor or a wix variable
-        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.filter.xslt -sreg -var var.StageDir -out wix/#{project.name}-harvest.wxs",
+        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
         ]
       end
 
