@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:wix="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- https://ahordijk.wordpress.com/2013/03/26/automatically-add-references-and-content-to-the-wix-installer/ -->
+  <!-- http://www.chriskonces.com/using-xslt-with-heat-exe-wix-to-create-windows-service-installs/ -->
+  <xsl:output method="xml" indent="yes" />
+  <!--<xsl:strip-space elements="*"/>-->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  <!-- Filter out all Service File Executables from the Harvest (heat) run as these are specified in the transformed service.components.wxs file -->
+  <!-- The list of component service files are collected in an array so that a set of unique names can be extracted -->
+  <%- service_files = Array.new -%>
+  <%- get_services.each do |service| -%>
+    <%- service.options.each do |service_option| -%>
+      <%- service_files << service_option[:file][:source] -%>
+    <%- end -%>
+  <%- end -%>
+  <%- service_files.uniq.each do |service_file|  -%>
+        <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
+  <%- end -%>
+</xsl:stylesheet>
