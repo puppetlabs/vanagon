@@ -101,7 +101,7 @@ class Vanagon
             when ".tar.gz", ".tgz"
               return "gunzip -c '#{@file}' | '#{tar}' xf -"
             when ".zip"
-              return "unzip '#{@file}'"
+              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, ".zip")}' '#{@file}'"
             end
           else
             # Extension does not appear to be an archive
