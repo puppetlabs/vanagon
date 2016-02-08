@@ -228,6 +228,13 @@ class Vanagon
         @platform.ssh_port = port
       end
 
+      # Set the targetuser to use to connect
+      #
+      # @param type [String] user for the platform ('vagrant' for example)
+      def targetuser(user)
+        @platform.targetuser = user
+      end
+
       # Set the platform_triple for the platform
       #
       # @param triple[String] platform_triple for use in building out compiled
