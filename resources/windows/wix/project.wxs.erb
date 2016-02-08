@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="windows-1252"?>
+  <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <Product
+      Id="*"
+      UpgradeCode="<%= settings[:upgrade_code] %>"
+      Name="<%= settings[:product_name] %>"
+      Language="1033"
+      Codepage="1252"
+      Version="<%= @version.sub(/\.g[0-9a-z]{7}$/, '') %>"
+      Manufacturer="<%= settings[:company_name] %>" >
+
+    <Package
+      InstallerVersion="300"
+      InstallScope="perMachine"
+      Description="<%= "#{settings[:product_word]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
+      Comments="<%= @homepage %>"
+      Compressed="yes"
+      Platform="<%= @platform.architecture %>"
+    />
+
+    <MajorUpgrade AllowDowngrades="yes" />
+    <Media Id="1" Cabinet="<%= settings[:product_word] %>.cab" EmbedCab="yes" CompressionLevel="high" />
+
+    <Feature Id="<%= settings[:product_word] %>Runtime" Title="<%= settings[:product_word] %> Runtime" Level="1">
+      <!-- We can add all components by referencing this one thing -->
+      <ComponentGroupRef Id="ProductComponentGroup" />
+    </Feature>
+
+    <!-- All heat runs and WiX Fragment files containing Component elements will reference this ComponentGroup -->
+    <ComponentGroup Id="ProductComponentGroup" Directory="INSTALLDIR"/>
+
+    <!-- We will use DirectoryRef at the project level to hook in the project directory structure -->
+    <Directory Id='TARGETDIR' Name='SourceDir' >
+      <Component Id="RegistryEntriesArchitectureDependent" Guid="E6D5AF4F-ACC4-4D11-AFCE-299A9ED2152C" Win64="<%= settings[:win64] %>" Permanent="yes">
+        <RegistryKey Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_name] %>" Action="create" >
+          <RegistryValue Type="integer" Value="0"/>
+          <%- if @platform.architecture == "x64" -%>
+          <RegistryValue Name="RememberedInstallDir" Type="string" Value="[INSTALLDIR_X86]" />
+          <RegistryValue Name="RememberedInstallDir64" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
+          <%- else %>
+          <RegistryValue Name="RememberedInstallDir" Type="string" Value="[INSTALLDIR]"  KeyPath="yes" />
+          <%- end -%>
+        </RegistryKey>
+      </Component>
+    </Directory>
+
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLDIR]" After="CostFinalize" />
+    <Property Id="INSTALLDIR">
+      <RegistrySearch Id="RecallInstallDir" Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_word] %>" Name="<%= settings[:RememberedInstallDirRegKey] %>" Type="raw" Win64="<%= settings[:win64] %>" />
+    </Property>
+    <Property Id="INSTALLDIR_X86" >
+      <RegistrySearch Id="RecallInstallDirx86" Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_word] %>" Name="<%= settings[:RememberedInstallDirRegKey] %>" Type="raw" Win64="<%= settings[:win64] %>" />
+    </Property>
+
+    <!-- INSTALLDIR -->
+    <CustomAction Id="SaveCmdLineInstallDir" Property="CMDLINE_INSTALLDIR" Value="[INSTALLDIR]" Execute="firstSequence" />
+    <CustomAction Id="SetFromCmdLineInstallDir" Property="INSTALLDIR" Value="[CMDLINE_INSTALLDIR]" Execute="firstSequence" />
+
+    <InstallUISequence>
+      <!-- INSTALLDIR -->
+      <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <!-- INSTALLDIR -->
+      <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
+      <%- if @platform.architecture == "x86" -%>
+        <Custom Action='Remove64BitPath_SetProp' After='CostFinalize' />
+        <Custom Action='Remove64BitProgramFiles_SetProp' After='CostFinalize' />
+        <Custom Action='Remove64BitProgramFiles' After='InstallFiles'><![CDATA[VersionNT64 >= 100 AND <%= settings[:win64] %> = no AND NOT (&<%= settings[:product_word] %>Runtime = 2)]]></Custom>
+        <Custom Action='Remove64BitPath' After='InstallFiles'><![CDATA[VersionNT64 >= 100 AND <%= settings[:win64] %> = no AND NOT (&<%= settings[:product_word] %>Runtime = 2)]]></Custom>
+      <%- end -%>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
