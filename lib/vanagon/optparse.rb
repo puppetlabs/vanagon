@@ -8,7 +8,7 @@ class Vanagon
         :configdir => ['-c', '--configdir DIR', 'Configs dir (defaults to $pwd/configs)'],
         :target => ['-t HOST', '--target HOST', 'Configure a target machine for build and packaging (defaults to grabbing one from the pooler)'],
         :engine => ['-e ENGINE', '--engine ENGINE', "A custom engine to use (defaults to the pooler) [base, local, docker, pooler currently supported]"],
-        :skipcheck => ['--skipcheck', 'Ship the `check` stage when building components'],
+        :skipcheck => ['--skipcheck', 'Skip the `check` stage when building components'],
         :preserve => ['-p', '--preserve', 'Whether to tear down the VM on success or not (defaults to false)'],
         :verbose => ['-v', '--verbose', 'Verbose output (does nothing)'],
       }
