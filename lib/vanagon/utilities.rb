@@ -269,10 +269,19 @@ class Vanagon
     # @param command [String] command to run on the target
     # @return [true] Returns true if the command was successful
     # @raise [RuntimeError] If the command fails an exception is raised
-    def local_command(command, workdir)
-      puts "Executing '#{command}' locally in #{workdir}"
-      Kernel.system(command, :chdir => workdir)
-      $?.success? or raise "Local command (#{command}) failed."
+    def local_command(command, return_command_output: false)
+      puts "Executing '#{command}' locally"
+      if return_command_output
+        ret = %x(#{command}).chomp
+        if $?.success?
+          return ret
+        else
+          raise "Local command (#{command}) failed."
+        end
+      else
+        Kernel.system(command)
+        $?.success? or raise "Local command (#{command}) failed."
+      end
     end
 
     # Helper method that takes a template file and runs it through ERB
