@@ -1,40 +1,35 @@
+require 'vanagon/engine/base'
 require 'vanagon/utilities'
 require 'vanagon/errors'
-require 'benchmark'
 
 class Vanagon
   class Engine
-    class Local
-      attr_accessor :target
+    class Local < Base
 
       def initialize(platform, target = nil)
-        @platform = platform
-        @target = "local machine"
+        @target = target || "local machine"
         @name = 'local'
+        super
+
+        # We inherit a set of required attributes from Base,
+        # and rather than instantiate a new empty array for
+        # required attributes, we can just clear out the
+        # existing ones.
+        @required_attributes.clear
       end
 
       # Dispatches the command for execution
-      def dispatch(command)
-        puts Benchmark.measure { local_command(command, @workdir) }
-      end
-
-      # Steps needed to tear down or clean up the system after the build is
-      # complete
-      def teardown
-      end
-
-      # This method will take care of validation and target selection all at
-      # once as an easy shorthand to call from the driver
-      def startup(workdir)
-        @workdir = workdir
-        script = @platform.provisioning.join(' && ')
-        dispatch(script)
+      def dispatch(command, return_output = false)
+        Vanagon::Utilities.local_command(command, return_command_output: return_output)
       end
 
       def ship_workdir(workdir)
+        FileUtils.cp_r(Dir.glob("#{workdir}/*"), "#{@remote_workdir}")
       end
 
       def retrieve_built_artifact
+        FileUtils.mkdir_p("output")
+        FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
       end
     end
   end
