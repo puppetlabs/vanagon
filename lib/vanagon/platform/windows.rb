@@ -108,6 +108,9 @@ class Vanagon
         dir_ref = "INSTALLDIR"
         wix_extensions =  "-ext WiXUtilExtension -ext WixUIExtension"
         candle_flags =  "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
+        # Enable verbose mode for the moment (will be removed for production)
+        # localisation flags to be added
+        light_flags = "-v -cultures:en-us #{wix_extensions}"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
           "mkdir -p $(tempdir)/{staging,wix/wixobj}",
@@ -125,6 +128,8 @@ class Vanagon
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) ; done",
+          # run all wix objects through light to produce the msi
+          "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
           ]
       end
 
