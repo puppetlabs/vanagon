@@ -16,7 +16,13 @@ class Vanagon
 
       # Dispatches the command for execution
       def dispatch(command, return_output = false)
-        Vanagon::Utilities.local_command(command, return_command_output: return_output)
+        if defined?(Bundler)
+          Bundler.with_clean_env do
+            Vanagon::Utilities.local_command(command, return_command_output: return_output)
+          end
+        else
+          Vanagon::Utilities.local_command(command, return_command_output: return_output)
+        end
       end
 
       def ship_workdir(workdir)
