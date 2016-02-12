@@ -106,7 +106,8 @@ class Vanagon
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         cg_name = "ProductComponentGroup"
         dir_ref = "INSTALLDIR"
-        candle_flags =  "-dPlatform=#{@architecture} -arch #{@architecture} -ext WiXUtilExtension -ext WixUIExtension"
+        wix_extensions =  "-ext WiXUtilExtension -ext WixUIExtension"
+        candle_flags =  "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
           "mkdir -p $(tempdir)/{staging,wix/wixobj}",
