@@ -109,19 +109,19 @@ class Vanagon
         dir_ref = "INSTALLDIR"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
-        "mkdir -p $(tempdir)/{staging,wix}",
-        "#{@copy} -r wix/* $(tempdir)/wix/",
-        "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/staging' --strip-components 1 -xf -",
-        # Run the Heat command in a single pass
-        # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
-        #   dir <directory> - Traverse directory to find all sub-files and directories.
-        #   -ke             - Keep Empty directories
-        #   -cg             - Component Group Name
-        #   -gg             - Generate GUIDS now
-        #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
-        #   -sreg           - Suppress registry harvesting.
-        "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
-        ]
+          "mkdir -p $(tempdir)/{staging,wix}",
+          "#{@copy} -r wix/* $(tempdir)/wix/",
+          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/staging' --strip-components 1 -xf -",
+          # Run the Heat command in a single pass
+          # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
+          #   dir <directory> - Traverse directory to find all sub-files and directories.
+          #   -ke             - Keep Empty directories
+          #   -cg             - Component Group Name
+          #   -gg             - Generate GUIDS now
+          #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
+          #   -sreg           - Suppress registry harvesting.
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
+          ]
       end
 
       # Method to derive the msi (Windows Installer) package name for the project.
