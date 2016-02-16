@@ -4,6 +4,7 @@ require 'vanagon/component'
 require 'vanagon/utilities'
 require 'vanagon/common'
 require 'vanagon/errors'
+require 'vanagon/windows'
 require 'tmpdir'
 require 'logger'
 
