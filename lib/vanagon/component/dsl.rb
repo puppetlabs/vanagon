@@ -158,8 +158,7 @@ class Vanagon
       # @param default_file [String] path to the default file relative to the source
       # @param service_name [String] name of the service
       # @param service_type [String] type of the service (network, application, system, etc)
-      # @param service_hash [Hash] hash of options to parse for the service
-      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil, service_hash: nil)
+      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil)
         case @component.platform.servicetype
         when "sysv"
           target_service_file = File.join(@component.platform.servicedir, service_name)
@@ -185,7 +184,7 @@ class Vanagon
           # Return here because there is no file to install, just a string read in
           return
         when "windows"
-          @component.service = OpenStruct.new(name: service_name, options: service_hash)
+          # Placeholder for Windows
           return
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
