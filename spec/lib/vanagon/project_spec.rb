@@ -3,6 +3,7 @@ require 'vanagon/driver'
 
 describe 'Vanagon::Project' do
   let(:component) { double(Vanagon::Component) }
+  let(:cur_plat) { Vanagon::Platform::DSL.new('el-7-x86_64') }
   let(:configdir) { '/a/b/c' }
 
   let(:project_block) {
@@ -34,8 +35,12 @@ describe 'Vanagon::Project' do
     it 'returns only the highest level directories' do
       test_sets.each do |set|
         expect(component).to receive(:directories).and_return([])
-        proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+
+
+        cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+        proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform)
         proj.instance_eval(project_block)
+
         set[:directories].each {|dir| proj.directory dir }
         expect(proj._project.get_root_directories.sort).to eq(set[:results].sort)
       end
