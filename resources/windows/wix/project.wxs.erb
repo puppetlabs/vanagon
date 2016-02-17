@@ -12,16 +12,16 @@
     <Package
       InstallerVersion="300"
       InstallScope="perMachine"
-      Description="<%= "#{settings[:product_word]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
+      Description="<%= "#{settings[:product_id]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
       Comments="<%= @homepage %>"
       Compressed="yes"
       Platform="<%= @platform.architecture %>"
     />
 
     <MajorUpgrade AllowDowngrades="yes" />
-    <Media Id="1" Cabinet="<%= settings[:product_word] %>.cab" EmbedCab="yes" CompressionLevel="high" />
+    <Media Id="1" Cabinet="<%= settings[:product_id] %>.cab" EmbedCab="yes" CompressionLevel="high" />
 
-    <Feature Id="<%= settings[:product_word] %>Runtime" Title="<%= settings[:product_word] %> Runtime" Level="1">
+    <Feature Id="<%= settings[:product_id] %>Runtime" Title="<%= settings[:product_id] %> Runtime" Level="1">
       <!-- We can add all components by referencing this one thing -->
       <ComponentGroupRef Id="ProductComponentGroup" />
     </Feature>
