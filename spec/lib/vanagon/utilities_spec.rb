@@ -41,6 +41,17 @@ describe "Vanagon::Utilities" do
     end
   end
 
+  describe '#local_command' do
+    it 'runs commands in an unpolluted environment' do
+      cmd = lambda { |arg| %(echo 'if [ "$#{arg}" = "" ]; then exit 0; else exit 1; fi' | /bin/sh) }
+      vars = %w(BUNDLE_BIN_PATH BUNDLE_GEMFILE)
+      vars.each do |var|
+        Vanagon::Utilities.local_command(cmd.call(var))
+        expect($?.exitstatus).to eq(0)
+      end
+    end
+  end
+
   describe "#is_git_repo?" do
     let(:dir) { Dir.mktmpdir }
     after(:each) { FileUtils.rm_rf(dir) }

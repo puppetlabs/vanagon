@@ -267,13 +267,22 @@ class Vanagon
     # Runs the command on the local host
     #
     # @param command [String] command to run on the target
+    # @param workdir [String] change to directory <workdir> before running <command>
     # @return [true] Returns true if the command was successful
     # @raise [RuntimeError] If the command fails an exception is raised
-    def local_command(command, workdir)
-      puts "Executing '#{command}' locally in #{workdir}"
-      Kernel.system(command, :chdir => workdir)
-      $?.success? or raise "Local command (#{command}) failed."
+    def local_command(command, workdir: Dir.pwd)
+      clean_environment do
+        puts "Executing '#{command}' locally in #{workdir}"
+        Kernel.system(command, chdir: workdir)
+        $?.success? or raise "Local command (#{command}) failed."
+      end
     end
+
+    def clean_environment(&block)
+      return Bundler.with_clean_env { yield } if defined?(Bundler)
+      yield
+    end
+    private :clean_environment
 
     # Helper method that takes a template file and runs it through ERB
     #
