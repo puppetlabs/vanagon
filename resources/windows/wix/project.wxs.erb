@@ -55,16 +55,22 @@
     <!-- INSTALLDIR -->
     <CustomAction Id="SaveCmdLineInstallDir" Property="CMDLINE_INSTALLDIR" Value="[INSTALLDIR]" Execute="firstSequence" />
     <CustomAction Id="SetFromCmdLineInstallDir" Property="INSTALLDIR" Value="[CMDLINE_INSTALLDIR]" Execute="firstSequence" />
+    <%= File.read("resources/windows/CustomActions") if File.exist?("resources/windows/CustomActions") -%>
+    <%- if @platform.architecture == "x86" -%>
+      <%= File.read("resources/windows/x86-CustomActions") if File.exist?("resources/windows/x86-CustomActions") -%>
+    <%- end -%>
 
     <InstallUISequence>
       <!-- INSTALLDIR -->
       <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
       <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
+      <%= File.read("resources/windows/InstallUI-CustomActions") if File.exist?("resources/windows/InstallUI-CustomActions") -%>
     </InstallUISequence>
     <InstallExecuteSequence>
       <!-- INSTALLDIR -->
       <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
       <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
+      <%= File.read("resources/windows/InstallExcecute-CustomActions") if File.exist?("resources/windows/InstallExcecute-CustomActions") -%>
       <%- if @platform.architecture == "x86" -%>
         <Custom Action='Remove64BitPath_SetProp' After='CostFinalize' />
         <Custom Action='Remove64BitProgramFiles_SetProp' After='CostFinalize' />
