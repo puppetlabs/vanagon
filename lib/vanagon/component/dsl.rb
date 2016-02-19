@@ -386,6 +386,10 @@ class Vanagon
         end
         @component.postremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
+
+      def license(license)
+        @component.license = license
+      end
     end
   end
 end
