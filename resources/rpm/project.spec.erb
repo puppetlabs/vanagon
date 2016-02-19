@@ -118,10 +118,10 @@ done
 %pre
 # Save state so we know later if this is an upgrade or an install
 mkdir -p %{_localstatedir}/lib/rpm-state/%{name}
-if [ $1 -eq 1 ] ; then
+if [ "$1" -eq 1 ] ; then
   touch %{_localstatedir}/lib/rpm-state/%{name}/install
 fi
-if [ $1 -eq 2 ] ; then
+if [ "$1" -gt 1 ] ; then
   touch %{_localstatedir}/lib/rpm-state/%{name}/upgrade
 fi
 
@@ -132,12 +132,12 @@ fi
 <%- end -%>
 
 # Run preinstall scripts on install if defined
-if [ $1 -eq 1 ] ; then
+if [ "$1" -eq 1 ] ; then
   <%= get_preinstall_actions("install") %>
 fi
 
 # Run preinstall scripts on upgrade if defined
-if [ $1 -eq 2 ] ; then
+if [ "$1" -gt 1 ] ; then
   <%= get_preinstall_actions("upgrade") %>
 fi
 
@@ -146,13 +146,8 @@ fi
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
 ## EL-4 and AIX RPM don't have %posttrans, so we'll put them here
 # Run postinstall scripts on install if defined
-if [ $1 -eq 1 ] ; then
+if [ "$1" -eq 1 ] ; then
   <%= get_postinstall_actions("install") %>
-fi
-
-# Run postinstall scripts on upgrade if defined
-if [ $1 -eq 2 ] ; then
-  <%= get_postinstall_actions("upgrade") %>
 fi
 <%- end -%>
 <%- get_services.each do |service| -%>
@@ -178,12 +173,12 @@ fi
 
 %postun
 # Run post-uninstall scripts on upgrade if defined
-if [ $1 -eq 1 ] ; then
+if [ "$1" -eq 1 ] ; then
   <%= get_postremove_actions("upgrade") %>
 fi
 
 # Run post-uninstall scripts on removal if defined
-if [ $1 -eq 0 ] ; then
+if [ "$1" -eq 0 ] ; then
   <%= get_postremove_actions("removal") %>
 fi
 
@@ -197,13 +192,17 @@ fi
       %systemd_postun_with_restart <%= service.name %>.service
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
-    if [ $1 -ge 1 ]; then
+    if [ "$1" -eq 1 ]; then
       /sbin/service <%= service.name %> condrestart || :
     fi
   <%- elsif @platform.servicetype == "aix" -%>
-    if  [ $1 -eq 0 ]; then
+    if  [ "$1" -eq 0 ]; then
       /usr/bin/rmssys -s <%= service.name -%> > /dev/null 2>&1 || :
       /usr/sbin/rmitab <%= service.name -%> > /dev/null 2>&1 || :
+    fi
+    # Run postinstall scripts on upgrade if defined
+    if [ "$1" -eq 1 ] ; then
+      <%= get_postinstall_actions("upgrade") %>
     fi
   <%- end -%>
 <%- end -%>
@@ -211,12 +210,12 @@ fi
 
 %preun
 # Run pre-uninstall scripts on upgrade if defined
-if [ $1 -eq 1 ] ; then
+if [ "$1" -eq 1 ] ; then
   <%= get_preremove_actions("upgrade") %>
 fi
 
 # Run pre-uninstall scripts on removal if defined
-if [ $1 -eq 0 ] ; then
+if [ "$1" -eq 0 ] ; then
   <%= get_preremove_actions("removal") %>
 fi
 
@@ -228,12 +227,14 @@ fi
       %systemd_preun <%= service.name %>.service
     <%- end -%>
   <%- elsif @platform.servicetype == "sysv" -%>
-    if [ $1 = 0 ]; then
+    if [ "$1" -eq 0 ]; then
       /sbin/service <%= service.name %> stop >/dev/null 2>&1 || :
       chkconfig --del <%= service.name %> || :
     fi
   <%- elsif @platform.servicetype == "aix" -%>
-    /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
+    if [ "$1" -eq 0 ]; then
+      /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
+    fi
   <%- end -%>
 <%- end -%>
 
