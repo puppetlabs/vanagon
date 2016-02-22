@@ -18,6 +18,11 @@ describe "Vanagon::Platform::Windows" do
     context "on #{plat[:name]} we should behave ourselves" do
       let(:platform) { plat }
       let(:cur_plat) { Vanagon::Platform::DSL.new(plat[:name]) }
+<<<<<<< HEAD
+=======
+      let (:workdir) { "#{WORK_BASE}/workdir" }
+      let (:wixtestfiles) { "spec/fixtures/wix/resources/windows/wix" }
+>>>>>>> 1c3d70e... (RE-6464) Simplify Copy function
 
       before do
         cur_plat.instance_eval(plat[:block])
