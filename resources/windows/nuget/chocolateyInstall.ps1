@@ -23,6 +23,14 @@ foreach ($destination in $lines) {
     # we assume it is an empty directory and simply create one in its place. There is
     # a possibility that this will hide an error where there is actually a missing
     # file. However, this is such a slim possibity, this action was deemed safe.
-    New-Item -ItemType directory -Path "$destination"
+    if (Test-Path -path "$destination") {
+      if (Test-Path -path "$destination" -pathType container) {
+        Write-Debug "Directory '$destination' already exists"
+      } else {
+        Throw "File '$destination' exists and is not a directory, cannot proceed with install"
+      }
+    } else {
+      New-Item -ItemType directory -Path "$destination"
+    }
   }
 }
