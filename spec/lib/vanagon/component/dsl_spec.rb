@@ -5,12 +5,12 @@ require 'json'
 describe 'Vanagon::Component::DSL' do
   let (:component_block) {
 "component 'test-fixture' do |pkg, settings, platform|
-  pkg.load_from_json('spec/fixures/component/test-fixture.json')
+  pkg.load_from_json('spec/fixtures/component/test-fixture.json')
 end" }
 
   let (:invalid_component_block) {
 "component 'test-fixture' do |pkg, settings, platform|
-  pkg.load_from_json('spec/fixures/component/invalid-test-fixture.json')
+  pkg.load_from_json('spec/fixtures/component/invalid-test-fixture.json')
 end" }
 
   let (:dummy_platform_sysv) {
@@ -405,7 +405,7 @@ end" }
 
     it 'reads from a file when the OS is AIX for services' do
       comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_aix)
-      comp.install_service('spec/fixures/component/mcollective.service', nil, 'mcollective')
+      comp.install_service('spec/fixtures/component/mcollective.service', nil, 'mcollective')
       expect(comp._component.service.name).to eq('mcollective')
       expect(comp._component.service.service_command).to include('/opt/puppetlabs/puppet/bin/ruby')
       expect(comp._component.service.service_command).not_to include("\n")
