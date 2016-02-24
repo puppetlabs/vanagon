@@ -117,7 +117,6 @@ class Vanagon
         end
       end
 
-
       # Method to generate the files required to build a nuget package for the project
       #
       # @param workdir [String] working directory to stage the evaluated templates in
