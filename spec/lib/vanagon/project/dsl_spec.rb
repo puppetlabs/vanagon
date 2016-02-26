@@ -1,12 +1,14 @@
 require 'vanagon/project/dsl'
 require 'vanagon/driver'
 require 'vanagon/common'
+require 'vanagon/common'
 
 describe 'Vanagon::Project::DSL' do
   let (:project_block) {
 "project 'test-fixture' do |proj|
 end" }
   let (:configdir) { '/a/b/c' }
+  let(:cur_plat) { Vanagon::Platform::DSL.new('el-7-x86_64')}
 
   describe '#version_from_git' do
     it 'sets the version based on the git describe' do
@@ -21,7 +23,8 @@ end" }
 
   describe '#directory' do
     it 'adds a directory to the list of directories' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform)
       proj.instance_eval(project_block)
       proj.directory('/a/b/c/d', mode: '0755')
       expect(proj._project.directories).to include(Vanagon::Common::Pathname.new('/a/b/c/d', mode: '0755'))

@@ -315,8 +315,12 @@ class Vanagon
       # @param mode [String] octal mode to apply to the directory
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
-      def directory(dir, mode: nil, owner: nil, group: nil)
-        @component.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
+      def directory(dir, mode: nil, owner: nil, group: nil, wix_id: nil)
+        if @component.platform.is_windows?
+          @component.directories << Vanagon::Windows::Pathname.new(dir, mode: mode, owner: owner, group: group, wix_id: wix_id)
+        else
+          @component.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
+        end
       end
 
       # Adds a set of environment overrides to the environment for a component.

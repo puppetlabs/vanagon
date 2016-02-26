@@ -56,6 +56,7 @@ class Vanagon
         FileUtils.mkdir_p(File.join(workdir, "wix"))
         erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/project.wxs.erb"), File.join(workdir, "wix",  "#{name}.wxs"), false, { :binding => binding })
         erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/project.filter.xslt.erb"), File.join(workdir, "wix", "#{name}.filter.xslt"), false, { :binding => binding })
+        erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/directorylist.wxs.erb"), File.join(workdir, "wix", "directorylist.#{name}.wxs"), false, { :binding => binding })
       end
 
       # Method to generate the files required to build a nuget package for the project
@@ -227,6 +228,91 @@ class Vanagon
       # @return [String] relative path to where windows packages should be staged
       def output_dir(target_repo = "")
         File.join("windows", target_repo, @architecture)
+      end
+
+      # Generate correctly formatted wix elements that match the
+      # structure of the directory input
+      #
+      # @param directories, Array of hashes including at least :path
+      # and optionally:
+      # @return [string] correctly formatted wix element string
+      def generate_wix_dirs(project)
+        if project.get_directories.empty?
+          raise Vanagon::Error, 'ERROR No directories specified!'
+        else
+          directories = []
+          project.get_directories.map { |dir| directories.push({ :path => dir.path, :id => dir.wix_id }) }
+
+          root = { :children => [] }
+
+          # iterate over all paths specified and break each one
+          # in to its specific directories. This will generate_wix_dirs
+          # an n-ary tree structure matching the specs from the input
+          directories.each do |dir|
+            # Always start at the beginning
+            curr = root
+            names = strip_path(dir[:path])
+            names.each do |name|
+              #The Id field will default to name, but be overridden later
+              new_obj = { :name => name, :id => name, :children => [] }
+              if (child_index = includes_child(new_obj, curr[:children]))
+                curr = curr[:children][child_index]
+              else
+                curr[:children].push(new_obj)
+                curr = new_obj
+              end
+            end
+            # at this point, curr will be the top dir, override the id if
+            # id exists
+            if dir[:id]
+              curr[:id] = dir[:id]
+            end
+          end
+          return generate_wix_from_graph(root)
+        end
+      end
+
+      # strip and split the directory path into single names
+      # @param [string] path string of directory
+      def strip_path(path)
+        if path.include?("/") || path.include?("\\")
+          # The regex in the last part of this if warrants some
+          # explanation. Specifically it matches any combinations
+          # of any letters, then the : char, then finally either
+          # the char / or the char \. it's menat to parse out drive
+          # roots on windows
+          if path.start_with?("/") || path.start_with?("\\") || path =~ (/([A-Za-z])*\:(\/|\\)/)
+            path = path.sub(/\/|\\|([A-Za-z])*\:(\/|\\)/, '')
+          end
+          names = path.split(/\/|\\/)
+        end
+        return names
+      end
+
+      # Find if child element is the same as one of
+      # the old_children elements, return that child
+      def includes_child(new_child, old_children)
+        old_children.each_with_index do |curr_old_child, index|
+          return index if curr_old_child[:name] == new_child[:name]
+        end unless old_children.empty?
+        return nil
+      end
+
+      # Recursively generate wix element structure
+      #
+      # @param root, the (empty) root of an n-ary tree containing the
+      # structure of directories
+      def generate_wix_from_graph(root)
+        string = ''
+        unless root[:children].empty?
+          root[:children].each do |child|
+            string += ("<Directory Name=\"#{child[:name]}\" Id=\"#{child[:id]}\">\n")
+            string += generate_wix_from_graph(child)
+            string += ("</Directory>\n")
+          end
+          return string
+        end
+        return ''
       end
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor

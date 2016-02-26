@@ -489,6 +489,7 @@ Lint/UnderscorePrefixedVariableName:
 
 Metrics/ParameterLists:
   Enabled: true
+  CountKeywordArgs: false
 
 Lint/RequireParentheses:
   Enabled: true

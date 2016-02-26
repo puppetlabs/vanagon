@@ -1,5 +1,6 @@
 require 'vanagon/component/dsl'
 require 'vanagon/common'
+require 'vanagon/windows'
 require 'json'
 
 describe 'Vanagon::Component::DSL' do
@@ -599,32 +600,39 @@ end" }
   end
 
   describe '#directory' do
+    let(:cur_plat) { Vanagon::Platform::DSL.new('el-7-x86_64')}
+
     it 'adds a directory with the desired path to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      comp = Vanagon::Component::DSL.new('directory-test', {}, cur_plat._platform)
       comp.directory('/a/b/c')
       expect(comp._component.directories).to include(Vanagon::Common::Pathname.new('/a/b/c'))
     end
 
     it 'adds a directory with the desired mode to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      comp = Vanagon::Component::DSL.new('directory-test', {}, cur_plat._platform)
       comp.directory('/a/b/c', mode: '0755')
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0755'))
     end
 
     it 'adds a directory with the desired owner to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      comp = Vanagon::Component::DSL.new('directory-test', {}, cur_plat._platform)
       comp.directory('/a/b/c', owner: 'olivia')
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', owner: 'olivia'))
     end
 
     it 'adds a directory with the desired group to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      comp = Vanagon::Component::DSL.new('directory-test', {}, cur_plat._platform)
       comp.directory('/a/b/c', group: 'release-engineering')
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', group: 'release-engineering'))
     end
 
     it 'adds a directory with the desired attributes to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      cur_plat.instance_eval('platform "el-7-x86_64" do |plat| end')
+      comp = Vanagon::Component::DSL.new('directory-test', {}, cur_plat._platform)
       comp.directory('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering')
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering'))
     end
