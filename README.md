@@ -30,10 +30,10 @@ components, then rebuild the project and test the installed artifacts.
 
 Runtime Requirements
 ---
-Vanagon is self-contained. A recent version of ruby should be all that is
-required. Beyond that, ssh, rsync and git are also required on the host, and
-ssh-server and rsync is required on the target (package installation for the
-target can be customized in the platform config for the target).
+Vanagon is self-contained. A recent version of ruby (2.1 or greater) should be
+all that is required. Beyond that, ssh, rsync and git are also required on the
+host, and ssh-server and rsync is required on the target (package installation
+for the target can be customized in the platform config for the target).
 
 Configuration and Usage
 ---
