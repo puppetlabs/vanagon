@@ -1,1 +1,17 @@
+# Now that there is a gemfile, RVM ignores rvmrc in parent directories, so a local one is required
+# to work around that.  Which we don't want committed, so we can ignore it here.
+/.rvmrc
+
+.bundle/
 Gemfile.lock
+Gemfile.local
+.bundle/
+.rspec
+
+/.project
+.idea/
+.ruby-version
+.ruby-gemset
+
+# emacs backup files
+*~
