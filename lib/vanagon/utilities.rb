@@ -266,15 +266,25 @@ class Vanagon
 
     # Runs the command on the local host
     #
-    # @param command [String] command to run on the target
-    # @param workdir [String] change to directory <workdir> before running <command>
-    # @return [true] Returns true if the command was successful
+    # @param command [String] command to run locally
+    # @param return_command_output [Boolean] whether or not command output should be returned
+    # @return [true, String] Returns true if the command was successful or the
+    #                        output of the command if return_command_output is true
     # @raise [RuntimeError] If the command fails an exception is raised
-    def local_command(command, workdir: Dir.pwd)
+    def local_command(command, return_command_output: false)
       clean_environment do
-        puts "Executing '#{command}' locally in #{workdir}"
-        Kernel.system(command, chdir: workdir)
-        $?.success? or raise "Local command (#{command}) failed."
+        puts "Executing '#{command}' locally"
+        if return_command_output
+          ret = %x(#{command}).chomp
+          if $?.success?
+            return ret
+          else
+            raise "Local command (#{command}) failed."
+          end
+        else
+          Kernel.system(command)
+          $?.success? or raise "Local command (#{command}) failed."
+        end
       end
     end
 
