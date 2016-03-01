@@ -4,7 +4,11 @@ require 'vanagon/platform'
 require 'logger'
 
 # Haus, I added this, cause it prevented errors.
-@@logger = Logger.new('/dev/null')
+class Vanagon
+  class Driver
+    @@logger = Logger.new('/dev/null')
+  end
+end
 
 describe 'Vanagon::Engine::Hardware' do
 
