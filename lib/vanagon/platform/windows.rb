@@ -6,7 +6,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a windows package of
       # @return [Array] list of commands required to build a windows package for the given project from a tarball
       def generate_package(project)
-        case project.platform.package_type
+        case @package_type
         when "msi"
           return generate_msi_package(project)
         when "nuget"
@@ -53,9 +53,57 @@ class Vanagon
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
       def generate_msi_packaging_artifacts(workdir, name, binding)
-        FileUtils.mkdir_p(File.join(workdir, "wix"))
-        erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/project.wxs.erb"), File.join(workdir, "wix",  "#{name}.wxs"), false, { :binding => binding })
-        erb_file(File.join(VANAGON_ROOT, "resources/windows/wix/project.filter.xslt.erb"), File.join(workdir, "wix", "#{name}.filter.xslt"), false, { :binding => binding })
+        # Copy the project specific files first
+        copy_from_project("./resources/windows/wix", workdir)
+        merge_defaults_from_vanagon(File.join(VANAGON_ROOT, "resources/windows/wix"), "#{workdir}/wix")
+        process_templates("#{workdir}/wix", binding)
+      end
+
+      # Method to recursively copy from a source project resource directory
+      # to a destination (wix) work directory.
+      # strongly suspect the original cp_r command would have done all of this.
+      #
+      # @param proj_resources [String] Project Resource File directory
+      # @param destination [String] Destination directory
+      # @param verbose [String] True or false
+
+      def copy_from_project(proj_resources, destination, verbose: false)
+        FileUtils.cp_r(proj_resources, destination, :verbose => verbose)
+      end
+
+      # Method to merge in the files from the Vanagon (generic) directories.
+      # Project Specific files take precedence, so since these are copied prior
+      # to this function, then this merge operation will ignore existing files
+      #
+      # @param vanagon_root [String] Vanagon wix resources directory
+      # @param destination [String] Destination directory
+      # @param verbose [String] True or false
+
+      def merge_defaults_from_vanagon(vanagon_root, destination, verbose: false)
+        vanagon_path = Pathname.new(vanagon_root)
+        files = Dir.glob(File.join(vanagon_root, "**/*.*"))
+        files.each do |file|
+          src_pathname = Pathname.new(file).dirname
+          dest_pathname = src_pathname.relative_path_from(vanagon_path)
+          target_dir = File.join(destination, dest_pathname.to_s)
+          FileUtils.mkdir_p(target_dir) unless File.exists?(target_dir)
+          next if File.exists?(Pathname.new(target_dir) + File.basename(file))
+          next if File.exists?(Pathname.new(target_dir) + File.basename(file, ".erb"))
+          FileUtils.cp(file, target_dir, :verbose => verbose)
+        end
+      end
+
+      # Method to generate the files required to build a nuget package for the project
+      #
+      # @param workdir [String] working directory to stage the evaluated templates in
+      # @param binding [Binding] binding to use in evaluating the packaging templates
+
+      def process_templates(wixworkdir, binding)
+        files = Dir.glob(File.join(wixworkdir, "**/*.erb"))
+        files.each do |file|
+          erb_file(file, File.join(File.dirname(file), File.basename(file, ".erb")), false, { :binding => binding })
+          FileUtils.rm (file)
+        end
       end
 
       # Method to generate the files required to build a nuget package for the project
@@ -124,7 +172,7 @@ class Vanagon
           #   -gg             - Generate GUIDS now
           #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
           #   -sreg           - Suppress registry harvesting.
-          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/#{project.name}.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/project.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) ; done",
