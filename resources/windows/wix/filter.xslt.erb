@@ -15,11 +15,9 @@
   <!-- The list of component service files are collected in an array so that a set of unique names can be extracted -->
   <%- service_files = Array.new -%>
   <%- get_services.each do |service| -%>
-    <%- service.options.each do |service_option| -%>
-      <%- service_files << service_option[:file][:source] -%>
-    <%- end -%>
+    <%- service_files << service.service_file -%>
   <%- end -%>
   <%- service_files.uniq.each do |service_file|  -%>
-        <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
+    <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
   <%- end -%>
 </xsl:stylesheet>

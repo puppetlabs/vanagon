@@ -184,7 +184,8 @@ class Vanagon
           # Return here because there is no file to install, just a string read in
           return
         when "windows"
-          # Placeholder for Windows
+          @component.service = OpenStruct.new(:name => service_name, :service_file => service_file)
+          # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
         else
           fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."

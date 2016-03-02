@@ -183,7 +183,7 @@ class Vanagon
           #   -gg             - Generate GUIDS now
           #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
           #   -sreg           - Suppress registry harvesting.
-          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/project.filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) ; done",
