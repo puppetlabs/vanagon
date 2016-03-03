@@ -164,7 +164,6 @@ class Vanagon
       def generate_msi_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         cg_name = "ProductComponentGroup"
-        dir_ref = "INSTALLDIR"
         wix_extensions =  "-ext WiXUtilExtension -ext WixUIExtension"
         candle_flags =  "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
         # Enable verbose mode for the moment (will be removed for production)
@@ -172,23 +171,25 @@ class Vanagon
         light_flags = "-v -cultures:en-us #{wix_extensions}"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
-          "mkdir -p $(tempdir)/{staging,wix/wixobj}",
+          "mkdir -p $(tempdir)/{SourceDir,wix/wixobj}",
           "#{@copy} -r wix/* $(tempdir)/wix/",
-          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/staging' --strip-components 1 -xf -",
+          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
           # Run the Heat command in a single pass
           # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
           #   dir <directory> - Traverse directory to find all sub-files and directories.
           #   -ke             - Keep Empty directories
           #   -cg             - Component Group Name
           #   -gg             - Generate GUIDS now
-          #   -dr             - Directory reference to root directories (cannot contains spaces e.g. -dr MyAppDirRef)
+          #   -srd            - Suppress root element generation, we want to reference the default root element
+          #                     TARGETDIR in the project.wxs file, not a newly generated one.
           #   -sreg           - Suppress registry harvesting.
-          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir staging -v -ke -indent 2 -cg #{cg_name} -gg -dr #{dir_ref} -t wix/filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir SourceDir -v -ke -indent 2 -cg #{cg_name} -gg -srd -t wix/filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) ; done",
           # run all wix objects through light to produce the msi
-          "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
+          # the -b flag simply points light to where the SourceDir location is
+          "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
           ]
       end
 
