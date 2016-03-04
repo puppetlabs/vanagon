@@ -12,16 +12,16 @@
     <Package
       InstallerVersion="300"
       InstallScope="perMachine"
-      Description="<%= "#{settings[:product_word]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
+      Description="<%= "#{settings[:product_id]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
       Comments="<%= @homepage %>"
       Compressed="yes"
       Platform="<%= @platform.architecture %>"
     />
 
     <MajorUpgrade AllowDowngrades="yes" />
-    <Media Id="1" Cabinet="<%= settings[:product_word] %>.cab" EmbedCab="yes" CompressionLevel="high" />
+    <Media Id="1" Cabinet="<%= settings[:product_id] %>.cab" EmbedCab="yes" CompressionLevel="high" />
 
-    <Feature Id="<%= settings[:product_word] %>Runtime" Title="<%= settings[:product_word] %> Runtime" Level="1">
+    <Feature Id="<%= settings[:product_id] %>Runtime" Title="<%= settings[:product_id] %> Runtime" Level="1">
       <!-- We can add all components by referencing this one thing -->
       <ComponentGroupRef Id="ProductComponentGroup" />
     </Feature>
@@ -41,33 +41,5 @@
       </Component>
     </Directory>
 
-    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLDIR]" After="CostFinalize" />
-    <Property Id="INSTALLDIR">
-      <RegistrySearch Id="RecallInstallDir" Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_word] %>" Name="<%= settings[:RememberedInstallDirRegKey] %>" Type="raw" Win64="<%= settings[:win64] %>" />
-    </Property>
-    <Property Id="INSTALLDIR_X86" >
-      <RegistrySearch Id="RecallInstallDirx86" Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_word] %>" Name="<%= settings[:RememberedInstallDirRegKey] %>" Type="raw" Win64="<%= settings[:win64] %>" />
-    </Property>
-
-    <!-- INSTALLDIR -->
-    <CustomAction Id="SaveCmdLineInstallDir" Property="CMDLINE_INSTALLDIR" Value="[INSTALLDIR]" Execute="firstSequence" />
-    <CustomAction Id="SetFromCmdLineInstallDir" Property="INSTALLDIR" Value="[CMDLINE_INSTALLDIR]" Execute="firstSequence" />
-
-    <InstallUISequence>
-      <!-- INSTALLDIR -->
-      <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
-      <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
-    </InstallUISequence>
-    <InstallExecuteSequence>
-      <!-- INSTALLDIR -->
-      <Custom Action='SaveCmdLineInstallDir' Before='AppSearch' />
-      <Custom Action='SetFromCmdLineInstallDir' After='AppSearch'>CMDLINE_INSTALLDIR</Custom>
-      <%- if @platform.architecture == "x86" -%>
-        <Custom Action='Remove64BitPath_SetProp' After='CostFinalize' />
-        <Custom Action='Remove64BitProgramFiles_SetProp' After='CostFinalize' />
-        <Custom Action='Remove64BitProgramFiles' After='InstallFiles'><![CDATA[VersionNT64 >= 100 AND <%= settings[:win64] %> = no AND NOT (&<%= settings[:product_word] %>Runtime = 2)]]></Custom>
-        <Custom Action='Remove64BitPath' After='InstallFiles'><![CDATA[VersionNT64 >= 100 AND <%= settings[:win64] %> = no AND NOT (&<%= settings[:product_word] %>Runtime = 2)]]></Custom>
-      <%- end -%>
-    </InstallExecuteSequence>
   </Product>
 </Wix>
