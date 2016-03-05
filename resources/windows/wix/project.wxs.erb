@@ -25,21 +25,8 @@
       <!-- We can add all components by referencing this one thing -->
       <ComponentGroupRef Id="ProductComponentGroup" />
     </Feature>
-
     <!-- We will use DirectoryRef at the project level to hook in the project directory structure -->
-    <Directory Id='TARGETDIR' Name='SourceDir' >
-      <Component Id="RegistryEntriesArchitectureDependent" Guid="E6D5AF4F-ACC4-4D11-AFCE-299A9ED2152C" Win64="<%= settings[:win64] %>" Permanent="yes">
-        <RegistryKey Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_name] %>" ForceCreateOnInstall="yes" >
-          <RegistryValue Type="integer" Value="0"/>
-          <%- if @platform.architecture == "x64" -%>
-          <RegistryValue Name="RememberedInstallDir" Type="string" Value="[INSTALLDIR_X86]" />
-          <RegistryValue Name="RememberedInstallDir64" Type="string" Value="[INSTALLDIR]" KeyPath="yes" />
-          <%- else %>
-          <RegistryValue Name="RememberedInstallDir" Type="string" Value="[INSTALLDIR]"  KeyPath="yes" />
-          <%- end -%>
-        </RegistryKey>
-      </Component>
-    </Directory>
+    <Directory Id='TARGETDIR' Name='SourceDir' />
 
   </Product>
 </Wix>
