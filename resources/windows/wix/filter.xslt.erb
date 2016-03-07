@@ -17,7 +17,7 @@
   <%- get_services.each do |service| -%>
     <%- service_files << service.service_file -%>
   <%- end -%>
-  <%- service_files.uniq.each do |service_file|  -%>
+  <%- service_files.uniq.each do |service_file| -%>
     <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
   <%- end -%>
 </xsl:stylesheet>
