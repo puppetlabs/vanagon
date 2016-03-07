@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Fragment>
-    <ComponentGroupRef Id="ProductComponentGroup">
-      <Directoryref Id='TARGETDIR' Name='SourceDir' >
-        <Component Id="RegistryEntriesArchitectureDependent" Guid="E6D5AF4F-ACC4-4D11-AFCE-299A9ED2152C" Win64="<%= settings[:win64] %>" Permanent="yes">
+    <ComponentGroup Id="RegistryComponentGroup">
+        <Component Id="RegistryEntriesArchitectureDependent" Directory="TARGETDIR" Guid="E6D5AF4F-ACC4-4D11-AFCE-299A9ED2152C" Win64="<%= settings[:win64] %>" Permanent="yes">
           <RegistryKey Root="HKLM" Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_name] %>" ForceCreateOnInstall="yes" >
             <RegistryValue Type="integer" Value="0"/>
             <%- if @platform.architecture == "x64" -%>
@@ -14,7 +13,6 @@
             <%- end -%>
           </RegistryKey>
         </Component>
-      </DirectoryRef>
-    </ComponentGroupRef>
+    </ComponentGroup>
   </Fragment>
 </Wix>
