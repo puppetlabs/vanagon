@@ -186,7 +186,7 @@ class Vanagon
           "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir SourceDir -v -ke -indent 2 -cg #{cg_name} -gg -srd -t wix/filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
-          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) ; done",
+          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) || exit 1; done",
           # run all wix objects through light to produce the msi
           # the -b flag simply points light to where the SourceDir location is
           "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
