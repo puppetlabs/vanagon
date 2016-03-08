@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.5.2] - 2016-3-08
+### Fixed
+- Vanagon no longer fails if the destination path already exists
+- "gem install" no longer fails when bundler is in use due to a polluted
+  environment
+
+### Added
+- If rspec is called with '--require spec_helper' as an option, a helper
+  will swallow output of $stdout and $stderr
+
 ## [0.5.1] - 2016-2-04
 ### Changed
 - Vanagon now assumes anything that is not listed as an archive is just
@@ -169,7 +179,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.2...HEAD
+[0.5.2]: https://github.com/puppetlabs/vanagon/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/puppetlabs/vanagon/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/puppetlabs/vanagon/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/puppetlabs/vanagon/compare/0.4.0...0.4.1
