@@ -76,14 +76,17 @@ class Vanagon
       @engine.startup(@workdir)
 
       puts "Target is #{@engine.target}"
-
-      install_build_dependencies
+      Vanagon::Utilities.retry_with_timeout(3, 3600) do
+        install_build_dependencies
+      end
       @project.fetch_sources(@workdir)
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
-      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      Vanagon::Utilities.retry_with_timeout(3, 3600) do
+        @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      end
       @engine.retrieve_built_artifact
       @engine.teardown unless @preserve
       cleanup_workdir unless @preserve
@@ -95,7 +98,7 @@ class Vanagon
       if @engine.name == "hardware"
         @engine.teardown
       end
-  end
+    end
 
     def prepare(workdir = nil)
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
