@@ -184,7 +184,11 @@ class Vanagon
           # Return here because there is no file to install, just a string read in
           return
         when "windows"
-          @component.service = OpenStruct.new(:id => "#{service_name.gsub(/[^A-Za-z0-9]/, '').upcase}", :service_file => service_file)
+          @component.service = OpenStruct.new(\
+            :bindir_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '').upcase}BINDIR", \
+            :service_file => service_file, \
+            :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Components"\
+          )
           # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
         else

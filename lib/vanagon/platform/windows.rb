@@ -297,7 +297,7 @@ class Vanagon
       # @return [string] correctly formatted wix element string
       def generate_wix_dirs(services)
         directories = []
-        services.map { |svc| directories.push({ :path => svc.service_file, :id => "#{svc.id}BINDIR" }) }
+        services.map { |svc| directories.push({ :path => svc.service_file, :bindir_id => svc.bindir_id }) }
         # root refers to the root of an n-ary tree (which we are about to make)
         root = { :children => [] }
         # iterate over all paths specified and break each one
@@ -315,7 +315,7 @@ class Vanagon
           end
           # at this point, curr will be the top dir, override the id if
           # id exists
-          curr[:bindir_ids].push(dir[:id])
+          curr[:bindir_ids].push(dir[:bindir_id])
         end
         return generate_wix_from_graph(root)
       end
