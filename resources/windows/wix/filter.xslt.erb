@@ -13,9 +13,15 @@
   </xsl:template>
   <!-- Filter out all Service File Executables from the Harvest (heat) run as these are specified in the transformed service.components.wxs file -->
   <!-- The list of component service files are collected in an array so that a set of unique names can be extracted -->
+  <!-- we have to substitue the SourceDir\\etc. etc. for $(var.ProjectSourcePath) in order to facilitate heat -->
+  <!--   being run in two different places, specifically it no longer runs from SourceDir so we needed to pass -->
+  <!--   in ProjectSourcePath to the heat runs. Thus when this filter does its work the source attribute will -->
+  <!--   look like $(var.ProjectSourcePath)/puppet/bin/rubyw.exe for example, not  -->
+  <!--   SourceDir/Program64FilesFolder/Puppet/puppet/bin/ruby.exe -->
   <%- service_files = Array.new -%>
   <%- get_services.each do |service| -%>
-    <%- service_files << service.service_file -%>
+
+    <%- service_files << service.service_file.sub("SourceDir\\#{self.settings[:base_dir]}\\#{self.settings[:company_id]}\\#{self.settings[:product_id]}", "$(var.AppSourcePath)") -%>
   <%- end -%>
   <%- service_files.uniq.each do |service_file| -%>
     <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />

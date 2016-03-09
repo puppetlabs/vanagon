@@ -17,7 +17,7 @@
       Compressed="yes"
       Platform="<%= @platform.architecture %>" />
 
-      <!--  We are discussing a MAINT PR to move the componentfilegroup to seperate file 
+      <!--  We are discussing a MAINT PR to move the componentfilegroup to seperate file
             This would allow project to specify additional fragments if needed -->
 
     <MajorUpgrade AllowDowngrades="yes" />
@@ -25,7 +25,8 @@
 
     <Feature Id="<%= settings[:product_id] %>Runtime" Title="<%= settings[:product_id] %> Runtime" Level="1">
       <!-- We can add all components by referencing this one thing -->
-      <ComponentGroupRef Id="ProductComponentGroup" />
+      <ComponentGroupRef Id="AppComponentGroup" />
+      <ComponentGroupRef Id="AppDataComponentGroup" />
       <ComponentGroupRef Id="RegistryComponentGroup" />
       <%- get_services.each do |service| -%>
       <ComponentGroupRef Id="<%= service.component_group_id %>" />
