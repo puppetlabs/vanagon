@@ -15,8 +15,10 @@
       Description="<%= "#{settings[:product_id]}#{@platform.architecture == "x64" ? " (64-bit)" : ""}" %> Installer"
       Comments="<%= @homepage %>"
       Compressed="yes"
-      Platform="<%= @platform.architecture %>"
-    />
+      Platform="<%= @platform.architecture %>" />
+
+      <!--  We are discussing a MAINT PR to move the componentfilegroup to seperate file 
+            This would allow project to specify additional fragments if needed -->
 
     <MajorUpgrade AllowDowngrades="yes" />
     <Media Id="1" Cabinet="<%= settings[:product_id] %>.cab" EmbedCab="yes" CompressionLevel="high" />
@@ -28,6 +30,10 @@
       <%- get_services.each do |service| -%>
       <ComponentGroupRef Id="<%= service.component_group_id %>" />
       <%- end -%>
+      <!-- All of these Include refs are expected to be present -->
+      <ComponentGroupRef Id="FragmentProperties" />
+      <ComponentGroupRef Id="FragmentSequences" />
+      <ComponentGroupRef Id="FragmentCustomActions" />
     </Feature>
     <!-- We will use DirectoryRef at the project level to hook in the project directory structure -->
     <Directory Id='TARGETDIR' Name='SourceDir' />
