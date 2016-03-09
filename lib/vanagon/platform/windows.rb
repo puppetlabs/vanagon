@@ -289,6 +289,105 @@ class Vanagon
         File.join("windows", target_repo, @architecture)
       end
 
+      # Generate correctly formatted wix elements that match the
+      # structure of the directory input
+      #
+      # @param services, Array of components services
+      # and optionally:
+      # @return [string] correctly formatted wix element string
+      def generate_wix_dirs(services)
+        directories = []
+        services.map { |svc| directories.push({ :path => svc.service_file, :id => "#{svc.id}BINDIR" }) }
+        # root refers to the root of an n-ary tree (which we are about to make)
+        root = { :children => [] }
+        # iterate over all paths specified and break each one
+        # in to its specific directories. This will generate_wix_dirs
+        # an n-ary tree structure matching the specs from the input
+        directories.each do |dir|
+          # Always start at the beginning
+          curr = root
+          names = strip_path(dir[:path])
+          # The last entry in this list will be the actual file,
+          # which we do not want, we only want it's base path
+          names.pop
+          names.each do |name|
+            curr = insert_child(curr, name)
+          end
+          # at this point, curr will be the top dir, override the id if
+          # id exists
+          curr[:bindir_ids].push(dir[:id])
+        end
+        return generate_wix_from_graph(root)
+      end
+
+      # insert a new object with the name "name" if it doesn't already
+      # exist. Then assign curr to either the new child or the one that
+      # already exists here
+      #
+      # @param [HASH] curr, current object we are on
+      # @param [string] name, name of new object we are to search for and
+      #                 create if necessary
+      def insert_child(curr, name)
+        #The Id field will default to name, but be overridden later
+        new_obj = { :name => name, :id => name, :bindir_ids => [], :children => [] }
+        if (child_index = includes_child(new_obj, curr[:children]))
+          curr = curr[:children][child_index]
+        else
+          curr[:children].push(new_obj)
+          curr = new_obj
+        end
+        return curr
+      end
+
+      # strip and split the directory path into single names
+      # @param [string] path string of directory
+      def strip_path(path)
+        if path.include?("/") || path.include?("\\")
+          # The regex in the last part of this if warrants some
+          # explanation. Specifically it matches any combinations
+          # of any letters, then the : char, then finally either
+          # the char / or the char \. it's meant to parse out drive
+          # roots on windows
+          if path.start_with?("/") || path.start_with?("\\") || path.start_with?("SourceDir") || path =~ (/([A-Za-z])*\:(\/|\\)/)
+            path = path.sub(/\/|\\|([A-Za-z])*\:(\/|\\)|(\/|\\)?(SourceDir)(\/|\\)?/, '')
+          end
+          names = path.split(/\/|\\/)
+        end
+        return names
+      end
+
+      # Find if child element is the same as one of
+      # the old_children elements, return that child
+      def includes_child(new_child, old_children)
+        old_children.each_with_index do |curr_old_child, index|
+          return index if curr_old_child[:name] == new_child[:name]
+        end unless old_children.empty?
+        return nil
+      end
+
+
+      # Recursively generate wix element structure
+      #
+      # @param root, the (empty) root of an n-ary tree containing the
+      # structure of directories
+      def generate_wix_from_graph(root)
+        string = ''
+        unless root[:children].empty?
+          root[:children].each do |child|
+            string += ("<Directory Name=\"#{child[:name]}\" Id=\"#{child[:id]}\">\n")
+            unless child[:bindir_ids].empty?
+              child[:bindir_ids].each do |bindir_id|
+                string += ("<Directory Id=\"#{bindir_id}\" />\n")
+              end
+            end
+            string += generate_wix_from_graph(child)
+            string += ("</Directory>\n")
+          end
+          return string
+        end
+        return ''
+      end
+
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
       #
       # Mingw varies on where it is installed based on architecture. We want to use which ever is on the system.
