@@ -53,8 +53,11 @@ set name=org.opensolaris.smf.fmri <%= get_services.map {|service| "value=svc:/#{
 <%- end -%>
 
 <%- get_configfiles.each do |config| -%>
-# Preserve the old conf file on upgrade
+# Preserve the old conf file on upgrade, restart services on config file change
 <transform file path=<%= strip_and_escape(config.path) %>$ -> add preserve renamenew>
+  <%- get_services.each do |service| -%>
+    <transform file path=<%= strip_and_escape(config.path) %>$ -> add restart_fmri <%= "svc:/#{service.name}:*" %> >
+  <%- end -%>
 <%- end -%>
 
 # Set any required owner, group or mode transformations
