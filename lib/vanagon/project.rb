@@ -101,6 +101,22 @@ class Vanagon
       replaces.flatten.uniq
     end
 
+    # Grabs a specific service based on which name is passed in
+    # note that if the name is wrong or there was no
+    # @component.install_service call in the component, this
+    # will return nil
+    #
+    # @param [string] name of service to grab
+    # @return [@component.service obj] specific service
+    def get_service(name)
+      @components.each do |component|
+        if component.name == name
+          return component.service
+        end
+      end
+      return nil
+    end
+
     # Collects all of the provides for the project and its components
     #
     # @return [Array] array of package level provides for the project
