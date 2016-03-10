@@ -187,7 +187,7 @@ class Vanagon
           @component.service = OpenStruct.new(\
             :bindir_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '').upcase}BINDIR", \
             :service_file => service_file, \
-            :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Components"\
+            :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Component"\
           )
           # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
