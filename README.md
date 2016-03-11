@@ -182,10 +182,12 @@ wheezy and build my project against it.
 For more detailed examples of the DSLs available, please see the
 [examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
 
-Maintainers
+## Maintainers
 ---
 The Release Engineering team at Puppet Labs
 
-Support
----
-Please log tickets and issues at our [Issue Tracker](https://tickets.puppetlabs.com/browse/CPR). In addition there is an active #puppet-dev channel on Freenode.
+Maintainer: Michael Stahnke <stahnma@puppetlabs.com>
+
+Please log tickets and issues at our [Issue Tracker](https://tickets.puppetlabs.com/browse/CPR). Set compononent to Vanagon.
+
+In addition there is an active #puppet-dev channel on Freenode.
