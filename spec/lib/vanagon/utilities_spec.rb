@@ -154,5 +154,9 @@ describe "Vanagon::Utilities" do
       expect(Vanagon::Utilities).to receive(:remote_ssh_command).with(host, command, port).exactly(1).times.and_return(true)
       expect(Vanagon::Utilities.retry_with_timeout(tries, timeout) { Vanagon::Utilities.remote_ssh_command(host, command, port) }).to be(true)
     end
+
+    it 'raises a Vanagon::Error if the command times out' do
+      expect{ Vanagon::Utilities.retry_with_timeout(tries, timeout) { sleep 5 }.to raise_error(Vanagon::Error) }
+    end
   end
 end
