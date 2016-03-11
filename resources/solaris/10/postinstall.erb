@@ -35,3 +35,8 @@ fi
     fi
   <%- end -%>
 <%- end -%>
+
+<%- get_services.each do |service| -%>
+  # Restarting service <%= service.name %>
+  /usr/sbin/svcadm restart <%= service.name %> || true
+<%- end -%>
