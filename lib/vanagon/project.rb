@@ -11,7 +11,7 @@ class Vanagon
     attr_accessor :version, :directories, :license, :description, :vendor
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
     attr_accessor :cleanup, :version_file, :release, :replaces, :provides
-    attr_accessor :bill_of_materials
+    attr_accessor :bill_of_materials, :retry_count, :timeout
 
     # Loads a given project from the configdir
     #
