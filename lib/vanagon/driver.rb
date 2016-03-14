@@ -25,10 +25,7 @@ class Vanagon
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
       @project.settings[:skipcheck] = options[:skipcheck]
-      @@logger = Logger.new('vanagon_hosts.log')
-      @@logger.progname = 'vanagon'
-      @timeout = @project.timeout || 3600
-      @retry_count = @project.retry_count || 3
+      loginit('vanagon_hosts.log')
 
       # If a target has been given, we don't want to make any assumptions about how to tear it down.
       engine = 'base' if target
@@ -119,8 +116,16 @@ class Vanagon
     end
 
     def retry_task(&block)
+      @timeout = @project.timeout || 3600
+      @retry_count = @project.retry_count || 3
       Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
     end
     private :retry_task
+
+    def loginit(logfile)
+      @@logger = Logger.new(logfile)
+      @@logger.progname = 'vanagon'
+    end
+    private :loginit
   end
 end
