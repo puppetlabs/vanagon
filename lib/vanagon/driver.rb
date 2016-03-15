@@ -115,6 +115,9 @@ class Vanagon
       raise e
     end
 
+    # Retry the provided block, use the retry count and timeout
+    # values from the project, if available, otherwise use some
+    # sane defaults.
     def retry_task(&block)
       @timeout = @project.timeout || 3600
       @retry_count = @project.retry_count || 3
@@ -122,6 +125,7 @@ class Vanagon
     end
     private :retry_task
 
+    # Initialize the logging instance
     def loginit(logfile)
       @@logger = Logger.new(logfile)
       @@logger.progname = 'vanagon'
