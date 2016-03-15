@@ -11,6 +11,7 @@ class Vanagon
   class Driver
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
+    attr_accessor :timeout, :retry_count
 
     def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
       @verbose = false
@@ -24,8 +25,7 @@ class Vanagon
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
       @project.settings[:skipcheck] = options[:skipcheck]
-      @@logger = Logger.new('vanagon_hosts.log')
-      @@logger.progname = 'vanagon'
+      loginit('vanagon_hosts.log')
 
       # If a target has been given, we don't want to make any assumptions about how to tear it down.
       engine = 'base' if target
@@ -76,14 +76,13 @@ class Vanagon
       @engine.startup(@workdir)
 
       puts "Target is #{@engine.target}"
-
-      install_build_dependencies
+      retry_task { install_build_dependencies }
       @project.fetch_sources(@workdir)
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
-      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      retry_task { @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})") }
       @engine.retrieve_built_artifact
       @engine.teardown unless @preserve
       cleanup_workdir unless @preserve
@@ -95,7 +94,7 @@ class Vanagon
       if @engine.name == "hardware"
         @engine.teardown
       end
-  end
+    end
 
     def prepare(workdir = nil)
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
@@ -115,5 +114,22 @@ class Vanagon
       puts e.backtrace.join("\n")
       raise e
     end
+
+    # Retry the provided block, use the retry count and timeout
+    # values from the project, if available, otherwise use some
+    # sane defaults.
+    def retry_task(&block)
+      @timeout = @project.timeout || 3600
+      @retry_count = @project.retry_count || 3
+      Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
+    end
+    private :retry_task
+
+    # Initialize the logging instance
+    def loginit(logfile)
+      @@logger = Logger.new(logfile)
+      @@logger.progname = 'vanagon'
+    end
+    private :loginit
   end
 end
