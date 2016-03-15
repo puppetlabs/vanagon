@@ -163,9 +163,25 @@ class Vanagon
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
       def generate_msi_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
-        cg_name = "ProductComponentGroup"
-        wix_extensions =  "-ext WiXUtilExtension -ext WixUIExtension"
-        candle_flags =  "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
+        wix_extensions = "-ext WiXUtilExtension -ext WixUIExtension"
+        # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
+        #   dir <directory> - Traverse directory to find all sub-files and directories.
+        #   -ke             - Keep Empty directories
+        #   -cg             - Component Group Name
+        #   -gg             - Generate GUIDS now
+        #   -srd            - Suppress root element generation, we want to reference one of the default root elements
+        #                     INSTALLDIR or APPDATADIR in the directorylist.wxs file, not a newly generated one.
+        #   -sreg           - Suppress registry harvesting.
+        #   -dr             - Root DirectoryRef to point all components to
+        #   -var            - Replace "SourceDir" in the @source attributes of all components with a preprocessor variable
+        app_heat_flags = " -dr INSTALLDIR -v -ke -indent 2 -cg AppComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppSourcePath "
+        app_source_path = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}"
+        appdata_heat_flags = "  -dr APPDATADIR -v -ke -indent 2 -cg AppDataComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppDataSourcePath "
+        appdata_source_path = "SourceDir/CommonAppDataFolder"
+        # Candle.exe preprocessor vars are required due to the above double run of heat.exe, both runs of heat use
+        # preprocessor variables
+        candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" -dAppDataSourcePath=\"#{appdata_source_path}\""
+        candle_flags = "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
         # Enable verbose mode for the moment (will be removed for production)
         # localisation flags to be added
         light_flags = "-v -cultures:en-us #{wix_extensions}"
@@ -174,21 +190,16 @@ class Vanagon
           "mkdir -p $(tempdir)/{SourceDir,wix/wixobj}",
           "#{@copy} -r wix/* $(tempdir)/wix/",
           "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
-          # Run the Heat command in a single pass
-          # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
-          #   dir <directory> - Traverse directory to find all sub-files and directories.
-          #   -ke             - Keep Empty directories
-          #   -cg             - Component Group Name
-          #   -gg             - Generate GUIDS now
-          #   -srd            - Suppress root element generation, we want to reference the default root element
-          #                     TARGETDIR in the project.wxs file, not a newly generated one.
-          #   -sreg           - Suppress registry harvesting.
-          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir SourceDir -v -ke -indent 2 -cg #{cg_name} -gg -srd -t wix/filter.xslt -sreg -out wix/#{project.name}-harvest.wxs",
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir #{app_source_path} #{app_heat_flags} -out wix/#{project.name}-harvest-app.wxs",
+          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir #{appdata_source_path} #{appdata_heat_flags}  -out wix/#{project.name}-harvest-programdata.wxs",
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
-          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} $$(cygpath -aw $$wix_file) || exit 1; done",
+          # the preprocessor variables AppDataSourcePath and ApplicationSourcePath are required due to the -var input to the heat
+          # runs listed above.
+          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} #{candle_preprocessor} $$(cygpath -aw $$wix_file) || exit 1; done",
           # run all wix objects through light to produce the msi
           # the -b flag simply points light to where the SourceDir location is
+          # -loc is required for the UI localization it points to the actual localization .wxl
           "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
           ]
       end
@@ -289,35 +300,47 @@ class Vanagon
         File.join("windows", target_repo, @architecture)
       end
 
-      # Generate correctly formatted wix elements that match the
-      # structure of the directory input
+      # Generate the underlying directory structure of
+      # any binary files referenced in services. note that
+      # this function does not generate the structure of
+      # the installation directory, only the structure above it.
       #
-      # @param services, Array of components services
-      # and optionally:
+      # @param services, list of all services in a project
+      # @param project, actual project we are creating the directory structure for
+      def generate_service_bin_dirs(services, project)
+        # All service files will need a directory reference
+        items = services.map do |svc|
+          {
+            :path => strip_and_format_path(svc.service_file, project),
+            :element_to_add => "<Directory Id=\"#{svc.bindir_id}\" />\n"
+          }
+        end
+        generate_wix_dirs(items)
+      end
+
+      # Generate correctly formatted wix elements that match the
+      # structure of the itemized input
+      #
+      # @param items
       # @return [string] correctly formatted wix element string
-      def generate_wix_dirs(services)
-        directories = []
-        services.map { |svc| directories.push({ :path => svc.service_file, :bindir_id => svc.bindir_id }) }
+      def generate_wix_dirs(items)
         # root refers to the root of an n-ary tree (which we are about to make)
         root = { :children => [] }
         # iterate over all paths specified and break each one
         # in to its specific directories. This will generate_wix_dirs
         # an n-ary tree structure matching the specs from the input
-        directories.each do |dir|
+        items.each do |item|
           # Always start at the beginning
           curr = root
-          names = strip_path(dir[:path])
-          # The last entry in this list will be the actual file,
-          # which we do not want, we only want it's base path
-          names.pop
+          names = item[:path].split(File::SEPARATOR)
           names.each do |name|
             curr = insert_child(curr, name)
           end
           # at this point, curr will be the top dir, override the id if
           # id exists
-          curr[:bindir_ids].push(dir[:bindir_id])
+          curr[:elements_to_add].push(item[:element_to_add])
         end
-        return generate_wix_from_graph(root)
+        generate_wix_from_graph(root)
       end
 
       # insert a new object with the name "name" if it doesn't already
@@ -329,42 +352,33 @@ class Vanagon
       #                 create if necessary
       def insert_child(curr, name)
         #The Id field will default to name, but be overridden later
-        new_obj = { :name => name, :id => name, :bindir_ids => [], :children => [] }
-        if (child_index = includes_child(new_obj, curr[:children]))
+        new_obj = { :name => name, :id => name, :elements_to_add => [], :children => [] }
+        if (child_index = index_of_child(new_obj, curr[:children]))
           curr = curr[:children][child_index]
         else
           curr[:children].push(new_obj)
           curr = new_obj
         end
-        return curr
+        curr
       end
 
-      # strip and split the directory path into single names
+      # strip the leading install root and the filename from the service path
+      # and replace any \ with /
+      #
       # @param [string] path string of directory
-      def strip_path(path)
-        if path.include?("/") || path.include?("\\")
-          # The regex in the last part of this if warrants some
-          # explanation. Specifically it matches any combinations
-          # of any letters, then the : char, then finally either
-          # the char / or the char \. it's meant to parse out drive
-          # roots on windows
-          if path.start_with?("/") || path.start_with?("\\") || path.start_with?("SourceDir") || path =~ (/([A-Za-z])*\:(\/|\\)/)
-            path = path.sub(/\/|\\|([A-Za-z])*\:(\/|\\)|(\/|\\)?(SourceDir)(\/|\\)?/, '')
-          end
-          names = path.split(/\/|\\/)
-        end
-        return names
+      # @param [@project] project object
+      def strip_and_format_path(path, project)
+        formatted_path = path.gsub(/\\/, "\/")
+        path_regex = /\/?SourceDir\/#{project.settings[:base_dir]}\/#{project.settings[:company_id]}\/#{project.settings[:product_id]}\//
+        File.dirname(formatted_path.sub(path_regex, ''))
       end
 
       # Find if child element is the same as one of
       # the old_children elements, return that child
-      def includes_child(new_child, old_children)
-        old_children.each_with_index do |curr_old_child, index|
-          return index if curr_old_child[:name] == new_child[:name]
-        end unless old_children.empty?
-        return nil
+      def index_of_child(new_child, old_children)
+        return nil if old_children.empty?
+        old_children.index { |child| child[:name] == new_child[:name] }
       end
-
 
       # Recursively generate wix element structure
       #
@@ -375,9 +389,9 @@ class Vanagon
         unless root[:children].empty?
           root[:children].each do |child|
             string += ("<Directory Name=\"#{child[:name]}\" Id=\"#{child[:id]}\">\n")
-            unless child[:bindir_ids].empty?
-              child[:bindir_ids].each do |bindir_id|
-                string += ("<Directory Id=\"#{bindir_id}\" />\n")
+            unless child[:elements_to_add].empty?
+              child[:elements_to_add].each do |element|
+                string += element
               end
             end
             string += generate_wix_from_graph(child)
@@ -385,7 +399,7 @@ class Vanagon
           end
           return string
         end
-        return ''
+        string
       end
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
