@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+## [0.5.3] - 2016-3-15
+### Added
+- Solaris builds will now attempt to restart services after a package upgrade
+- Vanagon builds will retry some error-prone build steps (and log the output)
 
 ## [0.5.2] - 2016-3-08
 ### Fixed
