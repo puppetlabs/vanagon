@@ -177,7 +177,7 @@ class Vanagon
         app_heat_flags = " -dr INSTALLDIR -v -ke -indent 2 -cg AppComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppSourcePath "
         app_source_path = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}"
         appdata_heat_flags = "  -dr APPDATADIR -v -ke -indent 2 -cg AppDataComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppDataSourcePath "
-        appdata_source_path = "SourceDir/CommonAppDataFolder"
+        appdata_source_path = "SourceDir/CommonAppDataFolder/#{project.settings[:company_id]}"
         # Candle.exe preprocessor vars are required due to the above double run of heat.exe, both runs of heat use
         # preprocessor variables
         candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" -dAppDataSourcePath=\"#{appdata_source_path}\""
