@@ -7,6 +7,7 @@ class Vanagon
       # @return [Array] list of commands required to build a debian package for the given project from a tarball
       def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
+        pkg_arch_opt = project.noarch ? "" : "-a #{@architecture}"
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/#{project.name}_#{project.version}.orig.tar.gz",
@@ -14,7 +15,7 @@ class Vanagon
         "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
         "sed -i 's/\ /?/g' $(tempdir)/#{project.name}-#{project.version}/debian/install",
-        "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian -uc -us)",
+        "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian #{pkg_arch_opt} -uc -us)",
         "cp $(tempdir)/*.deb ./output/#{target_dir}"]
       end
 
