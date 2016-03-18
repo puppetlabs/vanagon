@@ -200,7 +200,7 @@ class Vanagon
           # run all wix objects through light to produce the msi
           # the -b flag simply points light to where the SourceDir location is
           # -loc is required for the UI localization it points to the actual localization .wxl
-          "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
+          "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -loc $$(cygpath -aw $(tempdir)/wix/localization/puppet_en-us.wxl) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
           ]
       end
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
+  <!-- Default component groups that are to be included in this project.
+       This can be copied in the project specific area to add additional component groups.
+
+       Note that a number of the groups below are "pseudo-groups" that are necessary to
+       force the Wix Linker (light) to include fragments (e.g. FragmentProperties).
+
+       A UI reference is can also be included in the project specific area if required.
+       Otherwise, the project will default here to using the minimal UI (WixUI_Minimal). -->
+
+  <Fragment>
+    <ComponentGroup Id="MainComponentGroup">
+      <!-- We can add all components by referencing this one thing -->
+      <ComponentGroupRef Id="AppComponentGroup" />
+      <ComponentGroupRef Id="AppDataComponentGroup" />
+      <ComponentGroupRef Id="RegistryComponentGroup" />
+      <%- get_services.each do |service| -%>
+      <ComponentGroupRef Id="<%= service.component_group_id %>" />
+      <%- end -%>
+      <!-- All of these Include refs are expected to be present -->
+      <ComponentGroupRef Id="FragmentProperties" />
+      <ComponentGroupRef Id="FragmentSequences" />
+      <ComponentGroupRef Id="FragmentCustomActions" />
+    </ComponentGroup>
+
+    <UI>
+      <UIRef Id="WixUI_Minimal"/>
+    </UI>
+
+  </Fragment>
+</Wix>
