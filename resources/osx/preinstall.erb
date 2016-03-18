@@ -10,7 +10,7 @@ if [ -n "$foundpkg" ]; then
   if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
     /bin/launchctl unload "<%= service.service_file %>"
   fi
-  if [ -f "$oldbom"]; then
+  if [ -f "$oldbom" ]; then
     /bin/rm "$oldbom"
   fi
 <%- end -%>
