@@ -68,6 +68,15 @@ HERE
         end
       end
 
+      describe '#windows_style_version' do
+        it "returns first three digits only" do
+          expect(cur_plat._platform.windows_style_version("1.0.0.1")).to eq("1.0.0")
+        end
+
+        it "returns only numbers" do
+          expect(cur_plat._platform.windows_style_version("1.0.g0")).to eq("1.0.0")
+        end
+      end
       describe '#generate_msi_packaging_artifacts' do
         before(:each) do
           # Create Workdir and temp root directory
