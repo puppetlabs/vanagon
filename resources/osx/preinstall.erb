@@ -1,13 +1,21 @@
 #!/bin/bash
 
-# If we appear to be in an upgrade unload services.
+# Cleanup previous operations
+if [ -e "/tmp/.<%= @name %>.upgrade" ]
+  rm -rf "/tmp/.<%= @name %>.upgrade"
+fi
 
+# If we appear to be in an upgrade unload services.
 foundpkg=`/usr/sbin/pkgutil --volume "$3" --pkgs=<%= @identifier-%>.<%= @name -%>`
 oldbom="/usr/share/doc/<%= @name %>/bill-of-materials"
 
 if [ -n "$foundpkg" ]; then
+  mkdir -p "/tmp/.<%= @name %>.upgrade"
+  chmod 0700 "/tmp/.<%= @name %>.upgrade"
+
 <%- get_services.each do |service| -%>
   if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
+    touch "/tmp/.<%= @name %>.upgrade/<%= service.name %>"
     /bin/launchctl unload "<%= service.service_file %>"
   fi
   if [ -f "$oldbom" ]; then
