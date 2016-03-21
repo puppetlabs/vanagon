@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.5.5] - 2016-3-21
+### Fixed
+- Reverted the change to specify debian architectures, the option was breaking
+on Debian < 8 and needs more work and testing.
+
 ## [0.5.4] - 2016-3-21
 ### Fixed
 - Fixed a condition where services were not being reloaded on upgrade for OSX
@@ -191,7 +196,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.4...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.5...HEAD
+[0.5.5]: https://github.com/puppetlabs/vanagon/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/puppetlabs/vanagon/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/puppetlabs/vanagon/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/puppetlabs/vanagon/compare/0.5.1...0.5.2
