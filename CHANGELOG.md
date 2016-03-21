@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.5.4] - 2016-3-21
+### Fixed
+- Fixed a condition where services were not being reloaded on upgrade for OSX
+
+### Added
+- It is now possible to specify architecture when generating deb packages
+
 ## [0.5.3] - 2016-3-15
 ### Added
 - Solaris builds will now attempt to restart services after a package upgrade
@@ -183,7 +191,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.4...HEAD
+[0.5.4]: https://github.com/puppetlabs/vanagon/compare/0.5.3...0.5.4
+[0.5.3]: https://github.com/puppetlabs/vanagon/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/puppetlabs/vanagon/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/puppetlabs/vanagon/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/puppetlabs/vanagon/compare/0.4.1...0.5.0
