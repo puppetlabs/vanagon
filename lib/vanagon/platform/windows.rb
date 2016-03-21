@@ -402,6 +402,14 @@ class Vanagon
         string
       end
 
+      # Grab only the first three values from the version input
+      # and strip off any non-digit characters.\
+      #
+      # @param [string] version, the original version number
+      def windows_style_version(version)
+        version.split("\.").first(3).collect { |value| value.gsub(/[^0-9]/, '') }.join("\.")
+      end
+
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor
       #
       # Mingw varies on where it is installed based on architecture. We want to use which ever is on the system.
