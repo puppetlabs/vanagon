@@ -11,9 +11,9 @@ else
 fi
 <%- end -%>
 
-if [ -d "/tmp/.<%= @name %>.upgrade" ]
+if [ -d "/tmp/.<%= @name %>.upgrade" ]; then
 <%- get_services.each do |service| -%>
-  if [ -f "/tmp/.<%= @name %>.upgrade/<%= service.name %>" ]
+  if [ -f "/tmp/.<%= @name %>.upgrade/<%= service.name %>" ]; then
     /bin/launchctl load -F "<%= service.service_file %>"
   fi
 <%- end -%>
@@ -22,6 +22,6 @@ fi
 <%= File.read("resources/osx/postinstall-extras") if File.exist?("resources/osx/postinstall-extras") %>
 
 # Cleanup after ourselves
-if [ -e "/tmp/.<%= @name %>.upgrade" ]
+if [ -e "/tmp/.<%= @name %>.upgrade" ]; then
   rm -rf "/tmp/.<%= @name %>.upgrade"
 fi

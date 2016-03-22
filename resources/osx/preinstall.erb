@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Cleanup previous operations
-if [ -e "/tmp/.<%= @name %>.upgrade" ]
+if [ -e "/tmp/.<%= @name %>.upgrade" ]; then
   rm -rf "/tmp/.<%= @name %>.upgrade"
 fi
 
