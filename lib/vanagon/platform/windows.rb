@@ -176,11 +176,9 @@ class Vanagon
         #   -var            - Replace "SourceDir" in the @source attributes of all components with a preprocessor variable
         app_heat_flags = " -dr INSTALLDIR -v -ke -indent 2 -cg AppComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppSourcePath "
         app_source_path = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}"
-        appdata_heat_flags = "  -dr APPDATADIR -v -ke -indent 2 -cg AppDataComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppDataSourcePath "
-        appdata_source_path = "SourceDir/CommonAppDataFolder/#{project.settings[:company_id]}"
         # Candle.exe preprocessor vars are required due to the above double run of heat.exe, both runs of heat use
         # preprocessor variables
-        candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" -dAppDataSourcePath=\"#{appdata_source_path}\""
+        candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" "
         candle_flags = "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
         # Enable verbose mode for the moment (will be removed for production)
         # localisation flags to be added
@@ -191,7 +189,7 @@ class Vanagon
           "#{@copy} -r wix/* $(tempdir)/wix/",
           "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
           "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir #{app_source_path} #{app_heat_flags} -out wix/#{project.name}-harvest-app.wxs",
-          "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir #{appdata_source_path} #{appdata_heat_flags}  -out wix/#{project.name}-harvest-programdata.wxs",
+
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           # the preprocessor variables AppDataSourcePath and ApplicationSourcePath are required due to the -var input to the heat
