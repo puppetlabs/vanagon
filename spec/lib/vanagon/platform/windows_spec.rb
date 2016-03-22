@@ -68,13 +68,13 @@ HERE
         end
       end
 
-      describe '#windows_style_version' do
+      describe '#wix_product_version' do
         it "returns first three digits only" do
-          expect(cur_plat._platform.windows_style_version("1.0.0.1")).to eq("1.0.0")
+          expect(cur_plat._platform.wix_product_version("1.0.0.1")).to eq("1.0.0")
         end
 
         it "returns only numbers" do
-          expect(cur_plat._platform.windows_style_version("1.0.g0")).to eq("1.0.0")
+          expect(cur_plat._platform.wix_product_version("1.0.g0")).to eq("1.0.0")
         end
       end
       describe '#generate_msi_packaging_artifacts' do

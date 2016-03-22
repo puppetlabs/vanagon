@@ -406,7 +406,7 @@ class Vanagon
       # and strip off any non-digit characters.\
       #
       # @param [string] version, the original version number
-      def windows_style_version(version)
+      def wix_product_version(version)
         version.split("\.").first(3).collect { |value| value.gsub(/[^0-9]/, '') }.join("\.")
       end
 
