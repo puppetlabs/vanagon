@@ -6,7 +6,7 @@
     Name="<%= settings[:product_name] %>"
     Language="1033"
     Codepage="1252"
-    Version="<%= @platform.windows_style_version(@version) %>"
+    Version="<%= @platform.wix_product_version(@version) %>"
     Manufacturer="<%= settings[:company_name] %>" >
 
     <Package
