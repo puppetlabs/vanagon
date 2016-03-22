@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.5.6] - 2016-3-21
+### Fixed
+- Re-added the previous Debian architecture change, fixed for all
+Debian and Ubuntu platforms.
+- Fixed syntax issues in the osx pre and post install scripts
+
 ## [0.5.5] - 2016-3-21
 ### Fixed
 - Reverted the change to specify debian architectures, the option was breaking
@@ -196,7 +202,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.5...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.6...HEAD
+[0.5.6]: https://github.com/puppetlabs/vanagon/compare/0.5.5...0.5.6
 [0.5.5]: https://github.com/puppetlabs/vanagon/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/puppetlabs/vanagon/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/puppetlabs/vanagon/compare/0.5.2...0.5.3
