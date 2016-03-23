@@ -10,16 +10,18 @@ require 'logger'
 class Vanagon
   class Driver
     include Vanagon::Utilities
-    attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
+    attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve, :resume
     attr_accessor :timeout, :retry_count
 
     def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
       @verbose = false
       @preserve = false
+      @resume = options[:resume]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
       target = options[:target]
+
       engine = options[:engine] || 'pooler'
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
@@ -115,6 +117,52 @@ class Vanagon
       raise e
     end
 
+    # *****NOTE:
+    # This function is temporary and should be used with care. It is meant to
+    # facilitate vanagon development and should be deprecated
+    #     Sean M.    3/28/16
+    def devkit_run
+          # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+      @workdir = Dir.mktmpdir
+
+      if @resume.nil?
+        @engine.startup(@workdir)
+      end
+
+      puts "Target is #{@engine.target}"
+      puts "Execute install_build_dependencies ? (y/yes, s/skip or n/no)"
+      continue { install_build_dependencies }
+      puts "Execute fetch_sources ? (y/yes, s/skip or n/no)"
+      continue { @project.fetch_sources(@workdir) }
+      puts "Execute  make_makefile ? (y/yes, s/skip or n/no)"
+      continue { @project.make_makefile(@workdir) }
+      puts "Execute  make_bill_of_materials ? (y/yes, s/skip or n/no)"
+      continue { @project.make_bill_of_materials(@workdir) }
+      puts "Execute generate_packaging_artifacts? (y/yes, s/skip or n/no)"
+      continue { @project.generate_packaging_artifacts(@workdir) }
+      puts "Execute Ship Workdir command? ? (y/yes, s/skip or n/no)"
+      continue { @engine.ship_workdir(@workdir) }
+      puts "Execute Make command? ? (y/yes, s/skip or n/no)"
+      continue { @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})") }
+      puts "Execute retrieve ? (y/yes, s/skip or n/no)"
+      continue { @engine.retrieve_built_artifact }
+      puts "Execute teardown ? (y/yes, s/skip or n/no)"
+      continue { @engine.teardown }
+      puts "Execute cleanup workdir ? (y/yes, s/skip or n/no)"
+      continue { cleanup_workdir }
+    rescue => e
+      puts e
+      puts e.backtrace.join("\n")
+      raise e
+    ensure
+      if @engine.name == "hardware"
+        @engine.teardown
+      end
+    end
+
     # Retry the provided block, use the retry count and timeout
     # values from the project, if available, otherwise use some
     # sane defaults.
@@ -124,6 +172,28 @@ class Vanagon
       Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
     end
     private :retry_task
+
+    # *****NOTE:
+    # This function is temporary and should be used with care. It is meant to
+    # facilitate vanagon development and should be deprecated
+    #     Sean M.    3/28/16
+    # Ask (and wait) for user input, note that this
+    # is mostly for devkit purposes
+    #
+    # @param [string] prompt, what to display before ask
+    def continue(&block)
+      answer = $stdin.gets.chomp!
+      if answer =~ /^y$|^yes$/
+        puts "y"
+
+        yield
+      elsif answer =~ /^s$|^skip$/
+        return
+      elsif answer =~ /^n$|^no$/
+        puts "Execution stopped on #{@engine.target}"
+        exit
+      end
+    end
 
     # Initialize the logging instance
     def loginit(logfile)
