@@ -213,7 +213,10 @@ class Vanagon
       # @return [String] name of the windows package for this project
       def msi_package_name(project)
         # Decided to use native project version in hope msi versioning doesn't have same resrictions as nuget
-        "#{project.name}-#{project.version}.#{project.release}-#{@architecture}.msi"
+        # SPECIAL NOTE: as a way for us to create two side by side msis for comparison between
+        # pftw and vanagon, we are putting in VANAGON to the filename so the names will
+        # be different. When pftw is deprecated, so should this convention
+        "#{project.name}-#{project.version}.#{project.release}-#{@architecture}_VANAGON.msi"
       end
 
       # Method to derive the package name for the project.
