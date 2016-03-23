@@ -183,11 +183,16 @@ class Vanagon
         # Enable verbose mode for the moment (will be removed for production)
         # localisation flags to be added
         light_flags = "-v -cultures:en-us #{wix_extensions}"
+        # "Misc Dir for versions.txt, License file and Icon file"
+        misc_dir = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}/misc"
         # Actual array of commands to be written to the Makefile
         ["mkdir -p output/#{target_dir}",
           "mkdir -p $(tempdir)/{SourceDir,wix/wixobj}",
           "#{@copy} -r wix/* $(tempdir)/wix/",
           "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
+          "mkdir -p $(tempdir)/#{misc_dir}",
+          # Need to use awk here to convert to DOS format so that notepad can display file correctly.
+          "awk 'sub(\"$$\", \"\\r\")' $(tempdir)/SourceDir/bill-of-materials > $(tempdir)/#{misc_dir}/versions.txt",
           "cd $(tempdir); \"$$WIX/bin/heat.exe\" dir #{app_source_path} #{app_heat_flags} -out wix/#{project.name}-harvest-app.wxs",
 
           # Apply Candle command to all *.wxs files - generates .wixobj files in wix directory.
