@@ -48,8 +48,11 @@ Requires: chkconfig
 <%- end -%>
 
 <%- get_replaces.each do |replace| -%>
-Conflicts: <%= replace.replacement %><%= replace.version ? " < #{replace.version}" : "" %>
 Obsoletes: <%= replace.replacement %><%= replace.version ? " < #{replace.version}" : "" %>
+<%- end -%>
+
+<%- get_conflicts.each do |conflict| -%>
+Conflicts: <%= conflict.pkgname %><%= conflict.version ? " < #{conflict.version}" : "" %>
 <%- end -%>
 
 <%- get_provides.each do |prov| -%>
