@@ -11,7 +11,7 @@ Architecture: <%= @noarch ? 'all' : 'any' %>
 Section: admin
 Priority: optional
 Replaces: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
-Conflicts: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
+Conflicts: <%= get_conflicts.map { |conflict| "#{conflict.pkgname} #{conflict.version ? "(<< #{conflict.version})" : ""}" }.join(", ") %>
 Depends: <%= get_requires.join(", ") %>
 Provides: <%= get_provides.map { |prov| prov.provide }.join(", ") %>
 Description: <%= @description.lines.first.chomp %>

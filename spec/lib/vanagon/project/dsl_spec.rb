@@ -167,6 +167,37 @@ end" }
     end
   end
 
+  describe "#conflicts" do
+    it 'adds the package conflict to the list of conflicts' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.conflicts('thing1')
+      proj.conflicts('thing2')
+      expect(proj._project.get_conflicts.count).to eq(2)
+      expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+      expect(proj._project.get_conflicts.last.pkgname).to eq('thing2')
+     end
+
+    it 'supports versioned conflicts' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.conflicts('thing1', '1.2.3')
+      expect(proj._project.get_conflicts.count).to eq(1)
+      expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+      expect(proj._project.get_conflicts.first.version).to eq('1.2.3')
+     end
+
+    it 'gets rid of duplicates' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.conflicts('thing1', '1.2.3')
+      proj.conflicts('thing1', '1.2.3')
+      expect(proj._project.get_conflicts.count).to eq(1)
+      expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+      expect(proj._project.get_conflicts.first.version).to eq('1.2.3')
+    end
+  end
+
   describe "#component" do
     let(:project_block) {
 "project 'test-fixture' do |proj|

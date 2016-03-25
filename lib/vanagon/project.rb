@@ -11,7 +11,7 @@ class Vanagon
     attr_accessor :version, :directories, :license, :description, :vendor
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
     attr_accessor :cleanup, :version_file, :release, :replaces, :provides
-    attr_accessor :bill_of_materials, :retry_count, :timeout
+    attr_accessor :conflicts, :bill_of_materials, :retry_count, :timeout
 
     # Loads a given project from the configdir
     #
@@ -50,6 +50,7 @@ class Vanagon
       @release = "1"
       @replaces = []
       @provides = []
+      @conflicts = []
     end
 
     # Magic getter to retrieve settings in the project
@@ -99,6 +100,15 @@ class Vanagon
       replaces.push @replaces.flatten
       replaces.push @components.map(&:replaces).flatten
       replaces.flatten.uniq
+    end
+
+    # Collects all of the conflicts for the project and its components
+    def get_conflicts
+      # Including get_replaces in the conflicts list to provide backwards
+      # compatibility with previous behavior
+      conflicts = @components.flat_map(&:conflicts) + @conflicts + get_replaces
+      # Mash the whole thing down into a flat Array
+      conflicts.flatten.uniq
     end
 
     # Grabs a specific service based on which name is passed in

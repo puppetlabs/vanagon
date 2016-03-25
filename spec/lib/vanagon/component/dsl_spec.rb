@@ -269,6 +269,23 @@ end" }
     end
   end
 
+  describe '#conflicts' do
+    it 'adds the package conflict to the list of conflicts' do
+      comp = Vanagon::Component::DSL.new('conflicts-test', {}, {})
+      comp.conflicts('thing1')
+      comp.conflicts('thing2')
+      expect(comp._component.conflicts.first.pkgname).to eq('thing1')
+      expect(comp._component.conflicts.last.pkgname).to eq('thing2')
+    end
+
+    it 'supports versioned conflicts' do
+      comp = Vanagon::Component::DSL.new('conflicts-test', {}, {})
+      comp.conflicts('thing1', '1.2.3')
+      expect(comp._component.conflicts.first.pkgname).to eq('thing1')
+      expect(comp._component.conflicts.first.version).to eq('1.2.3')
+    end
+  end
+
   describe '#add_actions' do
     it 'adds the corect preinstall action to the component' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)

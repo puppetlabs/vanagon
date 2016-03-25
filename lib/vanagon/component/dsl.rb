@@ -151,6 +151,16 @@ class Vanagon
         @component.provides << OpenStruct.new(:provide => provide, :version => version)
       end
 
+      # Indicates that this component conflicts with another package,
+      # so both cannot be installed at the same time. Conflicts can be
+      # collected and used by the project and package.
+      #
+      # @param pkgname [String] name of the package which conflicts with this component
+      # @param version [String] the version of the package that conflicts with this component
+      def conflicts(pkgname, version = nil)
+        @component.conflicts << OpenStruct.new(:pkgname => pkgname, :version => version)
+      end
+
       # install_service adds the commands to install the various files on
       # disk during the package build and registers the service with the project
       #
