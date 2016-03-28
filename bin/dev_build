@@ -25,4 +25,4 @@ artifact = Vanagon::Driver.new(platform, project, options.merge({ :components =>
 artifact.verbose = true if options[:verbose]
 artifact.resume = true if options[:resume]
 
-artifact.devkit_run
+artifact.dev_run

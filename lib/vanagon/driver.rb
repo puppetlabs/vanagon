@@ -121,7 +121,7 @@ class Vanagon
     # This function is temporary and should be used with care. It is meant to
     # facilitate vanagon development and should be deprecated
     #     Sean M.    3/28/16
-    def devkit_run
+    def dev_run
           # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
