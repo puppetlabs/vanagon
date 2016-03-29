@@ -13,6 +13,7 @@ if [ -n "$foundpkg" ]; then
   mkdir -p "/tmp/.<%= @name %>.upgrade"
   chmod 0700 "/tmp/.<%= @name %>.upgrade"
 
+<%- if has_services? -%>
 <%- get_services.each do |service| -%>
   if /bin/launchctl list "<%= service.name %>" &> /dev/null; then
     touch "/tmp/.<%= @name %>.upgrade/<%= service.name %>"
@@ -22,6 +23,8 @@ if [ -n "$foundpkg" ]; then
     /bin/rm "$oldbom"
   fi
 <%- end -%>
+<%- end -%>
 fi
+
 
 <%= File.read("resources/osx/preinstall-extras") if File.exist?("resources/osx/preinstall-extras") %>
