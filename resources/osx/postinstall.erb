@@ -11,6 +11,7 @@ else
 fi
 <%- end -%>
 
+<%- if get_services -%>
 if [ -d "/tmp/.<%= @name %>.upgrade" ]; then
 <%- get_services.each do |service| -%>
   if [ -f "/tmp/.<%= @name %>.upgrade/<%= service.name %>" ]; then
@@ -18,6 +19,7 @@ if [ -d "/tmp/.<%= @name %>.upgrade" ]; then
   fi
 <%- end -%>
 fi
+<%- end -%>
 
 <%= File.read("resources/osx/postinstall-extras") if File.exist?("resources/osx/postinstall-extras") %>
 
