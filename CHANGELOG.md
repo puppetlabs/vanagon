@@ -6,6 +6,13 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.5.8] - 2016-3-29
+### Fixed
+- Fixes to OS X postinstall for services
+
+### Added
+- Added the ability to specify conflicts in our deb and rpm packages
+
 ## [0.5.7] - 2016-3-23
 ### Added
 - MSI for vanagon PRE-RELEASE. MSI functionality for vanagon is starting
@@ -207,7 +214,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.7...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.8...HEAD
+[0.5.8]: https://github.com/puppetlabs/vanagon/compare/0.5.7...0.5.8
 [0.5.7]: https://github.com/puppetlabs/vanagon/compare/0.5.6...0.5.7
 [0.5.6]: https://github.com/puppetlabs/vanagon/compare/0.5.5...0.5.6
 [0.5.5]: https://github.com/puppetlabs/vanagon/compare/0.5.4...0.5.5
