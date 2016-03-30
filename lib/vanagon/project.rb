@@ -104,9 +104,7 @@ class Vanagon
 
     # Collects all of the conflicts for the project and its components
     def get_conflicts
-      # Including get_replaces in the conflicts list to provide backwards
-      # compatibility with previous behavior
-      conflicts = @components.flat_map(&:conflicts) + @conflicts + @replaces
+      conflicts = @components.flat_map(&:conflicts) + @conflicts
       # Mash the whole thing down into a flat Array
       conflicts.flatten.uniq
     end
