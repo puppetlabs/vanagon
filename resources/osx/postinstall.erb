@@ -1,5 +1,6 @@
 #!/bin/bash
 
+<%- if has_configfiles? -%>
 # Move any new configfiles into place
 <%- get_configfiles.each do |config|
 dest_file = config.path.gsub(/\.pristine$/, '') -%>
@@ -10,8 +11,9 @@ else
   mv '<%= config.path %>' '<%= dest_file %>'
 fi
 <%- end -%>
+<%- end -%>
 
-<%- if get_services -%>
+<%- if has_services? -%>
 if [ -d "/tmp/.<%= @name %>.upgrade" ]; then
 <%- get_services.each do |service| -%>
   if [ -f "/tmp/.<%= @name %>.upgrade/<%= service.name %>" ]; then

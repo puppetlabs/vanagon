@@ -102,11 +102,19 @@ class Vanagon
       replaces.flatten.uniq
     end
 
+    def has_replaces?
+      !get_replaces.empty?
+    end
+
     # Collects all of the conflicts for the project and its components
     def get_conflicts
       conflicts = @components.flat_map(&:conflicts) + @conflicts
       # Mash the whole thing down into a flat Array
       conflicts.flatten.uniq
+    end
+
+    def has_conflicts?
+      !get_conflicts.empty?
     end
 
     # Grabs a specific service based on which name is passed in
@@ -133,6 +141,10 @@ class Vanagon
       provides.push @provides.flatten
       provides.push @components.map(&:provides).flatten
       provides.flatten.uniq
+    end
+
+    def has_provides?
+      !get_provides.empty?
     end
 
     # Collects the preinstall packaging actions for the project and it's components
@@ -205,6 +217,10 @@ class Vanagon
     # @return [Array] array of configfiles installed by components of the project
     def get_configfiles
       @components.map(&:configfiles).flatten.uniq
+    end
+
+    def has_configfiles?
+      !get_configfiles.empty?
     end
 
     # Collects any directories declared by the project and components
