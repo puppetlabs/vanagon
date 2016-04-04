@@ -138,7 +138,7 @@ class Vanagon
       #
       def version_from_git
         version = Vanagon::Utilities.git_version(File.expand_path("..", Vanagon::Driver.configdir))
-        @project.version = version.split('-').reject{ |s| s.empty? }.join('.')
+        @project.version = version.split('-').reject(&:empty?).join('.')
       end
 
       # Sets the vendor for the project. Used in packaging artifacts.
