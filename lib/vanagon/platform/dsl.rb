@@ -228,11 +228,74 @@ class Vanagon
         @platform.docker_image = name
       end
 
+      # Set the ami for the platform to use
+      #
+      # @param ami [String] the ami id used.
+      def aws_ami(ami)
+        @platform.aws_ami = ami
+      end
+
+      # Set the user data used in AWS to do setup. Like cloud-config
+      #
+      # @param userdata [String] a string used to send to the node to do the intial setup
+      def aws_user_data(userdata)
+        @platform.aws_user_data = userdata
+      end
+
+      # Set the region, this defaults to us-east-1
+      #
+      # @param region [String] a string used to setup the region
+      def aws_region(region = 'us-east-1')
+        @platform.aws_region = region
+      end
+
+      # Set the shutdown behavior for aws. This will default to terminate the instance on shutdown
+      #
+      # @param shutdown_behavior [String] a string used to set the shutdown behavior
+      def aws_shutdown_behavior(shutdown_behavior = 'terminate')
+        @platform.aws_shutdown_behavior = shutdown_behavior
+      end
+
+      # Set the key_name used. This should already exist on AWS.
+      #
+      # @param key_name [String] this defaults to the keyname vanagon. Can be set to any
+      def aws_key_name(key_name = 'vanagon')
+        @platform.aws_key_name = key_name
+      end
+
+      # Set the instaince type. This defaults to t1.micro which is the free instance
+      #
+      # @param instance_type [String] a string to define the instaince type
+      def aws_instance_type(instance_type = 't1.micro')
+        @platform.aws_instance_type = instance_type
+      end
+
+      # Set the subnet_id. Use this to setup a subnet for your VPC to use.
+      #
+      # @param subnet_id[String] a string to define the subnet_id in AWS
+      def aws_subnet_id(subnet_id)
+        @platform.aws_subnet_id = subnet_id
+      end
+
       # Set the port for ssh to use if it's not 22
       #
       # @param port [Integer] port number for ssh
       def ssh_port(port = 22)
         @platform.ssh_port = port
+      end
+
+      # Set the target user to login with. Defaults to root.
+      #
+      # @param user[String] a user string to login with.
+      def target_user(user = "root")
+        @platform.target_user = user
+      end
+
+      # Set the target ip address or hostname to start build
+      #
+      # @param target_host[String] a host string to login with.
+      def target_host(target_host)
+        @platform.target_host = target_host
       end
 
       # Set the platform_triple for the platform

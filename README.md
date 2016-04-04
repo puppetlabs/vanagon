@@ -85,6 +85,7 @@ Currently supported engines are:
 * `docker` - Builds in a docker container
 * `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
 * `hardware` - Build on a specific taget and lock it in redis
+* `ec2` - Build on a specific AWS instance.
 
 #### Flags (can be anywhere in the command)
 
@@ -107,7 +108,7 @@ communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
 ##### VANAGON\_SSH\_AGENT
-When set, Vanagon will forward the ssh authentication agent connection. 
+When set, Vanagon will forward the ssh authentication agent connection.
 
 ##### VMPOOLER\_TOKEN
 Used in conjunction with the pooler engine, this is a token to pass to the
@@ -159,6 +160,37 @@ As in the `build` target host optional argument.
 
 ##### -h, --help
 Display command-line help.
+
+Engines
+---
+
+### Amazon Ec2
+
+Note: If you have the `aws_ami` setup vanagon will default to the ec2 engine.
+
+To use the ec2 engine you should have your credentials set either via your `~/.aws/credentials` or environment variables.
+After this you can setup your `configs/platforms/<platform>.rb` to use your
+ami, instance type, and key_name to setup the instance.
+
+A simple one looks like this
+
+```ruby
+# configs/platforms/el-7-x86_64.rb
+platform "el-7-x86_64" do |plat|
+    plat.aws_ami "your-ami-id-here" # You must set this
+    plat.aws_instance_type "t2.small" # Defaults to t1.micro
+    plat.aws_key_name "vanagon" # this is the default but you can use whichever
+    plat.aws_user_data <<-eos
+#cloud-config
+    runcmds:
+        - echo #{my_ssh_key} > /root/.ssh/authorized_keys # Most amis block you from logging in as root.
+    eos
+
+### Rest of your code here
+
+end
+```
+
 
 Contributing
 ---

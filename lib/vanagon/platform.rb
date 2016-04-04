@@ -7,6 +7,8 @@ class Vanagon
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
     attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple
     attr_accessor :target_user, :package_type, :find, :sort, :build_hosts, :copy, :cross_compiled
+    attr_accessor :aws_ami, :aws_user_data, :aws_shutdown_behavior, :aws_key_name, :aws_region, :aws_key
+    attr_accessor :aws_instance_type, :aws_vpc_id, :aws_subnet_id
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
