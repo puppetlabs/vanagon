@@ -17,6 +17,14 @@ end" }
       proj.version_from_git
       expect(proj._project.version).to eq('1.2.3.1234')
     end
+    it 'sets the version based on the git describe with multiple dashes' do
+      expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      expect(Vanagon::Utilities).to receive(:git_version).with(File.expand_path('..', configdir)).and_return('1.2.3---1234')
+      proj.version_from_git
+      expect(proj._project.version).to eq('1.2.3.1234')
+    end
   end
 
   describe '#directory' do
