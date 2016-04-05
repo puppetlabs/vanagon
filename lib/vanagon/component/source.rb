@@ -62,9 +62,9 @@ class Vanagon
         uri_scheme = url_match[1] if url_match
         local_source =  case uri_scheme
                         when /^http/
-                          Vanagon::Component::Source::Http.new(self.rewrite(url, 'http'), options[:sum], workdir)
+                          Vanagon::Component::Source::Http.new(self.rewrite(url, 'http'), options[:sum], workdir, options[:upstream_url])
                         when /^file/
-                          Vanagon::Component::Source::Http.new(self.rewrite(url, 'file'), options[:sum], workdir)
+                          Vanagon::Component::Source::Http.new(self.rewrite(url, 'file'), options[:sum], workdir, options[:upstream_url])
                         when /^git/
                           Vanagon::Component::Source::Git.new(self.rewrite(url, 'git'), options[:ref], workdir)
                         else

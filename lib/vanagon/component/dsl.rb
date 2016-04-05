@@ -280,6 +280,10 @@ class Vanagon
         @component.url = the_url
       end
 
+      def upstream_url(the_url)
+        @component.options[:upstream_url] = the_url
+      end
+
       # Sets the md5 sum to verify the sum of the source
       #
       # @param md5 [String] md5 sum of the source for verification
@@ -320,8 +324,8 @@ class Vanagon
       # @param url [String] url of the source
       # @param ref [String] Used for git sources, must be a git ref of some sort
       # @param sum [String] sum used to validate http and file sources
-      def add_source(url, ref: nil, sum: nil)
-        @component.sources << OpenStruct.new(:url => url, :ref => ref, :sum => sum)
+      def add_source(url, ref: nil, sum: nil, upstream_url: nil)
+        @component.sources << OpenStruct.new(:url => url, :ref => ref, :sum => sum, :upsteam_url => upstream_url)
       end
 
       # Adds a directory to the list of directories provided by the project, to be included in any packages of the project

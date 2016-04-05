@@ -7,7 +7,7 @@ class Vanagon
     class Source
       class Http
         include Vanagon::Utilities
-        attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup
+        attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup, :upstream_url
 
         # Extensions for files we intend to unpack during the build
         ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
@@ -17,14 +17,16 @@ class Vanagon
         # @param url [String] url of the http source to fetch
         # @param sum [String] sum to verify the download against
         # @param workdir [String] working directory to download into
+        # @param upstream_url [String] URL of the http source upstream
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum, workdir)
+        def initialize(url, sum, workdir, upstream_url)
           unless sum
             fail "sum is required to validate the http source"
           end
           @url = url
           @sum = sum
           @workdir = workdir
+          @upstream_url = upstream_url
         end
 
         # Download the source from the url specified. Sets the full path to the
@@ -48,10 +50,29 @@ class Vanagon
         # Downloads the file from @url into the @workdir
         #
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
+        # @return filename [String] to work with after download
         def download
-          uri = URI.parse(@url)
+          file = attempt_download(@url)
+          return file unless file == false
+          if  @upstream_url.nil?
+            raise Vanagon::Error.wrap("", "Problem downloading file from '#{url}'. Please verify you have the correct uri specified.")
+          else
+            file = attempt_download(@upstream_url)
+            if file
+              return file
+            else
+              raise Vanagon::Error.wrap(e, "Problem downloading file from '#{@url}' and '#{@upstream_url}'. Please verify you have the correct uri specified.")
+            end
+          end
+        end
+
+        # Attmpts to download/fetch sources
+        #
+        # @param url [String] URL to attempt to download from
+        # @return [String, bool] target filename or false
+        def attempt_download(url)
+          uri = URI.parse(url)
           target_file = File.basename(uri.path)
-          puts "Downloading file '#{target_file}' from url '#{@url}'"
 
           case uri.scheme
           when 'http', 'https'
@@ -60,7 +81,7 @@ class Vanagon
 
               http.request request do |response|
                 unless response.is_a? Net::HTTPSuccess
-                  fail "Error: #{response.code.to_s}. Unable to get source from #{@url}"
+                  warn "Error: #{response.code.to_s}. Unable to get source from #{@url}"
                 end
                 open(File.join(@workdir, target_file), 'w') do |io|
                   response.read_body do |chunk|
@@ -70,24 +91,25 @@ class Vanagon
               end
             end
           when 'file'
-            uri = @url.match(/^file:\/\/(.*)$/)
+            uri = url.match(/^file:\/\/(.*)$/)
             if uri
               source_file = uri[1]
               target_file = File.basename(source_file)
               FileUtils.cp(source_file, File.join(@workdir, target_file))
-            else
-              raise Vanagon::Error, "Unable to parse '#{@url}' for local file path."
+              return false
             end
           else
-            fail "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"
+            warn "Unable to download files using the uri scheme '#{uri.scheme}'. Maybe you have a typo or need to teach me a new trick?"
+            return false
           end
 
           target_file
 
-        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
+        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, SocketError,
           Errno::EACCES, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
           Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from '#{@url}'. Please verify you have the correct uri specified.")
+          # This is probably less good as we should bubble up the error
+          return false
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)

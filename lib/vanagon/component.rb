@@ -12,7 +12,7 @@ class Vanagon
     attr_accessor :settings, :platform, :patches, :requires, :service, :options
     attr_accessor :directories, :replaces, :provides, :conflicts, :cleanup_source
     attr_accessor :sources, :preinstall_actions, :postinstall_actions
-    attr_accessor :preremove_actions, :postremove_actions, :license
+    attr_accessor :preremove_actions, :postremove_actions, :license, :upstream_url
 
     # Loads a given component from the configdir
     #
@@ -106,7 +106,7 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_source(workdir)
-      if @url
+      if @url || @options[:upstream_url]
         @source = Vanagon::Component::Source.source(@url, @options, workdir)
         @source.fetch
         @source.verify
