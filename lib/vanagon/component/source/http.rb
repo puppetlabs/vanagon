@@ -35,13 +35,18 @@ class Vanagon
         end
 
         # Verify the downloaded file matches the provided sum
+        # Note: This function will not verify the checksum of
+        # a local file, only those files fetched from a
+        # remote source.
         #
         # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
         def verify
-          puts "Verifying file: #{@file} against sum: '#{@sum}'"
-          actual = get_md5sum(File.join(@workdir, @file))
-          unless @sum == actual
-            fail "Unable to verify '#{@file}'. Expected: '#{@sum}', got: '#{actual}'"
+          unless @scheme == 'file'
+            puts "Verifying file: #{@file} against sum: '#{@sum}'"
+            actual = get_md5sum(File.join(@workdir, @file))
+            unless @sum == actual
+              fail "Unable to verify '#{@file}'. Expected: '#{@sum}', got: '#{actual}'"
+            end
           end
         end
 
@@ -53,7 +58,8 @@ class Vanagon
           target_file = File.basename(uri.path)
           puts "Downloading file '#{target_file}' from url '#{@url}'"
 
-          case uri.scheme
+          @scheme = uri.scheme
+          case @scheme
           when 'http', 'https'
             Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
               request = Net::HTTP::Get.new(uri)
