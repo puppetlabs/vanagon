@@ -1,5 +1,6 @@
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'
+require 'vanagon/component/source/localsource'
 
 class Vanagon
   class Component
@@ -64,7 +65,7 @@ class Vanagon
                         when /^http/
                           Vanagon::Component::Source::Http.new(self.rewrite(url, 'http'), options[:sum], workdir)
                         when /^file/
-                          Vanagon::Component::Source::Http.new(self.rewrite(url, 'file'), options[:sum], workdir)
+                          Vanagon::Component::Source::LocalSource.new(self.rewrite(url, 'file'), workdir)
                         when /^git/
                           Vanagon::Component::Source::Git.new(self.rewrite(url, 'git'), options[:ref], workdir)
                         else

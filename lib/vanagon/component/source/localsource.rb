@@ -5,25 +5,19 @@ require 'uri'
 class Vanagon
   class Component
     class Source
-      class Http
+      class LocalSource
         include Vanagon::Utilities
-        attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup
+        attr_accessor :url, :file, :extension, :workdir, :cleanup
 
         # Extensions for files we intend to unpack during the build
         ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
 
-        # Constructor for the Http source type
+        # Constructor for the File source type
         #
         # @param url [String] url of the http source to fetch
-        # @param sum [String] sum to verify the download against
         # @param workdir [String] working directory to download into
-        # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum, workdir)
-          unless sum
-            fail "sum is required to validate the http source"
-          end
+        def initialize(url, workdir)
           @url = url
-          @sum = sum
           @workdir = workdir
         end
 
@@ -34,48 +28,30 @@ class Vanagon
           @extension = get_extension
         end
 
-        # Verify the downloaded file matches the provided sum
-        #
-        # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
+        # Local files need no checksum so this is a noop
         def verify
-          puts "Verifying file: #{@file} against sum: '#{@sum}'"
-          actual = get_md5sum(File.join(@workdir, @file))
-          unless @sum == actual
-            fail "Unable to verify '#{@file}'. Expected: '#{@sum}', got: '#{actual}'"
-          end
+          # nothing to do here, so just return
         end
 
-        # Downloads the file from @url into the @workdir
+        # Moves file from source to workdir
         #
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
         def download
           uri = URI.parse(@url)
           target_file = File.basename(uri.path)
-          puts "Downloading file '#{target_file}' from url '#{@url}'"
-          case uri.scheme
-          when 'http', 'https'
-            Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-              request = Net::HTTP::Get.new(uri)
+          puts "Moving file '#{target_file}' to workdir"
 
-              http.request request do |response|
-                unless response.is_a? Net::HTTPSuccess
-                  fail "Error: #{response.code.to_s}. Unable to get source from #{@url}"
-                end
-                open(File.join(@workdir, target_file), 'w') do |io|
-                  response.read_body do |chunk|
-                    io.write(chunk)
-                  end
-                end
-              end
-            end
+          uri = @url.match(/^file:\/\/(.*)$/)
+          if uri
+            source_file = uri[1]
+            target_file = File.basename(source_file)
+            FileUtils.cp(source_file, File.join(@workdir, target_file))
+          else
+            raise Vanagon::Error, "Unable to parse '#{@url}' for local file path."
           end
 
           target_file
 
-        rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
-          Errno::EACCES, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
-          Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
-          raise Vanagon::Error.wrap(e, "Problem downloading #{target_file} from '#{@url}'. Please verify you have the correct uri specified.")
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
