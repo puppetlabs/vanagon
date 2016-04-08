@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.5.10] - 2016-04-08
+### Fixed
+- Fixes to version string handling: now reject empty strings
+  so we don't get bad versions (thanks to Colin Wood for the
+  contribution)
+- Solaris services will now correctly reference the SMF service type,
+  which should enable proper service restarts on package upgrades.
+
 ## [0.5.9] - 2016-3-31
 ### Fixed
 - Fixes to deb/rpm conflicts functionality
@@ -218,7 +226,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.9...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.10...HEAD
+[0.5.10]: https://github.com/puppetlabs/vanagon/compare/0.5.9...0.5.10
 [0.5.9]: https://github.com/puppetlabs/vanagon/compare/0.5.8...0.5.9
 [0.5.8]: https://github.com/puppetlabs/vanagon/compare/0.5.7...0.5.8
 [0.5.7]: https://github.com/puppetlabs/vanagon/compare/0.5.6...0.5.7
