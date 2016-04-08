@@ -43,7 +43,7 @@ describe "Vanagon::Component::Source" do
     end
 
     it "returns an object of the correct type for file:// urls" do
-      expect(Vanagon::Component::Source.source(file_url, {:sum => sum }, workdir).class).to equal(Vanagon::Component::Source::LocalSource)
+      expect(Vanagon::Component::Source.source(file_url, {:sum => sum }, workdir).class).to equal(Vanagon::Component::Source::Local)
     end
 
     it "applies any rewrite rules before defining an http Source" do
