@@ -14,6 +14,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - Solaris services will now correctly reference the SMF service type,
   which should enable proper service restarts on package upgrades.
 
+### Changed
+- Local file sources added with the add_source function no longer
+  require checksums.
+
 ## [0.5.9] - 2016-3-31
 ### Fixed
 - Fixes to deb/rpm conflicts functionality
