@@ -5,7 +5,7 @@ require 'uri'
 class Vanagon
   class Component
     class Source
-      class LocalSource
+      class Local
         include Vanagon::Utilities
         attr_accessor :url, :file, :extension, :workdir, :cleanup
 
