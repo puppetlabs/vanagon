@@ -179,7 +179,7 @@ class Vanagon
         # Candle.exe preprocessor vars are required due to the above double run of heat.exe, both runs of heat use
         # preprocessor variables
         candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" "
-        candle_flags = "-dPlatform=#{@architecture} -arch #{@architecture} #{wix_extensions}"
+        candle_flags = "-arch #{@architecture} #{wix_extensions}"
         # Enable verbose mode for the moment (will be removed for production)
         # localisation flags to be added
         light_flags = "-v -cultures:en-us #{wix_extensions}"
