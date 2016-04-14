@@ -10,10 +10,19 @@ Package: <%= @name %>
 Architecture: <%= @noarch ? 'all' : 'any' %>
 Section: admin
 Priority: optional
+<%- unless get_replaces.empty? -%>
 Replaces: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
+Breaks: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.version ? "(<< #{replace.version})" : ""}" }.join(", ") %>
+<%- end -%>
+<%- unless get_conflicts.empty? -%>
 Conflicts: <%= get_conflicts.map { |conflict| "#{conflict.pkgname} #{conflict.version ? "(<< #{conflict.version})" : ""}" }.join(", ") %>
+<%- end -%>
+<%- unless get_requires.empty? -%>
 Depends: <%= get_requires.join(", ") %>
+<%- end -%>
+<%- unless get_provides.empty? -%>
 Provides: <%= get_provides.map { |prov| prov.provide }.join(", ") %>
+<%- end -%>
 Description: <%= @description.lines.first.chomp %>
  <%= @description.lines[1..-1].join("\s") -%>
  .
