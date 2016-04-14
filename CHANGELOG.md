@@ -6,6 +6,22 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2016-04-14
+### Added
+- With this release the vanagon MSI engine has stabilized and is now ready for
+  use!
+
+### Fixed
+- Updates in the deb/rpm conflicts functionality did not work correctly with
+  deb-based systems. Both 'Replaces' and 'Breaks' are specified in the 
+  control script when replaces are added to vanagon now.
+- Make retry_count accessible in the dsl.
+
+### Changed
+- Vanagon::Component::Source::LocalSource was renamed to
+  Vanagon::Component::Source::Local for consistency with naming elsewhere in
+  the project.
+
 ## [0.5.10] - 2016-04-08
 ### Fixed
 - Fixes to version string handling: now reject empty strings
@@ -230,7 +246,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.5.10...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/puppetlabs/vanagon/compare/0.5.10...0.6.0
 [0.5.10]: https://github.com/puppetlabs/vanagon/compare/0.5.9...0.5.10
 [0.5.9]: https://github.com/puppetlabs/vanagon/compare/0.5.8...0.5.9
 [0.5.8]: https://github.com/puppetlabs/vanagon/compare/0.5.7...0.5.8
