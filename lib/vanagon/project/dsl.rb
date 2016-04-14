@@ -230,6 +230,11 @@ class Vanagon
       def bill_of_materials(target)
         @project.bill_of_materials = Vanagon::Common::Pathname.new(target)
       end
+
+      # Counter for the number of times a project should retry a task
+      def retry_count(retry_count)
+        @project.retry_count = retry_count
+      end
     end
   end
 end
