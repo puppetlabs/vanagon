@@ -27,15 +27,25 @@ class Vanagon
       @project.settings[:skipcheck] = options[:skipcheck]
       loginit('vanagon_hosts.log')
 
-      # If a target has been given, we don't want to make any assumptions about how to tear it down.
-      engine = 'base' if target
-      # Hardware has explicit teardown to unlock the node
-      engine = 'hardware' if @platform.build_hosts
-      require "vanagon/engine/#{engine}"
-      @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target)
-
+      load_engine(engine, @platform, target)
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
+    end
+
+    def load_engine(engine_type, platform, target)
+      if platform.build_hosts
+        engine_type = 'hardware'
+      elsif target
+        engine_type = 'base'
+      end
+      load_engine_object(engine_type, platform, target)
+    end
+
+    def load_engine_object(engine_type, platform, target)
+      require "vanagon/engine/#{engine_type}"
+      Object::const_get("Vanagon::Engine::#{engine_type.capitalize}").new(platform, target)
+    rescue
+      fail "No such engine '#{engine_type.capitalize}'"
     end
 
     def cleanup_workdir
