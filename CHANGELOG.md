@@ -6,7 +6,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.6.0] - 2016-04-14
+## [0.6.0] - 2016-04-15
 ### Added
 - With this release the vanagon MSI engine has stabilized and is now ready for
   use!
@@ -16,6 +16,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   deb-based systems. Both 'Replaces' and 'Breaks' are specified in the 
   control script when replaces are added to vanagon now.
 - Make retry_count accessible in the dsl.
+- Update to not pass the platform flag to the WiX compiler options since the
+  erb engine will populate fields based on platform.
 
 ### Changed
 - Vanagon::Component::Source::LocalSource was renamed to
