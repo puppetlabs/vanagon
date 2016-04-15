@@ -16,6 +16,9 @@ class Vanagon
     def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
       @verbose = false
       @preserve = false
+      @workdir = options[:workdir]
+      remote_workdir = options[:remote_workdir]
+
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
@@ -32,7 +35,7 @@ class Vanagon
       # Hardware has explicit teardown to unlock the node
       engine = 'hardware' if @platform.build_hosts
       require "vanagon/engine/#{engine}"
-      @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target)
+      @engine = Object.const_get("Vanagon::Engine::#{engine.capitalize}").new(@platform, target, :remote_workdir => remote_workdir)
 
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
@@ -40,6 +43,15 @@ class Vanagon
 
     def cleanup_workdir
       FileUtils.rm_rf(@workdir)
+    end
+
+    def setup_workdir
+      if @workdir
+        FileUtils.mkdir_p(@workdir)
+      else
+        @workdir =  Dir.mktmpdir
+      end
+      @workdir
     end
 
     def self.configdir
@@ -72,7 +84,7 @@ class Vanagon
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
-      @workdir = Dir.mktmpdir
+      setup_workdir
       @engine.startup(@workdir)
 
       puts "Target is #{@engine.target}"
@@ -97,7 +109,7 @@ class Vanagon
     end
 
     def prepare(workdir = nil)
-      @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
+      setup_workdir
       @engine.startup(@workdir)
 
       puts "Devkit on #{@engine.target}"

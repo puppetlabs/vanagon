@@ -6,7 +6,7 @@ class Vanagon
   class Engine
     class Local < Base
 
-      def initialize(platform, target = nil)
+      def initialize(platform, target = nil, opts = {})
         @target = target || "local machine"
         @name = 'local'
         super

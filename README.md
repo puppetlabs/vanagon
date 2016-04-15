@@ -74,6 +74,11 @@ target. If more targets are specified than platforms, the extra will be ignored.
 Specifies a directory where the sources should be placed and builds performed.
 Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
 
+##### --remote_workdir DIR
+Specifies a directory where the sources should be placed and builds performed
+on the target. Defaults to a temporary directory created with
+mktemp.
+
 ##### -c DIR, --configdir DIR
 Specifies where project configuration is found. Defaults to $pwd/configs.
 
