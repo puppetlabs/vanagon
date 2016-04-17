@@ -6,12 +6,15 @@ LOCK_MANAGER_HOST = ENV['LOCK_MANAGER_HOST'] || 'redis'
 LOCK_MANAGER_PORT = ENV['LOCK_MANAGER_PORT'] || 6379
 VANAGON_LOCK_USER = ENV['USER']
 
-
 class Vanagon
   class Engine
     # Class to use when building on a hardware device (e.g. AIX, Switch, etc)
-    #
     class Hardware < Base
+
+      @engine_name = "base"
+      @desc = "Build on a specific remote taget host (uses lock_manager to lock the host)"
+      @remote = true
+      @teardown = true
 
       # This method is used to obtain a vm to build upon
       # For the base class we just return the target that was passed in
@@ -60,6 +63,8 @@ class Vanagon
         super
         @required_attributes << "build_hosts"
       end
+
+      Vanagon::Engine.register self
     end
   end
 end

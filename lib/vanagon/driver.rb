@@ -13,17 +13,21 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
+    class << self
+      attr_accessor :configdir, :logger, :progname
+    end
+
     def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
       @verbose = false
       @preserve = false
 
-      @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
+      self.class.configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
       target = options[:target]
       engine = options[:engine] || 'pooler'
 
-      @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
-      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @platform = Vanagon::Platform.load_platform(platform, File.join(self.class.configdir, "platforms"))
+      @project = Vanagon::Project.load_project(project, File.join(self.class.configdir, "projects"), @platform, components)
       @project.settings[:skipcheck] = options[:skipcheck]
       loginit('vanagon_hosts.log')
 
@@ -38,26 +42,14 @@ class Vanagon
       elsif target
         engine_type = 'base'
       end
-      load_engine_object(engine_type, platform, target)
-    end
-
-    def load_engine_object(engine_type, platform, target)
-      require "vanagon/engine/#{engine_type}"
-      Object::const_get("Vanagon::Engine::#{engine_type.capitalize}").new(platform, target)
+      Vanagon::Engine.register_engines!
+      Vanagon::Engine.registered_engines[engine_type].new(platform, target)
     rescue
       fail "No such engine '#{engine_type.capitalize}'"
     end
 
     def cleanup_workdir
       FileUtils.rm_rf(@workdir)
-    end
-
-    def self.configdir
-      @@configdir
-    end
-
-    def self.logger
-      @@logger
     end
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
@@ -137,8 +129,8 @@ class Vanagon
 
     # Initialize the logging instance
     def loginit(logfile)
-      @@logger = Logger.new(logfile)
-      @@logger.progname = 'vanagon'
+      self.class.logger = Logger.new(logfile)
+      self.class.progname = 'vanagon'
     end
     private :loginit
   end

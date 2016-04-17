@@ -6,6 +6,11 @@ class Vanagon
   class Engine
     class Local < Base
 
+      @engine_name = "local"
+      @desc = "Build on the local machine (will pollute the file system); platform name must match the local machine"
+      @remote = false
+      @teardown = false
+
       def initialize(platform, target = nil)
         @target = target || "local machine"
         @name = 'local'
@@ -31,6 +36,8 @@ class Vanagon
         FileUtils.mkdir_p("output")
         FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
       end
+
+      Vanagon::Engine.register self
     end
   end
 end
