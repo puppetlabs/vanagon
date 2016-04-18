@@ -6,7 +6,7 @@ require 'logger'
 # Haus, I added this, cause it prevented errors.
 class Vanagon
   class Driver
-    @@logger = Logger.new('/dev/null')
+    @logger = Logger.new('/dev/null')
   end
 end
 

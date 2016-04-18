@@ -3,6 +3,11 @@ require 'vanagon/engine/base'
 class Vanagon
   class Engine
     class Docker < Base
+      @engine_name = "docker"
+      @desc = "Build inside of a docker container"
+      @remote = false
+      @teardown = true
+
       # Both the docker_image and the docker command itself are required for
       # the docker engine to work
       def initialize(platform, target = nil)
@@ -35,6 +40,8 @@ class Vanagon
       rescue Vanagon::Error => e
         warn "There was a problem tearing down the docker container #{@platform.docker_image}-builder (#{e.message})."
       end
+
+      Vanagon::Engine.register self
     end
   end
 end

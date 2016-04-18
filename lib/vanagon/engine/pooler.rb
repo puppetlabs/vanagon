@@ -5,6 +5,11 @@ class Vanagon
     class Pooler < Base
       attr_reader :token
 
+      @engine_name = "pooler"
+      @desc = "Check out a VM from Puppet's VM Pooler and build on it"
+      @remote = true
+      @teardown = true
+
       # The vmpooler_template is required to use the pooler engine
       def initialize(platform, target = nil)
         @pooler = "http://vmpooler.delivery.puppetlabs.net"
@@ -81,6 +86,8 @@ class Vanagon
         Vanagon::Driver.logger.info "#{@target} could not be destroyed (#{e.message})"
         warn "#{@target} could not be destroyed (#{e.message})"
       end
+
+      Vanagon::Engine.register self
     end
   end
 end
