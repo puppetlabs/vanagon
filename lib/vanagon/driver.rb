@@ -43,7 +43,7 @@ class Vanagon
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      Object::const_get("Vanagon::Engine::#{engine_type.capitalize}").new(platform, target)
+      @engine = Object::const_get("Vanagon::Engine::#{engine_type.capitalize}").new(platform, target)
     rescue
       fail "No such engine '#{engine_type.capitalize}'"
     end
