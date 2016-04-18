@@ -239,5 +239,21 @@ class Vanagon
     def is_linux?
       return (!is_windows? && !is_unix?)
     end
+
+    # Utility matcher to determine is the platform is a cross-compiled variety
+    #
+    # @return [true, false] true if it is a cross-compiled variety, false otherwise
+    def is_cross_compiled?
+      return !!@name.match(/^huaweios-|-s390x$|-sparc$/)
+    end
+
+    # Utility matcher to determine is the platform is a cross-compiled Linux variety.
+    # Many of the customizations needed to cross-compile for Linux are similar, so it's
+    # useful to group them together vs. other cross-compiled OSes.
+    #
+    # @return [true, false] true if it is a cross-compiled Linux variety, false otherwise
+    def is_cross_compiled_linux?
+      return !!@name.match(/^huaweios|^(sles-\d\d-s390x|el-\d-s390x)$/)
+    end
   end
 end
