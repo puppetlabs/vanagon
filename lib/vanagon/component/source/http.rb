@@ -30,7 +30,7 @@ class Vanagon
         # Download the source from the url specified. Sets the full path to the
         # file as @file and the @extension for the file as a side effect.
         def fetch
-          @file = download
+          @file = download(@url)
           @extension = get_extension
         end
 
@@ -46,26 +46,30 @@ class Vanagon
         end
 
         # Downloads the file from @url into the @workdir
-        #
+        # @param target_url [String, URI, Addressable::URI] url of an http source to retrieve with GET
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
-        def download
-          uri = URI.parse(@url)
-          target_file = File.basename(uri.path)
-          puts "Downloading file '#{target_file}' from url '#{@url}'"
-          case uri.scheme
-          when 'http', 'https'
-            Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-              request = Net::HTTP::Get.new(uri)
+        def download(target_url, target_file = nil)
+          uri = URI.parse(target_url.to_s)
+          target_file ||= File.basename(uri.path)
 
-              http.request request do |response|
-                unless response.is_a? Net::HTTPSuccess
-                  fail "Error: #{response.code.to_s}. Unable to get source from #{@url}"
-                end
+          puts "Downloading file '#{target_file}' from url '#{target_url}'"
+
+          Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+            http.request(Net::HTTP::Get.new(uri)) do |response|
+              case response
+              when Net::HTTPRedirection
+                # By parsing the location header, we get either an absolute
+                # URI or a URI with a relative `path`. Adding it to `uri`
+                # should correctly update the relative `path` or overwrite
+                # the entire URI if it's absolute.
+                location = URI.parse(response.header['location'])
+                download(uri + location, target_file)
+              when Net::HTTPSuccess
                 open(File.join(@workdir, target_file), 'w') do |io|
-                  response.read_body do |chunk|
-                    io.write(chunk)
-                  end
+                  response.read_body { |chunk| io.write(chunk) }
                 end
+              else
+                fail "Error: #{response.code.to_s}. Unable to get source from #{target_url}"
               end
             end
           end
