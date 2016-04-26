@@ -198,6 +198,20 @@ class Vanagon
       # Because single vs plural is annoying to remember
       alias_method :build_host, :build_hosts
 
+      # Set a flag whether this platform is cross-compiled
+      #
+      # @param type [Boolean] true if this platform is cross-compiled
+      def cross_compiled(flag)
+        @platform.cross_compiled = true unless flag.nil?
+      end
+
+      # Set a flag whether this is a cross-compiled Linux platform
+      #
+      # @param type [Boolean] true if this is a cross-compiled Linux platform
+      def cross_compiled_linux(flag)
+        @platform.cross_compiled_linux = true unless flag.nil?
+      end
+
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name of the target template to use from the vmpooler
