@@ -121,6 +121,13 @@ class Vanagon
         @platform.copy = copy_cmd
       end
 
+      # Set the cross_compiled flag for the platform
+      #
+      # @param cxx_flag [Boolean] True if this is a cross-compiled platform
+      def cross_compiled(cxx_flag)
+        @platform.cross_compiled = cxx_flag
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default
