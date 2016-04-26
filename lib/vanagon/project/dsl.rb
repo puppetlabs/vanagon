@@ -85,6 +85,13 @@ class Vanagon
         @project.homepage = page
       end
 
+      # Sets the timeout for the project retry logic
+      #
+      # @param page [Integer] timeout in seconds
+      def timeout(to)
+        @project.timeout = to
+      end
+
       # Sets the run time requirements for the project. Mainly for use in packaging.
       #
       # @param req [String] of requirements of the project
