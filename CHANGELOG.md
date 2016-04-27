@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.6.1] - 2016-04-27
+### Added
+- Added is_cross_compiled? utility methods to specify if a platform is cross-compiled
+
+### Fixed
+- Vanagon now follows HTTP redirects
+- make timeout accessible in the dsl
+
 ## [0.6.0] - 2016-04-15
 ### Added
 - With this release the vanagon MSI engine has stabilized and is now ready for
@@ -13,7 +21,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Fixed
 - Updates in the deb/rpm conflicts functionality did not work correctly with
-  deb-based systems. Both 'Replaces' and 'Breaks' are specified in the 
+  deb-based systems. Both 'Replaces' and 'Breaks' are specified in the
   control script when replaces are added to vanagon now.
 - Make retry_count accessible in the dsl.
 - Update to not pass the platform flag to the WiX compiler options since the
@@ -248,7 +256,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/puppetlabs/vanagon/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/puppetlabs/vanagon/compare/0.5.10...0.6.0
 [0.5.10]: https://github.com/puppetlabs/vanagon/compare/0.5.9...0.5.10
 [0.5.9]: https://github.com/puppetlabs/vanagon/compare/0.5.8...0.5.9
