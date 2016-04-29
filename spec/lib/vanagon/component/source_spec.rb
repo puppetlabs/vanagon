@@ -93,7 +93,7 @@ describe "Vanagon::Component::Source" do
 
     it 'registers the rule for the given protocol' do
       Vanagon::Component::Source.register_rewrite_rule('http', 'http://buildsources.delivery.puppetlabs.net')
-      expect(Vanagon::Component::Source.class_variable_get(:@@rewrite_rule)).to eq({'http' => 'http://buildsources.delivery.puppetlabs.net'})
+      expect(Vanagon::Component::Source.rewrite_rules).to eq({'http' => 'http://buildsources.delivery.puppetlabs.net'})
     end
   end
 end
