@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+# *****NOTE:
+# This is functionally almost identical to the devkit binary. and should be deprecated
+# in the near future by just updating devkit
+#
+
+require 'vanagon'
+
+optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [<component-name>...] [options]",
+                                 [:workdir, :configdir, :target, :engine, :resume])
+options = optparse.parse! ARGV
+
+project = ARGV[0]
+platform = ARGV[1]
+components = ARGV.drop(2)
+
+if project.nil? or platform.nil?
+  warn "project and platform are both required arguments."
+  puts optparse
+  exit 1
+end
+
+artifact = Vanagon::Driver.new(platform, project, options.merge({ :components => components }))
+artifact.verbose = true if options[:verbose]
+artifact.resume = true if options[:resume]
+
+artifact.dev_run

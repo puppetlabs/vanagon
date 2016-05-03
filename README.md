@@ -107,7 +107,7 @@ communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
 ##### VANAGON\_SSH\_AGENT
-When set, Vanagon will forward the ssh authentication agent connection. 
+When set, Vanagon will forward the ssh authentication agent connection.
 
 ##### VMPOOLER\_TOKEN
 Used in conjunction with the pooler engine, this is a token to pass to the
@@ -131,6 +131,7 @@ have a docker\_image defined in its config).
 
 ### `devkit` usage
 
+NOTE** The vanagon devkit is under development, and thus may be unreliable.
 The devkit command has positional arguments and position independent flagged
 arguments.
 
@@ -154,6 +155,43 @@ Supports all flagged arguments from the `build` command.
 
 ##### -t HOST, --target HOST
 As in the `build` target host optional argument.
+
+#### Flags (can be anywhere in the command)
+
+##### -h, --help
+Display command-line help.
+
+### `dev_build` usage
+
+NOTE** dev_build is under development, and thus may be unreliable.
+dev_build builds a project the same as build with the available options
+of stopping execution and resuming a running engine.
+
+#### Arguments (position dependent)
+
+##### project name
+As in `build` arguments.
+
+##### platform name
+As in `build` arguments.
+
+##### component names [optional]
+Specifies specific components that should be built. If components are not
+specified, then all components in the project will be built. If components
+are specified as arguments, then any in the project that aren't specified
+as arguments will be retrieved from packages rather than built from source.
+
+#### Flagged arguments (can be anywhere in the command)
+
+Supports all flagged arguments from the `build` command.
+
+##### -t HOST, --target HOST
+As in the `build` target host optional argument.
+
+##### -r, --resume
+This will resume an engine that is currently running,
+it equates to disabling @engine.startup. Note that
+in order to resume a host, --target must be specified
 
 #### Flags (can be anywhere in the command)
 

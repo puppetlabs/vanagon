@@ -10,6 +10,7 @@ class Vanagon
         :engine => ['-e ENGINE', '--engine ENGINE', "A custom engine to use (defaults to the pooler) [base, local, docker, pooler currently supported]"],
         :skipcheck => ['--skipcheck', 'Skip the `check` stage when building components'],
         :preserve => ['-p', '--preserve', 'Whether to tear down the VM on success or not (defaults to false)'],
+        :resume => ['-r', '--resume', 'Resumes a currently setup engine in dev_build'],
         :verbose => ['-v', '--verbose', 'Verbose output (does nothing)'],
       }
 
