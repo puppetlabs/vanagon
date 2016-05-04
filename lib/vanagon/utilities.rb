@@ -129,18 +129,24 @@ class Vanagon
     # @return [true] If the block succeeds, true is returned
     # @raise [Vanagon::Error] if the block fails after the retries are exhausted, an error is raised
     def retry_with_timeout(tries = 5, timeout = 1, &blk)
+      error = nil
       tries.times do
         Timeout::timeout(timeout) do
           begin
             blk.call
             return true
-          rescue
+          rescue => e
             warn 'An error was encountered evaluating block. Retrying..'
+            error = e
           end
         end
       end
 
-      raise Vanagon::Error, "Block failed maximum of #{tries} tries. Exiting.."
+      message = "Block failed maximum number of #{tries} tries"
+      message += "\n with error #{error.message}" unless error.nil?
+      message += "\nExiting..."
+      raise error, message unless error.nil?
+      raise Vanagon::Error, "Block failed maximum number of #{tries} tries"
     end
 
     # Simple wrapper around git command line executes the given commands and

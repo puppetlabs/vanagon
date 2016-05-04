@@ -146,7 +146,7 @@ describe "Vanagon::Utilities" do
 
     it 'raises a Vanagon::Error if the command fails n times' do
       expect(Vanagon::Utilities).to receive(:remote_ssh_command).with(host, command, port).exactly(tries).times.and_raise(RuntimeError)
-      expect{ Vanagon::Utilities.retry_with_timeout(tries, timeout) { Vanagon::Utilities.remote_ssh_command(host, command, port) } }.to raise_error(Vanagon::Error)
+      expect{ Vanagon::Utilities.retry_with_timeout(tries, timeout) { Vanagon::Utilities.remote_ssh_command(host, command, port) } }.to raise_error(RuntimeError)
     end
 
     it 'returns true if the command succeeds within n times' do
