@@ -186,8 +186,8 @@ For more detailed examples of the DSLs available, please see the
 ---
 The Release Engineering team at Puppet Labs
 
-Maintainer: Michael Stahnke <stahnma@puppetlabs.com>
+Maintainer: Michael Stahnke <stahnma@puppet.com>
 
-Please log tickets and issues at our [Issue Tracker](https://tickets.puppetlabs.com/browse/CPR). Set compononent to Vanagon.
+Please log tickets and issues at our [Issue Tracker](https://tickets.puppet.com/browse/CPR). Set compononent to Vanagon.
 
 In addition there is an active #puppet-dev channel on Freenode.

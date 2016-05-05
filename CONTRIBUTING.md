@@ -9,7 +9,7 @@ top of things.
 
 ## Getting Started
 
-* Make sure you have a [Jira account](http://tickets.puppetlabs.com)
+* Make sure you have a [Jira account](http://tickets.puppet.com)
 * Make sure you have a [GitHub account](https://github.com/signup/free)
 * Submit a ticket for your issue, assuming one does not already exist.
   * Clearly describe the issue including steps to reproduce when it is a bug.
@@ -70,7 +70,7 @@ a ticket number.
 
 ## Submitting Changes
 
-* Sign the [Contributor License Agreement](http://links.puppetlabs.com/cla).
+* Sign the [Contributor License Agreement](https://cla.puppet.com).
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the puppetlabs organization.
 * Update your Jira ticket to mark that you have submitted code and are ready for it to be reviewed (Status: Ready for Merge).
@@ -86,9 +86,9 @@ a ticket number.
 
 # Additional Resources
 
-* [Puppet Labs community guidelines](http://docs.puppetlabs.com/community/community_guidelines.html)
-* [Bug tracker (Jira)](http://tickets.puppetlabs.com)
-* [Contributor License Agreement](http://links.puppetlabs.com/cla)
+* [Puppet Labs community guidelines](http://docs.puppet.com/community/community_guidelines.html)
+* [Bug tracker (Jira)](http://tickets.puppet.com)
+* [Contributor License Agreement](https://cla.puppet.com)
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
 * #puppet-dev IRC channel on freenode.org ([Archive](https://botbot.me/freenode/puppet-dev/))

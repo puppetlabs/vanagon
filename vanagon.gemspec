@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.license = "Apache-2.0"
 
   gem.authors  = ['Puppet Labs']
-  gem.email    = 'info@puppetlabs.com'
+  gem.email    = 'info@puppet.com'
   gem.homepage = 'http://github.com/puppetlabs/vanagon'
   gem.specification_version = 3
   gem.required_ruby_version = '~> 2.1'
