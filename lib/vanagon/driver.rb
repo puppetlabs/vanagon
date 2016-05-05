@@ -13,9 +13,9 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
-      @verbose = false
-      @preserve = false
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false })
+      @verbose = options[:verbose]
+      @preserve = options[:preserve]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
