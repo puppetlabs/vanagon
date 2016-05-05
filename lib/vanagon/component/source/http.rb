@@ -18,7 +18,7 @@ class Vanagon
         # @param sum [String] sum to verify the download against
         # @param workdir [String] working directory to download into
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum, workdir)
+        def initialize(url:, sum:, workdir:, **options)
           unless sum
             fail "sum is required to validate the http source"
           end

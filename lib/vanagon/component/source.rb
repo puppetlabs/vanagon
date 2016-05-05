@@ -61,21 +61,31 @@ class Vanagon
         # @param options [Hash] hash of the options needed for the subtype
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
-        def source(url, options, workdir)
-          url_match = url.match(/^(.*)(@|:\/\/)(.*)$/)
-          uri_scheme = url_match[1] if url_match
-          local_source =  case uri_scheme
-                          when /^http/
-                            Vanagon::Component::Source::Http.new(rewrite(url, 'http'), options[:sum], workdir)
-                          when /^file/
-                            Vanagon::Component::Source::Local.new(rewrite(url, 'file'), workdir)
-                          when /^git/
-                            Vanagon::Component::Source::Git.new(rewrite(url, 'git'), options[:ref], workdir)
-                          else
-                            fail "Don't know how to handle source of type '#{uri_scheme}' from url: '#{url}'"
-                          end
-
-          return local_source
+        def source(target_url, options, workdir)
+          Vanagon::Component::Source::Git.new(
+            url: target_url,
+            ref: options[:ref],
+            workdir: workdir,
+            clone_depth: options[:clone_depth]
+          )
+        rescue Vanagon::InvalidRepo
+          url = URI.parse(target_url)
+          case url.scheme
+          when "http"
+            Vanagon::Component::Source::Http.new(
+              url: rewrite(url, 'http'),
+              sum: options[:sum],
+              workdir: workdir
+            )
+          when "file"
+            Vanagon::Component::Source::Local.new(
+              url: rewrite(url, 'file'),
+              workdir: workdir
+            )
+          else
+            raise Vanagon::Error,
+                  "Don't know how to handle source of type '#{url.scheme}' from url: '#{url}'"
+          end
         end
       end
     end

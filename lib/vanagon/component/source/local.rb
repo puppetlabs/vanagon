@@ -16,7 +16,7 @@ class Vanagon
         #
         # @param url [String] url of the http source to fetch
         # @param workdir [String] working directory to download into
-        def initialize(url, workdir)
+        def initialize(url:, workdir:, **options)
           @url = url
           @workdir = workdir
         end
