@@ -24,6 +24,7 @@ class Vanagon
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @project.settings[:verbose] = options[:verbose]
       @project.settings[:skipcheck] = options[:skipcheck]
       loginit('vanagon_hosts.log')
 
