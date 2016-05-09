@@ -7,11 +7,16 @@ class Vanagon
 
       # The vmpooler_template is required to use the pooler engine
       def initialize(platform, target = nil)
+        super
+
         @pooler = "http://vmpooler.delivery.puppetlabs.net"
         @token = load_token
-        super
         @required_attributes << "vmpooler_template"
-        @name = 'pooler'
+      end
+
+      # Get the engine name
+      def name
+        'pooler'
       end
 
       # This method loads the pooler token from one of two locations

@@ -1,4 +1,5 @@
 require 'vanagon/engine/docker'
+require 'vanagon/platform'
 
 describe 'Vanagon::Engine::Docker' do
   let (:platform_with_docker_image) {
@@ -36,5 +37,10 @@ describe 'Vanagon::Engine::Docker' do
       expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
       expect(Vanagon::Engine::Docker.new(platform_with_docker_image).validate_platform).to be(true)
     end
+  end
+
+  it 'returns "docker" name' do
+    expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
+    expect(Vanagon::Engine::Docker.new(platform_with_docker_image).name).to eq('docker')
   end
 end

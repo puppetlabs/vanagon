@@ -51,14 +51,18 @@ class Vanagon
       end
 
       def initialize(platform, target)
+        super
+
         Vanagon::Driver.logger.debug "Hardware engine invoked."
-        @name = 'hardware'
-        @platform = platform
         @build_hosts = platform.build_hosts
         # Redis is the only backend supported in lock_manager currently
         @lockman = LockManager.new(type: 'redis', server: LOCK_MANAGER_HOST)
-        super
         @required_attributes << "build_hosts"
+      end
+
+      # Get the engine name
+      def name
+        'hardware'
       end
     end
   end

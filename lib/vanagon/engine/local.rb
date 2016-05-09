@@ -7,15 +7,19 @@ class Vanagon
     class Local < Base
 
       def initialize(platform, target = nil)
-        @target = target || "local machine"
-        @name = 'local'
-        super
+        # local engine can't be used with a target
+        super(platform, 'local machine')
 
         # We inherit a set of required attributes from Base,
         # and rather than instantiate a new empty array for
         # required attributes, we can just clear out the
         # existing ones.
         @required_attributes.clear
+      end
+
+      # Get the engine name
+      def name
+        'local'
       end
 
       # Dispatches the command for execution

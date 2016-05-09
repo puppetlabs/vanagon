@@ -6,10 +6,15 @@ class Vanagon
       # Both the docker_image and the docker command itself are required for
       # the docker engine to work
       def initialize(platform, target = nil)
-        @docker_cmd = Vanagon::Utilities.find_program_on_path('docker')
-        @name = 'docker'
         super
+
+        @docker_cmd = Vanagon::Utilities.find_program_on_path('docker')
         @required_attributes << "docker_image"
+      end
+
+      # Get the engine name
+      def name
+        'docker'
       end
 
       # This method is used to obtain a vm to build upon using

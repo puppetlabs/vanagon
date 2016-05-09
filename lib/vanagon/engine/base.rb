@@ -4,14 +4,18 @@ require 'vanagon/errors'
 class Vanagon
   class Engine
     class Base
-      attr_accessor :target, :remote_workdir, :name
+      attr_accessor :target, :remote_workdir
 
       def initialize(platform, target = nil)
         @platform = platform
         @required_attributes = ["ssh_port"]
         @target = target if target
         @target_user = @platform.target_user
-        @name = 'base'
+      end
+
+      # Get the engine name
+      def name
+        'base'
       end
 
       # This method is used to obtain a vm to build upon
