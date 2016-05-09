@@ -61,6 +61,10 @@ class Vanagon
       @@logger
     end
 
+    def build_host_info
+      { "name" => @engine.build_host_name, "engine" => @engine.name }
+    end
+
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
     def list_build_dependencies
       @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)

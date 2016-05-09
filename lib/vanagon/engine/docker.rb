@@ -17,11 +17,21 @@ class Vanagon
         'docker'
       end
 
+      # Return the docker image name to build on
+      def build_host_name
+        if @build_host_name.nil?
+          validate_platform
+          @build_host_name = @platform.docker_image
+        end
+
+        @build_host_name
+      end
+
       # This method is used to obtain a vm to build upon using
       # a docker container.
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
-        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{@platform.docker_image}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
+        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{build_host_name}")
         @target = 'localhost'
 
         # Wait for ssh to come up in the container
@@ -35,10 +45,10 @@ class Vanagon
       # This method is used to tell the vmpooler to delete the instance of the
       # vm that was being used so the pool can be replenished.
       def teardown
-        Vanagon::Utilities.ex("#{@docker_cmd} stop #{@platform.docker_image}-builder")
-        Vanagon::Utilities.ex("#{@docker_cmd} rm #{@platform.docker_image}-builder")
+        Vanagon::Utilities.ex("#{@docker_cmd} stop #{build_host_name}-builder")
+        Vanagon::Utilities.ex("#{@docker_cmd} rm #{build_host_name}-builder")
       rescue Vanagon::Error => e
-        warn "There was a problem tearing down the docker container #{@platform.docker_image}-builder (#{e.message})."
+        warn "There was a problem tearing down the docker container #{build_host_name}-builder (#{e.message})."
       end
     end
   end

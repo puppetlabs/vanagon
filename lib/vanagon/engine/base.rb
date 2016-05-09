@@ -18,6 +18,11 @@ class Vanagon
         'base'
       end
 
+      # Get the engine specific name of the host to build on
+      def build_host_name
+        raise Vanagon::Error, '#build_host_name has not been implemented for your engine.'
+      end
+
       # This method is used to obtain a vm to build upon
       # For the base class we just return the target that was passed in
       def select_target

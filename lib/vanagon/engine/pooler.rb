@@ -19,6 +19,16 @@ class Vanagon
         'pooler'
       end
 
+      # Return the vmpooler template name to build on
+      def build_host_name
+        if @build_host_template_name.nil?
+          validate_platform
+          @build_host_template_name = @platform.vmpooler_template
+        end
+
+        @build_host_template_name
+      end
+
       # This method loads the pooler token from one of two locations
       # @return [String, nil] token for use with the vmpooler
       def load_token
@@ -40,12 +50,12 @@ class Vanagon
         response = Vanagon::Utilities.http_request(
           "#{@pooler}/vm",
           'POST',
-          '{"' + @platform.vmpooler_template + '":"1"}',
+          '{"' + build_host_name + '":"1"}',
           { 'X-AUTH-TOKEN' => @token }
         )
         if response["ok"]
-          @target = response[@platform.vmpooler_template]['hostname'] + '.' + response['domain']
-          Vanagon::Driver.logger.info "Reserving #{@target} (#{@platform.vmpooler_template}) [#{@token ? 'token used' : 'no token used'}]"
+          @target = response[build_host_name]['hostname'] + '.' + response['domain']
+          Vanagon::Driver.logger.info "Reserving #{@target} (#{build_host_name}) [#{@token ? 'token used' : 'no token used'}]"
 
           tags = {
             'tags' => {
@@ -56,13 +66,13 @@ class Vanagon
           }
 
           Vanagon::Utilities.http_request(
-            "#{@pooler}/vm/#{response[@platform.vmpooler_template]['hostname']}",
+            "#{@pooler}/vm/#{response[build_host_name]['hostname']}",
             'PUT',
             tags.to_json,
             { 'X-AUTH-TOKEN' => @token }
           )
         else
-          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{@platform.vmpooler_template} is empty?"
+          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{build_host_name} is empty?"
         end
       end
 

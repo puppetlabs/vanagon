@@ -22,6 +22,16 @@ class Vanagon
         'local'
       end
 
+      # Return the target name to build on
+      def build_host_name
+        if @build_host_name.nil?
+          validate_platform
+          @build_host_name = @target
+        end
+
+        @build_host_name
+      end
+
       # Dispatches the command for execution
       def dispatch(command, return_output = false)
         Vanagon::Utilities.local_command(command, return_command_output: return_output)
@@ -35,6 +45,7 @@ class Vanagon
         FileUtils.mkdir_p("output")
         FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
       end
+
     end
   end
 end
