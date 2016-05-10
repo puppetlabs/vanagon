@@ -36,6 +36,10 @@ class Vanagon
     def load_engine(engine_type, platform, target)
       if platform.build_hosts
         engine_type = 'hardware'
+      elsif platform.aws_ami
+        engine_type = 'ec2'
+      elsif platform.docker_image
+        engine_type = 'docker'
       elsif target
         engine_type = 'base'
       end
@@ -106,7 +110,7 @@ class Vanagon
       puts e.backtrace.join("\n")
       raise e
     ensure
-      if @engine.name == "hardware"
+      if ["hardware", "ec2"].include?(@engine.name)
         @engine.teardown
       end
     end
