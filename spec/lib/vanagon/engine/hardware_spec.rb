@@ -49,4 +49,8 @@ describe 'Vanagon::Engine::Hardware' do
       expect(Vanagon::Engine::Hardware.new(platform, nil).validate_platform).to be(true)
     end
   end
+
+  it 'returns "hardware" name' do
+    expect(Vanagon::Engine::Hardware.new(platform, nil).name).to eq('hardware')
+  end
 end

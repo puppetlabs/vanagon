@@ -13,9 +13,9 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false })
-      @verbose = false
-      @preserve = false
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false })
+      @verbose = options[:verbose]
+      @preserve = options[:preserve]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
@@ -24,6 +24,7 @@ class Vanagon
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @project.settings[:verbose] = options[:verbose]
       @project.settings[:skipcheck] = options[:skipcheck]
       loginit('vanagon_hosts.log')
 
@@ -58,6 +59,10 @@ class Vanagon
 
     def self.logger
       @@logger
+    end
+
+    def build_host_info
+      { "name" => @engine.build_host_name, "engine" => @engine.name }
     end
 
     # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.

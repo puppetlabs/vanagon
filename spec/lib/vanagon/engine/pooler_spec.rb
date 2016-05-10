@@ -1,4 +1,5 @@
 require 'vanagon/engine/pooler'
+require 'vanagon/platform'
 
 describe 'Vanagon::Engine::Pooler' do
   let (:platform) { double(Vanagon::Platform, :target_user => 'root') }
@@ -52,5 +53,9 @@ describe 'Vanagon::Engine::Pooler' do
     it 'returns true if the platform has the required attributes' do
       expect(Vanagon::Engine::Pooler.new(platform_with_vcloud_name).validate_platform).to be(true)
     end
+  end
+
+  it 'returns "pooler" name' do
+    expect(Vanagon::Engine::Pooler.new(platform_with_vcloud_name).name).to eq('pooler')
   end
 end

@@ -1,4 +1,5 @@
 require 'vanagon/engine/local'
+require 'vanagon/platform'
 
 describe 'Vanagon::Engine::Local' do
   let (:platform) {
@@ -23,5 +24,9 @@ describe 'Vanagon::Engine::Local' do
       engine = Vanagon::Engine::Local.new(platform)
       expect(engine.dispatch('true', true)).to eq('')
     end
+  end
+
+  it 'returns "local" name' do
+    expect(Vanagon::Engine::Local.new(platform).name).to eq('local')
   end
 end
