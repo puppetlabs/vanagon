@@ -57,17 +57,18 @@ class Vanagon
       end
 
       def select_target
-        puts "Created instance waiting for it to start up"
-        @ec2.wait_until(:instance_status_ok, instance_ids: [@instance[:id]])
-        puts "Instance created id: #{@instance[:id]}"
-        @target = @instance[:private_ip_address]
+        puts "Instance created id: #{instance.id}"
+        puts "Created instance waiting for status ok"
+        @ec2.wait_until(:instance_status_ok, instance_ids: [instance.id])
+        puts "Instance running"
+        @target = instance.private_ip_address
       rescue ::Aws::Waiters::Errors::WaiterFailed => error
         fail "Failed to wait for ec2 instance to start got error #{error}"
       end
 
       def teardown
-        puts "Destroying instance on AWS id: #{@instances.map(&:id).first}"
-        @instances.batch_terminate!
+        puts "Destroying instance on AWS id: #{instance.id}"
+        instances.batch_terminate!
       end
     end
   end
