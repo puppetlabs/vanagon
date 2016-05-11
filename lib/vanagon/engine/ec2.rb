@@ -7,12 +7,11 @@ class Vanagon
   class Engine
     class Ec2 < Base
       attr_accessor :ami, :key_name, :userdata, :key, :key_name, :shutdown_behavior
-      attr_accessor :subnet_id, :instance_type,
+      attr_accessor :subnet_id, :instance_type
 
       def initialize(platform, target = nil)
         super
-        @name = 'ec2'
-        @platform = platform
+
         @ami = @platform.aws_ami
         @target_user = @platform.target_user
         @subnet_id = @platform.aws_subnet_id
@@ -28,7 +27,11 @@ class Vanagon
         @resource = ::Aws::EC2::Resource.new(client: @ec2)
       end
 
-      def get_userdata()
+      def name
+        'ec2'
+      end
+
+      def get_userdata
         unless @userdata.nil?
           Base64.encode64(ERB.new(@userdata).result(binding))
         end
