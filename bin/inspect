@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require 'json'
+
+load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
+
+optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [options]", [:workdir, :configdir, :engine])
+options = optparse.parse! ARGV
+
+project = ARGV[0]
+platforms = ARGV[1]
+
+unless project or platforms
+  warn "project and platform are both required arguments."
+  puts optparse
+  exit 1
+end
+
+platforms.split(',').each do |platform|
+  driver = Vanagon::Driver.new(platform, project, options)
+  puts JSON.generate(driver.project.components)
+end
