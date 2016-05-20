@@ -17,5 +17,6 @@ end
 
 platforms.split(',').each do |platform|
   driver = Vanagon::Driver.new(platform, project, options)
-  puts JSON.generate(driver.project.components)
+  components = driver.project.components.map(&:to_hash)
+  puts JSON.pretty_generate(components)
 end
