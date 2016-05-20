@@ -2,6 +2,7 @@
 require 'json'
 require 'vanagon/extensions/ostruct/json'
 require 'vanagon/extensions/set/json'
+require 'vanagon/extensions/hashable'
 
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
