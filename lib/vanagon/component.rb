@@ -14,6 +14,12 @@ class Vanagon
     attr_accessor :sources, :preinstall_actions, :postinstall_actions
     attr_accessor :preremove_actions, :postremove_actions, :license
 
+    def to_hash
+      instance_variables.each_with_object({}) do |var, hash|
+        hash[var.to_s.delete("@")] = instance_variable_get(var)
+      end
+    end
+
     # Loads a given component from the configdir
     #
     # @param name [String] the name of the component
