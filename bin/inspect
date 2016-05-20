@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'json'
+require 'vanagon/extensions/ostruct/json'
+require 'vanagon/extensions/set/json'
 
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
