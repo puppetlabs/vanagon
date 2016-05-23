@@ -5,6 +5,7 @@ require 'json'
 require 'digest'
 require 'erb'
 require 'timeout'
+require 'english'
 require 'vanagon/extensions/string'
 
 class Vanagon
@@ -93,7 +94,7 @@ class Vanagon
     # @raise [Vanagon::Error] If the command fails an exception is raised
     def ex(command)
       ret = %x(#{command})
-      unless $?.success?
+      unless $CHILD_STATUS.success?
         raise Vanagon::Error, "'#{command}' did not succeed"
       end
       ret
@@ -159,7 +160,7 @@ class Vanagon
       git_bin = find_program_on_path('git')
       output = %x(#{git_bin} #{command_string})
       if raise_error
-        unless $?.success?
+        unless $CHILD_STATUS.success?
           raise %(git #{command_string} failed)
         end
       end
@@ -173,7 +174,7 @@ class Vanagon
     def is_git_repo?(directory = Dir.pwd)
       Dir.chdir(directory) do
         git('rev-parse --git-dir > /dev/null 2>&1')
-        $?.success?
+        $CHILD_STATUS.success?
       end
     end
 
@@ -258,14 +259,14 @@ class Vanagon
       puts "Executing '#{command}' on '#{target}'"
       if return_command_output
         ret = %x(#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}').chomp
-        if $?.success?
+        if $CHILD_STATUS.success?
           return ret
         else
           raise "Remote ssh command (#{command}) failed on '#{target}'."
         end
       else
         Kernel.system("#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}'")
-        $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
+        $CHILD_STATUS.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       end
     end
 
@@ -281,14 +282,14 @@ class Vanagon
         puts "Executing '#{command}' locally"
         if return_command_output
           ret = %x(#{command}).chomp
-          if $?.success?
+          if $CHILD_STATUS.success?
             return ret
           else
             raise "Local command (#{command}) failed."
           end
         else
           Kernel.system(command)
-          $?.success? or raise "Local command (#{command}) failed."
+          $CHILD_STATUS.success? or raise "Local command (#{command}) failed."
         end
       end
     end
