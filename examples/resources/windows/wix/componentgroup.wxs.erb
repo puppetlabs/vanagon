@@ -13,6 +13,8 @@
   <Fragment>
     <ComponentGroup Id="MainComponentGroup">
       <!-- We can add all components by referencing this one thing -->
+      <!-- AppComponentGroup is actually output from the heat "harvest"
+           so do not statically create this componentgroup -->
       <ComponentGroupRef Id="AppComponentGroup" />
       <ComponentGroupRef Id="AppDataComponentGroup" />
       <ComponentGroupRef Id="RegistryComponentGroup" />
@@ -25,6 +27,7 @@
       <ComponentGroupRef Id="FragmentCustomActions" />
     </ComponentGroup>
 
+    <!-- remove the following to use project specific UI -->
     <UI>
       <UIRef Id="WixUI_Minimal"/>
     </UI>

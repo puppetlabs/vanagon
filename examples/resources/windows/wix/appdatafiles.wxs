@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <!--
+    Specific Application data folders and files
+    These directories and files need to be special cased
+    in order to manage the application data for puppet
+    agent. The specific special case is that all files
+    and folders here need to be persistent across multiple
+    installs and uninstalls. We can do so by specifying
+    Permanent="yes" on each file/folder component.
+  -->
+  <Fragment>
+    <DirectoryRef Id="TARGETDIR">
+      <Directory Id="CommonAppDataFolder" Name="CommonAppData">
+        <Directory Id="APPDATADIR" Name="PuppetLabs">
+          <Directory Id="AppDataFolderLog" Name="log" />
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+    <ComponentGroup Id="AppDataComponentGroup" >
+      <Component
+        Id="LogDir"
+        Guid="SOME_GUID"
+        Permanent="yes"
+        Directory="AppDataFolderLog" >
+        <CreateFolder/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

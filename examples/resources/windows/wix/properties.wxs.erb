@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Fragment>
+
+    <ComponentGroup Id="FragmentProperties" />
+    <!-- This property is used in the localization strings for the GUI -->
+    <Property
+      Id="VersionUIString"
+      Value="<%= @version.sub(/\.g[0-9a-z]{7}$/, '') %>" />
+
+    <!-- To use WixUI_InstallDir, you must set a property named
+       WIXUI_INSTALLDIR with a value of the ID of the directory you want the
+       user to be able to specify the location of. -->
+    <Property
+      Id="WIXUI_INSTALLDIR"
+      Value="INSTALLDIR" />
+    <!-- This text is placed as a literal string in the GUI -->
+    <Property
+      Id="WIXUI_EXITDIALOGOPTIONALTEXT"
+      Value="." />
+
+    <!--
+      Remembered Property Pattern
+      http://robmensching.com/blog/posts/2010/5/2/The-WiX-toolsets-Remember-Property-pattern
+      -->
+    <!-- Registry settings, remembered install dir is dependent on x86/64.
+         Everything else stays with x86 so both installer types can see it
+      -->
+    <!-- settings[:win64] is a suggested property to indicate the architecture
+         of the windows build, in this case it will be a boolean
+      -->
+    <Property Id="INSTALLDIR">
+      <RegistrySearch
+        Id="RecallInstallDir"
+        Root="HKLM"
+        Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_id] %>"
+        Name="<%= settings[:RememberedInstallDirRegKey] %>"
+        Type="raw"
+        Win64="<%= settings[:win64] %>" />
+    </Property>
+
+    <Property Id="INSTALLDIR_X86" >
+      <RegistrySearch
+        Id="RecallInstallDirx86"
+        Root="HKLM"
+        Key="SOFTWARE\<%= settings[:company_name] %>\<%= settings[:product_id] %>"
+        Name="<%= settings[:RememberedInstallDirRegKey] %>"
+        Type="raw"
+        Win64="<%= settings[:win64] %>" />
+    </Property>
+
+  </Fragment>
+</Wix>
