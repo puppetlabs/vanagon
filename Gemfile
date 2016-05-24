@@ -10,7 +10,9 @@ def lock_manager_location_for(place)
   end
 end
 
-gem "aws-sdk", "~> 2.2.0"
+group "ec2-engine" do
+  gem "aws-sdk", "~> 2.2.0", :require => false
+end
 
 group(:development, :test) do
   gem 'rspec', '~> 3.0', :require => false
