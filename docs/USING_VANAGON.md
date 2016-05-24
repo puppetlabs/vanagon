@@ -11,7 +11,7 @@ Vanagon searches for WiX files under the resources/windows/wix directory of the 
 ### Components
 As a special note, take care to understand the difference in language between vanagon and MSIs: vanagon uses "component" to describe the "component" defined in a config, a facility or sub-group within a package. Whereas MSIs define a component as an individual installable component (a file or service)
 
-The process vanagon uses to actually build the MSI follows the normal path used for Unix based projects; vanagon builds each component on a build system, moves everything to a staging directory, then packages everything up.  In order to construct components on a windows system follow the usual vanagon pattern set out in the [styleguide](https://github.com/puppetlabs/vanagon/blob/master/STYLEGUIDE.md).
+The process vanagon uses to actually build the MSI follows the normal path used for Unix based projects; vanagon builds each component on a build system, moves everything to a staging directory, then packages everything up.  In order to construct components on a windows system follow the usual vanagon pattern set out in the [styleguide](https://github.com/puppetlabs/vanagon/blob/master/docs/STYLEGUIDE.md).
 
 Component files and project files likely require some differentiation based on installation between Unix and Windows. Common practice to deal with the differences is to use the is_"platform"? commands to create different branches of configuration. A list of the available is_"platform"? Functions can be found under [platform.rb](https://github.com/puppetlabs/vanagon/blob/master/lib/vanagon/platform.rb).
 
