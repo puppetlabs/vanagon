@@ -195,7 +195,7 @@ end
 Contributing
 ---
 We'd love to get contributions from you! Once you are up and running, take a look at the
-[Contribution Documents](https://github.com/puppetlabs/vanagon/blob/master/CONTRIBUTING.md) to see how to get your changes merged
+[Contribution Documents](https://github.com/puppetlabs/vanagon/blob/master/docs/CONTRIBUTING.md) to see how to get your changes merged
 in.
 
 License

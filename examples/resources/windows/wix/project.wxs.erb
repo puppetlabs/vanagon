@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <!-- default project level MSI settings This can be copied in the project specific area
+       to extend or update functionality
+
+       Note that all variables set with "settings[:<variable>]" need to be initialized
+       inside the vanagon project config.-->
+
+
   <Product
     Id="*"
     UpgradeCode="<%= settings[:upgrade_code] %>"

@@ -9,6 +9,20 @@ project "my-app" do |proj|
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
 
+  if platform.is_windows?
+    proj.setting(:company_name, "BananaLand Inc.")
+    proj.setting(:company_id, "BananaLand")
+    proj.setting(:common_product_id, "MyAppInstaller")
+    proj.setting(:service_name, "my-app-service")
+    proj.setting(:product_id, "my-app")
+    proj.setting(:upgrade_code, "SOME_GUID")
+    if platform.architecture == "x64"
+      proj.setting(:win64, "yes")
+    else
+      proj.setting(:win64, "no")
+    end
+  end
+
   proj.description "This app does some things."
   proj.version "1.2.3"
   proj.license "ASL 2.0"
