@@ -6,6 +6,6 @@
 class String
   # @return [String]
   def undent
-    gsub(/^.{#{slice(/^ +/).length}}/, '')
+    gsub(/^.{#{slice(/^\s+/).length}}/, '')
   end
 end

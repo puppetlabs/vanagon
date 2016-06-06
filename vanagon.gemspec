@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('lock_manager', '>= 0')
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
-  gem.executables  = ['build', 'ship', 'repo', 'devkit', 'build_host_info']
+  gem.executables  = ['build', 'inspect', 'ship', 'repo', 'devkit', 'build_host_info']
 
   # Ensure the gem is built out of versioned files
   gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
