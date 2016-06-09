@@ -130,8 +130,8 @@ class Vanagon
     # @raise [Vanagon::Error] if the block fails after the retries are exhausted, an error is raised
     def retry_with_timeout(tries = 5, timeout = 1, &blk)
       error = nil
-      tries.times do
-        Timeout::timeout(timeout) do
+      tries.to_i.times do
+        Timeout::timeout(timeout.to_i) do
           begin
             blk.call
             return true
