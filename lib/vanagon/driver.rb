@@ -96,7 +96,7 @@ class Vanagon
 
       puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
-      @project.fetch_sources(@workdir)
+      retry_task { @project.fetch_sources(@workdir) }
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
