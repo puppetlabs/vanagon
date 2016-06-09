@@ -101,7 +101,7 @@ class Vanagon
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
-      retry_task { @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})") }
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
       @engine.teardown unless @preserve
       cleanup_workdir unless @preserve
