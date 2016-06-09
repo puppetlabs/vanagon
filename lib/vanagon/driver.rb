@@ -96,12 +96,12 @@ class Vanagon
 
       puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
-      @project.fetch_sources(@workdir)
+      retry_task { @project.fetch_sources(@workdir) }
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
-      retry_task { @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})") }
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
       @engine.teardown unless @preserve
       cleanup_workdir unless @preserve
@@ -138,7 +138,7 @@ class Vanagon
     # values from the project, if available, otherwise use some
     # sane defaults.
     def retry_task(&block)
-      @timeout = @project.timeout || ENV["TIMEOUT"] || 3600
+      @timeout = @project.timeout || ENV["TIMEOUT"] || 7200
       @retry_count = @project.retry_count || ENV["RETRY_COUNT"] || 1
       Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
     end
