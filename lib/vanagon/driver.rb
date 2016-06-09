@@ -138,7 +138,7 @@ class Vanagon
     # values from the project, if available, otherwise use some
     # sane defaults.
     def retry_task(&block)
-      @timeout = @project.timeout || ENV["TIMEOUT"] || 3600
+      @timeout = @project.timeout || ENV["TIMEOUT"] || 7200
       @retry_count = @project.retry_count || ENV["RETRY_COUNT"] || 1
       Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
     end
