@@ -122,6 +122,7 @@ class Vanagon
         return false
       end
     end
+    alias_method :which, :find_program_on_path
 
     # Method to retry a ruby block and fail if the command does not succeed
     # within the number of tries and timeout.
