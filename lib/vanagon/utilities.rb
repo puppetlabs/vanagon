@@ -10,6 +10,8 @@ require 'vanagon/extensions/string'
 
 class Vanagon
   module Utilities
+    extend self
+
     # Utility to get the md5 sum of a file
     #
     # @param file [String] file to md5sum
