@@ -1,0 +1,24 @@
+#!/bin/bash
+
+<%- if has_services? -%>
+<%- get_services.each do |service| -%>
+echo "Unloading service <%= service.name %>..."
+/bin/launchctl unload <%= service.service_file %>
+echo "OK"
+echo "Removing service file <%= service.service_file %>..."
+/bin/rm <%= service.service_file %>
+echo "OK"
+<%- end -%>
+<%- end -%>
+
+echo "Removing identifier: <%= @identifier-%>.<%= @name -%>..."
+if /usr/sbin/pkgutil --files <%= @identifier-%>.<%= @name -%> >/dev/null 2>&1 ; then
+  /usr/sbin/pkgutil --forget <%= @identifier-%>.<%= @name -%>
+
+fi
+echo "OK"
+
+echo "Removing Files"
+/bin/rm -Rf <%= get_directories.map {|d| d.path}.join(" ").to_s -%>
+
+echo "OK"
