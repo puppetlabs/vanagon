@@ -6,6 +6,26 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.6.2] - 2016-06-27
+### Added
+- Inspectable components
+- Documentation (incomplete)
+- ec2 engine
+- There is now a VANAGON_RETRY_COUNT environment variable to set retry counts
+- There is now a VANAGON_TIMEOUT environment variable to set timeout
+
+### Changed
+- Increased the default timeout on retry logic
+- Put retry logic around fetching sources
+- Vanagon no longer retries makefile execution
+- Windows WiX "defaults" have been removed, and examples have been
+  added to the examples directory
+- Default retry count is now 1
+
+### Fixed
+- Retry logic prints out error messages
+- AIX and el 4 upgrades / installs no longer leave files under rpmstatedir
+
 ## [0.6.1] - 2016-04-27
 ### Added
 - Added is_cross_compiled? utility methods to specify if a platform is cross-compiled
@@ -256,7 +276,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.2...HEAD
+[0.6.2]: https://github.com/puppetlabs/vanagon/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/puppetlabs/vanagon/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/puppetlabs/vanagon/compare/0.5.10...0.6.0
 [0.5.10]: https://github.com/puppetlabs/vanagon/compare/0.5.9...0.5.10
