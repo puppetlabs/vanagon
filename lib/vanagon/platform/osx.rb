@@ -25,8 +25,11 @@ class Vanagon
          # Setup build directories
         ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload,plugins}'",
          "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
+         "mkdir -p $(tempdir)/osx/build/pkg",
          # Grab distribution xml, scripts and other external resources
          "cp #{project.name}-installer.xml $(tempdir)/osx/build/",
+         #copy the uninstaller to the pkg dir, where eventually the installer will go too
+         "cp #{project.name}-uninstaller.tool $(tempdir)/osx/build/pkg/",
          "cp scripts/* $(tempdir)/osx/build/scripts/",
          "if [ -d resources/osx/productbuild ] ; then cp -r resources/osx/productbuild/* $(tempdir)/osx/build/; fi",
          # Unpack the project
@@ -72,6 +75,9 @@ class Vanagon
           erb_file(File.join(VANAGON_ROOT, "resources/osx/#{script_file}.erb"), File.join(script_dir, script_file), false, { :binding => binding })
           FileUtils.chmod 0755, File.join(script_dir, script_file)
         end
+
+        erb_file(File.join(VANAGON_ROOT, 'resources', 'osx', 'uninstaller.tool.erb'), File.join(workdir, "#{name}-uninstaller.tool"), false, { :binding => binding })
+        FileUtils.chmod 0755, File.join(workdir, "#{name}-uninstaller.tool")
 
         # Probably a better way to do this, but OSX tends to need some extra stuff
         FileUtils.cp_r("resources/osx/.", resources_dir) if File.exist?("resources/osx/")
