@@ -78,7 +78,7 @@ Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
 Specifies where project configuration is found. Defaults to $pwd/configs.
 
 ##### -e ENGINE, --engine ENGINE
-Choose a different virtualization engine to use to select the build target.
+Choose a different virtualization engine to use to select the build target. 
 Currently supported engines are:
 * `base` - Pure ssh backend; no teardown currently defined
 * `local` - Build on the local machine; platform name must match the local machine
@@ -130,6 +130,67 @@ on the el-6-i386 platform and leave the host intact afterward.
 project on the el-6-i386 platform using the docker engine (the platform must
 have a docker\_image defined in its config).
 
+---
+
+### `inspect` usage
+
+The `inspect` command has positional arguments and position independent flags. It
+mirrors the `build` command, but exits with success after loading and interpolating
+all of the components in the given project. No attempt is made to actually build
+the given project; instead, a JSON formatted array of hashes is returned and printed
+to `stdout`. This JSON array can be further processed by external tooling, such as `jq`.
+
+#### Arguments (position dependent)
+
+##### project name
+The name of the project to build, and a file named \<project\_name\>.rb must be
+present in configs/projects in the working directory.
+
+##### platform name
+The name of the platform to build against, and a file named
+\<platform\_name\>.rb must be present in configs/platforms in the working
+directory.
+
+Platform can also be a comma separated list of platforms such as platform1,platform2.
+
+#### Flagged arguments (can be anywhere in the command)
+
+##### -w DIR, --workdir DIR
+Specifies a directory where the sources should be placed and builds performed.
+Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
+
+##### -c DIR, --configdir DIR
+Specifies where project configuration is found. Defaults to $pwd/configs.
+
+##### -e ENGINE, --engine ENGINE
+Choose a different virtualization engine to use to select the build target.
+Engines are respected, but only insofar as components and projects are
+rendered -- the `inspect` command performs no compilation.
+
+Supported engines are the same as the `build` command.
+
+#### Flags (can be anywhere in the command)
+
+##### -v, --verbose (not yet implemented)
+Increase verbosity of output.
+
+##### -h, --help
+Display command-line help.
+
+#### Environment variables
+
+Environment variables are respected, but only insofar as components and projects are
+rendered -- the `inspect` command has no behavior to alter. 
+
+Supported environment variables are the same as the `build` command.
+
+#### Example usage
+`inspect puppet-agent el-6-i386` will load the puppet-agent project
+on the el-6-i386 platform and print the resulting list of dependencies,
+build-time configuration, environment variables, and expected artifacts.
+
+---
+
 ### `devkit` usage
 
 The devkit command has positional arguments and position independent flagged
@@ -160,6 +221,8 @@ As in the `build` target host optional argument.
 
 ##### -h, --help
 Display command-line help.
+
+---
 
 Engines
 ---
@@ -215,7 +278,6 @@ For more detailed examples of the DSLs available, please see the
 [examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
 
 ## Maintainers
----
 The Release Engineering team at Puppet Labs
 
 Maintainer: Michael Stahnke <stahnma@puppet.com>
