@@ -42,31 +42,32 @@ define any platforms you want to build for. Vanagon ships with some simple
 binaries to use, but the one you probably care about is named 'build'.
 
 ### `build` usage
-
 The build command has positional arguments and position independent flags.
+
 
 #### Arguments (position dependent)
 
 ##### project name
-The name of the project to build, and a file named \<project\_name\>.rb must be
-present in configs/projects in the working directory.
+The name of the project to build; a file named `<project_name>.rb` must be
+present under `configs/projects` in the working directory.
 
 ##### platform name
-The name of the platform to build against, and a file named
-\<platform\_name\>.rb must be present in configs/platforms in the working
-directory.
-
-Platform can also be a comma separated list of platforms such as platform1,platform2.
+The name of the target platform to build `<project_name>` against; a file named
+`<platform_name>.rb` must be present under `configs/platforms` in the working
+directory. This can also be a comma separated list of platforms such as `platform1,platform2`;
+note that there are no spaces after the comma.
 
 ##### target host [optional]
 Target host is an optional argument to override the host selection. Instead of using
-a vm collected from the pooler, the build will attempt to ssh to target as the
-root user.
+a random VM collected from the pooler (Vanagon's default build engine), the build will 
+attempt connect to the target host over SSH as the `root` user.
 
 If building on multiple platforms, multiple targets can also be specified using
-a comma separated list such as host1,host2. If less targets are specified than
-platforms, the default engine (the pooler) will be used for platforms without a
-target. If more targets are specified than platforms, the extra will be ignored.
+a comma separated list such as `host1,host2` (note that there are no spaces after 
+the comma). If less targets are specified than platforms, the default engine 
+(`pooler`) will be used for platforms without a target. If more targets are specified 
+than platforms, the extra platforms will be ignored.
+
 
 #### Flagged arguments (can be anywhere in the command)
 
@@ -78,7 +79,7 @@ Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
 Specifies where project configuration is found. Defaults to $pwd/configs.
 
 ##### -e ENGINE, --engine ENGINE
-Choose a different virtualization engine to use to select the build target.
+Choose a different virtualization engine to use to select the build target. 
 Currently supported engines are:
 * `base` - Pure ssh backend; no teardown currently defined
 * `local` - Build on the local machine; platform name must match the local machine
@@ -100,27 +101,34 @@ Increase verbosity of output.
 ##### -h, --help
 Display command-line help.
 
+
 #### Environment variables
 
-##### VANAGON\_SSH\_KEY
+##### `VANAGON_SSH_KEY`
 A full path on disk for a private ssh key to be used in ssh and rsync
 communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
-##### VANAGON\_SSH\_AGENT
+##### `VANAGON_SSH_AGENT`
 When set, Vanagon will forward the ssh authentication agent connection.
 
-##### VMPOOLER\_TOKEN
+##### `VMPOOLER_TOKEN`
 Used in conjunction with the pooler engine, this is a token to pass to the
 vmpooler to access the API. Without this token, the default lifetime of vms
 will be much shorter.
 
-##### LOCK\_MANAGER\_HOST
+##### `LOCK_MANAGER_HOST`
 The name of the host where redis is running. Redis is used to handle a lock
 when using the hardware engine. It defaults to *redis*, with no domain.
 
-#### LOCK\_MANAGER\_PORT
+##### `LOCK_MANAGER_PORT`
 Port of the system where redis is running. Defaults to *6379*.
+
+##### `RETRY_COUNT`
+Some phases of compilation support retries. The default value is *1* but
+setting to any integer value greater than 1 will causes these components
+to retry operations on failure until the `RETRY_COUNT` limit is reached.
+
 
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
@@ -129,6 +137,67 @@ on the el-6-i386 platform and leave the host intact afterward.
 `build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
 project on the el-6-i386 platform using the docker engine (the platform must
 have a docker\_image defined in its config).
+
+---
+
+### `inspect` usage
+
+The `inspect` command has positional arguments and position independent flags. It
+mirrors the `build` command, but exits with success after loading and interpolating
+all of the components in the given project. No attempt is made to actually build
+the given project; instead, a JSON formatted array of hashes is returned and printed
+to `stdout`. This JSON array can be further processed by external tooling, such as `jq`.
+
+#### Arguments (position dependent)
+
+##### project name
+The name of the project to build, and a file named \<project\_name\>.rb must be
+present in configs/projects in the working directory.
+
+##### platform name
+The name of the platform to build against, and a file named
+\<platform\_name\>.rb must be present in configs/platforms in the working
+directory.
+
+Platform can also be a comma separated list of platforms such as platform1,platform2.
+
+#### Flagged arguments (can be anywhere in the command)
+
+##### -w DIR, --workdir DIR
+Specifies a directory where the sources should be placed and builds performed.
+Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
+
+##### -c DIR, --configdir DIR
+Specifies where project configuration is found. Defaults to $pwd/configs.
+
+##### -e ENGINE, --engine ENGINE
+Choose a different virtualization engine to use to select the build target.
+Engines are respected, but only insofar as components and projects are
+rendered -- the `inspect` command performs no compilation.
+
+Supported engines are the same as the `build` command.
+
+#### Flags (can be anywhere in the command)
+
+##### -v, --verbose (not yet implemented)
+Increase verbosity of output.
+
+##### -h, --help
+Display command-line help.
+
+#### Environment variables
+
+Environment variables are respected, but only insofar as components and projects are
+rendered -- the `inspect` command has no behavior to alter. 
+
+Supported environment variables are the same as the `build` command.
+
+#### Example usage
+`inspect puppet-agent el-6-i386` will load the puppet-agent project
+on the el-6-i386 platform and print the resulting list of dependencies,
+build-time configuration, environment variables, and expected artifacts.
+
+---
 
 ### `devkit` usage
 
@@ -160,6 +229,8 @@ As in the `build` target host optional argument.
 
 ##### -h, --help
 Display command-line help.
+
+---
 
 Engines
 ---
@@ -215,7 +286,6 @@ For more detailed examples of the DSLs available, please see the
 [examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
 
 ## Maintainers
----
 The Release Engineering team at Puppet Labs
 
 Maintainer: Michael Stahnke <stahnma@puppet.com>
