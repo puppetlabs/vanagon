@@ -59,13 +59,13 @@ note that there are no spaces after the comma.
 
 ##### target host [optional]
 Target host is an optional argument to override the host selection. Instead of using
-a random VM collected from the pooler (Vanagon's default build engine), the build will 
+a random VM collected from the pooler (Vanagon's default build engine), the build will
 attempt connect to the target host over SSH as the `root` user.
 
 If building on multiple platforms, multiple targets can also be specified using
-a comma separated list such as `host1,host2` (note that there are no spaces after 
-the comma). If less targets are specified than platforms, the default engine 
-(`pooler`) will be used for platforms without a target. If more targets are specified 
+a comma separated list such as `host1,host2` (note that there are no spaces after
+the comma). If less targets are specified than platforms, the default engine
+(`pooler`) will be used for platforms without a target. If more targets are specified
 than platforms, the extra platforms will be ignored.
 
 
@@ -79,7 +79,7 @@ Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
 Specifies where project configuration is found. Defaults to $pwd/configs.
 
 ##### -e ENGINE, --engine ENGINE
-Choose a different virtualization engine to use to select the build target. 
+Choose a different virtualization engine to use to select the build target.
 Currently supported engines are:
 * `base` - Pure ssh backend; no teardown currently defined
 * `local` - Build on the local machine; platform name must match the local machine
@@ -124,11 +124,16 @@ when using the hardware engine. It defaults to *redis*, with no domain.
 ##### `LOCK_MANAGER_PORT`
 Port of the system where redis is running. Defaults to *6379*.
 
-##### `RETRY_COUNT`
+##### `VANAGON_RETRY_COUNT`
 Some phases of compilation support retries. The default value is *1* but
 setting to any integer value greater than 1 will causes these components
-to retry operations on failure until the `RETRY_COUNT` limit is reached.
+to retry operations on failure until the `VANAGON_RETRY_COUNT` limit is reached.
 
+##### `VANAGON_TIMEOUT`
+Some phases of compilation can take an indeterminate (but substantial) amount of
+time. The default value is *7200* seconds(120 minutes) but setting to any
+integer value these components to fail after the `VANAGON_TIMEOUT` count is reached.
+Note that this value is expected to be in seconds.
 
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
@@ -188,7 +193,7 @@ Display command-line help.
 #### Environment variables
 
 Environment variables are respected, but only insofar as components and projects are
-rendered -- the `inspect` command has no behavior to alter. 
+rendered -- the `inspect` command has no behavior to alter.
 
 Supported environment variables are the same as the `build` command.
 
