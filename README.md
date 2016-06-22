@@ -42,31 +42,32 @@ define any platforms you want to build for. Vanagon ships with some simple
 binaries to use, but the one you probably care about is named 'build'.
 
 ### `build` usage
-
 The build command has positional arguments and position independent flags.
+
 
 #### Arguments (position dependent)
 
 ##### project name
-The name of the project to build, and a file named \<project\_name\>.rb must be
-present in configs/projects in the working directory.
+The name of the project to build; a file named `<project_name>.rb` must be
+present under `configs/projects` in the working directory.
 
 ##### platform name
-The name of the platform to build against, and a file named
-\<platform\_name\>.rb must be present in configs/platforms in the working
-directory.
-
-Platform can also be a comma separated list of platforms such as platform1,platform2.
+The name of the target platform to build `<project_name>` against; a file named
+`<platform_name>.rb` must be present under `configs/platforms` in the working
+directory. This can also be a comma separated list of platforms such as `platform1,platform2`;
+note that there are no spaces after the comma.
 
 ##### target host [optional]
 Target host is an optional argument to override the host selection. Instead of using
-a vm collected from the pooler, the build will attempt to ssh to target as the
-root user.
+a random VM collected from the pooler (Vanagon's default build engine), the build will 
+attempt connect to the target host over SSH as the `root` user.
 
 If building on multiple platforms, multiple targets can also be specified using
-a comma separated list such as host1,host2. If less targets are specified than
-platforms, the default engine (the pooler) will be used for platforms without a
-target. If more targets are specified than platforms, the extra will be ignored.
+a comma separated list such as `host1,host2` (note that there are no spaces after 
+the comma). If less targets are specified than platforms, the default engine 
+(`pooler`) will be used for platforms without a target. If more targets are specified 
+than platforms, the extra platforms will be ignored.
+
 
 #### Flagged arguments (can be anywhere in the command)
 
