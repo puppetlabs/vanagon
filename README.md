@@ -100,27 +100,34 @@ Increase verbosity of output.
 ##### -h, --help
 Display command-line help.
 
+
 #### Environment variables
 
-##### VANAGON\_SSH\_KEY
+##### `VANAGON_SSH_KEY`
 A full path on disk for a private ssh key to be used in ssh and rsync
 communications. This will be used instead of whatever defaults are configured
 in .ssh/config.
 
-##### VANAGON\_SSH\_AGENT
+##### `VANAGON_SSH_AGENT`
 When set, Vanagon will forward the ssh authentication agent connection.
 
-##### VMPOOLER\_TOKEN
+##### `VMPOOLER_TOKEN`
 Used in conjunction with the pooler engine, this is a token to pass to the
 vmpooler to access the API. Without this token, the default lifetime of vms
 will be much shorter.
 
-##### LOCK\_MANAGER\_HOST
+##### `LOCK_MANAGER_HOST`
 The name of the host where redis is running. Redis is used to handle a lock
 when using the hardware engine. It defaults to *redis*, with no domain.
 
-#### LOCK\_MANAGER\_PORT
+##### `LOCK_MANAGER_PORT`
 Port of the system where redis is running. Defaults to *6379*.
+
+##### `RETRY_COUNT`
+Some phases of compilation support retries. The default value is *1* but
+setting to any integer value greater than 1 will causes these components
+to retry operations on failure until the `RETRY_COUNT` limit is reached.
+
 
 #### Example usage
 `build --preserve puppet-agent el-6-i386` will build the puppet-agent project
