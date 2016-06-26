@@ -241,9 +241,7 @@ fi
       chkconfig --del <%= service.name %> || :
     fi
   <%- elsif @platform.servicetype == "aix" -%>
-    if [ "$1" -eq 0 ]; then
       /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
-    fi
   <%- end -%>
 <%- end -%>
 
