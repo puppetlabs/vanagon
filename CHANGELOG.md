@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.6.3] - 2016-06-29
+### Changed
+- On AIX, services are stopped on upgrade.
+
 ## [0.6.2] - 2016-06-27
 ### Added
 - Inspectable components
@@ -276,7 +280,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.3...HEAD
+[0.6.3]: https://github.com/puppetlabs/vanagon/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/puppetlabs/vanagon/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/puppetlabs/vanagon/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/puppetlabs/vanagon/compare/0.5.10...0.6.0
