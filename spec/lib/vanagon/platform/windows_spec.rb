@@ -194,7 +194,7 @@ HERE
             comp.install_service('SourceDir/ProgramFilesFolder/TestID/TestProduct/opt/bin.exe')
             expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
 <<-HERE
-<Directory Name="opt" Id="opt">
+<Directory Name="opt" Id="opt_0_0">
 <Directory Id="SERVICETESTBINDIR" />
 </Directory>
 HERE
@@ -210,7 +210,7 @@ HERE
             expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
 
 <<-HERE
-<Directory Name="opt" Id="opt">
+<Directory Name="opt" Id="opt_0_0">
 <Directory Id="SERVICETEST2BINDIR" />
 </Directory>
 HERE
@@ -226,8 +226,8 @@ HERE
             expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
 
 <<-HERE
-<Directory Name="somedir" Id="somedir">
-<Directory Name="someotherdir" Id="someotherdir">
+<Directory Name="somedir" Id="somedir_0_0">
+<Directory Name="someotherdir" Id="someotherdir_0_1">
 <Directory Id="SERVICETESTBINDIR" />
 </Directory>
 </Directory>
@@ -247,7 +247,7 @@ HERE
             comp2.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\bin.exe')
             expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service].flatten.compact, proj._project)).to eq( \
 <<-HERE
-<Directory Name="somedir" Id="somedir">
+<Directory Name="somedir" Id="somedir_0_0">
 <Directory Id="SERVICETESTBINDIR" />
 <Directory Id="SERVICETEST2BINDIR" />
 </Directory>
@@ -267,17 +267,17 @@ HERE
             comp3.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\oneUpAgain\\twoUpAgain\\bin.exe')
             expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service, comp3._component.service].flatten.compact, proj._project)).to eq( \
 <<-HERE
-<Directory Name="somedir" Id="somedir">
-<Directory Name="oneUp" Id="oneUp">
-<Directory Name="twoUp" Id="twoUp">
+<Directory Name="somedir" Id="somedir_0_0">
+<Directory Name="oneUp" Id="oneUp_0_1">
+<Directory Name="twoUp" Id="twoUp_0_2">
 <Directory Id="SERVICETEST1BINDIR" />
 </Directory>
 </Directory>
-<Directory Name="oneUpAgain" Id="oneUpAgain">
-<Directory Name="twoUp" Id="twoUp">
+<Directory Name="oneUpAgain" Id="oneUpAgain_1_1">
+<Directory Name="twoUp" Id="twoUp_1_2">
 <Directory Id="SERVICETEST2BINDIR" />
 </Directory>
-<Directory Name="twoUpAgain" Id="twoUpAgain">
+<Directory Name="twoUpAgain" Id="twoUpAgain_2_2">
 <Directory Id="SERVICETEST3BINDIR" />
 </Directory>
 </Directory>
