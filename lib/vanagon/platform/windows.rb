@@ -335,12 +335,14 @@ class Vanagon
         # iterate over all paths specified and break each one
         # in to its specific directories. This will generate_wix_dirs
         # an n-ary tree structure matching the specs from the input
-        items.each do |item|
+        items.each_with_index do |item, item_idx|
           # Always start at the beginning
           curr = root
           names = item[:path].split(File::SEPARATOR)
-          names.each do |name|
-            curr = insert_child(curr, name)
+          names.each_with_index do |name, names_idx|
+            # We concat the indexes of each loop to name to ensure the ids of all
+            # elements will be unique.
+            curr = insert_child(curr, name, "#{name}_#{item_idx}_#{names_idx}")
           end
           # at this point, curr will be the top dir, override the id if
           # id exists
@@ -356,9 +358,9 @@ class Vanagon
       # @param [HASH] curr, current object we are on
       # @param [string] name, name of new object we are to search for and
       #                 create if necessary
-      def insert_child(curr, name)
+      def insert_child(curr, name, id)
         #The Id field will default to name, but be overridden later
-        new_obj = { :name => name, :id => name, :elements_to_add => [], :children => [] }
+        new_obj = { :name => name, :id => id, :elements_to_add => [], :children => [] }
         if (child_index = index_of_child(new_obj, curr[:children]))
           curr = curr[:children][child_index]
         else
