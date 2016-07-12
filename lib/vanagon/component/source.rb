@@ -1,3 +1,4 @@
+require 'fustigit'
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'
 require 'vanagon/component/source/local'
@@ -5,12 +6,13 @@ require 'vanagon/component/source/local'
 class Vanagon
   class Component
     class Source
-      SUPPORTED_PROTOCOLS = ['file', 'http', 'git'].freeze
+      SUPPORTED_PROTOCOLS = %w(file http https git).freeze
       @rewrite_rules = {}
 
       class << self
         attr_reader :rewrite_rules
 
+        # Deprecate this
         def register_rewrite_rule(protocol, rule)
           if rule.is_a?(String) or rule.is_a?(Proc)
             if SUPPORTED_PROTOCOLS.include?(protocol)
@@ -23,6 +25,7 @@ class Vanagon
           end
         end
 
+        # Deprecate this
         def rewrite(url, protocol)
           rule = @rewrite_rules[protocol]
 
@@ -37,6 +40,7 @@ class Vanagon
           return url
         end
 
+        # Deprecate this
         def proc_rewrite(rule, url)
           if rule.arity == 1
             rule.call(url)
@@ -45,7 +49,9 @@ class Vanagon
           end
         end
 
-        def string_rewrite(rule, url)
+        # Deprecate this
+        def string_rewrite(rule, original_url)
+          url = original_url.to_s
           target_match = url.match(/.*\/([^\/]*)$/)
           if target_match
             target = target_match[1]
@@ -55,37 +61,53 @@ class Vanagon
           end
         end
 
+        def parse_and_rewrite(uri)
+          url = URI.parse(uri)
+          return url unless url.scheme
+          rewrite(url.to_s, url.scheme)
+        end
+
+        # Needs a better name
+        def best_guess(uri, **options)
+          # First we git
+          if Vanagon::Component::Source::Git.valid_remote?(parse_and_rewrite(uri))
+            return Vanagon::Component::Source::Git.new parse_and_rewrite(uri),
+              sum: options[:sum],
+              workdir: options[:workdir]
+          end
+
+          # Then we HTTP
+          if Vanagon::Component::Source::Http.valid_url?(parse_and_rewrite(uri))
+            return Vanagon::Component::Source::Http.new parse_and_rewrite(uri),
+              sum: options[:sum],
+              workdir: options[:workdir]
+          end
+
+          # Then we try local
+          if Vanagon::Component::Source::Local.valid_file?(parse_and_rewrite(uri))
+            return Vanagon::Component::Source::Local.new parse_and_rewrite(uri),
+              workdir: options[:workdir]
+          end
+
+          # Failing all of that, we give up
+          raise Vanagon::Error,
+            "Unknown file type: '#{uri}'; cannot continue"
+        end
+
+        # Needs a better name
+        def absolute_certainty(uri, type)
+          # try to parse the URI as whatever type was passed
+        end
+
         # Basic factory to hand back the correct {Vanagon::Component::Source} subtype to the component
         #
         # @param url [String] URL to the source (includes git@... style links)
         # @param options [Hash] hash of the options needed for the subtype
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
-        def source(target_url, options, workdir)
-          Vanagon::Component::Source::Git.new(
-            url: target_url,
-            ref: options[:ref],
-            workdir: workdir,
-            clone_depth: options[:clone_depth]
-          )
-        rescue Vanagon::InvalidRepo
-          url = URI.parse(target_url)
-          case url.scheme
-          when "http"
-            Vanagon::Component::Source::Http.new(
-              url: rewrite(url, 'http'),
-              sum: options[:sum],
-              workdir: workdir
-            )
-          when "file"
-            Vanagon::Component::Source::Local.new(
-              url: rewrite(url, 'file'),
-              workdir: workdir
-            )
-          else
-            raise Vanagon::Error,
-                  "Don't know how to handle source of type '#{url.scheme}' from url: '#{url}'"
-          end
+        def source(uri_or_triplet, **opts)
+          # Make some stuff happen here
+          best_guess uri_or_triplet, opts
         end
       end
     end

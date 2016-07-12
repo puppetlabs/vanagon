@@ -14,14 +14,14 @@ describe "Vanagon::Component::Source::Http" do
 
   describe "#dirname" do
     it "returns the name of the tarball, minus extension for archives" do
-      http_source = Vanagon::Component::Source::Http.new(tar_url, md5sum, workdir)
+      http_source = Vanagon::Component::Source::Http.new(tar_url, sum: md5sum, workdir: workdir)
       expect(http_source).to receive(:download).and_return(tar_filename)
       http_source.fetch
       expect(http_source.dirname).to eq(tar_dirname)
     end
 
     it "returns the current directory for non-archive files" do
-      http_source = Vanagon::Component::Source::Http.new(plaintext_url, md5sum, workdir)
+      http_source = Vanagon::Component::Source::Http.new(plaintext_url, sum: md5sum, workdir: workdir)
       expect(http_source).to receive(:download).and_return(plaintext_filename)
       http_source.fetch
       expect(http_source.dirname).to eq(plaintext_dirname)
@@ -33,7 +33,7 @@ describe "Vanagon::Component::Source::Http" do
       Vanagon::Component::Source::Http::ARCHIVE_EXTENSIONS.each do |ext|
         filename = "#{file_base}#{ext}"
         url = File.join(base_url, filename)
-        http_source = Vanagon::Component::Source::Http.new(url, md5sum, workdir)
+        http_source = Vanagon::Component::Source::Http.new(url, sum: md5sum, workdir: workdir)
         expect(http_source).to receive(:download).and_return(filename)
         http_source.fetch
         expect(http_source.get_extension).to eq(ext)
@@ -43,7 +43,7 @@ describe "Vanagon::Component::Source::Http" do
     it "is able to download non archive extensions" do
       ["gpg.txt", "foo.service", "configi.json", "config.repo.txt", "noextensionfile"].each do |filename|
         url = File.join(base_url, filename)
-        http_source = Vanagon::Component::Source::Http.new(url, md5sum, workdir)
+        http_source = Vanagon::Component::Source::Http.new(url, sum: md5sum, workdir: workdir)
         expect(http_source).to receive(:download).and_return(filename)
         http_source.fetch
       end

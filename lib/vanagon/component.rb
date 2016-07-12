@@ -106,16 +106,17 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_source(workdir)
-      if @url
-        @source = Vanagon::Component::Source.source(@url, @options, workdir)
-        @source.fetch
-        @source.verify
-        @extract_with = @source.respond_to?(:extract) ? @source.extract(@platform.tar) : ':'
-        @cleanup_source = @source.cleanup if @source.respond_to?(:cleanup)
-        @dirname = @source.dirname
+      opts = options.merge({workdir: workdir})
+      if url
+        source = Vanagon::Component::Source.source(url, opts)
+        source.fetch
+        source.verify
+        extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : ':'
+        cleanup_source = source.cleanup if source.respond_to?(:cleanup)
+        dirname = source.dirname
 
         # Git based sources probably won't set the version, so we load it if it hasn't been already set
-        @version ||= @source.version
+        version ||= source.version
       else
         warn "No source given for component '#{@name}'"
 
@@ -140,10 +141,13 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_sources(workdir)
-      @sources.each do |source|
-        cur_source = Vanagon::Component::Source.source(source.url, { :ref => source.ref, :sum => source.sum }, workdir)
-        cur_source.fetch
-        cur_source.verify
+      sources.each do |source|
+        src = Vanagon::Component::Source.source source.url,
+                                                workdir: workdir,
+                                                ref: source.ref,
+                                                sum: source.sum
+        src.fetch
+        src.verify
       end
     end
 

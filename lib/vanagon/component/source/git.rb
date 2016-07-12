@@ -92,6 +92,12 @@ class Vanagon
           "rm -rf #{dirname}"
         end
 
+        # There is no md5 to manually verify here, so this is a noop.
+        def verify
+          # nothing to do here, so just tell users that and return
+          puts "Nothing to verify for Git sources"
+        end
+
         # The dirname to reference when building from the repo
         #
         # @return [String] the directory where the repo was cloned

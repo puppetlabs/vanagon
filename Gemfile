@@ -10,6 +10,9 @@ def lock_manager_location_for(place)
   end
 end
 
+# Parse scp-style triplets like URIs; used for Git source handling.
+gem 'fustigit', '~>0.1.1'
+
 group "ec2-engine" do
   gem "aws-sdk", "~> 2.2.0", :require => false
 end

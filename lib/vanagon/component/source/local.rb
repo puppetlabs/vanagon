@@ -12,11 +12,17 @@ class Vanagon
         # Extensions for files we intend to unpack during the build
         ARCHIVE_EXTENSIONS = ['.tar.gz', '.tgz', '.zip'].freeze
 
+        class << self
+          def valid_file?(target_file)
+            File.exist?(target_file.to_s)
+          end
+        end
+
         # Constructor for the File source type
         #
         # @param url [String] url of the http source to fetch
         # @param workdir [String] working directory to download into
-        def initialize(url:, workdir:, **options)
+        def initialize(url, workdir:, **options)
           @url = url
           @workdir = workdir
         end
