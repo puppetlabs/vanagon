@@ -1,6 +1,8 @@
 require 'vanagon/utilities'
 require 'vanagon/errors'
-require 'english'
+# This stupid library requires a capital 'E' in its name
+# but it provides a wealth of useful constants
+require 'English'
 
 class Vanagon
   class Component

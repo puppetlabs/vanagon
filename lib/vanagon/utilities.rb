@@ -5,7 +5,9 @@ require 'json'
 require 'digest'
 require 'erb'
 require 'timeout'
-require 'english'
+# This stupid library requires a capital 'E' in its name
+# but it provides a wealth of useful constants
+require 'English'
 require 'vanagon/extensions/string'
 
 class Vanagon
