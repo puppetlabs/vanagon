@@ -1,4 +1,5 @@
 require 'vanagon/utilities'
+require 'vanagon/errors'
 require 'english'
 
 class Vanagon
@@ -116,4 +117,14 @@ class Vanagon
       end
     end
   end
+
+  class GitError < Error; end
+  # Raised when a URI is not a valid Source Control repo
+  class InvalidRepo < GitError; end
+  # Raised when a given ref doesn't exist in a Git Repo
+  class UnknownRef < GitError; end
+  # Raised when a given sha doesn't exist in a Git Repo
+  class UnknownSha < GitError; end
+  # Raised when checking out a given ref from a Git Repo fails
+  class CheckoutFailed < GitError; end
 end
