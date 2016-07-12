@@ -25,4 +25,3 @@ class Vanagon
     end
   end
 end
-

@@ -106,7 +106,7 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_source(workdir)
-      opts = options.merge({workdir: workdir})
+      opts = options.merge({ workdir: workdir })
       if url
         source = Vanagon::Component::Source.source(url, opts)
         source.fetch
