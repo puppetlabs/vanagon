@@ -4,7 +4,7 @@
 ## Creating a Vanagon Project for Windows
 
 ### Overview
-Vanagon projects for windows use [WiX](http://wixtoolset.org/) to create MSIs that will install on native windows platforms.  Vanagon uses the same process between all platforms, including windows, to build and stage artifacts before creating an installer.  Vanagon only uses WiX files for the actual installer itself, so the smaller / simpler your install experience, the less WiX you need. You can find example WiX files under [examples](https://github.com/puppetlabs/vanagon/examples/resources/windows/wix).  These files should provide a good start to create an MSI using vanagon.
+Vanagon projects for windows use [WiX](http://wixtoolset.org/) to create MSIs that will install on native windows platforms.  Vanagon uses the same process between all platforms, including windows, to build and stage artifacts before creating an installer.  Vanagon only uses WiX files for the actual installer itself, so the smaller / simpler your install experience, the less WiX you need. You can find example WiX files under [examples](https://github.com/puppetlabs/vanagon/tree/master/examples/resources/windows/wix).  These files should provide a good start to create an MSI using vanagon.
 
 Vanagon searches for WiX files under the resources/windows/wix directory of the project. Any WiX files and vanagon default WiX overrides go to that directory.
 
