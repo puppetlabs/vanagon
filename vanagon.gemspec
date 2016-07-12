@@ -17,6 +17,9 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency('rspec', ["~> 3.0"])
   gem.add_development_dependency('yard', '~> 0.8')
+  # Parse scp-style triplets like URIs; used for Git source handling.
+  gem.add_runtime_dependency('fustigit', '~> 0.1.3')
+  # Handle locking hardware resources
   gem.add_runtime_dependency('lock_manager', '>= 0')
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
