@@ -1,33 +1,47 @@
 require 'vanagon/component/source/git'
 
 describe "Vanagon::Component::Source::Git" do
-  let (:url) { 'git://github.com/puppetlabs/facter' }
-  let (:ref) { '2.2.0' }
-  let (:workdir) { "/tmp" }
+  let(:klass) { Vanagon::Component::Source::Git }
+  let(:url) { 'git://github.com/puppetlabs/facter' }
+  let(:ref_tag) { 'refs/tags/2.2.0' }
+  let(:bad_ref) { 'refs/heads/beefcafe' }
+  let(:bad_sha) { 'FEEDBEEF' }
+  let(:workdir) { ENV["TMPDIR"] || "/tmp" }
+
+  after(:each) { %x(rm -rf #{workdir}/facter) }
+
+  describe "#initialize" do
+    it "raises error on initialization with an invalid repo" do
+      # this test has a spelling error for the git repo
+      # * this is on purpose *
+      expect { klass.new("#{url}l.git", ref: ref_tag, workdir: workdir) }
+        .to raise_error Vanagon::InvalidRepo
+    end
+
+    it "raises error on initialization with a bad ref" do
+      expect { klass.new("#{url}", ref: bad_ref, workdir: workdir) }
+        .to raise_error Vanagon::UnknownRef
+    end
+  end
 
   describe "#dirname" do
-    after(:each) { %x(rm -rf #{workdir}/facter) }
     it "returns the name of the repo" do
-      git_source = Vanagon::Component::Source::Git.new(url, ref, workdir)
-      expect(git_source.dirname).to eq('facter')
+      git_source = klass.new(url, ref: ref_tag, workdir: workdir)
+      expect(git_source.dirname)
+        .to eq('facter')
     end
 
     it "returns the name of the repo and strips .git" do
-      git_source = Vanagon::Component::Source::Git.new("#{url}.git", ref, workdir)
-      expect(git_source.dirname).to eq('facter')
+      git_source = klass.new("#{url}.git", ref: ref_tag, workdir: workdir)
+      expect(git_source.dirname)
+        .to eq('facter')
     end
   end
 
   describe "#fetch" do
-    after(:each) { %x(rm -rf #{workdir}/facter) }
-    it "raises error on clone failure" do
-      #this test has a spelling error for the git repo        V      this is on purpose
-      git_source = Vanagon::Component::Source::Git.new("#{url}l.git", ref, workdir)
-      expect { git_source.fetch }.to raise_error(RuntimeError, "git clone #{url}l.git failed")
-    end
-    it "raises error on checkout failure" do
-      git_source = Vanagon::Component::Source::Git.new("#{url}", "999.9.9", workdir)
-      expect { git_source.fetch }.to raise_error(RuntimeError, "git checkout 999.9.9 failed")
+    it "raises an error on checkout failure with a bad SHA" do
+      expect { klass.new("#{url}", ref: bad_sha, workdir: workdir).fetch }
+        .to raise_error Vanagon::UnknownRef
     end
   end
 end
