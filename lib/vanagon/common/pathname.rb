@@ -44,7 +44,7 @@ class Vanagon
       # @example Create a new Vanagon::Common::Pathname, marked as a file.
       #   Vanagon::Common::Pathname.file('/etc/puppet/puppet/puppet.conf')
       def self.file(path, **args)
-        new(path, **args.merge!({ config: false}))
+        new(path, **args.merge!({ config: false }))
       end
 
       # An alias to {Vanagon::Common::Pathname}'s constructor method,
@@ -54,7 +54,7 @@ class Vanagon
       # @example Create a new configuration file, marked as a configuration file.
       #   Vanagon::Common::Pathname.configfile('/etc/puppet/puppet/puppet.conf')
       def self.configfile(path, **args)
-        new(path, **args.merge!({ config: true}))
+        new(path, **args.merge!({ config: true }))
       end
 
       # @return [Boolean] true if a self is marked as a configuration file.

@@ -5,7 +5,7 @@ require 'vanagon/component/source/local'
 class Vanagon
   class Component
     class Source
-      SUPPORTED_PROTOCOLS = ['file', 'http', 'git']
+      SUPPORTED_PROTOCOLS = ['file', 'http', 'git'].freeze
       @@rewrite_rule = {}
 
       def self.register_rewrite_rule(protocol, rule)

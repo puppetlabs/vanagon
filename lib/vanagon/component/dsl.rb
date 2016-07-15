@@ -22,7 +22,7 @@ class Vanagon
       # @param name [String] name of the componennt
       # @param block [Proc] DSL definition of the component to call
       def component(name, &block)
-        block.call(self, @component.settings, @component.platform)
+        yield(self, @component.settings, @component.platform)
       end
 
       # Accessor for the component.
@@ -54,35 +54,28 @@ class Vanagon
       #
       # @param block [Proc] the command(s) required to configure the component
       def configure(&block)
-        @component.configure << block.call
+        @component.configure << yield
       end
 
       # Set or add to the build call for the component. The commands required to build the component before testing/installing it.
       #
       # @param block [Proc] the command(s) required to build the component
       def build(&block)
-        @component.build << block.call
+        @component.build << yield
       end
 
       # Set or add to the check call for the component. The commands required to test the component before installing it.
       #
       # @param block [Proc] the command(s) required to test the component
       def check(&block)
-        @component.check << block.call
+        @component.check << yield
       end
 
       # Set or add to the install call for the component. The commands required to install the component.
       #
       # @param block [Proc] the command(s) required to install the component
       def install(&block)
-        @component.install << block.call
-      end
-
-      # Setup any specific environment required to configure, build or install the component
-      #
-      # @param block [Proc] the environment required to configure, build or install the component
-      def environment(&block)
-        @component.environment = block.call
+        @component.install << yield
       end
 
       # Add a patch to the list of patches to apply to the component's source after unpacking
@@ -168,7 +161,7 @@ class Vanagon
       # @param default_file [String] path to the default file relative to the source
       # @param service_name [String] name of the service
       # @param service_type [String] type of the service (network, application, system, etc)
-      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil)
+      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil) # rubocop:disable Metrics/AbcSize
         case @component.platform.servicetype
         when "sysv"
           target_service_file = File.join(@component.platform.servicedir, service_name)
@@ -223,7 +216,7 @@ class Vanagon
       # @param target [String] path to the desired target of the file
       # @param owner  [String] owner of the file
       # @param group  [String] group owner of the file
-      def install_file(source, target, mode: '0644', owner: nil, group:  nil)
+      def install_file(source, target, mode: '0644', owner: nil, group: nil)
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "#{@component.platform.copy} -p '#{source}' '#{target}'"
         @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
@@ -235,7 +228,7 @@ class Vanagon
       # @param file [String] name of the configfile
       def configfile(file)
         # I AM SO SORRY
-        @component.delete_file "#{file}"
+        @component.delete_file file
         if @component.platform.name =~ /solaris-10|osx/
           @component.install << "mv '#{file}' '#{file}.pristine'"
           @component.add_file Vanagon::Common::Pathname.configfile("#{file}.pristine")

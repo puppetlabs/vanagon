@@ -162,9 +162,6 @@ Style/AsciiComments:
 Style/Attr:
   Enabled: false
 
-Style/Blocks:
-  Enabled: false
-
 Style/BracesAroundHashParameters:
   Enabled: false
 
@@ -230,7 +227,7 @@ Style/SpaceInsideParens:
 Style/LeadingCommentSpace:
   Enabled: false
 
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Enabled: true
 
 Style/SpaceAfterColon:
@@ -239,7 +236,7 @@ Style/SpaceAfterColon:
 Style/SpaceAfterComma:
   Enabled: true
 
-Style/SpaceAfterControlKeyword:
+Style/SpaceAroundKeyword:
   Enabled: true
 
 Style/SpaceAfterMethodName:
@@ -288,9 +285,6 @@ Style/Documentation:
 Style/DefWithParentheses:
   Enabled: false
 
-Style/DeprecatedHashMethods:
-  Enabled: false
-
 Style/DotPosition:
   Enabled: false
 
@@ -322,9 +316,6 @@ Style/EmptyLines:
 Style/EmptyLinesAroundAccessModifier:
   Enabled: false
 
-Style/EmptyLinesAroundBody:
-  Enabled: false
-
 Style/EmptyLiteral:
   Enabled: false
 
@@ -346,7 +337,10 @@ Style/TrailingWhitespace:
 Style/StringLiterals:
   Enabled: false
 
-Style/TrailingComma:
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
   Enabled: false
 
 Style/GlobalVars:
@@ -385,10 +379,6 @@ Style/TrivialAccessors:
 
 Style/UnlessElse:
   Enabled: true
-
-# This pushes preference for shell commands as backticks instead of %x
-Style/UnneededPercentX:
-  Enabled: false
 
 Style/VariableInterpolation:
   Enabled: true
@@ -468,7 +458,6 @@ Style/RedundantException:
 Style/SelfAssignment:
   Enabled: true
 
-
 Style/Proc:
   Enabled: true
 
@@ -493,9 +482,6 @@ Metrics/ParameterLists:
 Lint/RequireParentheses:
   Enabled: true
 
-Lint/SpaceBeforeFirstArg:
-  Enabled: true
-
 Style/ModuleFunction:
   Enabled: false
 
@@ -512,3 +498,21 @@ Style/Encoding:
 # so once RE-5565 is resolved, this should be enabled.
 Metrics/PerceivedComplexity:
   Enabled: true
+
+Style/CommandLiteral:
+  EnforcedStyle: percent_x
+
+# We have a few modules that are much larger than the default limit even when
+# we don't count the comments. This isn't worth it to keep enabled.
+Metrics/ModuleLength:
+  Enabled: false
+
+# I have no idea why, but it's complaining that we aren't using octal notation
+# correctly when specifying file permissions. I have no idea how to resolve the
+# complaint without disabling this cop. File permissions are not defined with
+# octal notation. The complaint makes no sense.
+Style/NumericLiteralPrefix:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false

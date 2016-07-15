@@ -10,7 +10,7 @@ class Vanagon
         attr_accessor :url, :sum, :file, :extension, :workdir, :cleanup
 
         # Extensions for files we intend to unpack during the build
-        ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
+        ARCHIVE_EXTENSIONS = ['.tar.gz', '.tgz', '.zip'].freeze
 
         # Constructor for the Http source type
         #
@@ -48,7 +48,7 @@ class Vanagon
         # Downloads the file from @url into the @workdir
         # @param target_url [String, URI, Addressable::URI] url of an http source to retrieve with GET
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
-        def download(target_url, target_file = nil)
+        def download(target_url, target_file = nil) # rubocop:disable Metrics/AbcSize
           uri = URI.parse(target_url.to_s)
           target_file ||= File.basename(uri.path)
 
@@ -93,7 +93,7 @@ class Vanagon
             when ".tar.gz", ".tgz"
               return "gunzip -c '#{@file}' | '#{tar}' xf -"
             when ".zip"
-              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, ".zip")}' '#{@file}'"
+              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, '.zip')}' '#{@file}'"
             end
           else
             # Extension does not appear to be an archive

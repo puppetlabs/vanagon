@@ -9,7 +9,6 @@ require 'vanagon/extensions/string'
 
 class Vanagon
   module Utilities
-
     # Utility to get the md5 sum of a file
     #
     # @param file [String] file to md5sum
@@ -46,7 +45,7 @@ class Vanagon
     # @raise [RuntimeError, Vanagon::Error] an exception is raised if the
     # action is not supported, or if there is a problem with the http request,
     # or if the response is not JSON
-    def http_request(url, type, payload = {}.to_json, header = nil)
+    def http_request(url, type, payload = {}.to_json, header = nil) # rubocop:disable Metrics/AbcSize
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
 
@@ -93,7 +92,7 @@ class Vanagon
     # @return [String] The standard output of the executed command
     # @raise [Vanagon::Error] If the command fails an exception is raised
     def ex(command)
-      ret = `#{command}`
+      ret = %x(#{command})
       unless $?.success?
         raise Vanagon::Error, "'#{command}' did not succeed"
       end
@@ -133,7 +132,7 @@ class Vanagon
       tries.to_i.times do
         Timeout::timeout(timeout.to_i) do
           begin
-            blk.call
+            yield
             return true
           rescue => e
             warn 'An error was encountered evaluating block. Retrying..'

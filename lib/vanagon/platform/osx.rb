@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a osx package of
       # @return [Array] list of commands required to build a osx package for the given project from a tarball
-      def generate_package(project)
+      def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
 
         # Here we maintain backward compatibility with older vanagon versions
@@ -13,10 +13,11 @@ class Vanagon
         # in favor of just letting the makefile deliver the bill-of-materials
         # to the correct directory. This shouldn't be required at all then.
         if project.bill_of_materials.nil?
-          bom_install = [# Move bill-of-materials into a docdir
-           "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}",
-           "mv $(tempdir)/osx/build/root/#{project.name}-#{project.version}/bill-of-materials $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}/bill-of-materials",]
-
+          bom_install = [
+            # Move bill-of-materials into a docdir
+            "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}",
+            "mv $(tempdir)/osx/build/root/#{project.name}-#{project.version}/bill-of-materials $(tempdir)/osx/build/root/#{project.name}-#{project.version}/usr/local/share/doc/#{project.name}/bill-of-materials",
+          ]
         else
           bom_install = []
         end
@@ -63,7 +64,7 @@ class Vanagon
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
-      def generate_packaging_artifacts(workdir, name, binding)
+      def generate_packaging_artifacts(workdir, name, binding) # rubocop:disable Metrics/AbcSize
         resources_dir = File.join(workdir, "resources", "osx")
         FileUtils.mkdir_p(resources_dir)
         script_dir = File.join(workdir, "scripts")

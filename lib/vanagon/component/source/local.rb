@@ -10,7 +10,7 @@ class Vanagon
         attr_accessor :url, :file, :extension, :workdir, :cleanup
 
         # Extensions for files we intend to unpack during the build
-        ARCHIVE_EXTENSIONS = '.tar.gz', '.tgz', '.zip'
+        ARCHIVE_EXTENSIONS = ['.tar.gz', '.tgz', '.zip'].freeze
 
         # Constructor for the File source type
         #
@@ -51,7 +51,6 @@ class Vanagon
           end
 
           target_file
-
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
@@ -65,7 +64,7 @@ class Vanagon
             when ".tar.gz", ".tgz"
               return "gunzip -c '#{@file}' | '#{tar}' xf -"
             when ".zip"
-              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, ".zip")}' '#{@file}'"
+              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, '.zip')}' '#{@file}'"
             end
           else
             # Extension does not appear to be an archive

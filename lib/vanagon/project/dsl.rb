@@ -23,7 +23,7 @@ class Vanagon
       # @param name [String] name of the project
       # @param block [Proc] DSL definition of the project to call
       def project(name, &block)
-        block.call(self)
+        yield(self)
       end
 
       # Accessor for the project.
@@ -49,7 +49,7 @@ class Vanagon
         if attribute_match
           attribute = attribute_match.captures.first
           @project.send(attribute)
-        elsif @project.settings.has_key?(method)
+        elsif @project.settings.key?(method)
           return @project.settings[method]
         else
           super
@@ -129,7 +129,7 @@ class Vanagon
       #
       # @param ver [String] version of the project
       def version(ver)
-        @project.version = ver.gsub('-', '.')
+        @project.version = ver.tr('-', '.')
       end
 
       # Sets the release for the project. Mainly for use in packaging.

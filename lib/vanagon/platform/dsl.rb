@@ -50,7 +50,7 @@ class Vanagon
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
                     end
 
-        block.call(self)
+        yield(self)
         @platform
       end
 

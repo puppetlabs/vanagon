@@ -60,7 +60,7 @@ class Vanagon
     #
     # @param user [Vanagon::Common::User] the user to create
     # @return [String] the commands required to add a user to the system
-    def add_user(user)
+    def add_user(user) # rubocop:disable Metrics/AbcSize
       cmd_args = ["'#{user.name}'"]
       cmd_args.unshift "--home '#{user.homedir}'" if user.homedir
       if user.shell
@@ -95,7 +95,7 @@ class Vanagon
     #
     # @param name [String] name of the platform
     # @return [Vanagon::Platform] the platform with the given name
-    def initialize(name)
+    def initialize(name) # rubocop:disable Metrics/AbcSize
       @name = name
       @os_name = os_name
       @os_version = os_version

@@ -5,7 +5,6 @@ require 'vanagon/errors'
 class Vanagon
   class Engine
     class Local < Base
-
       def initialize(platform, target = nil)
         # local engine can't be used with a target
         super(platform, 'local machine')
@@ -38,14 +37,13 @@ class Vanagon
       end
 
       def ship_workdir(workdir)
-        FileUtils.cp_r(Dir.glob("#{workdir}/*"), "#{@remote_workdir}")
+        FileUtils.cp_r(Dir.glob("#{workdir}/*"), @remote_workdir)
       end
 
       def retrieve_built_artifact
         FileUtils.mkdir_p("output")
         FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
       end
-
     end
   end
 end

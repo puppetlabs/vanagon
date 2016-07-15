@@ -2,7 +2,6 @@ require 'vanagon/errors'
 
 class Vanagon
   class Patch
-
     # @!attribute [r] path
     #   @return [String] The path to the patch
     attr_reader :path

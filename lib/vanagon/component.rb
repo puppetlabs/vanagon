@@ -41,7 +41,7 @@ class Vanagon
     # @param settings [Hash] the settings to be used in the component
     # @param platform [Vanagon::Platform] the platform to build the component for
     # @return [Vanagon::Component] the component with the given settings and platform
-    def initialize(name, settings, platform)
+    def initialize(name, settings, platform) # rubocop:disable Metrics/AbcSize
       @name = name
       @settings = settings
       @platform = platform
