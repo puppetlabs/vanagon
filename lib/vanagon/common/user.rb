@@ -13,7 +13,7 @@ class Vanagon
       # Equality. How does it even work?
       #
       # @return [true, false] true if all attributes have equal values. false otherwise.
-      def ==(other)
+      def ==(other) # rubocop:disable Metrics/AbcSize
         other.name == self.name && \
           other.group == self.group && \
           other.shell == self.shell && \

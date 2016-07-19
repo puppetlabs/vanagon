@@ -48,10 +48,10 @@ class Vanagon
         defines =  %(--define '_topdir $(tempdir)/rpmbuild' )
         # RPM doesn't allow dashes in the os_name. This was added to
         # convert cisco-wrlinux to cisco_wrlinux
-        defines << %(--define 'dist .#{@os_name.gsub('-', '_')}#{@os_version}' )
+        defines << %(--define 'dist .#{@os_name.tr('-', '_')}#{@os_version}' )
       end
 
-      def add_repository(definition)
+      def add_repository(definition) # rubocop:disable Metrics/AbcSize
         definition = URI.parse(definition)
 
         commands = ["rpm -q curl > /dev/null || yum -y install curl"]

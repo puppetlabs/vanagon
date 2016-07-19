@@ -13,7 +13,7 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false })
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
 
@@ -74,7 +74,7 @@ class Vanagon
       @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)
     end
 
-    def install_build_dependencies
+    def install_build_dependencies # rubocop:disable Metrics/AbcSize
       unless list_build_dependencies.empty?
         if @platform.build_dependencies && @platform.build_dependencies.command && !@platform.build_dependencies.command.empty?
           @engine.dispatch("#{@platform.build_dependencies.command} #{list_build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}")
@@ -86,7 +86,7 @@ class Vanagon
       end
     end
 
-    def run
+    def run # rubocop:disable Metrics/AbcSize
       # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
@@ -115,7 +115,7 @@ class Vanagon
       end
     end
 
-    def prepare(workdir = nil)
+    def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
       @engine.startup(@workdir)
 

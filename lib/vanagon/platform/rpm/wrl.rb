@@ -21,7 +21,7 @@ class Vanagon
             commands << "tmpdir=$(mktemp -p /var/tmp -d)"
             commands << "cd ${tmpdir}"
             build_dependencies.each do |build_dependency|
-              if build_dependency.match(/^http.*\.rpm$/)
+              if build_dependency =~ /^http.*\.rpm$/
                 # We're downloading each package individually so
                 # failures are easier to troubleshoot
                 commands << %(curl --remote-name --location --fail --silent #{build_dependency} && echo "Successfully downloaded #{build_dependency}")

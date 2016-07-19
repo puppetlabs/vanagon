@@ -12,7 +12,6 @@ class Vanagon
     # Class to use when building on a hardware device (e.g. AIX, Switch, etc)
     #
     class Hardware < Base
-
       # This method is used to obtain a vm to build upon
       # For the base class we just return the target that was passed in
       def select_target

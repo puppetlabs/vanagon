@@ -77,7 +77,7 @@ class Vanagon
       # @param vanagon_root [String] Vanagon wix resources directory
       # @param destination [String] Destination directory
       # @param verbose [String] True or false
-      def merge_defaults_from_vanagon(vanagon_root, destination, verbose: false)
+      def merge_defaults_from_vanagon(vanagon_root, destination, verbose: false) # rubocop:disable Metrics/AbcSize
         # Will use this Pathname object for relative path calculations in loop below.
         vanagon_path = Pathname.new(vanagon_root)
         files = Dir.glob(File.join(vanagon_root, "**/*.*"))
@@ -140,7 +140,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a nuget package of
       # @return [Array] list of commands required to build a nuget package for
       # the given project from a tarball
-      def generate_nuget_package(project)
+      def generate_nuget_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/tools",
@@ -161,7 +161,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a msi package of
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
-      def generate_msi_package(project)
+      def generate_msi_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         wix_extensions = "-ext WiXUtilExtension -ext WixUIExtension"
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
@@ -186,7 +186,8 @@ class Vanagon
         # "Misc Dir for versions.txt, License file and Icon file"
         misc_dir = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}/misc"
         # Actual array of commands to be written to the Makefile
-        ["mkdir -p output/#{target_dir}",
+        [
+          "mkdir -p output/#{target_dir}",
           "mkdir -p $(tempdir)/{SourceDir,wix/wixobj}",
           "#{@copy} -r wix/* $(tempdir)/wix/",
           "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
@@ -204,7 +205,7 @@ class Vanagon
           # the -b flag simply points light to where the SourceDir location is
           # -loc is required for the UI localization it points to the actual localization .wxl
           "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -loc $$(cygpath -aw $(tempdir)/wix/localization/puppet_en-us.wxl) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
-          ]
+        ]
       end
 
       # Method to derive the msi (Windows Installer) package name for the project.
@@ -284,7 +285,7 @@ class Vanagon
           if File.extname(definition.path) == '.ps1'
             commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'iex ((new-object net.webclient).DownloadString(\"#{definition}\"))')
           else
-            commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.gsub('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
+            commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.tr('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
         else
           raise Vanagon::Error, "Invalid repo specification #{definition}"
@@ -373,7 +374,7 @@ class Vanagon
       # @param [string] path string of directory
       # @param [@project] project object
       def strip_and_format_path(path, project)
-        formatted_path = path.gsub(/\\/, "\/")
+        formatted_path = path.tr('\\', '\/')
         path_regex = /\/?SourceDir\/#{project.settings[:base_dir]}\/#{project.settings[:company_id]}\/#{project.settings[:product_id]}\//
         File.dirname(formatted_path.sub(path_regex, ''))
       end
@@ -393,14 +394,14 @@ class Vanagon
         string = ''
         unless root[:children].empty?
           root[:children].each do |child|
-            string += ("<Directory Name=\"#{child[:name]}\" Id=\"#{child[:id]}\">\n")
+            string += "<Directory Name=\"#{child[:name]}\" Id=\"#{child[:id]}\">\n"
             unless child[:elements_to_add].empty?
               child[:elements_to_add].each do |element|
                 string += element
               end
             end
             string += generate_wix_from_graph(child)
-            string += ("</Directory>\n")
+            string += "</Directory>\n"
           end
           return string
         end

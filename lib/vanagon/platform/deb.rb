@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a debian package of
       # @return [Array] list of commands required to build a debian package for the given project from a tarball
-      def generate_package(project)
+      def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         pkg_arch_opt = project.noarch ? "" : "-a#{@architecture}"
         ["mkdir -p output/#{target_dir}",

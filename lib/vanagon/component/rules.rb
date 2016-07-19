@@ -6,7 +6,6 @@ class Vanagon
   class Component
     # Vanagon::Component::Rules creates all Makefile rules for a given component.
     class Rules
-
       include Vanagon::Utilities::ShellUtilities
 
       # Create methods that generate Makefile rules.
@@ -67,7 +66,7 @@ class Vanagon
       #
       # @return [Makefile::Rule]
       def component_rule
-        Makefile::Rule.new("#{@component.name}", dependencies: ["#{@component.name}-install"])
+        Makefile::Rule.new(@component.name, dependencies: ["#{@component.name}-install"])
       end
 
       # Unpack the source for this component. The unpacking behavior depends on

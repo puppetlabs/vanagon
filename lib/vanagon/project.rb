@@ -55,7 +55,7 @@ class Vanagon
 
     # Magic getter to retrieve settings in the project
     def method_missing(method, *args)
-      if @settings.has_key?(method)
+      if @settings.key?(method)
         return @settings[method]
       end
     end
@@ -236,7 +236,7 @@ class Vanagon
     # Gets the highest level directories declared by the project
     #
     # @return [Array] the highest level directories that have been declared by the project
-    def get_root_directories
+    def get_root_directories # rubocop:disable Metrics/AbcSize
       dirs = get_directories.map { |dir| dir.path.split('/') }
       dirs.sort! { |dir1, dir2| dir1.length <=> dir2.length }
       ret_dirs = []

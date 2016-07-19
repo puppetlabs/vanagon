@@ -2,7 +2,6 @@ require 'optparse'
 
 class Vanagon
   class OptParse
-
     FLAGS = {
         :workdir => ['-w DIR', '--workdir DIR', "Working directory where build source should be put (defaults to a tmpdir)"],
         :configdir => ['-c', '--configdir DIR', 'Configs dir (defaults to $pwd/configs)'],
@@ -11,7 +10,7 @@ class Vanagon
         :skipcheck => ['--skipcheck', 'Skip the `check` stage when building components'],
         :preserve => ['-p', '--preserve', 'Whether to tear down the VM on success or not (defaults to false)'],
         :verbose => ['-v', '--verbose', 'Verbose output (does nothing)'],
-      }
+      }.freeze
 
     def initialize(banner, options = [])
       @options = Hash[options.map { |v| [v, nil] }]

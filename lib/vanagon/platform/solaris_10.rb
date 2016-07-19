@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a solaris package of
       # @return [Array] list of commands required to build a solaris package for the given project from a tarball
-      def generate_package(project)
+      def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         name_and_version = "#{project.name}-#{project.version}"
         pkg_name = package_name(project)
@@ -28,9 +28,11 @@ class Vanagon
         # in favor of just letting the makefile deliver the bill-of-materials
         # to the correct directory. This shouldn't be required at all then.
         if project.bill_of_materials.nil?
-          bom_install = [# Move bill-of-materials into a docdir
-          "mkdir -p $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}",
-          "mv $(tempdir)/#{name_and_version}/bill-of-materials $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}/bill-of-materials",]
+          bom_install = [
+            # Move bill-of-materials into a docdir
+            "mkdir -p $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}",
+            "mv $(tempdir)/#{name_and_version}/bill-of-materials $(tempdir)/#{name_and_version}/usr/share/doc/#{project.name}/bill-of-materials",
+          ]
         else
           bom_install = []
         end
@@ -106,7 +108,7 @@ class Vanagon
       #
       # @param user [Vanagon::Common::User] the user to create
       # @return [String] the commands required to add a user to the system
-      def add_user(user)
+      def add_user(user) # rubocop:disable Metrics/AbcSize
         # NB: system users aren't supported on solaris 10
         # Solaris 10 also doesn't support long flags
         cmd_args = ["'#{user.name}'"]
@@ -152,14 +154,14 @@ class Vanagon
       #
       # @param build_dependencies [Array] list of all build dependencies to install
       # @return [String] a command to install all of the build dependencies
-      def install_build_dependencies(build_dependencies)
+      def install_build_dependencies(build_dependencies) # rubocop:disable Metrics/AbcSize
         http = []
         pkgutil = []
         noasks = ["instance=overwrite", "partial=nocheck", "runlevel=nocheck", "idepend=nocheck", "rdepend=nocheck", "space=nocheck", "setuid=nocheck", "conflict=nocheck", "action=nocheck", "basedir=default"]
         noask_command = noasks.map { |noask| "echo '#{noask}' >> /var/tmp/noask" }.join('; ')
 
         build_dependencies.each do |build_dependency|
-          if build_dependency.match(/^http.*\.gz/)
+          if build_dependency =~ /^http.*\.gz/
             # Fetch, unpack, install...this assumes curl is present.
             package = build_dependency.sub(/^http.*\//, '')
             http << "tmpdir=$(mktemp -p /var/tmp -d); (cd ${tmpdir} && curl -O #{build_dependency} && gunzip -c #{package} | pkgadd -d /dev/stdin -a /var/tmp/noask all)"

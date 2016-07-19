@@ -1,5 +1,4 @@
 class Vanagon
-
   # An error class that accepts a wrapped error message
   #
   class Error < StandardError

@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a solaris package of
       # @return [Array] list of commands required to build a solaris package for the given project from a tarball
-      def generate_package(project)
+      def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         name_and_version = "#{project.name}-#{project.version}"
         pkg_name = package_name(project)

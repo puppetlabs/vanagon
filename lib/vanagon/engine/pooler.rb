@@ -46,7 +46,7 @@ class Vanagon
       # This method is used to obtain a vm to build upon using the Puppet Labs'
       # vmpooler (https://github.com/puppetlabs/vmpooler)
       # @raise [Vanagon::Error] if a target cannot be obtained
-      def select_target
+      def select_target # rubocop:disable Metrics/AbcSize
         response = Vanagon::Utilities.http_request(
           "#{@pooler}/vm",
           'POST',
