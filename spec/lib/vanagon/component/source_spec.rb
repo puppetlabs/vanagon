@@ -81,7 +81,11 @@ describe "Vanagon::Component::Source" do
       it "rewrites git:// URLs" do
         proc_rule = Proc.new { |url| url.gsub('a', 'e') }
         klass.register_rewrite_rule('git', proc_rule)
-        expect(klass.source(original_git_url, ref: ref, workdir: workdir).url)
+        # Vanagon::Component::Source::Git#url returns a URI object
+        # so to check its value, we cast it to a simple string. It's
+        # hacky for sure, but seems less diagreeable than mangling the
+        # return value in the class itself.
+        expect(klass.source(original_git_url, ref: ref, workdir: workdir).url.to_s)
         .to eq rewritten_git_url
       end
     end

@@ -6,14 +6,29 @@ describe 'Vanagon::Project::DSL' do
   let (:project_block) {
 "project 'test-fixture' do |proj|
 end" }
-  let (:configdir) { '/a/b/c' }
+  let(:configdir) { '/a/b/c' }
 
   describe '#version_from_git' do
     it 'sets the version based on the git describe' do
       expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
       proj = Vanagon::Project::DSL.new('test-fixture', {})
       proj.instance_eval(project_block)
-      expect(Vanagon::Utilities).to receive(:git_version).with(File.expand_path('..', configdir)).and_return('1.2.3-1234')
+
+      # Lying is bad. You shouldn't lie. But sometimes when you're
+      # working with gross abstractions piled into the shape of
+      # an indescribable cyclopean obelisk, you might have to lie
+      # a little bit. Instead of trying to mock an entire Git instance,
+      # we'll just instantiate a Double and allow it to receive calls
+      # to .describe like it was a valid Git instance.
+      repo = double("repo")
+      expect(::Git)
+        .to receive(:open)
+        .and_return(repo)
+
+      allow(repo)
+        .to receive(:describe)
+        .and_return('1.2.3-1234')
+
       proj.version_from_git
       expect(proj._project.version).to eq('1.2.3.1234')
     end
@@ -21,7 +36,17 @@ end" }
       expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
       proj = Vanagon::Project::DSL.new('test-fixture', {})
       proj.instance_eval(project_block)
-      expect(Vanagon::Utilities).to receive(:git_version).with(File.expand_path('..', configdir)).and_return('1.2.3---1234')
+
+      # See previous description of "indescribable cyclopean obelisk"
+      repo = double("repo")
+      expect(::Git)
+        .to receive(:open)
+        .and_return(repo)
+
+      expect(repo)
+        .to receive(:describe)
+        .and_return('1.2.3---1234')
+
       proj.version_from_git
       expect(proj._project.version).to eq('1.2.3.1234')
     end

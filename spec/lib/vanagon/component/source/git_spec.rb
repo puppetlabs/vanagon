@@ -4,7 +4,6 @@ describe "Vanagon::Component::Source::Git" do
   let(:klass) { Vanagon::Component::Source::Git }
   let(:url) { 'git://github.com/puppetlabs/facter' }
   let(:ref_tag) { 'refs/tags/2.2.0' }
-  let(:bad_ref) { 'refs/heads/beefcafe' }
   let(:bad_sha) { 'FEEDBEEF' }
   let(:workdir) { ENV["TMPDIR"] || "/tmp" }
 
@@ -16,11 +15,6 @@ describe "Vanagon::Component::Source::Git" do
       # * this is on purpose *
       expect { klass.new("#{url}l.git", ref: ref_tag, workdir: workdir) }
         .to raise_error Vanagon::InvalidRepo
-    end
-
-    it "raises error on initialization with a bad ref" do
-      expect { klass.new("#{url}", ref: bad_ref, workdir: workdir) }
-        .to raise_error Vanagon::UnknownRef
     end
   end
 
@@ -41,7 +35,7 @@ describe "Vanagon::Component::Source::Git" do
   describe "#fetch" do
     it "raises an error on checkout failure with a bad SHA" do
       expect { klass.new("#{url}", ref: bad_sha, workdir: workdir).fetch }
-        .to raise_error Vanagon::UnknownRef
+        .to raise_error Vanagon::CheckoutFailed
     end
   end
 end

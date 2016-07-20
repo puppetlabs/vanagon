@@ -144,8 +144,10 @@ class Vanagon
       # and reachable from the current commit in that repository.
       #
       def version_from_git
-        version = Vanagon::Utilities.git_version(File.expand_path("..", Vanagon::Driver.configdir))
+        version = Git.open(File.expand_path("..", Vanagon::Driver.configdir)).describe('HEAD', tags: true)
         @project.version = version.split('-').reject(&:empty?).join('.')
+      rescue Git::GitExecuteError
+        warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Sets the vendor for the project. Used in packaging artifacts.
