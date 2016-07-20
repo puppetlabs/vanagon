@@ -105,7 +105,7 @@ class Vanagon
     # makefile template
     #
     # @param workdir [String] working directory to put the source into
-    def get_source(workdir)
+    def get_source(workdir) # rubocop:disable Metrics/AbcSize
       opts = options.merge({ workdir: workdir })
       if url
         source = Vanagon::Component::Source.source(url, opts)

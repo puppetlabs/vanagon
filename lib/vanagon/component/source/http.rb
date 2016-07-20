@@ -13,7 +13,7 @@ class Vanagon
         ARCHIVE_EXTENSIONS = ['.tar.gz', '.tgz', '.zip'].freeze
 
         class << self
-          def valid_url?(target_url)
+          def valid_url?(target_url) # rubocop:disable Metrics/AbcSize
             uri = URI.parse(target_url.to_s)
             return false unless ['http', 'https'].include? uri.scheme
 

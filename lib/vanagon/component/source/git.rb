@@ -46,7 +46,7 @@ class Vanagon
           @ref = opts[:ref]
           @workdir = workdir
           @depth = opts[:depth]
-          @ref_name, @ref_type, _ = @ref.split('/', 3).reverse
+          @ref_name, @ref_type, = @ref.split('/', 3).reverse
 
           # We can test for Repo existence without cloning
           raise Vanagon::InvalidRepo, "#{url} not a valid git repo" unless valid_remote?

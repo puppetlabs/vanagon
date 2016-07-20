@@ -68,7 +68,7 @@ class Vanagon
         end
 
         # Needs a better name
-        def best_guess(uri, **options)
+        def best_guess(uri, **options) # rubocop:disable Metrics/AbcSize
           # First we git
           if Vanagon::Component::Source::Git.valid_remote?(parse_and_rewrite(uri))
             return Vanagon::Component::Source::Git.new parse_and_rewrite(uri),
