@@ -294,16 +294,6 @@ class Vanagon
         commands
       end
 
-      # Get the expected output dir for the windows packages. This allows us to
-      # use some standard tools to ship internally.
-      #
-      # @param target_repo [String] optional repo target for built packages defined
-      #   at the project level
-      # @return [String] relative path to where windows packages should be staged
-      def output_dir(target_repo = "")
-        File.join("windows", target_repo, @architecture)
-      end
-
       # Generate the underlying directory structure of
       # any binary files referenced in services. note that
       # this function does not generate the structure of

@@ -106,14 +106,6 @@ class Vanagon
         "#{version},5.11-#{release}"
       end
 
-      # Get the expected output dir for the solaris 11 packages. This allows us to
-      # use some standard tools to ship internally.
-      #
-      # @return [String] relative path to where solaris 11 packages should be staged
-      def output_dir(target_repo = "")
-        File.join("solaris", @os_version, target_repo)
-      end
-
       # Constructor. Sets up some defaults for the solaris 11 platform and calls the parent constructor
       #
       # @param name [String] name of the platform

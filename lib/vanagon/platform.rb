@@ -8,7 +8,7 @@ class Vanagon
     attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple
     attr_accessor :target_user, :package_type, :find, :sort, :build_hosts, :copy, :cross_compiled
     attr_accessor :aws_ami, :aws_user_data, :aws_shutdown_behavior, :aws_key_name, :aws_region, :aws_key
-    attr_accessor :aws_instance_type, :aws_vpc_id, :aws_subnet_id
+    attr_accessor :aws_instance_type, :aws_vpc_id, :aws_subnet_id, :output_dir
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
@@ -115,6 +115,16 @@ class Vanagon
       if instance_variable_get("@#{key}")
         instance_variable_get("@#{key}")
       end
+    end
+
+    # Get the output dir for packages. If the output_dir was defined already (by
+    # the platform config) then don't change it.
+    #
+    # @param target_repo [String] optional repo target for built packages defined
+    #   at the project level
+    # @return [String] relative path to where packages should be output to
+    def output_dir(target_repo = "")
+      @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
     end
 
     # Sets and gets the name of the operating system for the platform.

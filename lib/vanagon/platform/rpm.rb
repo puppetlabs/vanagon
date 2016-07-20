@@ -36,14 +36,6 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}.#{project.noarch ? 'noarch' : @architecture}.rpm"
       end
 
-      # Get the expected output dir for the rpm packages. This allows us to
-      # use some standard tools to ship internally.
-      #
-      # @return [String] relative path to where rpm packages should be staged
-      def output_dir(target_repo = "products")
-        File.join(@os_name, @os_version, target_repo, @architecture)
-      end
-
       def rpm_defines
         defines =  %(--define '_topdir $(tempdir)/rpmbuild' )
         # RPM doesn't allow dashes in the os_name. This was added to
