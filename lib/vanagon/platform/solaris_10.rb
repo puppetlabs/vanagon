@@ -140,14 +140,6 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}.#{@architecture}.pkg.gz"
       end
 
-      # Get the expected output dir for the solaris 10 packages. This allows us to
-      # use some standard tools to ship internally.
-      #
-      # @return [String] relative path to where solaris 10 packages should be staged
-      def output_dir(target_repo = "")
-        File.join("solaris", @os_version, target_repo)
-      end
-
       # Because solaris has multiple terrible ways to install packages, we have
       # this method which generates a shell script to be executed on the system
       # which will install all of the build dependencies

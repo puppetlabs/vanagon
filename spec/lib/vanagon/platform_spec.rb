@@ -4,22 +4,31 @@ describe "Vanagon::Platform" do
   let(:platforms) do
     [
       {
-        :name         => "debian-6-i386",
-        :os_name      => "debian",
-        :os_version   => "6",
-        :architecture => "i386",
+        :name                   => "debian-6-i386",
+        :os_name                => "debian",
+        :os_version             => "6",
+        :architecture           => "i386",
+        :output_dir             => "debian/6/i386",
+        :output_dir_with_target => "debian/6/thing/i386",
+        :block                  => %Q[ platform "debian-6-i386" do |plat| end ],
       },
       {
-        :name         => "el-5-i386",
-        :os_name      => "el",
-        :os_version   => "5",
-        :architecture => "i386",
+        :name                   => "el-5-i386",
+        :os_name                => "el",
+        :os_version             => "5",
+        :architecture           => "i386",
+        :output_dir             => "el/5/i386",
+        :output_dir_with_target => "el/5/thing/i386",
+        :block                  => %Q[ platform "el-5-i386" do |plat| end ],
       },
       {
-        :name         => "CumulusLinux-2.2-amd64",
-        :os_name      => "CumulusLinux",
-        :os_version   => "2.2",
-        :architecture => "amd64",
+        :name                   => "debian-6-i386",
+        :os_name                => "debian",
+        :os_version             => "6",
+        :architecture           => "i386",
+        :output_dir             => "updated/output",
+        :output_dir_with_target => "updated/output",
+        :block                  => %Q[ platform "debian-6-i386" do |plat| plat.output_dir "updated/output" end ],
       },
     ]
   end
@@ -38,6 +47,24 @@ describe "Vanagon::Platform" do
       platforms.each do |plat|
         cur_plat = Vanagon::Platform.new(plat[:name])
         expect(cur_plat.os_version).to eq(plat[:os_version])
+      end
+    end
+  end
+
+  describe "#output_dir" do
+    it "returns correct output dir" do
+      platforms.each do |plat|
+        cur_plat = Vanagon::Platform::DSL.new(plat[:name])
+        cur_plat.instance_eval(plat[:block])
+        expect(cur_plat._platform.output_dir).to eq(plat[:output_dir])
+      end
+    end
+
+    it "adds the target repo in the right way" do
+      platforms.each do |plat|
+        cur_plat = Vanagon::Platform::DSL.new(plat[:name])
+        cur_plat.instance_eval(plat[:block])
+        expect(cur_plat._platform.output_dir('thing')).to eq(plat[:output_dir_with_target])
       end
     end
   end

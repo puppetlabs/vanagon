@@ -25,8 +25,6 @@ describe "Vanagon::Platform::Windows" do
       :os_name                => "windows",
       :os_version             => "2012r2",
       :architecture           => "x64",
-      :output_dir             => "windows/x64",
-      :output_dir_with_target => "windows/thing/x64",
       :target_user            => "Administrator",
       :projname               => "test-proj",
       :block                  => %Q[ platform "windows-2012r2-x64" do |plat| plat.servicetype 'windows' end ]
@@ -50,16 +48,6 @@ HERE
 
       before do
         cur_plat.instance_eval(plat[:block])
-      end
-
-      describe "#output_dir" do
-        it "returns an output dir consistent with the packaging repo" do
-          expect(cur_plat._platform.output_dir).to eq(plat[:output_dir])
-        end
-
-        it "adds the target repo in the right way" do
-          expect(cur_plat._platform.output_dir('thing')).to eq(plat[:output_dir_with_target])
-        end
       end
 
       describe '#target_user' do
