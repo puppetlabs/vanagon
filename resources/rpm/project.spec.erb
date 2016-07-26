@@ -2,11 +2,12 @@
 
 # Turn off the brp-python-bytecompile script
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+<% if @platform.is_cross_compiled_linux? -%>
 # Disable brp-strip-static-archive, which on EL platforms causes
 # cross-compiled static libs to end up with "no machine" as their
 # architure, breaking builds:
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
-#
+<% end -%>
 
 Name:           <%= @name %>
 Version:        <%= @version %>
