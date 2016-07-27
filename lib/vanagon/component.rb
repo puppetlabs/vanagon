@@ -108,15 +108,17 @@ class Vanagon
     def get_source(workdir) # rubocop:disable Metrics/AbcSize
       opts = options.merge({ workdir: workdir })
       if url
-        source = Vanagon::Component::Source.source(url, opts)
+        @source = Vanagon::Component::Source.source(url, opts)
         source.fetch
         source.verify
-        extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : ':'
-        cleanup_source = source.cleanup if source.respond_to?(:cleanup)
-        dirname = source.dirname
+        @extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : ':'
+        @cleanup_source = source.cleanup if source.respond_to?(:cleanup)
+        @dirname = source.dirname
 
         # Git based sources probably won't set the version, so we load it if it hasn't been already set
-        version ||= source.version
+        if source.respond_to?(:version)
+          @version ||= source.version
+        end
       else
         warn "No source given for component '#{@name}'"
 

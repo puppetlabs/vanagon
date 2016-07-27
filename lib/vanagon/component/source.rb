@@ -84,8 +84,8 @@ class Vanagon
           end
 
           # Then we try local
-          if Vanagon::Component::Source::Local.valid_file?(parse_and_rewrite(uri))
-            return Vanagon::Component::Source::Local.new parse_and_rewrite(uri),
+          if Vanagon::Component::Source::Local.valid_file?(uri)
+            return Vanagon::Component::Source::Local.new uri,
               workdir: options[:workdir]
           end
 

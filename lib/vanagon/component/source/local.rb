@@ -1,37 +1,52 @@
 require 'vanagon/utilities'
-require 'net/http'
-require 'uri'
 
 class Vanagon
   class Component
     class Source
       class Local
-        include Vanagon::Utilities
         attr_accessor :url, :file, :extension, :workdir, :cleanup
 
         # Extensions for files we intend to unpack during the build
-        ARCHIVE_EXTENSIONS = ['.tar.gz', '.tgz', '.zip'].freeze
+        ARCHIVE_EXTENSIONS = {
+          "7z" => %w(.7z),
+          "bzip2" => %w(.bz2 .bz),
+          "cpio" => %w(.cpio),
+          "gzip" => %w(.gz .z),
+          "rar" => %w(.rar),
+          "tar" => %w(.tar),
+          "tbz2" => %w(.tar.bz2 .tbz2 .tbz),
+          "tgz" => %w(.tar.gz .tgz),
+          "txz" => %w(.tar.xz .txz),
+          "xz" => %w(.xz),
+          "zip" => %w(.zip),
+        }.freeze
 
         class << self
           def valid_file?(target_file)
-            File.exist?(target_file.to_s)
+            File.exist?(mangle(target_file.to_s))
+          end
+
+          # If a scheme is specified as "file://", this will return
+          # strip off the scheme and delimiters -- we need to do this because
+          # once upon a time we allowed specifying files with no strong
+          # specifications for where they should be located.
+          def mangle(path)
+            path.gsub(%r{^file://}, '')
+          end
+
+          def archive_extensions
+            ARCHIVE_EXTENSIONS.values.flatten
           end
         end
 
+
         # Constructor for the File source type
         #
-        # @param url [String] url of the http source to fetch
-        # @param workdir [String] working directory to download into
-        def initialize(url, workdir:, **options)
-          @url = url
-          @workdir = workdir
-        end
-
-        # Download the source from the url specified. Sets the full path to the
-        # file as @file and the @extension for the file as a side effect.
-        def fetch
-          @file = download
-          @extension = get_extension
+        # @param path [String] path of the local file to copy
+        # @param workdir [String] working directory to copy <path> to
+        def initialize(path, workdir:, **options)
+          @url = ::Pathname.new(mangle(path))
+          @workdir = ::Pathname.new(workdir)
         end
 
         # Local files need no checksum so this is a noop
@@ -42,21 +57,19 @@ class Vanagon
         # Moves file from source to workdir
         #
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
-        def download
-          uri = URI.parse(@url)
-          target_file = File.basename(uri.path)
-          puts "Moving file '#{target_file}' to workdir"
+        def copy
+          puts "Copying file '#{url.basename}' to workdir"
 
-          uri = @url.match(/^file:\/\/(.*)$/)
-          if uri
-            source_file = uri[1]
-            target_file = File.basename(source_file)
-            FileUtils.cp(source_file, File.join(@workdir, target_file))
-          else
-            raise Vanagon::Error, "Unable to parse '#{@url}' for local file path."
-          end
+          FileUtils.cp(url, file)
+        end
+        alias_method :fetch, :copy
 
-          target_file
+        def file
+          @file ||= workdir + File.basename(url)
+        end
+
+        def extension
+          @extension ||= extname
         end
 
         # Gets the command to extract the archive given if needed (uses @extension)
@@ -64,17 +77,40 @@ class Vanagon
         # @param tar [String] the tar command to use
         # @return [String, nil] command to extract the source
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
-        def extract(tar)
-          if ARCHIVE_EXTENSIONS.include?(@extension)
-            case @extension
-            when ".tar.gz", ".tgz"
-              return "gunzip -c '#{@file}' | '#{tar}' xf -"
-            when ".zip"
-              return "unzip '#{@file}' || 7za x -r -tzip -o'#{File.basename(@file, '.zip')}' '#{@file}'"
-            end
+        def extract(tar = "tar") # rubocop:disable Metrics/AbcSize
+          # Extension does not appear to be an archive, so "extract" is a no-op
+          return ':' unless archive_extensions.include?(extension)
+
+          case decompressor
+          when "7z"
+            %(7z x "#{file}")
+          when "bzip2"
+            %(bunzip2 "#{file}")
+          when "cpio"
+            %(
+              mkdir "#{file.basename}" &&
+              pushd "#{file.basename}" 2>&1 > /dev/null &&
+              cpio -idv < "#{file}" &&
+              popd 2>&1 > /dev/null
+            ).undent
+          when "gzip"
+            %(gunzip "#{file}")
+          when "rar"
+            %(unrar x "#{file}")
+          when "tar"
+            %(#{tar} xf "#{file}")
+          when "tbz2"
+            %(bunzip2 -c "#{file}" | #{tar} xf -)
+          when "tgz"
+            %(gunzip -c "#{file}" | #{tar} xf -)
+          when "txz"
+            %(unxz -d "#{file}" | #{tar} xvf -)
+          when "xz"
+            %(unxz "#{file}")
+          when "zip"
+            "unzip '#{file}' || 7za x -r -tzip -o'#{File.basename(file, '.zip')}' '#{file}'"
           else
-            # Extension does not appear to be an archive
-            return ':'
+            raise Vanagon::Error, "Don't know how to decompress #{extension} archives"
           end
         end
 
@@ -83,28 +119,28 @@ class Vanagon
         # @return [String] command to cleanup the source
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
         def cleanup
-          if ARCHIVE_EXTENSIONS.include?(@extension)
-            return "rm #{@file}; rm -r #{dirname}"
-          else
-            # Because dirname will be ./ here, we don't want to try to nuke it
-            return "rm #{@file}"
-          end
+          archive? ? "rm #{file}; rm -r #{dirname}" : "rm #{file}"
         end
 
         # Returns the extension for @file
         #
         # @return [String] the extension of @file
-        def get_extension
-          extension_match = @file.match(/.*(#{Regexp.union(ARCHIVE_EXTENSIONS)})/)
-          unless extension_match
-            if @file.split('.').last.include?('.')
-              return '.' +  @file.split('.').last
-            else
-              # This is the case where the file has no extension
-              return @file
-            end
-          end
-          extension_match[1]
+        def extname
+          extension_match = file.to_s.match %r{#{Regexp.union(archive_extensions)}\Z}
+          return extension_match.to_s if extension_match
+          File.extname(file)
+        end
+
+        def archive_extensions
+          self.class.archive_extensions
+        end
+
+        def archive?
+          archive_extensions.include?(extension)
+        end
+
+        def decompressor
+          @decompressor ||= ARCHIVE_EXTENSIONS.select { |k, v| v.include? extension }.keys.first
         end
 
         # The dirname to reference when building from the source
@@ -112,11 +148,12 @@ class Vanagon
         # @return [String] the directory that should be traversed into to build this source
         # @raise [RuntimeError] if the @extension for the @file isn't currently handled by the method
         def dirname
-          if ARCHIVE_EXTENSIONS.include?(@extension)
-            return @file.chomp(@extension)
-          else
-            return './'
-          end
+          archive? ? File.basename(file, extension) : './'
+        end
+
+        # Wrapper around the class method '.mangle'
+        def mangle(path)
+          self.class.mangle(path)
         end
       end
     end

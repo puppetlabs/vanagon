@@ -28,13 +28,13 @@ describe "Vanagon::Component::Source::File" do
     end
   end
 
-  describe "#get_extension" do
+  describe "#extension" do
     it "returns the extension for valid extensions" do
-      Vanagon::Component::Source::Local::ARCHIVE_EXTENSIONS.each do |ext|
+      Vanagon::Component::Source::Local.archive_extensions.each do |ext|
         filename = "#{file_base}#{ext}"
         file = Vanagon::Component::Source::Local.new(filename, workdir: workdir)
         file.fetch
-        expect(file.get_extension).to eq(ext)
+        expect(file.extension).to eq(ext)
       end
     end
   end
