@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.6.4] - 2016-07-27
+### Changed
+- Vanagon now uses one defaut output path for all platforms, with an option
+  to override the default using platform.output_dir in the platform config
+- MSIs no longer contian _VANAGON in the name
+- Update rubocop to 0.41.2
+
+### Fixed
+- Fix building packages without stripping static archives
+
 ## [0.6.3] - 2016-06-29
 ### Changed
 - On AIX, services are stopped on upgrade.
@@ -280,7 +290,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.6.4...HEAD
+[0.6.4]: https://github.com/puppetlabs/vanagon/compare/0.6.3...0.6.4
 [0.6.3]: https://github.com/puppetlabs/vanagon/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/puppetlabs/vanagon/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/puppetlabs/vanagon/compare/0.6.0...0.6.1
