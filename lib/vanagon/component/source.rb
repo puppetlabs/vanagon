@@ -67,16 +67,22 @@ class Vanagon
           rewrite(url.to_s, url.scheme)
         end
 
-        # Needs a better name
-        def best_guess(uri, **options) # rubocop:disable Metrics/AbcSize
-          # First we git
+        # Basic factory to hand back the correct {Vanagon::Component::Source} subtype to the component
+        #
+        # @param url [String] URI of the source file (includes git@... style links)
+        # @param options [Hash] hash of the options needed for the subtype
+        # @param workdir [String] working directory to fetch the source into
+        # @return [Vanagon::Component::Source] the correct subtype for the given source
+        def source(uri, **options) # rubocop:disable Metrics/AbcSize
+          # First we try git
           if Vanagon::Component::Source::Git.valid_remote?(parse_and_rewrite(uri))
             return Vanagon::Component::Source::Git.new parse_and_rewrite(uri),
               sum: options[:sum],
+              ref: options[:ref],
               workdir: options[:workdir]
           end
 
-          # Then we HTTP
+          # Then we try HTTP
           if Vanagon::Component::Source::Http.valid_url?(parse_and_rewrite(uri))
             return Vanagon::Component::Source::Http.new parse_and_rewrite(uri),
               sum: options[:sum],
@@ -92,22 +98,6 @@ class Vanagon
           # Failing all of that, we give up
           raise Vanagon::Error,
             "Unknown file type: '#{uri}'; cannot continue"
-        end
-
-        # Needs a better name
-        def absolute_certainty(uri, type)
-          # try to parse the URI as whatever type was passed
-        end
-
-        # Basic factory to hand back the correct {Vanagon::Component::Source} subtype to the component
-        #
-        # @param url [String] URL to the source (includes git@... style links)
-        # @param options [Hash] hash of the options needed for the subtype
-        # @param workdir [String] working directory to fetch the source into
-        # @return [Vanagon::Component::Source] the correct subtype for the given source
-        def source(uri_or_triplet, **opts)
-          # Make some stuff happen here
-          best_guess uri_or_triplet, opts
         end
       end
     end
