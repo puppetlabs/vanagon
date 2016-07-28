@@ -287,6 +287,10 @@ class Vanagon
         @component.options[:ref] = the_ref
       end
 
+      def depth(depth)
+        @component.options[:depth] = depth
+      end
+
       # Set a build dir relative to the source directory.
       #
       # The build dir will be created before the configure block runs and configure/build/install commands will be run
