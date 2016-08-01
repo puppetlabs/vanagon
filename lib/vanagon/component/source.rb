@@ -14,7 +14,7 @@ class Vanagon
 
         # Deprecate this
         def register_rewrite_rule(protocol, rule)
-          if rule.is_a?(String) or rule.is_a?(Proc)
+          if rule.is_a?(String) || rule.is_a?(Proc)
             if SUPPORTED_PROTOCOLS.include?(protocol)
               @rewrite_rules[protocol] = rule
             else
@@ -27,8 +27,13 @@ class Vanagon
 
         # Deprecate this
         def rewrite(url, protocol)
-          rule = @rewrite_rules[protocol]
+          # Vanagon did not originally distinguish between http and https
+          # when looking up rewrite rules; this is no longer true, but it
+          # means that we should try to preserve old, dumb behavior until
+          # the rewrite engine is removed.
+          return rewrite(url, "http") if protocol == "https"
 
+          rule = @rewrite_rules[protocol]
           if rule
             if rule.is_a?(Proc)
               return proc_rewrite(rule, url)
