@@ -12,7 +12,6 @@ class Vanagon
       class << self
         attr_reader :rewrite_rules
 
-        # Deprecate this
         def register_rewrite_rule(protocol, rule)
           if rule.is_a?(String) || rule.is_a?(Proc)
             if SUPPORTED_PROTOCOLS.include?(protocol)
@@ -25,7 +24,6 @@ class Vanagon
           end
         end
 
-        # Deprecate this
         def rewrite(url, protocol)
           # Vanagon did not originally distinguish between http and https
           # when looking up rewrite rules; this is no longer true, but it
@@ -45,7 +43,6 @@ class Vanagon
           return url
         end
 
-        # Deprecate this
         def proc_rewrite(rule, url)
           if rule.arity == 1
             rule.call(url)
@@ -54,7 +51,6 @@ class Vanagon
           end
         end
 
-        # Deprecate this
         def string_rewrite(rule, original_url)
           url = original_url.to_s
           target_match = url.match(/.*\/([^\/]*)$/)

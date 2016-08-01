@@ -27,10 +27,12 @@ class Vanagon
           end
         end
 
+        # Default options used when cloning; this may expand
+        # or change over time.
         def default_options
           @default_options ||= { ref: "refs/heads/master" }
         end
-        # private :default_options
+        private :default_options
 
         # Constructor for the Git source type
         #
@@ -84,8 +86,15 @@ class Vanagon
           File.basename(url.path, ".git")
         end
 
+        # Use `git describe` to lazy-load a version for this component
         def version
           @version ||= describe
+        end
+
+        # Perform a git clone of @url as a lazy-loaded
+        # accessor for @clone
+        def clone
+          @clone ||= ::Git.clone(url, dirname, path: workdir)
         end
 
         # Attempt to connect to whatever URL is provided and
@@ -96,42 +105,47 @@ class Vanagon
         def valid_remote?
           self.class.valid_remote? url
         end
-        # private :valid_remote?
+        private :valid_remote?
 
+        # Provide a list of remote refs (branches and tags)
         def remote_refs
           (remote['tags'].keys + remote['branches'].keys).uniq
         end
+        private :remote_refs
 
+        # Provide a list of local refs (branches and tags)
         def refs
           (clone.tags.map(&:name) + clone.branches.map(&:name)).uniq
         end
-        # private :refs
+        private :refs
 
-        # Perform a git clone of @url
-        def clone
-          @clone ||= ::Git.clone(url, dirname, path: workdir)
-        end
-
+        # Clone a remote repo, make noise about it, and fail entirely
+        # if we're unable to retrieve the remote repo
         def clone!
           puts "Cloning Git repo '#{url}'"
-          clone
-          puts "Successfully cloned '#{dirname}'" if @clone
+          puts "Successfully cloned '#{dirname}'" if clone
+        rescue Git::GitExecuteError
+          raise Vanagon::InvalidRepo, "Unable to clone from '#{url}'"
         end
         private :clone!
 
+        # Checkout desired ref/sha, make noise about it, and fail
+        # entirely if we're unable to checkout that given ref/sha
         def checkout!
           puts "Checking out '#{ref}'' from Git repo '#{dirname}'"
           clone.checkout(ref)
         rescue ::Git::GitExecuteError
-          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from #{url}"
+          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{url}'"
         end
-        # private :checkout!
+        private :checkout!
 
+        # Attempt to update submodules, and do not panic
+        # if there are no submodules to initialize
         def update_submodules
           puts "Attempting to update submodules for repo '#{dirname}'"
           clone.update_submodules(init: true)
         end
-        # private :update_submodules
+        private :update_submodules
 
         # Determines a version for the given directory based on the git describe
         # for the repository
@@ -142,7 +156,7 @@ class Vanagon
         rescue ::Git::GitExecuteError
           warn "Directory '#{dirname}' cannot be versioned by Git. Maybe it hasn't been tagged yet?"
         end
-        # private :describe
+        private :describe
       end
     end
   end
@@ -150,10 +164,6 @@ class Vanagon
   class GitError < Error; end
   # Raised when a URI is not a valid Source Control repo
   class InvalidRepo < GitError; end
-  # Raised when a given ref doesn't exist in a Git Repo
-  class UnknownRef < GitError; end
-  # Raised when a given sha doesn't exist in a Git Repo
-  class UnknownSha < GitError; end
   # Raised when checking out a given ref from a Git Repo fails
   class CheckoutFailed < GitError; end
 end
