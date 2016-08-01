@@ -4,7 +4,6 @@ require 'vanagon/errors'
 # but it provides a wealth of useful constants
 require 'English'
 require 'fustigit'
-require 'git/unshallow_repositories'
 require 'git/basic_submodules'
 require 'logger'
 
@@ -12,7 +11,7 @@ class Vanagon
   class Component
     class Source
       class Git
-        attr_accessor :url, :ref, :workdir, :depth
+        attr_accessor :url, :ref, :workdir
         attr_reader :version, :default_options, :repo
 
         class << self
@@ -29,7 +28,7 @@ class Vanagon
         end
 
         def default_options
-          @default_options ||= { ref: "refs/heads/master", depth: nil }
+          @default_options ||= { ref: "refs/heads/master" }
         end
         # private :default_options
 
@@ -45,19 +44,18 @@ class Vanagon
           @url = URI.parse(url.to_s)
           @ref = opts[:ref]
           @workdir = workdir
-          @depth = opts[:depth]
           @ref_name, @ref_type, = @ref.split('/', 3).reverse
 
           # We can test for Repo existence without cloning
-          raise Vanagon::InvalidRepo, "#{url} not a valid git repo" unless valid_remote?
+          raise Vanagon::InvalidRepo, "#{url} not a valid Git repo" unless valid_remote?
         end
 
         # Fetch the source. In this case, clone the repository into the workdir
         # and check out the ref. Also sets the version if there is a git tag as
         # a side effect.
         def fetch
-          clone
-          checkout || (unshallow && checkout!)
+          clone!
+          checkout!
           version
           update_submodules
         end
@@ -76,7 +74,7 @@ class Vanagon
         # There is no md5 to manually verify here, so this is a noop.
         def verify
           # nothing to do here, so just tell users that and return
-          puts "Nothing to verify for Git sources"
+          puts "Nothing to verify for '#{dirname}' (using Git reference '#{ref}')"
         end
 
         # The dirname to reference when building from the repo
@@ -100,11 +98,6 @@ class Vanagon
         end
         # private :valid_remote?
 
-        def valid_ref?
-          refs.include? ref
-        end
-        # private :valid_ref?
-
         def remote_refs
           (remote['tags'].keys + remote['branches'].keys).uniq
         end
@@ -116,33 +109,29 @@ class Vanagon
 
         # Perform a git clone of @url
         def clone
-          @clone ||= ::Git.clone(url, dirname, path: workdir, depth: depth)
+          @clone ||= ::Git.clone(url, dirname, path: workdir)
         end
-        # private :clone
 
-        def checkout
-          return false unless valid_ref?
-          clone.checkout(ref)
+        def clone!
+          puts "Cloning Git repo '#{url}'"
+          clone
+          puts "Successfully cloned '#{dirname}'" if @clone
         end
-        # private :checkout
+        private :clone!
 
         def checkout!
-          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from #{url}" unless checkout
+          puts "Checking out '#{ref}'' from Git repo '#{dirname}'"
+          clone.checkout(ref)
+        rescue ::Git::GitExecuteError
+          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from #{url}"
         end
         # private :checkout!
 
         def update_submodules
+          puts "Attempting to update submodules for repo '#{dirname}'"
           clone.update_submodules(init: true)
         end
         # private :update_submodules
-
-        # Convert a shallow clone into a complete clone
-        #
-        # @return [Boolean] whether the clone conversion was successful
-        def unshallow
-          clone.fetch(clone.remote, unshallow: true, tags: true)
-        end
-        # private :unshallow
 
         # Determines a version for the given directory based on the git describe
         # for the repository
@@ -151,7 +140,7 @@ class Vanagon
         def describe
           clone.describe(ref, tags: true)
         rescue ::Git::GitExecuteError
-          warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+          warn "Directory '#{dirname}' cannot be versioned by Git. Maybe it hasn't been tagged yet?"
         end
         # private :describe
       end

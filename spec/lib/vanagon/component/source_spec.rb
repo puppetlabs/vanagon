@@ -48,14 +48,6 @@ describe "Vanagon::Component::Source" do
         allow(Vanagon::Component::Source::Git)
           .to receive(:valid_remote?)
           .and_return(true)
-
-        allow_any_instance_of(Vanagon::Component::Source::Git)
-          .to receive(:valid_ref?)
-          .and_return(true)
-
-        allow(Vanagon::Component::Source::Git)
-          .to receive(:valid_ref?)
-          .and_return(true)
       end
 
       it "returns a Git object for git@ triplet repositories" do
