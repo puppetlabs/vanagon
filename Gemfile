@@ -10,10 +10,16 @@ def lock_manager_location_for(place)
   end
 end
 
+# Accommodate dependencies from the Vanagon Gemspec
+gemspec
+
+# Confine EC2 engine dependencies
 group "ec2-engine" do
   gem "aws-sdk", "~> 2.2.0", :require => false
 end
 
+# "lock_manager" is specified in development dependencies, to allow
+# the use of unreleased versions of "lock_manager" during development.
 group(:development, :test) do
   gem 'rspec', '~> 3.0', :require => false
   gem 'yard', :require => false

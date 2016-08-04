@@ -5,10 +5,15 @@ require 'json'
 require 'digest'
 require 'erb'
 require 'timeout'
+# This stupid library requires a capital 'E' in its name
+# but it provides a wealth of useful constants
+require 'English'
 require 'vanagon/extensions/string'
 
 class Vanagon
   module Utilities
+    extend self
+
     # Utility to get the md5 sum of a file
     #
     # @param file [String] file to md5sum
@@ -93,7 +98,7 @@ class Vanagon
     # @raise [Vanagon::Error] If the command fails an exception is raised
     def ex(command)
       ret = %x(#{command})
-      unless $?.success?
+      unless $CHILD_STATUS.success?
         raise Vanagon::Error, "'#{command}' did not succeed"
       end
       ret
@@ -119,6 +124,7 @@ class Vanagon
         return false
       end
     end
+    alias_method :which, :find_program_on_path
 
     # Method to retry a ruby block and fail if the command does not succeed
     # within the number of tries and timeout.
@@ -146,55 +152,6 @@ class Vanagon
       message += "\nExiting..."
       raise error, message unless error.nil?
       raise Vanagon::Error, "Block failed maximum number of #{tries} tries"
-    end
-
-    # Simple wrapper around git command line executes the given commands and
-    # returns the results.
-    #
-    # @param command_string [String] The commands to be run
-    # @param raise_error [boolean] if this function should raise an error
-    #                              on a git failure
-    # @return [String] The output of the command
-    def git(command_string, raise_error = false)
-      git_bin = find_program_on_path('git')
-      output = %x(#{git_bin} #{command_string})
-      if raise_error
-        unless $?.success?
-          raise %(git #{command_string} failed)
-        end
-      end
-      return output
-    end
-
-    # Determines if the given directory is a git repo or not
-    #
-    # @param directory [String] The directory to check
-    # @return [true, false] True if the directory is a git repo, false otherwise
-    def is_git_repo?(directory = Dir.pwd)
-      Dir.chdir(directory) do
-        git('rev-parse --git-dir > /dev/null 2>&1')
-        $?.success?
-      end
-    end
-
-    # Determines a version for the given directory based on the git describe
-    # for the repository
-    #
-    # @param directory [String] The directory to use in versioning
-    # @return [String] The version of the directory accoring to git describe
-    # @raise [RuntimeError] If the given directory is not a git repo
-    def git_version(directory = Dir.pwd)
-      if is_git_repo?(directory)
-        Dir.chdir(directory) do
-          version = git('describe --tags 2> /dev/null').chomp
-          if version.empty?
-            warn "Directory '#{directory}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
-          end
-          return version
-        end
-      else
-        fail "Directory '#{directory}' is not a git repo, cannot get a version"
-      end
     end
 
     # Sends the desired file/directory to the destination using rsync
@@ -258,14 +215,14 @@ class Vanagon
       puts "Executing '#{command}' on '#{target}'"
       if return_command_output
         ret = %x(#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}').chomp
-        if $?.success?
+        if $CHILD_STATUS.success?
           return ret
         else
           raise "Remote ssh command (#{command}) failed on '#{target}'."
         end
       else
         Kernel.system("#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}'")
-        $?.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
+        $CHILD_STATUS.success? or raise "Remote ssh command (#{command}) failed on '#{target}'."
       end
     end
 
@@ -281,14 +238,14 @@ class Vanagon
         puts "Executing '#{command}' locally"
         if return_command_output
           ret = %x(#{command}).chomp
-          if $?.success?
+          if $CHILD_STATUS.success?
             return ret
           else
             raise "Local command (#{command}) failed."
           end
         else
           Kernel.system(command)
-          $?.success? or raise "Local command (#{command}) failed."
+          $CHILD_STATUS.success? or raise "Local command (#{command}) failed."
         end
       end
     end

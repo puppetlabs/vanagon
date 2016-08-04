@@ -310,11 +310,12 @@ class Vanagon
 
       # This will add a source to the project and put it in the workdir alongside the other sources
       #
-      # @param url [String] url of the source
-      # @param ref [String] Used for git sources, must be a git ref of some sort
-      # @param sum [String] sum used to validate http and file sources
-      def add_source(url, ref: nil, sum: nil)
-        @component.sources << OpenStruct.new(:url => url, :ref => ref, :sum => sum)
+      # @param uri [String] uri of the source
+      # @param [Hash] options optional keyword arguments used to instatiate a new source
+      #   @option opts [String] :sum
+      #   @option opts [String] :ref
+      def add_source(uri, **options)
+        @component.sources << OpenStruct.new(options.merge({ url: uri }))
       end
 
       # Adds a directory to the list of directories provided by the project, to be included in any packages of the project
