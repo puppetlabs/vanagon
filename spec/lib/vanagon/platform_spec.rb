@@ -8,10 +8,13 @@ describe "Vanagon::Platform" do
         :os_name                 => "debian",
         :os_version              => "6",
         :architecture            => "i386",
-        :output_dir              => "debian/6/i386",
-        :output_dir_with_target  => "debian/6/thing/i386",
-        :output_dir_empty_string => "debian/6/i386",
-        :block                   => %Q[ platform "debian-6-i386" do |plat| end ],
+        :output_dir              => "deb/lucid/",
+        :output_dir_with_target  => "deb/lucid/thing",
+        :output_dir_empty_string => "deb/lucid/",
+        :block                   => %Q[
+          platform "debian-6-i386" do |plat|
+            plat.codename "lucid"
+          end ],
       },
       {
         :name                    => "el-5-i386",
@@ -27,11 +30,16 @@ describe "Vanagon::Platform" do
         :name                    => "debian-6-i386",
         :os_name                 => "debian",
         :os_version              => "6",
+        :codename                => "lucid",
         :architecture            => "i386",
         :output_dir              => "updated/output",
         :output_dir_with_target  => "updated/output",
         :output_dir_empty_string => "updated/output",
-        :block                   => %Q[ platform "debian-6-i386" do |plat| plat.output_dir "updated/output" end ],
+        :block                   => %Q[
+          platform "debian-6-i386" do |plat|
+            plat.codename "lucid"
+            plat.output_dir "updated/output"
+          end ],
       },
     ]
   end
