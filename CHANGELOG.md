@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.8.0] - 2016-08-11
 ### Changed
 - Git component source handling has been offloaded to an external library (`ruby-git`).
 - Git functionality now supports virtually all variants of acceptable Git URIs (including the all-too-common Triplet format of `<user>@<host>:<repo>.git`).
@@ -16,6 +18,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   3. Local filesystem
   4. Give up
 - More status messages and error messages. Vanagon still exits with a stack dump if operations don't succeed but at least now the output is slightly more meaningful.
+- Reverted the change to default output directories for el and deb to pre 0.7.0
+  defaults.
 
 ## [0.7.1] - 2016-08-01
 ### Changed
@@ -305,7 +309,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/puppetlabs/vanagon/compare/0.7.1...0.8.0
 [0.7.1]: https://github.com/puppetlabs/vanagon/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/puppetlabs/vanagon/compare/0.6.3...0.7.0
 [0.6.3]: https://github.com/puppetlabs/vanagon/compare/0.6.2...0.6.3
