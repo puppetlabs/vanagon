@@ -47,6 +47,14 @@ class Vanagon
         "#{project.name}_#{project.version}-#{project.release}#{@codename}_#{project.noarch ? 'all' : @architecture}.deb"
       end
 
+      # Get the expected output dir for the debian packages. This allows us to
+      # use some standard tools to ship internally.
+      #
+      # @return [String] relative path to where debian packages should be staged
+      def output_dir(target_repo = "")
+        @output_dir ||= File.join("deb", @codename, target_repo)
+      end
+
       # Returns the string to add a target repo to the platforms' provisioning
       #
       # @param definition [URI] A URI to a deb or list file
