@@ -36,6 +36,10 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}.#{project.noarch ? 'noarch' : @architecture}.rpm"
       end
 
+      def output_dir(target_repo = "products")
+        super
+      end
+
       def rpm_defines
         defines =  %(--define '_topdir $(tempdir)/rpmbuild' )
         # RPM doesn't allow dashes in the os_name. This was added to
