@@ -5,6 +5,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Git component source handling has been offloaded to an external library (`ruby-git`).
+- Git functionality now supports virtually all variants of acceptable Git URIs (including the all-too-common Triplet format of `<user>@<host>:<repo>.git`).
+- HTTP component sources now follow URL redirects.
+- Component sources support many more archive types, with support for bzip2, xz, rar, etc.
+- Vanagon now uses a clear heuristic to determine what sort of operation to perform for Component sources:
+  1. Git
+  2. HTTP/HTTPS
+  3. Local filesystem
+  4. Give up
+- More status messages and error messages. Vanagon still exits with a stack dump if operations don't succeed but at least now the output is slightly more meaningful.
 
 ## [0.7.1] - 2016-08-01
 ### Changed
