@@ -87,7 +87,8 @@ class Vanagon
           if Vanagon::Component::Source::Http.valid_url?(parse_and_rewrite(uri))
             return Vanagon::Component::Source::Http.new parse_and_rewrite(uri),
               sum: options[:sum],
-              workdir: options[:workdir]
+              workdir: options[:workdir],
+              sum_type: options[:sum_type]
           end
 
           # Then we try local

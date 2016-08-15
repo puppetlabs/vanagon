@@ -278,6 +278,23 @@ class Vanagon
       # @param md5 [String] md5 sum of the source for verification
       def md5sum(md5)
         @component.options[:sum] = md5
+        @component.options[:sum_type] = "md5"
+      end
+
+      # Sets the sha256 sum to verify the sum of the source
+      #
+      # @param sha256 [String] sha256 sum of the source for verification
+      def sha256sum(sha256)
+        @component.options[:sum] = sha256
+        @component.options[:sum_type] = "sha256"
+      end
+
+      # Sets the sha512 sum to verify the sum of the source
+      #
+      # @param sha512 [String] sha512 sum of the source for verification
+      def sha512sum(sha512)
+        @component.options[:sum] = sha512
+        @component.options[:sum_type] = "sha512"
       end
 
       # Sets the ref of the source for use in a git source

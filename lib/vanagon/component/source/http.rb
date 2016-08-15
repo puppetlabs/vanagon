@@ -10,7 +10,7 @@ class Vanagon
         include Vanagon::Utilities
 
         # Accessors :url, :file, :extension, :workdir, :cleanup are inherited from Local
-        attr_accessor :sum
+        attr_accessor :sum, :sum_type
 
         class << self
           def valid_url?(target_url) # rubocop:disable Metrics/AbcSize
@@ -42,14 +42,19 @@ class Vanagon
         # @param url [String] url of the http source to fetch
         # @param sum [String] sum to verify the download against
         # @param workdir [String] working directory to download into
+        # @param sum_type [String] type of sum we are verifying
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum:, workdir:, **options)
+        def initialize(url, sum:, workdir:, sum_type:, **options)
           unless sum
             fail "sum is required to validate the http source"
+          end
+          unless sum_type
+            fail "sum_type is required to validate the http source"
           end
           @url = url
           @sum = sum
           @workdir = workdir
+          @sum_type = sum_type
         end
 
         # Download the source from the url specified. Sets the full path to the
@@ -65,12 +70,12 @@ class Vanagon
         # Verify the downloaded file matches the provided sum
         #
         # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
-        def verify
+        def verify # rubocop:disable Metrics/AbcSize
           puts "Verifying file: #{file} against sum: '#{sum}'"
-          actual = get_md5sum(File.join(workdir, file))
+          actual = get_sum(File.join(workdir, file), sum_type)
           return true if sum == actual
 
-          fail "Unable to verify '#{File.join(workdir, file)}': md5sum mismatch (expected '#{sum}', got '#{actual}'')"
+          fail "Unable to verify '#{File.join(workdir, file)}': #{sum_type} mismatch (expected '#{sum}', got '#{actual}')"
         end
 
         # Downloads the file from @url into the @workdir
