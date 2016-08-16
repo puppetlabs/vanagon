@@ -94,12 +94,12 @@ describe "Vanagon::Component::Source" do
       end
 
       it "returns an object of the correct type for http:// URLS" do
-        expect(klass.source(http_url, sum: sum, workdir: workdir).class)
+        expect(klass.source(http_url, sum: sum, workdir: workdir, sum_type: "md5").class)
           .to equal(Vanagon::Component::Source::Http)
       end
 
       it "returns an object of the correct type for https:// URLS" do
-        expect(klass.source(https_url, sum: sum, workdir: workdir).class)
+        expect(klass.source(https_url, sum: sum, workdir: workdir, sum_type: "md5").class)
           .to equal(Vanagon::Component::Source::Http)
       end
 
@@ -108,7 +108,7 @@ describe "Vanagon::Component::Source" do
           'http://buildsources.delivery.puppetlabs.net'
       end
       it "applies rewrite rules to HTTP URLs" do
-        expect(klass.source(original_http_url, sum: sum, workdir: workdir).url)
+        expect(klass.source(original_http_url, sum: sum, workdir: workdir, sum_type: "md5").url)
           .to eq(rewritten_http_url)
       end
     end

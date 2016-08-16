@@ -19,7 +19,7 @@ class Vanagon
     # @param file [String] file to md5sum
     # @return [String] md5sum of the given file
     def get_md5sum(file)
-      Digest::MD5.file(file).hexdigest.to_s
+      get_sum(file, 'md5')
     end
 
     # Generic file summing utility
@@ -32,6 +32,8 @@ class Vanagon
       case type.downcase
       when 'md5'
         Digest::MD5.file(file).hexdigest.to_s
+      when 'sha256'
+        Digest::SHA256.file(file).hexdigest.to_s
       when 'sha512'
         Digest::SHA512.file(file).hexdigest.to_s
       else
