@@ -291,10 +291,4 @@ For more detailed examples of the DSLs available, please see the
 [examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
 
 ## Maintainers
-The Release Engineering team at Puppet Labs
-
-Maintainer: Michael Stahnke <stahnma@puppet.com>
-
-Please log tickets and issues at our [Issue Tracker](https://tickets.puppet.com/browse/CPR). Set compononent to Vanagon.
-
-In addition there is an active #puppet-dev channel on Freenode.
+See MAINTAINERS file.
