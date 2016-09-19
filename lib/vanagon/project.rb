@@ -82,6 +82,40 @@ class Vanagon
       files.flatten.uniq
     end
 
+    # Returns a filtered out set of components only including those
+    # components necessary to build a specific component. This is a
+    # recursive function that will call itself until it gets to a
+    # component with no build requirements
+    #
+    # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently
+    # @return [Array] array of Vanagon::Component including only those required to build "name"
+    def filter_component(name)
+      filtered_component = get_component(name)
+      return nil if filtered_component.nil?
+      included_components = [filtered_component]
+
+      unless filtered_component.build_requires.nil?
+        filtered_component.build_requires.each do |build_requirement|
+          unless get_component(build_requirement).nil?
+            included_components += filter_component(build_requirement)
+          end
+        end
+      end
+      included_components.uniq
+    end
+
+    # Gets the component with component.name = "name" from the list
+    # of project.components
+    #
+    # @param [String] component name
+    # @return [Vanagon::Component] the component with component.name = "name"
+    def get_component(name)
+      unless @components.select { |comp| comp.name.to_s == name.to_s }.nil?
+        return @components.select { |comp| comp.name.to_s == name.to_s }.pop
+      end
+      nil
+    end
+
     # Collects all of the requires for both the project and its components
     #
     # @return [Array] array of runtime requirements for the project
