@@ -129,6 +129,83 @@ class Vanagon
       end
     end
 
+    # build all component tarballs
+    def build_component_tarballs # rubocop:disable Metrics/AbcSize
+      # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+      @workdir = Dir.mktmpdir
+      @engine.startup(@workdir)
+      puts "Target is #{@engine.target}"
+      retry_task { install_build_dependencies }
+      retry_task { @project.fetch_sources(@workdir) }
+      build_each_component_tarball
+      @engine.teardown unless @preserve
+      cleanup_workdir unless @preserve
+    rescue => e
+      puts e
+      puts e.backtrace.join("\n")
+      raise e
+    ensure
+      if ["hardware", "ec2"].include?(@engine.name)
+        @engine.teardown
+      end
+    end
+
+    def build_each_component_tarball
+      components_left = @project.components
+      components_done = []
+      until components_left.empty?
+        components_left.each do |comp|
+          # Check if the build requirements are either not
+          # components of the project or have already
+          # been build
+          unless check_for_requirements(comp, components_done)
+            build_component(comp)
+            # Only add comp.name since the list of comp.build_requires
+            # will be strings and we will be checking components_done
+            # against that
+            components_done << comp.name
+            components_left.delete(comp)
+          end
+        end
+      end
+    end
+
+    # Check a components list of build_requires for
+    # first: is the build requirement a component of the project
+    # second: is the build requirement in the list of components_done
+    def check_for_requirements(comp, components_done)
+      comp.build_requires.each do |requirement|
+        # if the requirement is not a component of the project,
+        # Project.get_component just returns nil, so it will
+        # continue
+        if @project.get_component(requirement) && !components_done.include?(requirement)
+          return true
+        end
+      end
+      false
+    end
+
+    # Build and retrieve a single component's tarball
+    def build_component(component)
+      # save the project components
+      saved_components = @project.components
+      #replace the components in the project with just the one
+      @project.components = [component]
+      @project.component_to_build = component
+      @project.make_makefile(@workdir, "Component_Makefile")
+      @engine.ship_workdir(@workdir)
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      # remove the Makefile, which will allow the rsync to put the Makefile
+      # for the next component in it's place.
+      @engine.dispatch("(cd #{@engine.remote_workdir}; rm -rf Makefile)")
+      @engine.retrieve_built_artifact
+      # put back the saved components
+      @project.components = saved_components
+    end
+
     def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
       @engine.startup(@workdir)

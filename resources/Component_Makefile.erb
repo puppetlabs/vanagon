@@ -1,0 +1,55 @@
+<% dirnames = get_directories.map {|d| d.path } %>
+export SHELL := $(shell which bash)
+
+tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
+workdir := $(PWD)
+
+all: file-list-before-build <%= @component_to_build.name %>-<%= @component_to_build.version %>.tar.gz
+
+file-list-before-build:
+<%- if dirnames.empty? -%>
+	touch file-list-before-build
+<%- else -%>
+	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-before-build
+<%- end -%>
+
+file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
+<%- if dirnames.empty? -%>
+	touch file-list-after-build
+<%- else -%>
+	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-after-build
+<%- end -%>
+
+<%= @component_to_build.name %>-<%= @component_to_build.version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
+	<%= pack_component_tarball_command %>
+	<%- target_dir = self.repo ? platform.output_dir(self.repo) : platform.output_dir -%>
+	mkdir -p output/<%= target_dir %>
+	cp <%= @component_to_build.name %>-<%= @component_to_build.version %>.tar.gz output/<%= target_dir %>
+
+
+file-list: file-list-before-build <%= @component_to_build.name %>-project
+	comm -23 file-list-after-build file-list-before-build > file-list
+	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*[[:space:]].*$$\)/"\1"/g' > file-list-for-rpm
+
+<%- dirnames.each do |dir| -%>
+<%= dir %>: file-list-before-build
+	mkdir -p '<%= dir %>'
+<%- end %>
+
+<%- if @cleanup -%>
+cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" ") %>
+	touch cleanup-components
+<%- end -%>
+
+<%= @component_to_build.name %>-project: <%= dirnames.join(' ') %> file-list-after-build
+	touch <%= @component_to_build.name %>-project
+
+<%- @components.each do |comp| -%>
+<%= comp.rules(self, @platform).to_s %>
+<%- end -%>
+
+clean: <%= @components.map {|comp| "#{comp.name}-clean" }.join(" ") %>
+
+clobber: <%= @components.map {|comp| "#{comp.name}-clobber" }.join(" ") %>
+
+.PHONY: clean clobber  <%= @components.map {|comp| "#{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>

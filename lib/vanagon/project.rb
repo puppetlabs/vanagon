@@ -316,6 +316,21 @@ class Vanagon
       end
     end
 
+    # Generate a list of all files and directories to be included in a tarball
+    # for the component
+    #
+    # @return [Array] all the files and directories that should be included in the tarball
+    def get_component_tarball_files
+      files = ['file-list']
+      files.push get_files.map(&:path)
+      files.push get_configfiles.map(&:path)
+      if @platform.is_windows?
+        files.flatten.map { |f| "$$(cygpath --mixed --long-name '#{f}')" }
+      else
+        files.flatten
+      end
+    end
+
     # Generate a bill-of-materials: a listing of the components and their
     # versions in the current project
     #
@@ -331,6 +346,16 @@ class Vanagon
       tar_root = "#{@name}-#{@version}"
       ["mkdir -p '#{tar_root}'",
        %('#{@platform.tar}' -cf - -T "#{get_tarball_files.join('" "')}" | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
+       %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
+    end
+
+    # Method to generate the command to create a tarball of the project
+    #
+    # @return [String] cross platform command to generate a tarball of the project
+    def pack_component_tarball_command
+      tar_root = "#{@component_to_build.name}-#{@component_to_build.version}"
+      ["mkdir -p '#{tar_root}'",
+       %('#{@platform.tar}' -cf - -T "#{get_component_tarball_files.join('" "')}" | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
        %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
     end
 
