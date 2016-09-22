@@ -12,6 +12,8 @@ class Vanagon
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
     attr_accessor :cleanup, :version_file, :release, :replaces, :provides
     attr_accessor :conflicts, :bill_of_materials, :retry_count, :timeout
+    attr_accessor :component_to_build
+
 
     # Loads a given project from the configdir
     #
@@ -51,6 +53,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @conflicts = []
+      @component_to_build = nil
     end
 
     # Magic getter to retrieve settings in the project
@@ -335,9 +338,10 @@ class Vanagon
     # for use in building the project
     #
     # @param workdir [String] full path to the workdir to send the evaluated template
+    # @param makefile_name [String] name of the makefile
     # @return [String] full path to the generated Makefile
-    def make_makefile(workdir)
-      erb_file(File.join(VANAGON_ROOT, "resources/Makefile.erb"), File.join(workdir, "Makefile"))
+    def make_makefile(workdir, makefile_name)
+      erb_file(File.join(VANAGON_ROOT, "resources/#{makefile_name}.erb"), File.join(workdir, "Makefile"))
     end
 
     # Generates a bill-of-materials and writes the contents to the workdir for use in
