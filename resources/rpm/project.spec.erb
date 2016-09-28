@@ -1,5 +1,21 @@
 %global debug_package %{nil}
 
+<%- if @platform.is_cisco_wrlinux? -%>
+# Our cisco-5/7 build platforms are missing the definition of
+# __os_install_post, so we have to manually set it here. This
+# then enables the brp strip scripts, which are needed to reduce
+# the size of our agent packages for these platforms. This is
+# necessary as some targets will fail to even install the package
+# without stripped binaries because yum's package cache is kept
+# on a partition with ~50MB of free space.
+%global __os_install_post    \
+    /usr/lib64/rpm/brp-compress \
+    /usr/lib64/rpm/brp-strip %{__strip} \
+    /usr/lib64/rpm/brp-strip-static-archive %{__strip} \
+    /usr/lib64/rpm/brp-strip-comment-note %{__strip} %{__objdump} \
+%{nil}
+<%- end -%>
+
 # Turn off the brp-python-bytecompile script
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 <% if @platform.is_cross_compiled_linux? -%>
