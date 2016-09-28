@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.8.1] - 2016-09-28
+### Changed
+- Enable brp strip scripts for stripping binaries on Cisco RPM platforms
+- MAINTAINERS file updated with current project maintainers
+- Vanagon now supports sha256sum and sha512sum checksum validation in its DSL
+
 ## [0.8.0] - 2016-08-11
 ### Changed
 - Git component source handling has been offloaded to an external library (`ruby-git`).
