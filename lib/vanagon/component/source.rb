@@ -88,7 +88,8 @@ class Vanagon
             return Vanagon::Component::Source::Http.new parse_and_rewrite(uri),
               sum: options[:sum],
               workdir: options[:workdir],
-              sum_type: options[:sum_type]
+              # Default sum_type is md5 if unspecified:
+              sum_type: options[:sum_type] || "md5"
           end
 
           # Then we try local
