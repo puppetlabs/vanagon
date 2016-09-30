@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.8.2] - 2016-09-29
+### Changed
+- Fixed bug to make md5 the default checksum type for component add_source()
+
 ## [0.8.1] - 2016-09-28
 ### Changed
 - Enable brp strip scripts for stripping binaries on Cisco RPM platforms
