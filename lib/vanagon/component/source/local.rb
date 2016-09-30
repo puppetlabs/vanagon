@@ -60,7 +60,7 @@ class Vanagon
         def copy
           puts "Copying file '#{url.basename}' to workdir"
 
-          FileUtils.cp(url, file)
+          FileUtils.cp_r(url, file)
         end
         alias_method :fetch, :copy
 
@@ -148,7 +148,13 @@ class Vanagon
         # @return [String] the directory that should be traversed into to build this source
         # @raise [RuntimeError] if the @extension for the @file isn't currently handled by the method
         def dirname
-          archive? ? File.basename(file, extension) : './'
+          # We are not treating file as a Pathname since other sources can inherit from this class
+          # which could cause file to be a URI instead of a string.
+          if archive? || File.directory?(file)
+            File.basename(file, extension)
+          else
+            './'
+          end
         end
 
         # Wrapper around the class method '.mangle'
