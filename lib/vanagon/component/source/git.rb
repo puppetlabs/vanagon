@@ -46,7 +46,6 @@ class Vanagon
           @url = URI.parse(url.to_s)
           @ref = opts[:ref]
           @workdir = workdir
-          @ref_name, @ref_type, = @ref.split('/', 3).reverse
 
           # We can test for Repo existence without cloning
           raise Vanagon::InvalidRepo, "#{url} not a valid Git repo" unless valid_remote?
@@ -60,10 +59,6 @@ class Vanagon
           checkout!
           version
           update_submodules
-        end
-
-        def ref
-          @ref_name || @ref
         end
 
         # Return the correct incantation to cleanup the source directory for a given source
