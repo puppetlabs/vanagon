@@ -30,7 +30,7 @@ class Vanagon
         # Default options used when cloning; this may expand
         # or change over time.
         def default_options
-          @default_options ||= { ref: "refs/heads/master" }
+          @default_options ||= { ref: "HEAD" }
         end
         private :default_options
 
