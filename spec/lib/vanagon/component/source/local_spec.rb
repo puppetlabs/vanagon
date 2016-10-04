@@ -5,12 +5,26 @@ describe "Vanagon::Component::Source::File" do
   let (:tar_filename) { 'file://spec/fixtures/files/fake_dir.tar.gz' }
   let (:plaintext_filename) { 'file://spec/fixtures/files/fake_file.txt' }
   let (:workdir) { "/tmp" }
+  let (:simple_directory) { 'file://spec/fixtures/files/fake_dir/' }
+  let (:nested_directory) { 'file://spec/fixtures/files/fake_nested_dir/' }
 
   describe "#fetch" do
     it "puts the source file in to the workdir" do
       file = Vanagon::Component::Source::Local.new(plaintext_filename, workdir: workdir)
       file.fetch
       expect(File).to exist("#{workdir}/fake_file.txt")
+    end
+
+    it "puts the source directory in to the workdir" do
+      file = Vanagon::Component::Source::Local.new(simple_directory, workdir: workdir)
+      file.fetch
+      expect(File).to exist("#{workdir}/fake_dir/fake_file.txt")
+    end
+
+    it "preserves nested directories when copying folders" do
+      file = Vanagon::Component::Source::Local.new(nested_directory, workdir: workdir)
+      file.fetch
+      expect(File).to exist("#{workdir}/fake_nested_dir/fake_dir/fake_file.txt")
     end
   end
 
@@ -20,7 +34,9 @@ describe "Vanagon::Component::Source::File" do
       file.fetch
       expect(file.dirname).to eq("fake_dir")
     end
+  end
 
+  describe "#ref" do
     it "returns the current directory for non-archive files" do
       file = Vanagon::Component::Source::Local.new(plaintext_filename, workdir: workdir)
       file.fetch
