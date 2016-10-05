@@ -32,6 +32,14 @@ describe "Vanagon::Component::Source::Git" do
     end
   end
 
+  describe "#ref" do
+    it "returns a default value of HEAD when no explicit Git reference is provided" do
+      git_source = klass.new(url, workdir: workdir)
+      expect(git_source.ref)
+        .to eq('HEAD')
+    end
+  end
+
   describe "#fetch" do
     it "raises an error on checkout failure with a bad SHA" do
       expect { klass.new("#{url}", ref: bad_sha, workdir: workdir).fetch }
