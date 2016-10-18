@@ -119,6 +119,51 @@ class Vanagon
       nil
     end
 
+    # Iterate over each component and yield a block on that component,
+    # if a component has build dependencies they need to yield first.
+    #
+    # @param [&block] a block of code to yield on each component
+    def each_component_dependencies_first
+      components_left = @components
+      components_done = []
+      until components_left.empty?
+        components_left.each do |comp|
+          # Check if the build requirements are either not
+          # components of the project or have already
+          # been built
+          unless check_for_requirements(comp, components_done)
+            # At this point, all this component's build deps have yielded
+            yield comp
+            # Only add comp.name since the list of comp.build_requires
+            # will be strings and we will be checking components_done
+            # against that
+            components_done << comp.name
+            components_left.delete(comp)
+          end
+        end
+      end
+    end
+
+    # Check a components list of build_requires for
+    # first: is the build requirement a component of the project
+    # second: is the build requirement in the list of components_done
+    #
+    # @param [component] comp , component whose build requirements we are checking
+    # @param [Array (components)] components_done, which component's have already executed
+    # @return [Boolean] whether this component's build deps have yielded yet.
+    def check_for_requirements(comp, components_done)
+      comp.build_requires.each do |requirement|
+        # if the requirement is not a component of the project,
+        # Project.get_component just returns nil, so it will
+        # continue
+        if get_component(requirement) && !components_done.include?(requirement)
+          return true
+        end
+      end
+      false
+    end
+
+
     # Collects all of the requires for both the project and its components
     #
     # @return [Array] array of runtime requirements for the project

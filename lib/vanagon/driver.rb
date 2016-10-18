@@ -140,7 +140,9 @@ class Vanagon
       puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
       retry_task { @project.fetch_sources(@workdir) }
-      build_each_component_tarball
+      @project.each_component_dependencies_first do |comp|
+        build_component(comp)
+      end
       @engine.teardown unless @preserve
       cleanup_workdir unless @preserve
     rescue => e
@@ -151,41 +153,6 @@ class Vanagon
       if ["hardware", "ec2"].include?(@engine.name)
         @engine.teardown
       end
-    end
-
-    def build_each_component_tarball
-      components_left = @project.components
-      components_done = []
-      until components_left.empty?
-        components_left.each do |comp|
-          # Check if the build requirements are either not
-          # components of the project or have already
-          # been build
-          unless check_for_requirements(comp, components_done)
-            build_component(comp)
-            # Only add comp.name since the list of comp.build_requires
-            # will be strings and we will be checking components_done
-            # against that
-            components_done << comp.name
-            components_left.delete(comp)
-          end
-        end
-      end
-    end
-
-    # Check a components list of build_requires for
-    # first: is the build requirement a component of the project
-    # second: is the build requirement in the list of components_done
-    def check_for_requirements(comp, components_done)
-      comp.build_requires.each do |requirement|
-        # if the requirement is not a component of the project,
-        # Project.get_component just returns nil, so it will
-        # continue
-        if @project.get_component(requirement) && !components_done.include?(requirement)
-          return true
-        end
-      end
-      false
     end
 
     # Build and retrieve a single component's tarball
