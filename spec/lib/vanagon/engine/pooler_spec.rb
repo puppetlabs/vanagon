@@ -18,6 +18,11 @@ describe 'Vanagon::Engine::Pooler' do
     plat._platform
   }
 
+  before :each do
+    # suppress `#warn` output during tests
+    allow_any_instance_of(Vanagon::Platform::DSL).to receive(:warn)
+  end
+
   describe "#load_token" do
     after(:each) { ENV['VMPOOLER_TOKEN'] = nil }
 
@@ -26,21 +31,19 @@ describe 'Vanagon::Engine::Pooler' do
 
     it 'prefers an env var to a file' do
       ENV['VMPOOLER_TOKEN'] = 'abcd'
-      expect(File).to_not receive(:expand_path).with('~/.vanagon-token')
+      expect_any_instance_of(Vanagon::Engine::Pooler).to_not receive(:token_from_file)
       expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
     end
 
     it 'falls back to a file if the env var is not set' do
-      expect(File).to receive(:expand_path).with('~/.vanagon-token').and_return(token_filename)
-      expect(File).to receive(:exist?).with(token_filename).and_return(true)
-      expect(File).to receive(:open).with(token_filename).and_return(token_file)
-      expect(token_file).to receive(:read).and_return('abcd')
+      ENV['VMPOOLER_TOKEN'] = nil
+      allow_any_instance_of(Vanagon::Engine::Pooler).to receive(:token_from_file).and_return('abcd')
       expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
     end
 
     it 'returns nil if there is no env var or file' do
-      expect(File).to receive(:expand_path).with('~/.vanagon-token').and_return(token_filename)
-      expect(File).to receive(:exist?).with(token_filename).and_return(false)
+      ENV['VMPOOLER_TOKEN'] = nil
+      allow_any_instance_of(Vanagon::Engine::Pooler).to receive(:token_from_file).and_return(nil)
       expect(Vanagon::Engine::Pooler.new(platform).token).to be_nil
     end
   end

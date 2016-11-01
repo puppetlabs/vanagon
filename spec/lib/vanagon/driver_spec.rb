@@ -54,6 +54,39 @@ describe 'Vanagon::Driver' do
                               'engine' => 'hardware' })
     end
 
+    it 'returns the first build_host using the hardware engine when not using an engine, and not specifying an engine in the platform configuration' do
+      platform = eval_platform('aix-7.1-ppc', <<-END)
+        platform 'aix-7.1-ppc' do |plat|
+          plat.build_host ["pe-aix-71-01", "pe-aix-71-02"]
+        end
+      END
+
+      info = create_driver(platform).build_host_info
+
+      expect(info).to match({ 'name'   => 'pe-aix-71-01',
+                              'engine' => 'hardware' })
+    end
+
+    it 'returns the platform and the always_be_scheduling engine when using the always_be_scheduling engine' do
+      platform = eval_platform('aix-7.1-ppc', <<-END)
+        platform 'aix-7.1-ppc' do |plat|
+          plat.build_host ["pe-aix-71-01", "pe-aix-71-02"]
+        end
+      END
+
+      info = create_driver(platform, :engine => 'always_be_scheduling').build_host_info
+
+      expect(info).to match({ 'name'   => 'aix-7.1-ppc',
+                              'engine' => 'always_be_scheduling' })
+    end
+
+    it 'returns the vmpooler_template using the always_be_scheduling engine when using the always_be_scheduling engine' do
+      info = create_driver(redhat, :engine => 'always_be_scheduling').build_host_info
+
+      expect(info).to match({ 'name'   => 'centos-7-x86_64',
+                              'engine' => 'always_be_scheduling' })
+    end
+
     it 'returns the docker_image using the docker engine' do
       platform = eval_platform('el-7-x86_64', <<-END)
         platform 'el-7-x86_64' do |plat|
@@ -85,4 +118,3 @@ describe 'Vanagon::Driver' do
     end
   end
 end
-

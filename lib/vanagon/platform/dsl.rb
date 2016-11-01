@@ -221,6 +221,13 @@ class Vanagon
         self.vmpooler_template(name)
       end
 
+      # Set the name of this platform as always-be-scheduling (ABS) expects it
+      #
+      # @param name [String] name of the platform to request from always-be-scheduling
+      def abs_resource_name(name)
+        @platform.abs_resource_name = name
+      end
+
       # Set the name of the docker image to use
       #
       # @param name [String] name of the docker image to use

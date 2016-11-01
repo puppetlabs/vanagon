@@ -135,7 +135,7 @@ HERE
 
         it "Copies Hierarchy of files from Product Specific Directory to output directory with ERB translation as necessary" do
           # setup source directories and run artifact generation
-          FileUtils.cp_r("#{WIXTESTFILES}/", "#{PROJ_ROOT}/resources/windows/", :verbose => true)
+          FileUtils.cp_r("#{WIXTESTFILES}/", "#{PROJ_ROOT}/resources/windows/")
           cur_plat._platform.generate_msi_packaging_artifacts(WORKDIR, plat[:projname], binding)
           # check the result
           expect(File).to exist("#{WORKDIR}/wix/file-1.wxs")
@@ -154,7 +154,7 @@ HERE
 
         it "Copies Hierarchy of files from vanagon directory to output directory with ERB translation as necessary" do
           # setup source directories and run artifact generation
-          FileUtils.cp_r("#{WIXTESTFILES}/", "#{VANAGON_ROOT}/resources/windows/", :verbose => true)
+          FileUtils.cp_r("#{WIXTESTFILES}/", "#{VANAGON_ROOT}/resources/windows/")
           cur_plat._platform.generate_msi_packaging_artifacts(WORKDIR, plat[:projname], binding)
           # check the result
           expect(File).to exist("#{WORKDIR}/wix/file-1.wxs")

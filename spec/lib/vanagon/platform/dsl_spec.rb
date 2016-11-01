@@ -20,6 +20,11 @@ describe 'Vanagon::Platform::DSL' do
 
   let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
+  before :each do
+    # suppress `#warn` output during tests
+    allow_any_instance_of(Vanagon::Platform::DSL).to receive(:warn)
+  end
+
   # These apt_repo, yum_repo, and zypper_repo methods are all deprecated.
   describe '#apt_repo' do
     it "grabs the file and adds .list to it" do
@@ -103,6 +108,15 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
       plat.instance_eval(solaris_10_platform_block)
       expect {plat.add_build_repository("anything")}.to raise_error(Vanagon::Error, /Adding a build repository not defined/)
+    end
+  end
+
+  describe '#abs_resource_name' do
+    it 'sets the instance variable on platform' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_10_platform_block)
+      plat.abs_resource_name 'solaris-10-x86_64'
+      expect(plat._platform.abs_resource_name).to eq('solaris-10-x86_64')
     end
   end
 

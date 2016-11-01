@@ -39,8 +39,8 @@ describe "Vanagon::Component::Source::Http" do
     end
 
     it "calls md5 digest when it's supposed to" do
-      Digest::MD5.any_instance.stub(:file).and_return(Digest::MD5.new)
-      Digest::MD5.any_instance.stub(:hexdigest).and_return(md5sum)
+      allow_any_instance_of(Digest::MD5).to receive(:file).and_return(Digest::MD5.new)
+      allow_any_instance_of(Digest::MD5).to receive(:hexdigest).and_return(md5sum)
       http_source = Vanagon::Component::Source::Http.new(plaintext_url, sum: md5sum, workdir: workdir, sum_type: "md5")
       expect(http_source).to receive(:download).and_return(plaintext_filename)
       http_source.fetch
@@ -48,8 +48,8 @@ describe "Vanagon::Component::Source::Http" do
     end
 
     it "calls sha256 digest when it's supposed to" do
-      Digest::SHA256.any_instance.stub(:file).and_return(Digest::SHA256.new)
-      Digest::SHA256.any_instance.stub(:hexdigest).and_return(sha256sum)
+      allow_any_instance_of(Digest::SHA256).to receive(:file).and_return(Digest::SHA256.new)
+      allow_any_instance_of(Digest::SHA256).to receive(:hexdigest).and_return(sha256sum)
       http_source = Vanagon::Component::Source::Http.new(plaintext_url, sum: sha256sum, workdir: workdir, sum_type: "sha256")
       expect(http_source).to receive(:download).and_return(plaintext_filename)
       http_source.fetch
@@ -57,8 +57,8 @@ describe "Vanagon::Component::Source::Http" do
     end
 
     it "calls sha512 digest when it's supposed to" do
-      Digest::SHA512.any_instance.stub(:file).and_return(Digest::SHA512.new)
-      Digest::SHA512.any_instance.stub(:hexdigest).and_return(sha512sum)
+      allow_any_instance_of(Digest::SHA512).to receive(:file).and_return(Digest::SHA512.new)
+      allow_any_instance_of(Digest::SHA512).to receive(:hexdigest).and_return(sha512sum)
       http_source = Vanagon::Component::Source::Http.new(plaintext_url, sum: sha512sum, workdir: workdir, sum_type: "sha512")
       expect(http_source).to receive(:download).and_return(plaintext_filename)
       http_source.fetch

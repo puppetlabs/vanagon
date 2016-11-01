@@ -27,7 +27,7 @@ class Vanagon
         host
       end
 
-      # Iterarte over the options and find a node open to lock.
+      # Iterate over the options and find a node open to lock.
       def node_lock(hosts)
         hosts.each do |h|
           Vanagon::Driver.logger.info "Attempting  to lock #{h}."

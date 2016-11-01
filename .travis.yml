@@ -12,7 +12,7 @@ rvm:
   - 2.2.0
 
 env:
-  - "CHECK='rspec spec --color --format documentation --order random'"
+  - "CHECK='rspec spec --color --format documentation --order random --require spec_helper.rb'"
   - "CHECK='rubocop -D'"
 
 matrix:
