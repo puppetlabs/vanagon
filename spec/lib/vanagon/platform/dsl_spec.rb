@@ -111,6 +111,15 @@ describe 'Vanagon::Platform::DSL' do
     end
   end
 
+  describe '#abs_resource_name' do
+    it 'sets the instance variable on platform' do
+      plat = Vanagon::Platform::DSL.new('solaris-test-fixture')
+      plat.instance_eval(solaris_10_platform_block)
+      plat.abs_resource_name 'solaris-10-x86_64'
+      expect(plat._platform.abs_resource_name).to eq('solaris-10-x86_64')
+    end
+  end
+
   describe '#vmpooler_template' do
     it 'sets the instance variable on platform' do
       plat = Vanagon::Platform::DSL.new('solaris-test-fixture')

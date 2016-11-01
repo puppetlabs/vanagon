@@ -2,13 +2,16 @@ require 'vanagon/platform/dsl'
 
 class Vanagon
   class Platform
-    attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores, :tar
-    attr_accessor :build_dependencies, :name, :vmpooler_template, :cflags, :ldflags, :settings
-    attr_accessor :servicetype, :patch, :architecture, :codename, :os_name, :os_version
-    attr_accessor :docker_image, :ssh_port, :rpmbuild, :install, :platform_triple
-    attr_accessor :target_user, :package_type, :find, :sort, :build_hosts, :copy, :cross_compiled
-    attr_accessor :aws_ami, :aws_user_data, :aws_shutdown_behavior, :aws_key_name, :aws_region, :aws_key
-    attr_accessor :aws_instance_type, :aws_vpc_id, :aws_subnet_id, :output_dir
+    attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores
+    attr_accessor :tar, :build_dependencies, :name, :vmpooler_template
+    attr_accessor :abs_resource_name, :cflags, :ldflags, :settings
+    attr_accessor :servicetype, :patch, :architecture, :codename, :os_name
+    attr_accessor :os_version, :docker_image, :ssh_port, :rpmbuild, :install
+    attr_accessor :platform_triple, :target_user, :package_type, :find, :sort
+    attr_accessor :build_hosts, :copy, :cross_compiled, :aws_ami
+    attr_accessor :aws_user_data, :aws_shutdown_behavior, :aws_key_name
+    attr_accessor :aws_region, :aws_key, :aws_instance_type, :aws_vpc_id
+    attr_accessor :aws_subnet_id, :output_dir
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to

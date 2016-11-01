@@ -34,23 +34,31 @@ class Vanagon
     end
 
     def load_engine(engine_type, platform, target)
-      if platform.build_hosts
-        engine_type = 'hardware'
-      elsif platform.aws_ami
-        engine_type = 'ec2'
-      elsif platform.docker_image
-        engine_type = 'docker'
-      elsif target
-        engine_type = 'base'
+      if engine_type != 'always_be_scheduling'
+        if platform.build_hosts
+          engine_type = 'hardware'
+        elsif platform.aws_ami
+          engine_type = 'ec2'
+        elsif platform.docker_image
+          engine_type = 'docker'
+        elsif target
+          engine_type = 'base'
+        end
       end
       load_engine_object(engine_type, platform, target)
     end
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      @engine = Object::const_get("Vanagon::Engine::#{engine_type.capitalize}").new(platform, target)
+      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target)
     rescue
-      fail "No such engine '#{engine_type.capitalize}'"
+      fail "No such engine '#{camelize(engine_type)}'"
+    end
+
+    def camelize(string)
+      string.gsub(/(?:^|_)([a-z])?/) do |match|
+        (Regexp.last_match[1] || '').capitalize
+      end
     end
 
     def cleanup_workdir
