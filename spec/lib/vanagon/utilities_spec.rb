@@ -2,6 +2,11 @@ require 'vanagon/utilities'
 require 'tmpdir'
 
 describe "Vanagon::Utilities" do
+  before :each do
+    # suppress `#warn` output during tests
+    allow(Vanagon::Utilities).to receive(:warn)
+  end
+
   describe "#find_program_on_path" do
     let(:command) { "thingie" }
 

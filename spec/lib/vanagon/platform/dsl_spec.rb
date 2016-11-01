@@ -20,6 +20,11 @@ describe 'Vanagon::Platform::DSL' do
 
   let(:hex_value) { "906264d248061b0edb1a576cc9c8f6c7" }
 
+  before :each do
+    # suppress `#warn` output during tests
+    allow_any_instance_of(Vanagon::Platform::DSL).to receive(:warn)
+  end
+
   # These apt_repo, yum_repo, and zypper_repo methods are all deprecated.
   describe '#apt_repo' do
     it "grabs the file and adds .list to it" do
