@@ -77,9 +77,43 @@ class Vanagon
       { "name" => @engine.build_host_name, "engine" => @engine.name }
     end
 
-    # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
+    # Normalize our pkgname=version syntax to work with the package
+    # manager being used for this platform.
+    def normalize_build_dependencies_syntax(build_deps)
+      if @platform.build_dependencies.command =~ /apt/
+        # apt uses '=' as the package/version separator, no need to do anything
+      elsif @platform.build_dependencies.command =~ /yum|dnf|zypper/
+        # yum/dnf/zypper uses '-' as the package/version separator
+        build_deps = build_deps.map { |pkg| pkg.sub('=', '-') }
+      else
+        raise Vanagon::Error, "Support for specifying package versions in build_requires is not available for #{@platform.name}"
+      end
+
+      build_deps
+    end
+
+    # Returns a list of external dependencies that need to be installed.
+    # If version numbers are specified, this method ensures the package
+    # names use the correct format for the platform's package manager.
     def list_build_dependencies
-      @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)
+      build_requires = @project.components.map(&:build_requires).flatten.uniq
+      component_names = @project.components.map(&:name)
+      build_deps = []
+      version_specified = false
+
+      build_requires.each do |pkg|
+        version_specified = true if pkg.include?('=')
+        # Skip any package names that match the name of a component
+        unless component_names.include?(pkg.split('=')[0])
+          build_deps << pkg
+        end
+      end
+
+      if version_specified
+        build_deps = normalize_build_dependencies_syntax(build_deps)
+      end
+
+      build_deps
     end
 
     def install_build_dependencies # rubocop:disable Metrics/AbcSize
