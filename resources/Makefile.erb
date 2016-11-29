@@ -36,7 +36,7 @@ file-list: file-list-before-build <%= @name %>-project
 <%- end -%>
 
 <%- if @bill_of_materials -%>
-<%= @bill_of_materials %>:
+<%= @bill_of_materials.path %>:
 	mkdir -p '<%= @bill_of_materials.path %>'
 	mv bill-of-materials '<%= @bill_of_materials.path %>'
 <%- end -%>
