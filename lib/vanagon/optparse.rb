@@ -10,6 +10,7 @@ class Vanagon
         :skipcheck => ['--skipcheck', 'Skip the `check` stage when building components'],
         :preserve => ['-p', '--preserve', 'Whether to tear down the VM on success or not (defaults to false)'],
         :verbose => ['-v', '--verbose', 'Verbose output (does nothing)'],
+        :only_build => ["--only-build [ARRAY]", Array, 'Only build this array of components']
       }.freeze
 
     def initialize(banner, options = [])

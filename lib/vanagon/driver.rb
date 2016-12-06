@@ -13,17 +13,21 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false, :only_build => nil }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
+      only_build = options[:only_build] || nil
       target = options[:target]
       engine = options[:engine] || 'pooler'
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      if only_build
+        filter_out_components(only_build)
+      end
       @project.settings[:verbose] = options[:verbose]
       @project.settings[:skipcheck] = options[:skipcheck]
       loginit('vanagon_hosts.log')
@@ -31,6 +35,16 @@ class Vanagon
       load_engine(engine, @platform, target)
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
+    end
+
+    def filter_out_components(only_build)
+      # map each element in the only_build array to it's set of filtered components, then
+      # flatten all the results in to one array and set project.components to that.
+      @project.components = only_build.flat_map { |comp| @project.filter_component(comp) }.uniq
+      if @verbose
+        puts "Only building:"
+        @project.components.each { |comp| puts comp.name }
+      end
     end
 
     def load_engine(engine_type, platform, target)
@@ -105,7 +119,7 @@ class Vanagon
       puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
       retry_task { @project.fetch_sources(@workdir) }
-      @project.make_makefile(@workdir)
+      @project.make_makefile(@workdir, "Makefile")
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
@@ -121,6 +135,50 @@ class Vanagon
       if ["hardware", "ec2"].include?(@engine.name)
         @engine.teardown
       end
+    end
+
+    # build all component tarballs
+    def build_component_tarballs # rubocop:disable Metrics/AbcSize
+      # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+      @workdir = Dir.mktmpdir
+      @engine.startup(@workdir)
+      puts "Target is #{@engine.target}"
+      retry_task { install_build_dependencies }
+      retry_task { @project.fetch_sources(@workdir) }
+      @project.each_component_dependencies_first do |comp|
+        build_component(comp)
+      end
+      @engine.teardown unless @preserve
+      cleanup_workdir unless @preserve
+    rescue => e
+      puts e
+      puts e.backtrace.join("\n")
+      raise e
+    ensure
+      if ["hardware", "ec2"].include?(@engine.name)
+        @engine.teardown
+      end
+    end
+
+    # Build and retrieve a single component's tarball
+    def build_component(component)
+      # save the project components
+      saved_components = @project.components
+      #replace the components in the project with just the one
+      @project.components = [component]
+      @project.component_to_build = component
+      @project.make_makefile(@workdir, "Component_Makefile")
+      @engine.ship_workdir(@workdir)
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
+      # remove the Makefile, which will allow the rsync to put the Makefile
+      # for the next component in it's place.
+      @engine.dispatch("(cd #{@engine.remote_workdir}; rm -rf Makefile)")
+      @engine.retrieve_built_artifact
+      # put back the saved components
+      @project.components = saved_components
     end
 
     def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize

@@ -12,6 +12,8 @@ class Vanagon
     attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
     attr_accessor :cleanup, :version_file, :release, :replaces, :provides
     attr_accessor :conflicts, :bill_of_materials, :retry_count, :timeout
+    attr_accessor :component_to_build
+
 
     # Loads a given project from the configdir
     #
@@ -51,6 +53,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @conflicts = []
+      @component_to_build = nil
     end
 
     # Magic getter to retrieve settings in the project
@@ -81,6 +84,85 @@ class Vanagon
       files.push @components.map(&:files).flatten
       files.flatten.uniq
     end
+
+    # Returns a filtered out set of components only including those
+    # components necessary to build a specific component. This is a
+    # recursive function that will call itself until it gets to a
+    # component with no build requirements
+    #
+    # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently
+    # @return [Array] array of Vanagon::Component including only those required to build "name"
+    def filter_component(name)
+      filtered_component = get_component(name)
+      return nil if filtered_component.nil?
+      included_components = [filtered_component]
+
+      unless filtered_component.build_requires.nil?
+        filtered_component.build_requires.each do |build_requirement|
+          unless get_component(build_requirement).nil?
+            included_components += filter_component(build_requirement)
+          end
+        end
+      end
+      included_components.uniq
+    end
+
+    # Gets the component with component.name = "name" from the list
+    # of project.components
+    #
+    # @param [String] component name
+    # @return [Vanagon::Component] the component with component.name = "name"
+    def get_component(name)
+      unless @components.select { |comp| comp.name.to_s == name.to_s }.nil?
+        return @components.select { |comp| comp.name.to_s == name.to_s }.pop
+      end
+      nil
+    end
+
+    # Iterate over each component and yield a block on that component,
+    # if a component has build dependencies they need to yield first.
+    #
+    # @param [&block] a block of code to yield on each component
+    def each_component_dependencies_first
+      components_left = @components
+      components_done = []
+      until components_left.empty?
+        components_left.each do |comp|
+          # Check if the build requirements are either not
+          # components of the project or have already
+          # been built
+          unless check_for_requirements(comp, components_done)
+            # At this point, all this component's build deps have yielded
+            yield comp
+            # Only add comp.name since the list of comp.build_requires
+            # will be strings and we will be checking components_done
+            # against that
+            components_done << comp.name
+            components_left.delete(comp)
+          end
+        end
+      end
+    end
+
+    # Check a components list of build_requires for
+    # first: is the build requirement a component of the project
+    # second: is the build requirement in the list of components_done
+    #
+    # @param [component] comp , component whose build requirements we are checking
+    # @param [Array (components)] components_done, which component's have already executed
+    # @return [Boolean] whether this component's build deps have yielded yet.
+    def check_for_requirements(comp, components_done)
+      comp.build_requires.each do |requirement|
+        # if the requirement is not a component of the project,
+        # Project.get_component just returns nil, so it will
+        # continue
+        if get_component(requirement) && !components_done.include?(requirement)
+          return true
+        end
+      end
+      false
+    end
+
 
     # Collects all of the requires for both the project and its components
     #
@@ -279,6 +361,21 @@ class Vanagon
       end
     end
 
+    # Generate a list of all files and directories to be included in a tarball
+    # for the component
+    #
+    # @return [Array] all the files and directories that should be included in the tarball
+    def get_component_tarball_files
+      files = ['file-list']
+      files.push get_files.map(&:path)
+      files.push get_configfiles.map(&:path)
+      if @platform.is_windows?
+        files.flatten.map { |f| "$$(cygpath --mixed --long-name '#{f}')" }
+      else
+        files.flatten
+      end
+    end
+
     # Generate a bill-of-materials: a listing of the components and their
     # versions in the current project
     #
@@ -297,13 +394,24 @@ class Vanagon
        %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
     end
 
+    # Method to generate the command to create a tarball of the project
+    #
+    # @return [String] cross platform command to generate a tarball of the project
+    def pack_component_tarball_command
+      tar_root = "#{@component_to_build.name}-#{@component_to_build.version}"
+      ["mkdir -p '#{tar_root}'",
+       %('#{@platform.tar}' -cf - -T "#{get_component_tarball_files.join('" "')}" | ( cd '#{tar_root}/'; '#{@platform.tar}' xfp -)),
+       %('#{@platform.tar}' -cf - #{tar_root}/ | gzip -9c > #{tar_root}.tar.gz)].join("\n\t")
+    end
+
     # Evaluates the makefile template and writes the contents to the workdir
     # for use in building the project
     #
     # @param workdir [String] full path to the workdir to send the evaluated template
+    # @param makefile_name [String] name of the makefile
     # @return [String] full path to the generated Makefile
-    def make_makefile(workdir)
-      erb_file(File.join(VANAGON_ROOT, "resources/Makefile.erb"), File.join(workdir, "Makefile"))
+    def make_makefile(workdir, makefile_name)
+      erb_file(File.join(VANAGON_ROOT, "resources/#{makefile_name}.erb"), File.join(workdir, "Makefile"))
     end
 
     # Generates a bill-of-materials and writes the contents to the workdir for use in
