@@ -68,6 +68,7 @@ the comma). If less targets are specified than platforms, the default engine
 (`pooler`) will be used for platforms without a target. If more targets are specified
 than platforms, the extra platforms will be ignored.
 
+Build machines should be cleaned between builds.
 
 #### Flagged arguments (can be anywhere in the command)
 
