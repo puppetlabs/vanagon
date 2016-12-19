@@ -13,12 +13,13 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false, :only_build => nil }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
+      only_build = options[:only_build]
       target = options[:target]
       engine = options[:engine] || 'pooler'
 
@@ -26,11 +27,22 @@ class Vanagon
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
       @project.settings[:verbose] = options[:verbose]
       @project.settings[:skipcheck] = options[:skipcheck]
+      filter_out_components(only_build) if only_build
       loginit('vanagon_hosts.log')
 
       load_engine(engine, @platform, target)
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
+    end
+
+    def filter_out_components(only_build)
+      # map each element in the only_build array to it's set of filtered components, then
+      # flatten all the results in to one array and set project.components to that.
+      @project.components = only_build.flat_map { |comp| @project.filter_component(comp) }.uniq
+      if @verbose
+        puts "Only building:"
+        @project.components.each { |comp| puts comp.name }
+      end
     end
 
     def load_engine(engine_type, platform, target)
