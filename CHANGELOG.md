@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Added uses_os_toolchain? utility method to determine if a platform uses host OS provided build tools instead of pl-build-tools packages. Defaults to true. To exclude a platform from this list, set plat.use_os_toolchain to false in the platform config.
 
 ## [0.8.2] - 2016-09-29
 ### Changed

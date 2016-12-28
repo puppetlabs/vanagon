@@ -128,6 +128,13 @@ class Vanagon
         @platform.cross_compiled = cxx_flag
       end
 
+      # Set the use_os_toolchain flag for the platform
+      #
+      # @param flag [Boolean] True if this platform uses host OS provided toolchain
+      def use_os_toolchain(flag)
+        @platform.use_os_toolchain = flag
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default
