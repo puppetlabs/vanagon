@@ -1,4 +1,5 @@
 require 'vanagon/engine/base'
+require 'yaml'
 
 class Vanagon
   class Engine
@@ -36,12 +37,17 @@ class Vanagon
       end
 
       def token_from_file
-        token_file = File.expand_path("~/.vanagon-token")
+        vanagon_token_file = File.expand_path("~/.vanagon-token")
+        vmfloaty_token_file = File.expand_path("~/.vmfloaty.yml")
 
-        if File.exist?(token_file)
-          return File.open(token_file).read.chomp
+        if File.exist?(vanagon_token_file)
+          puts "Reading vmpooler token from: #{vanagon_token_file}"
+          return File.open(vanagon_token_file).read.chomp
+        elsif File.exist?(vmfloaty_token_file)
+          puts "Reading vmpooler token from: #{vmfloaty_token_file}"
+          conf = YAML.load_file(vmfloaty_token_file)
+          return conf['token']
         end
-
         nil
       end
 
