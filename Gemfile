@@ -27,4 +27,5 @@ group(:development, :test) do
   gem 'rubocop', "~> 0.41.2"
   gem 'json'
   gem 'lock_manager', *lock_manager_location_for(ENV['LOCK_MANAGER_LOCATION'] || '>= 0')
+  gem 'rake'
 end
