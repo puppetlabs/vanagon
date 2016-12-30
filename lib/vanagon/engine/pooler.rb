@@ -30,26 +30,50 @@ class Vanagon
         @build_host_template_name
       end
 
-      # This method loads the pooler token from one of two locations
+      # Retrieve the pooler token from an environment variable
+      # ("VMPOOLER_TOKEN") or from a number of potential configuration
+      # files (~/.vanagon-token or ~/.vmfloaty.yml).
       # @return [String, nil] token for use with the vmpooler
       def load_token
-        ENV['VMPOOLER_TOKEN'] ? ENV['VMPOOLER_TOKEN'] : token_from_file
+        ENV['VMPOOLER_TOKEN'] || token_from_file
       end
 
+      # a wrapper method around retrieving a vmpooler token,
+      # with an explicitly ordered preference for a Vanagon-specific
+      # token file or a preexisting vmfoaty yaml file.
+      #
+      # @return [String, nil] token for use with the vmpooler
       def token_from_file
-        vanagon_token_file = File.expand_path("~/.vanagon-token")
-        vmfloaty_token_file = File.expand_path("~/.vmfloaty.yml")
-
-        if File.exist?(vanagon_token_file)
-          puts "Reading vmpooler token from: #{vanagon_token_file}"
-          return File.open(vanagon_token_file).read.chomp
-        elsif File.exist?(vmfloaty_token_file)
-          puts "Reading vmpooler token from: #{vmfloaty_token_file}"
-          conf = YAML.load_file(vmfloaty_token_file)
-          return conf['token']
-        end
-        nil
+        read_vanagon_token || read_vmfloaty_token
       end
+      private :token_from_file
+
+      # Read a vmpooler token from the plaintext vanagon-token file,
+      # as outlined in the project README.
+      #
+      # @return [String, nil] the vanagon vmpooler token value
+      def read_vanagon_token(path = "~/.vanagon-token")
+        absolute_path = File.expand_path(path)
+        return nil unless File.exist?(absolute_path)
+
+        puts "Reading vmpooler token from: #{path}"
+        File.read(vanagon_token_file).chomp
+      end
+      private :read_vanagon_token
+
+      # Read a vmpooler token from the yaml formatted vmfloaty config,
+      # as outlined by the vmfloaty project:
+      # https://github.com/briancain/vmfloaty
+      #
+      # @return [String, nil] the vmfloaty vmpooler token value
+      def read_vmfloaty_token(path = "~/.vmfloaty.yml")
+        absolute_path = File.expand_path(path)
+        return nil unless File.exist?(absolute_path)
+
+        puts "Reading vmpooler token from: #{path}"
+        YAML.load_file(absolute_path)['token']
+      end
+      private :read_vmfloaty_token
 
       # This method is used to obtain a vm to build upon using the Puppet Labs'
       # vmpooler (https://github.com/puppetlabs/vmpooler)

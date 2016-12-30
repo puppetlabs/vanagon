@@ -1,14 +1,11 @@
+---
 AllCops:
   TargetRubyVersion: 2.1
-  Include:
-    - 'bin/**/*'
-    - 'lib/**/*.rb'
   Exclude:
     - '**/*.erb'
     - 'spec/**/*'
     - 'vendor/**/*'
     - 'examples/**/*'
-
 
 Lint/ConditionPosition:
   Enabled: true
@@ -40,7 +37,6 @@ Lint/ShadowingOuterLocalVariable:
 # Can catch complicated strings.
 Lint/LiteralInInterpolation:
   Enabled: true
-
 
 # DISABLED really useless. Detects return as last statement.
 Style/RedundantReturn:
@@ -196,7 +192,6 @@ Style/ClassVars:
 Style/WhenThen:
   Enabled: false
 
-
 # DISABLED - not useful
 Style/WordArray:
   Enabled: false
@@ -260,7 +255,6 @@ Style/SpaceBeforeBlockBraces:
 
 Style/SpaceBeforeComma:
   Enabled: true
-
 
 Style/CollectionMethods:
   Enabled: false
@@ -374,7 +368,6 @@ Style/SingleLineMethods:
 Style/SpecialGlobalVars:
   Enabled: false
 
-
 Style/TrivialAccessors:
   Enabled: false
 
@@ -391,9 +384,6 @@ Style/WhileUntilDo:
   Enabled: true
 
 Style/EvenOdd:
-  Enabled: true
-
-Style/FileName:
   Enabled: true
 
 Style/For:

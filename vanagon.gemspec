@@ -2,7 +2,7 @@ require 'time'
 
 Gem::Specification.new do |gem|
   gem.name    = 'vanagon'
-  gem.version = %x(git describe --tags).gsub('-', '.').chomp
+  gem.version = %x(git describe --tags).tr('-', '.').chomp
   gem.date    = Date.today.to_s
 
   gem.summary = "All of your packages will fit into this van with this one simple trick."
@@ -26,6 +26,6 @@ Gem::Specification.new do |gem|
   gem.executables  = ['build', 'inspect', 'ship', 'repo', 'devkit', 'build_host_info']
 
   # Ensure the gem is built out of versioned files
-  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
+  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & %x(git ls-files -z).split("\0")
   gem.test_files = Dir['spec/**/*_spec.rb']
 end
