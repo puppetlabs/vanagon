@@ -54,10 +54,15 @@ class Vanagon
     end
 
     # Magic getter to retrieve settings in the project
-    def method_missing(method, *args)
-      if @settings.key?(method)
-        return @settings[method]
+    def method_missing(method_name, *args)
+      if @settings.key?(method_name)
+        return @settings[method_name]
       end
+      super
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      @settings.key?(method_name) || super
     end
 
     # Collects all sources and patches into the provided workdir
