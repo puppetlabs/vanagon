@@ -14,6 +14,13 @@ describe "Vanagon::Component::Source::Http" do
   let (:sha512sum) { 'teststring' }
   let (:workdir) { "/tmp" }
 
+  describe "#initialize" do
+    it "fails with a bad sum_type" do
+      expect { Vanagon::Component::Source::Http.new(plaintext_url, sum: md5sum, workdir: workdir, sum_type: "md4") }
+        .to raise_error(RuntimeError)
+    end
+  end
+
   describe "#dirname" do
     it "returns the name of the tarball, minus extension for archives" do
       http_source = Vanagon::Component::Source::Http.new(tar_url, sum: md5sum, workdir: workdir, sum_type: "md5")
@@ -30,14 +37,7 @@ describe "Vanagon::Component::Source::Http" do
     end
   end
 
-  describe "verify" do
-    it "fails with a bad sum_type" do
-      http_source = Vanagon::Component::Source::Http.new(plaintext_url, sum: md5sum, workdir: workdir, sum_type: "md4")
-      expect(http_source).to receive(:download).and_return(plaintext_filename)
-      http_source.fetch
-      expect{ http_source.verify }.to raise_error(RuntimeError)
-    end
-
+  describe "#verify" do
     it "calls md5 digest when it's supposed to" do
       allow_any_instance_of(Digest::MD5).to receive(:file).and_return(Digest::MD5.new)
       allow_any_instance_of(Digest::MD5).to receive(:hexdigest).and_return(md5sum)

@@ -39,8 +39,8 @@ class Vanagon
       # We only magically handle get_ methods, any other methods just get the
       # standard method_missing treatment.
       #
-      def method_missing(method, *args)
-        attribute_match = method.to_s.match(/get_(.*)/)
+      def method_missing(method_name, *args)
+        attribute_match = method_name.to_s.match(/get_(.*)/)
         if attribute_match
           attribute = attribute_match.captures.first
         else
@@ -48,6 +48,10 @@ class Vanagon
         end
 
         @component.send(attribute)
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        method_name.to_s.start_with?('get_') || super
       end
 
       # Set or add to the configure call for the component. The commands required to configure the component before building it.
@@ -273,29 +277,15 @@ class Vanagon
         @component.url = the_url
       end
 
-      # Sets the md5 sum to verify the sum of the source
-      #
-      # @param md5 [String] md5 sum of the source for verification
-      def md5sum(md5)
-        @component.options[:sum] = md5
-        @component.options[:sum_type] = "md5"
+      def sum(value)
+        type = __callee__.gsub(/sum$/, '')
+        @component.options[:sum] = value
+        @component.options[:sum_type] = type
       end
-
-      # Sets the sha256 sum to verify the sum of the source
-      #
-      # @param sha256 [String] sha256 sum of the source for verification
-      def sha256sum(sha256)
-        @component.options[:sum] = sha256
-        @component.options[:sum_type] = "sha256"
-      end
-
-      # Sets the sha512 sum to verify the sum of the source
-      #
-      # @param sha512 [String] sha512 sum of the source for verification
-      def sha512sum(sha512)
-        @component.options[:sum] = sha512
-        @component.options[:sum_type] = "sha512"
-      end
+      alias_method :md5sum, :sum
+      alias_method :sha1sum, :sum
+      alias_method :sha256sum, :sum
+      alias_method :sha512sum, :sum
 
       # Sets the ref of the source for use in a git source
       #

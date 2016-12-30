@@ -12,6 +12,9 @@ class Vanagon
         # Accessors :url, :file, :extension, :workdir, :cleanup are inherited from Local
         attr_accessor :sum, :sum_type
 
+        # Allowed checksum algorithms to use when validating files
+        CHECKSUM_TYPES = %w(md5 sha1 sha256 sha512).freeze
+
         class << self
           def valid_url?(target_url) # rubocop:disable Metrics/AbcSize
             uri = URI.parse(target_url.to_s)
@@ -51,6 +54,10 @@ class Vanagon
           unless sum_type
             fail "sum_type is required to validate the http source"
           end
+          unless CHECKSUM_TYPES.include? sum_type
+            fail %(checksum type "#{sum_type}" is invalid; please use #{CHECKSUM_TYPES.join(', ')})
+          end
+
           @url = url
           @sum = sum
           @workdir = workdir
