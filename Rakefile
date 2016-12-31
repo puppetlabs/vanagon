@@ -7,7 +7,7 @@ desc 'Test Vanagon'
 namespace :test do
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new do |task|
-    task.rspec_opts = %w(--format documentation --color --require spec_helper)
+    task.rspec_opts = %(--format documentation --color --require spec_helper)
   end
 
   desc 'Test Vanagon and calculate test coverage'
