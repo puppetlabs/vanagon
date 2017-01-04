@@ -1,21 +1,20 @@
 language: ruby
-bundler_args: --without development
 sudo: false
 before_script:
-  - 'git config --global user.email "you@example.com"'
-  - 'git config --global user.name "Your Name"'
-script: "bundle exec $CHECK"
+  - 'git config --global user.email "travis-stub@example.com"'
+  - 'git config --global user.name "Fake Travis User"'
+script: "bundle exec ${CHECK}"
 notifications:
   email: false
 rvm:
-  - 2.1.5
-  - 2.2.0
+  - 2.1
+  - 2.2
 
 env:
-  - "CHECK='rspec spec --color --format documentation --order random --require spec_helper.rb'"
-  - "CHECK='rubocop -D'"
+  - "CHECK='rake test:spec'"
+  - "CHECK='rake rubocop'"
 
 matrix:
   exclude:
-    - rvm: 2.1.5
-      env: "CHECK='rubocop -D'"
+    - rvm: 2.1
+      env: "CHECK='rake rubocop'"
