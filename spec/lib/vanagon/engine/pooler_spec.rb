@@ -27,22 +27,21 @@ describe 'Vanagon::Engine::Pooler' do
     after(:each) { ENV['VMPOOLER_TOKEN'] = nil }
 
     let(:token_file) { double(File) }
-    let(:token_filename) { 'abcd' }
+    let(:token_filename) { 'decade' }
 
-    it 'prefers an env var to a file' do
-      ENV['VMPOOLER_TOKEN'] = 'abcd'
+    it 'prefers an environment variable to a file' do
+      ENV['VMPOOLER_TOKEN'] = 'cafebeef'
       expect_any_instance_of(Vanagon::Engine::Pooler).to_not receive(:token_from_file)
-      expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
+      expect(Vanagon::Engine::Pooler.new(platform).token).to_not eq('decade')
+      expect(Vanagon::Engine::Pooler.new(platform).token).to eq('cafebeef')
     end
 
-    it 'falls back to a file if the env var is not set' do
-      ENV['VMPOOLER_TOKEN'] = nil
-      allow_any_instance_of(Vanagon::Engine::Pooler).to receive(:token_from_file).and_return('abcd')
-      expect(Vanagon::Engine::Pooler.new(platform).token).to eq('abcd')
+    it 'falls back to a file if the environment variable is not set' do
+      allow_any_instance_of(Vanagon::Engine::Pooler).to receive(:token_from_file).and_return('decade')
+      expect(Vanagon::Engine::Pooler.new(platform).token).to eq('decade')
     end
 
     it 'returns nil if there is no env var or file' do
-      ENV['VMPOOLER_TOKEN'] = nil
       allow_any_instance_of(Vanagon::Engine::Pooler).to receive(:token_from_file).and_return(nil)
       expect(Vanagon::Engine::Pooler.new(platform).token).to be_nil
     end
