@@ -68,8 +68,8 @@ class Vanagon
       # We only magically handle get_ methods, any other methods just get the
       # standard method_missing treatment.
       #
-      def method_missing(method, *args)
-        attribute_match = method.to_s.match(/get_(.*)/)
+      def method_missing(method_name, *args)
+        attribute_match = method_name.to_s.match(/get_(.*)/)
         if attribute_match
           attribute = attribute_match.captures.first
         else
@@ -77,6 +77,10 @@ class Vanagon
         end
 
         @platform.send(attribute)
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        method_name.to_s.start_with?('get_') || super
       end
 
       # Set the path to make for the platform

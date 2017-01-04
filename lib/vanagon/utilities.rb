@@ -16,6 +16,7 @@ class Vanagon
 
     # Utility to get the md5 sum of a file
     #
+    # @deprecated Please use #get_sum instead, this will be removed in a future vanagon release.
     # @param file [String] file to md5sum
     # @return [String] md5sum of the given file
     def get_md5sum(file)
@@ -25,21 +26,17 @@ class Vanagon
     # Generic file summing utility
     #
     # @param file [String] file to sum
-    # @param type [String] type of sum to provide
+    # @param type [String] type of sum to provide, defaults to md5
     # @return [String] sum of the given file
     # @raise [RuntimeError] raises an exception if the given sum type is not supported
-    def get_sum(file, type)
-      case type.downcase
-      when 'md5'
-        Digest::MD5.file(file).hexdigest.to_s
-      when 'sha256'
-        Digest::SHA256.file(file).hexdigest.to_s
-      when 'sha512'
-        Digest::SHA512.file(file).hexdigest.to_s
-      else
-        fail "Don't know how to produce a sum of type: '#{type}' for '#{file}'."
-      end
-    end
+    def get_sum(file, type = 'md5')
+      Digest.const_get(type.upcase).file(file).hexdigest.to_s
+
+    # If Digest::const_get fails, it'll raise a LoadError when it tries to
+    # pull in the subclass `type`. We catch that error, and fail instead.
+     rescue LoadError
+       fail "Don't know how to produce a sum of type: '#{type}' for '#{file}'"
+     end
 
     # Simple wrapper around Net::HTTP. Will make a request of the given type to
     # the given url and return the body as parsed by JSON.

@@ -36,8 +36,7 @@ class Vanagon
 
       # Steps needed to tear down or clean up the system after the build is
       # complete
-      def teardown
-      end
+      def teardown; end
 
       # Applies the steps needed to extend the system to build packages against
       # the target system
