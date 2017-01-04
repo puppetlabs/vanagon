@@ -18,7 +18,9 @@ namespace :test do
 end
 
 desc 'Run RuboCop'
-RuboCop::RakeTask.new(:rubocop)
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.options << '--display-cop-names'
+end
 
 desc 'Run all spec tests and linters'
 task check: %w(test:spec rubocop)
