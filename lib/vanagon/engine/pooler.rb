@@ -57,7 +57,7 @@ class Vanagon
         return nil unless File.exist?(absolute_path)
 
         puts "Reading vmpooler token from: #{path}"
-        File.read(vanagon_token_file).chomp
+        File.read(absolute_path).chomp
       end
       private :read_vanagon_token
 
