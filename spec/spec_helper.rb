@@ -1,3 +1,5 @@
+require 'tmpdir'
+
 if ENV["COVERAGE"]
   require 'simplecov'
   SimpleCov.start do

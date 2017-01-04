@@ -4,7 +4,7 @@ describe "Vanagon::Component::Source::File" do
   let (:file_base) { 'file://spec/fixtures/files/fake_file_ext' }
   let (:tar_filename) { 'file://spec/fixtures/files/fake_dir.tar.gz' }
   let (:plaintext_filename) { 'file://spec/fixtures/files/fake_file.txt' }
-  let (:workdir) { "/tmp" }
+  let (:workdir) { Dir.mktmpdir }
   let (:simple_directory) { 'file://spec/fixtures/files/fake_dir/' }
   let (:nested_directory) { 'file://spec/fixtures/files/fake_nested_dir/' }
 
