@@ -12,7 +12,7 @@ describe "Vanagon::Component::Source::Http" do
   let (:md5sum) { 'abcdssasasa' }
   let (:sha256sum) { 'foobarbaz' }
   let (:sha512sum) { 'teststring' }
-  let (:workdir) { "/tmp" }
+  let (:workdir) { Dir.mktmpdir }
 
   describe "#dirname" do
     it "returns the name of the tarball, minus extension for archives" do

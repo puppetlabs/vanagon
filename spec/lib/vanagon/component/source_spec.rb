@@ -21,7 +21,7 @@ describe "Vanagon::Component::Source" do
 
     let(:ref) { "cafebeef" }
     let(:sum) { "abcd1234" }
-    let(:workdir) { "/tmp" }
+    let(:workdir) { Dir.mktmpdir }
 
     let(:original_git_url) { "git://things.and.stuff/foo-bar.git" }
     let(:rewritten_git_url) { "git://things.end.stuff/foo-ber.git" }
