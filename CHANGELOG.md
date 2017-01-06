@@ -6,6 +6,33 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2017-01-06
+### Added
+- Support for reading vmpooler tokens from a 
+  [vmfloaty](https://github.com/briancain/vmfloaty) config file.
+  The new order of precedence for defining vmpooler tokens is:
+    - `VMPOOLER_TOKEN` environment variable
+    - Reading it from the file `~/.vmpooler-token`
+    - Reading it from the file `~/.vmfloaty.yml`
+- A Rakefile to help ease common development tasks, like running spec tests, code coverage,
+  and Rubocop. `bundle exec rake -T` away!
+- Added `--only-build` flag, allowing developers to build a subset of components 
+  from a Vanagon project.
+
+### Changed
+- RPMs built with Vanagon now depend on `/bin/mkdir` and `/bin/touch`. 
+  RPM `pre-` and `post-` scripts use those commands, but the packages did not
+  express that dependency. This resolves a problem reported by Mike Schmidt
+  in [CPR-393](https://tickets.puppetlabs.com/browse/CPR-393).
+- Git sources now support repositories in a detached HEAD state, so pre-staged
+  and shallow-cloned repositories on disk are valid sources for individual components.
+- Local sources now support recursive local directories (expressed as `file://` URIs)
+  as valid sources for individual component.
+
+### Fixed
+- Any spec tests that used `/tmp` as a hardcoded temporary directory location
+  now use `Dir.mktmpdir` instead. Safety first!
+
 ## [0.8.2] - 2016-09-29
 ### Changed
 - Fixed bug to make md5 the default checksum type for component add_source()
