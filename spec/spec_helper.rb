@@ -1,4 +1,5 @@
 require 'tmpdir'
+require 'vanagon'
 
 if ENV["COVERAGE"]
   require 'simplecov'

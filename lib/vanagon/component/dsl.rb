@@ -278,7 +278,7 @@ class Vanagon
       end
 
       def sum(value)
-        type = __callee__.gsub(/sum$/, '')
+        type = __callee__.to_s.gsub(/sum$/, '')
         @component.options[:sum] = value
         @component.options[:sum_type] = type
       end

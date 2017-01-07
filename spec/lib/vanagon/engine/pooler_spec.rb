@@ -28,6 +28,7 @@ describe 'Vanagon::Engine::Pooler' do
     # actual user credentials from being loaded, or attempt to
     # validate the way that credentials are read.
     ENV['REAL_HOME'] = ENV.delete 'HOME'
+    ENV['REAL_VMPOOLER_TOKEN'] = ENV.delete 'VMPOOLER_TOKEN'
     ENV['HOME'] = Dir.mktmpdir
 
     # This should help maintain the ENV['HOME'] masquerade
@@ -38,6 +39,7 @@ describe 'Vanagon::Engine::Pooler' do
     # Altering ENV directly is a legitimate code-smell.
     # We should at least clean up after ourselves.
     ENV['HOME'] = ENV.delete 'REAL_HOME'
+    ENV['VMPOOLER_TOKEN'] = ENV.delete 'REAL_VMPOOLER_TOKEN'
   end
 
   # We don't want to run the risk of reading legitimate user

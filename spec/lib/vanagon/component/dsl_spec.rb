@@ -53,13 +53,62 @@ end" }
     plat._platform
   }
 
-
-
   let(:platform) { double(Vanagon::Platform) }
+
+  # These TOTALLY VALID sums are computed against a passage from
+  # "The Hitchhiker's Guide to the Galaxy", by Douglas Adams (1979).
+  # Specifically, about humans assuming they are smarter than dolphins
+  # for exactly the same reason dolphins assume they are smart than
+  # humans. This seemed appropriate after the checksum refactoring
+  # broke all checksums and we discovered that they were untested.
+  let(:dummy_md5_sum) { "08b55473b59d2b43af8b61c9512ef5c6" }
+  let(:dummy_sha1_sum) { "fdaa03c3f506d7b71635f2c32dfd41b0cc8b904f" }
+  let(:dummy_sha256_sum) { "fd9c922702eb2e2fb26376c959753f0fc167bb6bc99c79262fcff7bcc8b34be1" }
+  let(:dummy_sha512_sum) { "8feda1e9896be618dd6c65120d10afafce93888df8569c598f52285083c23befd1477da5741939d4eae042f822e45ca2e45d8d4d18cf9224b7acaf71d883841e" }
 
   before do
     allow(platform).to receive(:install).and_return('install')
     allow(platform).to receive(:copy).and_return('cp')
+  end
+
+  describe "#md5sum" do
+    it "sets a checksum value & type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.md5sum(dummy_md5_sum)
+
+      expect(comp._component.options[:sum]).to eq(dummy_md5_sum)
+      expect(comp._component.options[:sum_type]).to eq('md5')
+    end
+  end
+
+  describe "#sha1sum" do
+    it "sets a checksum value & type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha1sum(dummy_sha1_sum)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha1_sum)
+      expect(comp._component.options[:sum_type]).to eq('sha1')
+    end
+  end
+
+  describe "#sha256sum" do
+    it "sets a checksum value & type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha256sum(dummy_sha256_sum)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha256_sum)
+      expect(comp._component.options[:sum_type]).to eq('sha256')
+    end
+  end
+
+  describe "#sha512sum" do
+    it "sets a checksum value & type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha512sum(dummy_sha512_sum)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha512_sum)
+      expect(comp._component.options[:sum_type]).to eq('sha512')
+    end
   end
 
   describe '#load_from_json' do
