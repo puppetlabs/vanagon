@@ -6,7 +6,19 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.9.0] - 2017-01-06
+## [0.9.1] - released on 2017-01-09
+This is a bug-fix release to replace the yanked 0.9.0 release.
+
+### Fixed
+- The DSL code underneath the Component source checksums was refactored in
+  0.9.0. Tests passed, but the code was broken. Upon triage we discovered
+  that those code paths were never well tested to begin with, which is how
+  the bug was missed. The DSL code paths in question have been improved,
+  and the bug has been corrected.
+- We sanitize the `ENV` hash further while testing token support in the
+  vmpooler engine.
+
+## [0.9.0] - released on 2017-01-06; yanked on 2017-01-06
 ### Added
 - Support for reading vmpooler tokens from a 
   [vmfloaty](https://github.com/briancain/vmfloaty) config file.
