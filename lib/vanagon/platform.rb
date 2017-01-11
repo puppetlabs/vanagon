@@ -8,7 +8,7 @@ class Vanagon
     attr_accessor :servicetype, :patch, :architecture, :codename, :os_name
     attr_accessor :os_version, :docker_image, :ssh_port, :rpmbuild, :install
     attr_accessor :platform_triple, :target_user, :package_type, :find, :sort
-    attr_accessor :build_hosts, :copy, :cross_compiled, :aws_ami
+    attr_accessor :build_hosts, :copy, :cross_compiled, :use_os_toolchain, :aws_ami
     attr_accessor :aws_user_data, :aws_shutdown_behavior, :aws_key_name
     attr_accessor :aws_region, :aws_key, :aws_instance_type, :aws_vpc_id
     attr_accessor :aws_subnet_id, :output_dir
@@ -111,6 +111,7 @@ class Vanagon
       @sort ||= "sort"
       @copy ||= "cp"
       @cross_compiled ||= false
+      @use_os_toolchain ||= true
     end
 
     # This allows instance variables to be accessed using the hash lookup syntax
@@ -270,6 +271,20 @@ class Vanagon
     # @return [true, false] true if it is a cross-compiled Linux variety, false otherwise
     def is_cross_compiled_linux?
       return (is_cross_compiled? && is_linux?)
+    end
+
+    # Utility matcher to determine if the platform uses host OS provided build tools
+    # (toolchain, boost, etc).
+    #
+    # @return [true, false] whether platform uses host OS toolchain, determined by
+    # whether the platform config set the use_os_toolchain flag (defaults to true
+    # if not set)
+    def uses_os_toolchain?
+      # Ensure we're returning a boolean:
+      return true if @use_os_toolchain == true || @use_os_toolchain == "true"
+      return false if @use_os_toolchain == false || @use_os_toolchain == "false"
+
+      raise Vanagon::Error, "platform.use_os_toolchain value of #{@use_os_toolchain} cannot be converted to a Boolean value"
     end
   end
 end
