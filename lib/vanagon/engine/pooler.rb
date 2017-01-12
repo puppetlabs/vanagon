@@ -7,7 +7,7 @@ class Vanagon
       attr_reader :token
 
       # The vmpooler_template is required to use the pooler engine
-      def initialize(platform, target = nil)
+      def initialize(platform, target = nil, opts = {})
         super
 
         @pooler = "http://vmpooler.delivery.puppetlabs.net"
