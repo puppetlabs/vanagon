@@ -5,7 +5,7 @@ class Vanagon
     class Docker < Base
       # Both the docker_image and the docker command itself are required for
       # the docker engine to work
-      def initialize(platform, target = nil)
+      def initialize(platform, target = nil, opts = {})
         super
 
         @docker_cmd = Vanagon::Utilities.find_program_on_path('docker')
