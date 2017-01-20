@@ -1,6 +1,5 @@
-require 'tmpdir'
-require 'vanagon'
-
+# Coverage configuration should come ahead of everything else.
+# This will ensure that code paths are followed appropriately.
 if ENV["COVERAGE"]
   require 'simplecov'
   SimpleCov.start do
@@ -9,6 +8,9 @@ if ENV["COVERAGE"]
     add_filter 'vendor'
   end
 end
+
+require 'tmpdir'
+require 'vanagon'
 
 RSpec.configure do |c|
   c.before do
