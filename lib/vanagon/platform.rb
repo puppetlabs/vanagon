@@ -2,16 +2,102 @@ require 'vanagon/platform/dsl'
 
 class Vanagon
   class Platform
-    attr_accessor :make, :servicedir, :defaultdir, :provisioning, :num_cores
-    attr_accessor :tar, :build_dependencies, :name, :vmpooler_template
-    attr_accessor :abs_resource_name, :cflags, :ldflags, :settings
-    attr_accessor :servicetype, :patch, :architecture, :codename, :os_name
-    attr_accessor :os_version, :docker_image, :ssh_port, :rpmbuild, :install
-    attr_accessor :platform_triple, :target_user, :package_type, :find, :sort
-    attr_accessor :build_hosts, :copy, :cross_compiled, :aws_ami
-    attr_accessor :aws_user_data, :aws_shutdown_behavior, :aws_key_name
-    attr_accessor :aws_region, :aws_key, :aws_instance_type, :aws_vpc_id
-    attr_accessor :aws_subnet_id, :output_dir
+    # Basic generic information related to a given instance of Platform.
+    # e.g. The name we call it, the platform triplet (name-version-arch), etc.
+    attr_accessor :name
+    attr_accessor :platform_triple
+    attr_accessor :architecture
+    attr_accessor :os_name
+    attr_accessor :os_version
+    attr_accessor :codename # this is Debian/Ubuntu specific
+
+    # The name of the sort of package type that a given platform expects,
+    # e.g. msi, rpm,
+    attr_accessor :package_type
+
+    # The name of the sort of init system that a given platform uses
+    attr_accessor :servicetype
+    # Where does a given platform expect to find init scripts/service files?
+    # e.g. /etc/init.d, /usr/lib/systemd/system
+    attr_accessor :servicedir
+    # Where does a given platform's init system expect to find
+    # something resembling 'defaults' files. Most likely to apply
+    # to Linux systems that use SysV-ish, upstart, or systemd init systems.
+    attr_accessor :defaultdir
+
+    # Each of these holds the path or name of the command in question,
+    # e.g. `copy = "/usr/local/bin/gcp"`, or `copy = "cp"
+    attr_accessor :copy
+    attr_accessor :find
+    attr_accessor :install
+    attr_accessor :make
+    attr_accessor :patch
+    attr_accessor :rpmbuild # This is RedHat/EL/Fedora/SLES specific
+    attr_accessor :sort
+    attr_accessor :tar
+
+    # Hold a string containing the values that a given platform
+    # should use when a Makefile is run - resolves to the CFLAGS
+    # and LDFLAGS variables. Should also be extended to support
+    # CXXFLAGS and CPPFLAGS ASAP.
+    attr_accessor :cflags
+    attr_accessor :ldflags
+
+    # Stores an Array of OpenStructs, each representing a complete
+    # command to be run to install external the needed toolchains
+    # and build dependencies for a given target platform.
+    attr_accessor :build_dependencies
+
+    # Stores the local path where retrieved artifacts will be saved.
+    attr_accessor :output_dir
+
+    # Username to use when connecting to a build target
+    attr_accessor :target_user
+
+    # Stores an Array of Strings, which will be passed
+    # in as a shell script as part of the provisioning step
+    # for a given build target
+    attr_accessor :provisioning
+
+    # Determines if a platform should be treated as
+    # cross-compiled or natively compiled.
+    attr_accessor :cross_compiled
+
+    # A string, containing the script that will be executed on
+    # the remote build target to determine how many CPU cores
+    # are available on that platform. Vanagon will use that count
+    # to determine how many build threads should be initialized
+    # for compilations.
+    attr_accessor :num_cores
+
+    # Generic engine
+    attr_accessor :ssh_port
+
+    # Hardware engine specific
+    attr_accessor :build_hosts
+
+    # Always-Be-Scheduling engine specific
+    attr_accessor :abs_resource_name
+
+    # VMpooler engine specific
+    attr_accessor :vmpooler_template
+
+    # Docker engine specific
+    attr_accessor :docker_image
+
+    # AWS engine specific
+    attr_accessor :aws_ami
+    attr_accessor :aws_user_data
+    attr_accessor :aws_shutdown_behavior
+    attr_accessor :aws_key_name
+    attr_accessor :aws_region
+    attr_accessor :aws_key
+    attr_accessor :aws_instance_type
+    attr_accessor :aws_vpc_id
+    attr_accessor :aws_subnet_id
+
+    # Freeform Hash of leftover settings
+    attr_accessor :settings
 
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
