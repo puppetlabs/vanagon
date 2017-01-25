@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/environment'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
 require 'vanagon/utilities'
@@ -68,6 +69,10 @@ class Vanagon
     # not necessarily the artifact that the project produces
     attr_accessor :settings
 
+    # The overall Environment that a given Vanagon
+    # project should pass to each platform
+    attr_accessor :environment
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -101,6 +106,9 @@ class Vanagon
       @requires = []
       @directories = []
       @settings = {}
+      # Environments are like Hashes but with specific constraints
+      # around their keys and values.
+      @environment = Vanagon::Environment.new
       @platform = platform
       @release = "1"
       @replaces = []
