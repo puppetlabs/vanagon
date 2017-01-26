@@ -10,10 +10,10 @@ require 'logger'
 class Vanagon
   class Driver
     include Vanagon::Utilities
-    attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
+    attr_accessor :platform, :project, :target, :workdir, :remote_workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false, :only_build => nil }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false, :only_build => nil, :remote_workdir => nil }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
 
@@ -29,6 +29,8 @@ class Vanagon
       @project.settings[:skipcheck] = options[:skipcheck]
       filter_out_components(only_build) if only_build
       loginit('vanagon_hosts.log')
+
+      @remote_workdir = options[:remote_workdir]
 
       load_engine(engine, @platform, target)
     rescue LoadError => e
@@ -62,7 +64,7 @@ class Vanagon
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target)
+      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, :remote_workdir => @remote_workdir)
     rescue
       fail "No such engine '#{camelize(engine_type)}'"
     end

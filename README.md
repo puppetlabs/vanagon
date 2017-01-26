@@ -73,8 +73,13 @@ Build machines should be cleaned between builds.
 #### Flagged arguments (can be anywhere in the command)
 
 ##### -w DIR, --workdir DIR
-Specifies a directory where the sources should be placed and builds performed.
+Specifies a directory on the controller where the sources should be placed and builds performed.
 Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
+
+##### --remote_dir
+Specify a permament directory on the build host to place sources and perform
+builds. Components can then be rebuild manually on the build host for faster iteraction. Sources may not be correctly updated if this directory already exists.
+Defaults to a temporary directory.
 
 ##### -c DIR, --configdir DIR
 Specifies where project configuration is found. Defaults to $pwd/configs.
