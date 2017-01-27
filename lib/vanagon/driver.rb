@@ -13,9 +13,10 @@ class Vanagon
     attr_accessor :platform, :project, :target, :workdir, :verbose, :preserve
     attr_accessor :timeout, :retry_count
 
-    def initialize(platform, project, options = { :configdir => nil, :target => nil, :engine => nil, :components => nil, :skipcheck => false, :verbose => false, :preserve => false, :only_build => nil }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
+      @workdir = options[:workdir] || Dir.mktmpdir
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
@@ -111,7 +112,7 @@ class Vanagon
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
-      @workdir = Dir.mktmpdir
+
       @engine.startup(@workdir)
 
       puts "Target is #{@engine.target}"
@@ -133,6 +134,16 @@ class Vanagon
       if ["hardware", "ec2"].include?(@engine.name)
         @engine.teardown
       end
+    end
+
+    def render
+      # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+
+      puts "rendering Makefile"
+      @project.make_makefile(@workdir)
     end
 
     def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize
