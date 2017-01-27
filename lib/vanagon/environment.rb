@@ -1,5 +1,4 @@
 require 'forwardable'
-require 'shellwords'
 
 class Vanagon
   # Environment is a validating wrapper around a delegated Hash,
@@ -164,11 +163,6 @@ class Vanagon
       unless str.is_a?(String) || str.is_a?(Integer)
         raise ArgumentError,
               'Value must be a String or an Integer'
-      end
-
-      if str.is_a?(String) && str.shellsplit.size > 1
-        raise ArgumentError,
-              'Value can be split into more than one string; Values are not escaped'
       end
 
       str

@@ -13,7 +13,6 @@ describe "Vanagon::Environment" do
       2007,
     ]
     @bad_values = [
-      'string with literal spaces',
       %w(an array of strings),
       19.81,
       Object.new,
