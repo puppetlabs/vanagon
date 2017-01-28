@@ -20,13 +20,17 @@ class Vanagon
       #
       # @!macro [attach] rule
       #   @return [Makefile::Rule] The $1 rule
-      def self.rule(target, dependencies: [], &block)
+      def self.rule(target, &block)
         define_method("#{target}_rule") do
-          Makefile::Rule.new("#{@component.name}-#{target}", dependencies: dependencies) do |rule|
+          Makefile::Rule.new("#{component.name}-#{target}", environment: component.environment) do |rule|
             instance_exec(rule, &block)
           end
         end
       end
+
+      attr_accessor :component
+      attr_accessor :project
+      attr_accessor :platform
 
       # @param component [Vanagon::Component] The component to create rules for.
       # @param project [Vanagon::Project] The project associated with the component.
@@ -55,7 +59,7 @@ class Vanagon
           clean_rule,
           clobber_rule,
         ]
-        if @project.cleanup
+        if project.cleanup
           list << cleanup_rule
         end
 
@@ -66,27 +70,29 @@ class Vanagon
       #
       # @return [Makefile::Rule]
       def component_rule
-        Makefile::Rule.new(@component.name, dependencies: ["#{@component.name}-install"])
+        Makefile::Rule.new(component.name, environment: component.environment) do |rule|
+          rule.dependencies = ["#{component.name}-install"]
+        end
       end
 
       # Unpack the source for this component. The unpacking behavior depends on
       # the source type of the component.
       #
       # @see [Vanagon::Component::Source]
-      rule("unpack", dependencies: ['file-list-before-build']) do |r|
-        r.recipe << andand(@component.get_environment, @component.extract_with)
+      rule("unpack") do |r|
+        r.dependencies = ['file-list-before-build']
+        r.recipe << component.extract_with
         r.recipe << "touch #{r.target}"
       end
 
       # Apply any patches for this component.
       rule("patch") do |r|
-        r.dependencies = ["#{@component.name}-unpack"]
-
-        after_unpack_patches = @component.patches.select { |patch| patch.after == "unpack" }
+        r.dependencies = ["#{component.name}-unpack"]
+        after_unpack_patches = component.patches.select { |patch| patch.after == "unpack" }
         unless after_unpack_patches.empty?
           r.recipe << andand_multiline(
-            "cd #{@component.dirname}",
-            after_unpack_patches.map { |patch| patch.cmd(@platform) }
+            "cd #{component.dirname}",
+            after_unpack_patches.map { |patch| patch.cmd(platform) }
           )
         end
 
@@ -96,17 +102,15 @@ class Vanagon
       # Create a build directory for this component if an out of source tree build is specified,
       # and any configure steps, if any.
       rule("configure") do |r|
-        r.dependencies = ["#{@component.name}-patch"].concat(@project.list_component_dependencies(@component))
-
-        if @component.get_build_dir
-          r.recipe << "[ -d #{@component.get_build_dir} ] || mkdir -p #{@component.get_build_dir}"
+        r.dependencies = ["#{component.name}-patch"].concat(project.list_component_dependencies(component))
+        if component.get_build_dir
+          r.recipe << "[ -d #{component.get_build_dir} ] || mkdir -p #{component.get_build_dir}"
         end
 
-        unless @component.configure.empty?
+        unless component.configure.empty?
           r.recipe << andand_multiline(
-            "cd #{@component.get_build_dir}",
-            @component.get_environment,
-            @component.configure
+            "cd #{component.get_build_dir}",
+            component.configure
           )
         end
 
@@ -115,13 +119,11 @@ class Vanagon
 
       # Build this component.
       rule("build") do |r|
-        r.dependencies = ["#{@component.name}-configure"]
-
-        unless @component.build.empty?
+        r.dependencies = ["#{component.name}-configure"]
+        unless component.build.empty?
           r.recipe << andand_multiline(
-            "cd #{@component.get_build_dir}",
-            @component.get_environment,
-            @component.build
+            "cd #{component.get_build_dir}",
+            component.build
           )
         end
 
@@ -130,13 +132,11 @@ class Vanagon
 
       # Run tests for this component.
       rule("check") do |r|
-        r.dependencies = ["#{@component.name}-build"]
-
-        unless @component.check.empty? || @project.settings[:skipcheck]
+        r.dependencies = ["#{component.name}-build"]
+        unless component.check.empty? || project.settings[:skipcheck]
           r.recipe << andand_multiline(
-            "cd #{@component.get_build_dir}",
-            @component.get_environment,
-            @component.check
+            "cd #{component.get_build_dir}",
+            component.check
           )
         end
 
@@ -145,21 +145,19 @@ class Vanagon
 
       # Install this component.
       rule("install") do |r|
-        r.dependencies = ["#{@component.name}-check"]
-
-        unless @component.install.empty?
+        r.dependencies = ["#{component.name}-check"]
+        unless component.install.empty?
           r.recipe << andand_multiline(
-            "cd #{@component.get_build_dir}",
-            @component.get_environment,
-            @component.install
+            "cd #{component.get_build_dir}",
+            component.install
           )
         end
 
-        after_install_patches = @component.patches.select { |patch| patch.after == "install" }
+        after_install_patches = component.patches.select { |patch| patch.after == "install" }
         after_install_patches.each do |patch|
           r.recipe << andand(
             "cd #{patch.destination}",
-            patch.cmd(@platform),
+            patch.cmd(platform),
           )
         end
 
@@ -171,8 +169,8 @@ class Vanagon
       # This component is only included by {#rules} if the associated project has
       # the `cleanup` attribute set.
       rule("cleanup") do |r|
-        r.dependencies = ["#{@component.name}-install"]
-        r.recipe = [@component.cleanup_source, "touch #{r.target}"]
+        r.dependencies = ["#{component.name}-install"]
+        r.recipe = [component.cleanup_source, "touch #{r.target}"]
       end
 
       # Clean up any files generated while building this project.
@@ -181,13 +179,13 @@ class Vanagon
       # for the configure/build/install steps.
       rule("clean") do |r|
         r.recipe << andand(
-          "[ -d #{@component.get_build_dir} ]",
-          "cd #{@component.get_build_dir}",
-          "#{@platform[:make]} clean"
+          "[ -d #{component.get_build_dir} ]",
+          "cd #{component.get_build_dir}",
+          "#{platform[:make]} clean"
         )
 
         %w(configure build install).each do |type|
-          touchfile = "#{@component.name}-#{type}"
+          touchfile = "#{component.name}-#{type}"
           r.recipe << andand(
             "[ -e #{touchfile} ]",
             "rm #{touchfile}"
@@ -197,10 +195,10 @@ class Vanagon
 
       # Remove all files associated with this component.
       rule("clobber") do |r|
-        r.dependencies = ["#{@component.name}-clean"]
+        r.dependencies = ["#{component.name}-clean"]
         r.recipe = [
-          andand("[ -d #{@component.dirname} ]", "rm -r #{@component.dirname}"),
-          andand("[ -e #{@component.name}-unpack ]", "rm #{@component.name}-unpack")
+          andand("[ -d #{component.dirname} ]", "rm -r #{component.dirname}"),
+          andand("[ -e #{component.name}-unpack ]", "rm #{component.name}-unpack")
         ]
       end
 
