@@ -7,12 +7,101 @@ class Vanagon
     # @!attribute [r] files
     #   @return [Set] the list of files marked for installation
 
-    attr_accessor :name, :version, :source, :url, :configure, :build, :check, :install
-    attr_accessor :environment, :extract_with, :dirname, :build_requires, :build_dir
-    attr_accessor :settings, :platform, :patches, :requires, :service, :options
-    attr_accessor :directories, :replaces, :provides, :conflicts, :cleanup_source
-    attr_accessor :sources, :preinstall_actions, :postinstall_actions
-    attr_accessor :preremove_actions, :postremove_actions, :license
+    # 30 accessors is too many. These have got to be refactored.
+    # - Ryan McKern, 2017-01-27
+
+    # The name, version, primary source, supplementary sources,
+    # associated patches, upstream URL, and license of a given component
+    attr_accessor :name
+    attr_accessor :version
+    attr_accessor :source
+    attr_accessor :sources
+    attr_accessor :patches
+    attr_accessor :url
+    attr_accessor :license
+
+    # holds an OpenStruct describing all of the particular details about
+    # how any services associated with a given component should be defined.
+    attr_accessor :service
+
+    # holds the expected directory name of a given component, once it's
+    # been unpacked/decompressed. For git repos, it's usually the directory
+    # that they were cloned to. For the outlying flat files, it'll
+    # end up being defined explicitly as the string './'
+    attr_accessor :dirname
+    # what special tool should be used to extract the primary source
+    attr_accessor :extract_with
+    # how should this component be configured?
+    attr_accessor :configure
+    # the optional name of a directory to build a component in; most
+    # likely to be used for cmake projects, which do not like to be
+    # configured or compiled in their own top-level directories.
+    attr_accessor :build_dir
+    # build will hold an Array of the commands required to build
+    # a given component
+    attr_accessor :build
+    # check will hold an Array of the commands required to validate/test
+    # a given component
+    attr_accessor :check
+    # install will hold an Array of the commands required to install
+    # a given component
+    attr_accessor :install
+
+    # holds a Array, mapping out any desired environment variables
+    # that should be rendered into the Makefile
+    attr_accessor :environment
+    # holds a OpenStruct, or an Array, or maybe it's a Hash? It's often
+    # overloaded as a freeform key-value lookup for platforms that require
+    # additional configuration beyond the "basic" component attributes.
+    # it's pretty heavily overloaded and should maybe be refactored before
+    # Vanagon 1.0.0 is tagged.
+    attr_accessor :settings
+    # used to hold the checksum settings or other weirdo metadata related
+    # to building a given component (git ref, sha, etc.). Probably conflicts
+    # or collides with #settings to some degree.
+    attr_accessor :options
+    # the platform that a given component will be built for -- due to the
+    # fact that Ruby is pass-by-reference, it's usually just a reference
+    # to the same Platform object that the overall Project object also
+    # contains. This is a definite code smell, and should be slated
+    # for refactoring ASAP because it's going to have weird side-effects
+    # if the underlying pass-by-reference assumptions change.
+    attr_accessor :platform
+
+    # directories holds an Array with a list of expected directories that will
+    # be packed into the resulting artifact's bill of materials.
+    attr_accessor :directories
+    # build_requires holds an Array with a list of the dependencies that a given
+    # component needs satisfied before it can be built.
+    attr_accessor :build_requires
+    # requires holds an Array with a list of all dependencies that a given
+    # component needs satisfied before it can be installed.
+    attr_accessor :requires
+    # replaces holds an Array of OpenStructs that describe a package that a given
+    # component will replace on installation.
+    attr_accessor :replaces
+    # provides holds an Array of OpenStructs that describe any capabilities that
+    # a given component will provide beyond the its filesystem payload.
+    attr_accessor :provides
+    # conflicts holds an Array of OpenStructs that describe a package that a
+    # given component will replace on installation.
+    attr_accessor :conflicts
+    # preinstall_actions is a two-dimensional Array, describing scripts that
+    # should be executed before a given component is installed.
+    attr_accessor :preinstall_actions
+    # postinstall_actions is a two-dimensional Array, describing scripts that
+    # should be executed after a given component is installed.
+    attr_accessor :postinstall_actions
+    # preremove_actions is a two-dimensional Array, describing scripts that
+    # should be executed before a given component is uninstalled.
+    attr_accessor :preremove_actions
+    # preinstall_actions is a two-dimensional Array, describing scripts that
+    # should be executed after a given component is uninstalled.
+    attr_accessor :postremove_actions
+    # cleanup_source contains whatever value a given component's Source has
+    # specified as instructions for cleaning up after a build is completed.
+    # usually a String, but not required to be.
+    attr_accessor :cleanup_source
 
     # Loads a given component from the configdir
     #
