@@ -16,13 +16,17 @@ class Vanagon
     #   @see Hash#keys
     # @!method values
     #   @see Hash#values
-    def_delegators :@data, :[], :keys, :values
+    # @!method empty?
+    #   @see Hash#empty?
+    def_delegators :@data, :[], :keys, :values, :empty?
 
     # @!method each
     #   @see Hash#each
     # @!method each_pair
     #   @see Hash#each_pair
-    def_delegators :@data, :each, :each_pair
+    def_delegators :@data, :each, :each_pair, :each_key, :each_value
+    def_delegators :@data, :each_with_index, :each_with_object
+    def_delegators :@data, :map, :flat_map
 
     # @!method delete
     #   @see Hash#delete
