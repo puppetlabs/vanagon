@@ -128,6 +128,17 @@ class Vanagon
       @settings.key?(method_name) || super
     end
 
+    # Merge the platform's Environment into the project's Environment
+    # and return the result. This will produce the top-level Environment
+    # in the Makefile, that all components (and their Make targets)
+    # will inherit from.
+    #
+    # @return [Environment] a new Environment, constructed from merging
+    #   @platform's Environment with the project's environment.
+    def merged_environment
+      environment.merge(@platform.environment)
+    end
+
     # Collects all sources and patches into the provided workdir
     #
     # @param workdir [String] directory to stage sources into

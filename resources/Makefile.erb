@@ -7,9 +7,9 @@ export VANAGON_PLATFORM ?= <%= @platform.name.tr('-','.') %>
 tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
 workdir := $(PWD)
 
-<%- environment.to_a(" = ").each do |var| -%>
+<%- merged_environment.to_a(" = ").each do |var| -%>
 export <%= var %>
-<%- end %>
+<%- end -%>
 
 all: file-list-before-build <%= package_name %>
 
