@@ -47,8 +47,8 @@ class Vanagon
     # a given component
     attr_accessor :install
 
-    # holds a Array, mapping out any desired environment variables
-    # that should be rendered into the Makefile
+    # holds a Vanagon::Environment object, to map out any desired
+    # environment variables that should be rendered into the Makefile
     attr_accessor :environment
     # holds a OpenStruct, or an Array, or maybe it's a Hash? It's often
     # overloaded as a freeform key-value lookup for platforms that require
@@ -147,7 +147,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @conflicts = []
-      @environment = {}
+      @environment = Vanagon::Environment.new
       @sources = []
       @preinstall_actions = []
       @postinstall_actions = []
@@ -233,10 +233,9 @@ class Vanagon
     # @param workdir [String] working directory to put the source into
     def get_sources(workdir)
       sources.each do |source|
-        src = Vanagon::Component::Source.source source.url,
-                                                workdir: workdir,
-                                                ref: source.ref,
-                                                sum: source.sum
+        src = Vanagon::Component::Source.source(
+          source.url, workdir: workdir, ref: source.ref, sum: source.sum
+        )
         src.fetch
         src.verify
       end
