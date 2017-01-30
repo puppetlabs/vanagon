@@ -307,11 +307,22 @@ class Vanagon
       return !!@name.match(/^cisco-wrlinux-.*$/)
     end
 
-    # Utility matcher to determine is the platform is an osx variety
+    # Utility matcher to determine if the platform is an osx variety
     #
+    # @deprecated Please use is_macos? instead
     # @return [true, false] true if it is an osx variety, false otherwise
     def is_osx?
-      return !!@name.match(/^osx-.*$/)
+      warn "is_osx? is a deprecated method, please use #is_macos? instead."
+      is_macos?
+    end
+
+    # Utility matcher to determine if the platform is a macos or osx variety
+    # is_osx is a deprecated method that calls is_macos
+    # We still match for osx currently but this will change
+    #
+    # @return [true, false] true if it is a macos or osx variety, false otherwise
+    def is_macos?
+      !!(@name =~ /^macos-.*$/ || @name =~ /^osx-.*$/)
     end
 
     # Utility matcher to determine is the platform is a solaris variety
