@@ -133,6 +133,22 @@ class Vanagon
     end
     alias to_string to_s
 
+    def sanitize_value(str)
+      escaped_variables = str.scan(/\$\$([\w]+)/).flatten
+      return str if escaped_variables.empty?
+
+      warning = [%(Value "#{str}" looks like it's escaping one or more strings for shell interpolation.)]
+      escaped_variables.each { |v| warning.push "\t$$#{p} (will be coerced to $(#{p})" }
+      warning.push <<-eos.undent
+        All environment variables will be resolved by Make; these variables will
+        be unesecaped for now, but you should update your projects parameters.
+      eos
+
+      warn warning.join("\n")
+      str.gsub(/\$\$([\w]+)/, '$(\1)')
+    end
+    private :sanitize_value
+
     # Validate that a key is a String, that it does not contain invalid
     #   characters, and that it does not begin with a digit
     # @param key [String]
@@ -169,7 +185,9 @@ class Vanagon
               'Value must be a String or an Integer'
       end
 
-      str
+      # sanitize the value, which should look for any Shell escaped
+      # variable names inside of the value.
+      str.is_a?(String) ? sanitize_value(str) : str
     end
     private :validate_value
   end
