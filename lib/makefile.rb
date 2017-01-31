@@ -51,7 +51,8 @@ class Makefile
     #
     # @return [String]
     def format
-      s = @target + ":"
+      s = "#{@target}: export VANAGON_TARGET = #{@target.tr('-', '.')}\n"
+      s << @target + ":"
       unless @dependencies.empty?
         s << " " << @dependencies.join(" ")
       end
