@@ -24,9 +24,9 @@ group(:development, :test) do
   gem 'json'
   gem 'lock_manager', *lock_manager_location_for(ENV['LOCK_MANAGER_LOCATION'] || '>= 0')
   gem 'packaging', '~> 0.4.0', github: 'puppetlabs/packaging', branch: 'master'
-  gem 'simplecov', require: false
   gem 'rake', require: false
   gem 'rspec', '~> 3.0', require: false
-  gem 'rubocop', "~> 0.41.2", require: false
+  gem 'rubocop', "~> 0.47", require: false
+  gem 'simplecov', require: false
   gem 'yard', require: false
 end
