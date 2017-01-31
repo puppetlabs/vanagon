@@ -6,6 +6,17 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.9.2] - released on 2017-01-31
+### Added
+- Experimental `render` command added to aid in rapid Makefile iteration and testing 
+
+### Deprecated
+- is_osx? method deprecated in favor of is_macos? ([VANAGON-28](https://tickets/puppetlabs.com/browse/VANAGON-28))
+
+### Changed
+- Updated to Rubocop 0.47.x
+- MAINTAINERS file updated with current project maintainers
+
 ## [0.9.1] - released on 2017-01-09
 This is a bug-fix release to replace the yanked 0.9.0 release.
 
@@ -358,7 +369,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.9.2...HEAD
+[0.9.2]: https://github.com/puppetlabs/vanagon/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/puppetlabs/vanagon/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/puppetlabs/vanagon/compare/0.8.2...0.9.0
 [0.8.2]: https://github.com/puppetlabs/vanagon/compare/0.8.1...0.8.2
