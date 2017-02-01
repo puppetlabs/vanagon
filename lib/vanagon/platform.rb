@@ -217,6 +217,11 @@ class Vanagon
       @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
     end
 
+    # Get the value of @dist, or derive it from the value of @os_name and @os_version.
+    # This is relatively RPM specific but '#codename' is defined in Platform, and that's
+    # just as Deb/Ubuntu specific. All of the accessors in the top-level Platform
+    # namespace should be refactored, but #dist will live here for now.
+    # @return [String] the %dist name that RPM will use to build new RPMs
     def dist
       @dist ||= @os_name.tr('-', '_') + @os_version
     end
