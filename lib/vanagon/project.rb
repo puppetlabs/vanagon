@@ -269,7 +269,7 @@ class Vanagon
     def get_preinstall_actions(pkg_state)
       scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no preinstall scripts provided'
       else
         return scripts.join("\n")
       end
@@ -286,7 +286,7 @@ class Vanagon
     def get_postinstall_actions(pkg_state)
       scripts = @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no postinstall scripts provided'
       else
         return scripts.join("\n")
       end
@@ -302,7 +302,7 @@ class Vanagon
     def get_preremove_actions(pkg_state)
       scripts = @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no preremove scripts provided'
       else
         return scripts.join("\n")
       end
@@ -318,7 +318,7 @@ class Vanagon
     def get_postremove_actions(pkg_state)
       scripts = @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no postremove scripts provided'
       else
         return scripts.join("\n")
       end
