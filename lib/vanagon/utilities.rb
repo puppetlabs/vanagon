@@ -264,6 +264,8 @@ class Vanagon
       template = File.read(erbfile)
       message  = ERB.new(template, nil, "-")
       message.result(b)
+        .gsub(/[\n]+{3,}/, "\n\n")
+        .squeeze("\s")
     end
 
     # Helper method that takes a template and writes the evaluated contents to a file on disk
