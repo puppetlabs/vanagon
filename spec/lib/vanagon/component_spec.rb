@@ -2,6 +2,12 @@ require 'vanagon/component'
 
 describe "Vanagon::Component" do
   describe "#get_environment" do
+    it "prints a deprecation warning to STDERR" do
+      comp = Vanagon::Component.new('env-test', {}, {})
+      expect { comp.get_environment }
+        .to output(/deprecated/).to_stderr
+    end
+
     it "returns a makefile compatible environment" do
       comp = Vanagon::Component.new('env-test', {}, {})
       comp.environment = {'PATH' => '/usr/local/bin'}
@@ -16,7 +22,7 @@ describe "Vanagon::Component" do
 
     it 'returns : for an empty environment' do
       comp = Vanagon::Component.new('env-test', {}, {})
-      expect(comp.get_environment).to eq(':')
+      expect(comp.get_environment).to eq(': no environment variables defined')
     end
   end
 

@@ -200,7 +200,7 @@ class Vanagon
         @source = Vanagon::Component::Source.source(url, opts)
         source.fetch
         source.verify
-        @extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : ':'
+        @extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : nil
         @cleanup_source = source.cleanup if source.respond_to?(:cleanup)
         @dirname = source.dirname
 
@@ -215,7 +215,7 @@ class Vanagon
         @dirname = './'
 
         # If there is no source, there is nothing to do to extract
-        @extract_with = ':'
+        @extract_with = ': no source, so nothing to extract'
       end
     end
 
@@ -253,12 +253,20 @@ class Vanagon
     end
 
     # Prints the environment in a way suitable for use in a Makefile
-    # or shell script.
+    # or shell script. This is deprecated, because all Env. Vars. are
+    # moving directly into the Makefile (and out of recipe subshells).
     #
     # @return [String] environment suitable for inclusion in a Makefile
+    # @deprecated
     def get_environment
+      warn <<-eos.undent
+        #get_environment is deprecated; environment variables have been moved
+        into the Makefile, and should not be used within a Makefile's recipe.
+        The #get_environment method will be removed by Vanagon 1.0.0.
+      eos
+
       if @environment.empty?
-        ":"
+        ": no environment variables defined"
       else
         env = @environment.map { |key, value| %(#{key}="#{value}") }
         "export #{env.join(' ')}"
