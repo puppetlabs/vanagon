@@ -361,6 +361,14 @@ class Vanagon
       ret_dirs
     end
 
+    # This originally lived in the Makefile.erb template, but it's pretty
+    # domain-inspecific and we should try to minimize assignment
+    # inside an ERB template
+    # @return [Array] all of the paths produced by #get_directories
+    def dirnames
+      get_directories.map(&:path)
+    end
+
     # Get any services registered by components in the project
     #
     # @return [Array] the services provided by components in the project

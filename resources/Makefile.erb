@@ -1,5 +1,3 @@
-<% dirnames = get_directories.map {|d| d.path } %>
-
 SHELL = $(PWD)/profiling_shell.sh
 
 <%- merged_environment.to_a(" := ").each do |var| -%>
