@@ -38,6 +38,10 @@ Lint/ShadowingOuterLocalVariable:
 Lint/LiteralInInterpolation:
   Enabled: true
 
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+  IndentationWidth: 2
+
 # DISABLED really useless. Detects return as last statement.
 Style/RedundantReturn:
   Enabled: false
