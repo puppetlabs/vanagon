@@ -1,7 +1,7 @@
+require 'tmpdir'
 require 'vanagon/platform'
 require 'vanagon/project'
 require 'vanagon/common'
-
 
 # These constants are defined for the purpose of the project/generic file merge tests
 # to point these directories to test areas under the /tmp directory.
@@ -10,7 +10,7 @@ require 'vanagon/common'
 # data structures are not available under the test conditions causing failures in the
 # ERB template translation
 
-WORK_BASE = "/tmp/vanwintest"
+WORK_BASE = Dir.mktmpdir
 VANAGON_ROOT = "#{WORK_BASE}/generic"
 PROJ_ROOT = "#{WORK_BASE}/project"
 WORKDIR = "#{WORK_BASE}/workdir"
@@ -36,14 +36,14 @@ describe "Vanagon::Platform::Windows" do
       let(:platform) { plat }
       let(:cur_plat) { Vanagon::Platform::DSL.new(plat[:name]) }
       let (:project_block) {
-<<-HERE
-        project 'test-fixture' do |proj|
-          proj.setting(:company_name, "Test Name")
-          proj.setting(:company_id, "TestID")
-          proj.setting(:product_id, "TestProduct")
-          proj.setting(:base_dir, "ProgramFilesFolder")
-        end
-HERE
+        <<-HERE.undent
+          project 'test-fixture' do |proj|
+            proj.setting(:company_name, "Test Name")
+            proj.setting(:company_id, "TestID")
+            proj.setting(:product_id, "TestProduct")
+            proj.setting(:base_dir, "ProgramFilesFolder")
+          end
+        HERE
         }
 
       before do
@@ -180,13 +180,14 @@ HERE
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
             comp.install_service('SourceDir/ProgramFilesFolder/TestID/TestProduct/opt/bin.exe')
-            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
-<<-HERE
-<Directory Name="opt" Id="opt_0_0">
-<Directory Id="SERVICETESTBINDIR" />
-</Directory>
-HERE
-            )
+            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project))
+              .to eq(
+                <<-HERE.undent
+                  <Directory Name="opt" Id="opt_0_0">
+                  <Directory Id="SERVICETESTBINDIR" />
+                  </Directory>
+                HERE
+              )
           end
 
           it "returns one directory with non-default name" do
@@ -195,14 +196,14 @@ HERE
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
             comp.install_service('SourceDir/ProgramFilesFolder/TestID/TestProduct/opt/bin.exe', nil, "service-test-2")
-            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
-
-<<-HERE
-<Directory Name="opt" Id="opt_0_0">
-<Directory Id="SERVICETEST2BINDIR" />
-</Directory>
-HERE
-            )
+            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project))
+              .to eq(
+                <<-HERE.undent
+                  <Directory Name="opt" Id="opt_0_0">
+                  <Directory Id="SERVICETEST2BINDIR" />
+                  </Directory>
+                HERE
+              )
           end
 
           it "returns nested directory correctly with \\" do
@@ -211,16 +212,16 @@ HERE
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
             comp.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\someotherdir\\bin.exe')
-            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project)).to eq( \
-
-<<-HERE
-<Directory Name="somedir" Id="somedir_0_0">
-<Directory Name="someotherdir" Id="someotherdir_0_1">
-<Directory Id="SERVICETESTBINDIR" />
-</Directory>
-</Directory>
-HERE
-            )
+            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service].flatten.compact, proj._project))
+              .to eq(
+                <<-HERE.undent
+                  <Directory Name="somedir" Id="somedir_0_0">
+                  <Directory Name="someotherdir" Id="someotherdir_0_1">
+                  <Directory Id="SERVICETESTBINDIR" />
+                  </Directory>
+                  </Directory>
+                HERE
+              )
           end
 
 
@@ -233,14 +234,15 @@ HERE
             comp.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\bin.exe')
             comp2 = Vanagon::Component::DSL.new('service-test-2', {}, cur_plat._platform)
             comp2.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\bin.exe')
-            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service].flatten.compact, proj._project)).to eq( \
-<<-HERE
-<Directory Name="somedir" Id="somedir_0_0">
-<Directory Id="SERVICETESTBINDIR" />
-<Directory Id="SERVICETEST2BINDIR" />
-</Directory>
-HERE
-            )
+            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service].flatten.compact, proj._project))
+              .to eq(
+                <<-HERE.undent
+                  <Directory Name="somedir" Id="somedir_0_0">
+                  <Directory Id="SERVICETESTBINDIR" />
+                  <Directory Id="SERVICETEST2BINDIR" />
+                  </Directory>
+                HERE
+              )
           end
 
           it "returns correctly formatted multiple nested directories" do
@@ -253,25 +255,26 @@ HERE
             comp2.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\oneUpAgain\\twoUp\\bin.exe')
             comp3 = Vanagon::Component::DSL.new('service-test-3', {}, cur_plat._platform)
             comp3.install_service('SourceDir\\ProgramFilesFolder\\TestID\\TestProduct\\somedir\\oneUpAgain\\twoUpAgain\\bin.exe')
-            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service, comp3._component.service].flatten.compact, proj._project)).to eq( \
-<<-HERE
-<Directory Name="somedir" Id="somedir_0_0">
-<Directory Name="oneUp" Id="oneUp_0_1">
-<Directory Name="twoUp" Id="twoUp_0_2">
-<Directory Id="SERVICETEST1BINDIR" />
-</Directory>
-</Directory>
-<Directory Name="oneUpAgain" Id="oneUpAgain_1_1">
-<Directory Name="twoUp" Id="twoUp_1_2">
-<Directory Id="SERVICETEST2BINDIR" />
-</Directory>
-<Directory Name="twoUpAgain" Id="twoUpAgain_2_2">
-<Directory Id="SERVICETEST3BINDIR" />
-</Directory>
-</Directory>
-</Directory>
-HERE
-            )
+            expect(cur_plat._platform.generate_service_bin_dirs([comp._component.service, comp2._component.service, comp3._component.service].flatten.compact, proj._project))
+              .to eq(
+                <<-HERE.undent
+                  <Directory Name="somedir" Id="somedir_0_0">
+                  <Directory Name="oneUp" Id="oneUp_0_1">
+                  <Directory Name="twoUp" Id="twoUp_0_2">
+                  <Directory Id="SERVICETEST1BINDIR" />
+                  </Directory>
+                  </Directory>
+                  <Directory Name="oneUpAgain" Id="oneUpAgain_1_1">
+                  <Directory Name="twoUp" Id="twoUp_1_2">
+                  <Directory Id="SERVICETEST2BINDIR" />
+                  </Directory>
+                  <Directory Name="twoUpAgain" Id="twoUpAgain_2_2">
+                  <Directory Id="SERVICETEST3BINDIR" />
+                  </Directory>
+                  </Directory>
+                  </Directory>
+                HERE
+              )
           end
         end
       end

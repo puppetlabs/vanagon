@@ -10,6 +10,7 @@ class Vanagon
     attr_accessor :os_name
     attr_accessor :os_version
     attr_accessor :codename # this is Debian/Ubuntu specific
+    attr_writer   :dist # most likely to be used by rpm
 
     # The name of the sort of package type that a given platform expects,
     # e.g. msi, rpm,
@@ -214,6 +215,15 @@ class Vanagon
     # @return [String] relative path to where packages should be output to
     def output_dir(target_repo = "")
       @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
+    end
+
+    # Get the value of @dist, or derive it from the value of @os_name and @os_version.
+    # This is relatively RPM specific but '#codename' is defined in Platform, and that's
+    # just as Deb/Ubuntu specific. All of the accessors in the top-level Platform
+    # namespace should be refactored, but #dist will live here for now.
+    # @return [String] the %dist name that RPM will use to build new RPMs
+    def dist
+      @dist ||= @os_name.tr('-', '_') + @os_version
     end
 
     # Sets and gets the name of the operating system for the platform.
