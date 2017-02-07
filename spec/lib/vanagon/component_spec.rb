@@ -39,4 +39,26 @@ describe "Vanagon::Component" do
       expect(subject.get_build_dir).to eq File.join("build-dir-test", "cmake-build")
     end
   end
+
+  describe "#get_sources" do
+    before :each do
+      @workdir = Dir.mktmpdir
+      @file_name = 'fake_file.txt'
+      @fake_file = "file://spec/fixtures/files/#{@file_name}"
+    end
+
+    subject do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source. We can now reason about this instance and
+      # test behavior for retrieving secondary sources.
+      Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
+        comp.sources << OpenStruct.new(url: @fake_file)
+      end
+    end
+
+    it "copies secondary sources into the workdir" do
+      subject.get_sources(@workdir)
+      expect(File.exist?(File.join(@workdir, @file_name))).to be true
+    end
+  end
 end
