@@ -1,3 +1,4 @@
+require 'vanagon/environment'
 require 'vanagon/platform/dsl'
 
 class Vanagon
@@ -39,10 +40,17 @@ class Vanagon
 
     # Hold a string containing the values that a given platform
     # should use when a Makefile is run - resolves to the CFLAGS
-    # and LDFLAGS variables. Should also be extended to support
-    # CXXFLAGS and CPPFLAGS ASAP.
+    # and LDFLAGS variables. This should be changed to take advantage
+    # of the Environment, so that we can better leverage Make's
+    # Implicit Variables:
+    #   https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+    # It should also be extended to support CXXFLAGS and CPPFLAGS ASAP.
     attr_accessor :cflags
     attr_accessor :ldflags
+
+    # The overall Environment that a given platform
+    # should pass to each component
+    attr_accessor :environment
 
     # Stores an Array of OpenStructs, each representing a complete
     # command to be run to install external the needed toolchains
@@ -191,6 +199,9 @@ class Vanagon
       @os_version = os_version
       @architecture = architecture
       @ssh_port = 22
+      # Environments are like Hashes but with specific constraints
+      # around their keys and values.
+      @environment = Vanagon::Environment.new
       @provisioning = []
       @install ||= "install"
       @target_user ||= "root"

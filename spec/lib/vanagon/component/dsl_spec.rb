@@ -649,18 +649,40 @@ end" }
   end
 
   describe '#environment' do
+    before :each do
+      @comp = Vanagon::Component::DSL.new('env-test', {}, {})
+    end
+
+    before :example do
+      @path = {'PATH' => '/usr/local/bin'}
+      @alternate_path = {'PATH' => '/usr/bin'}
+      @cflags = {'CFLAGS' => '-I /usr/local/bin'}
+      @merged_env = @cflags.merge(@alternate_path)
+    end
+
     it 'adds an override to the environment for a component' do
-      comp = Vanagon::Component::DSL.new('env-test', {}, {})
-      comp.environment({'PATH' => '/usr/local/bin'})
-      expect(comp._component.environment).to eq({'PATH' => '/usr/local/bin'})
+      @comp.environment(@path)
+      @path.each_pair do |key, value|
+        expect(@comp._component.environment[key]).to eq(value)
+      end
     end
 
     it 'merges against the existing environment' do
-      comp = Vanagon::Component::DSL.new('env-test', {}, {})
-      comp.environment({'PATH' => '/usr/local/bin'})
-      comp.environment({'PATH' => '/usr/bin'})
-      comp.environment({'CFLAGS' => '-I /usr/local/bin'})
-      expect(comp._component.environment).to eq({'PATH' => '/usr/bin', 'CFLAGS' => '-I /usr/local/bin'})
+      # Set a value that should *NOT* be present
+      @comp.environment(@path)
+      # And then set two values that should
+      @comp.environment(@alternate_path)
+      @comp.environment(@cflags)
+
+      # Test that our canary doesn't exist
+      @path.each_pair do |key, value|
+        expect(@comp._component.environment[key]).to_not eq(value)
+      end
+
+      # And then validate our expected values
+      @merged_env.each_pair do |key, value|
+        expect(@comp._component.environment[key]).to eq(value)
+      end
     end
   end
 

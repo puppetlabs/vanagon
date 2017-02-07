@@ -1,15 +1,15 @@
-<% dirnames = get_directories.map {|d| d.path } %>
-
 SHELL = $(PWD)/profiling_shell.sh
-export VANAGON_PROJECT ?= <%= @name %>
-export VANAGON_PLATFORM ?= <%= @platform.name.tr('-','.') %>
+
+<%- merged_environment.to_a(" := ").each do |var| -%>
+export <%= var %>
+<%- end -%>
 
 tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
 workdir := $(PWD)
 
 all: file-list-before-build <%= package_name %>
 
-<%= package_name %>: export VANAGON_TARGET = create-package
+<%= package_name %>: export VANAGON_TARGET := create-package
 <%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
 	<%= generate_package.join("\n\t") %>
 

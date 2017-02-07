@@ -79,7 +79,7 @@ class Vanagon
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
         def extract(tar = "tar") # rubocop:disable Metrics/AbcSize
           # Extension does not appear to be an archive, so "extract" is a no-op
-          return ':' unless archive_extensions.include?(extension)
+          return ': nothing to extract' unless archive_extensions.include?(extension)
 
           case decompressor
           when "7z"

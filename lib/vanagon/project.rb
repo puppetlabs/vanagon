@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/environment'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
 require 'vanagon/utilities'
@@ -7,11 +8,70 @@ require 'ostruct'
 class Vanagon
   class Project
     include Vanagon::Utilities
-    attr_accessor :components, :settings, :platform, :configdir, :name
-    attr_accessor :version, :directories, :license, :description, :vendor
-    attr_accessor :homepage, :requires, :user, :repo, :noarch, :identifier
-    attr_accessor :cleanup, :version_file, :release, :replaces, :provides
-    attr_accessor :conflicts, :bill_of_materials, :retry_count, :timeout
+
+    # Numerous attributes related to the artifact that a given
+    # Vanagon project will produce
+    attr_accessor :name
+    attr_accessor :version
+    attr_accessor :release
+    attr_accessor :license
+    attr_accessor :homepage
+    attr_accessor :vendor
+    attr_accessor :description
+    attr_accessor :components
+    attr_accessor :conflicts
+    attr_accessor :requires
+    attr_accessor :replaces
+    attr_accessor :provides
+
+    # Platform's abstraction is kind of backwards -- we should refactor
+    # how this works, and make it possible for Vanagon to default to all
+    # defined platforms if nothing is specified.
+    attr_accessor :platform
+    attr_accessor :configdir
+    attr_accessor :retry_count
+    attr_accessor :timeout
+
+    # Store any target directories that should be packed up into
+    # the resultant artifact produced by a given Vanagon project.
+    attr_accessor :directories
+
+    # This will define any new users that a project should create
+    attr_accessor :user
+
+    # This is entirely too Puppet centric, and should be refactored out
+    # !depreciate
+    # !refactor
+    attr_accessor :repo
+
+    # Mark a project as being architecture independent
+    attr_accessor :noarch
+
+    # This is macOS specific, and defines the Identifier that macOS should
+    # use when it builds a .pkg
+    attr_accessor :identifier
+
+    # Stores whether or not a project should cleanup as it builds
+    # because the target builder is space-constrained
+    attr_accessor :cleanup
+
+    # Stores whether or not Vanagon should write the project's version
+    # out into a file inside the package -- do we really need this?
+    # !depreciate
+    # !refactor
+    attr_accessor :version_file
+
+    # Stores the location for the bill-of-materials (a receipt of all
+    # files written during) project package assembly
+    attr_accessor :bill_of_materials
+
+    # Stores individual settings related to a given Vanagon project,
+    # not necessarily the artifact that the project produces
+    attr_accessor :settings
+
+    # The overall Environment that a given Vanagon
+    # project should pass to each platform
+    attr_accessor :environment
 
     # Loads a given project from the configdir
     #
@@ -46,6 +106,9 @@ class Vanagon
       @requires = []
       @directories = []
       @settings = {}
+      # Environments are like Hashes but with specific constraints
+      # around their keys and values.
+      @environment = Vanagon::Environment.new
       @platform = platform
       @release = "1"
       @replaces = []
@@ -63,6 +126,17 @@ class Vanagon
 
     def respond_to_missing?(method_name, include_private = false)
       @settings.key?(method_name) || super
+    end
+
+    # Merge the platform's Environment into the project's Environment
+    # and return the result. This will produce the top-level Environment
+    # in the Makefile, that all components (and their Make targets)
+    # will inherit from.
+    #
+    # @return [Environment] a new Environment, constructed from merging
+    #   @platform's Environment with the project's environment.
+    def merged_environment
+      environment.merge(@platform.environment)
     end
 
     # Collects all sources and patches into the provided workdir
@@ -195,7 +269,7 @@ class Vanagon
     def get_preinstall_actions(pkg_state)
       scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no preinstall scripts provided'
       else
         return scripts.join("\n")
       end
@@ -212,7 +286,7 @@ class Vanagon
     def get_postinstall_actions(pkg_state)
       scripts = @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no postinstall scripts provided'
       else
         return scripts.join("\n")
       end
@@ -228,7 +302,7 @@ class Vanagon
     def get_preremove_actions(pkg_state)
       scripts = @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no preremove scripts provided'
       else
         return scripts.join("\n")
       end
@@ -244,7 +318,7 @@ class Vanagon
     def get_postremove_actions(pkg_state)
       scripts = @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
-        return ':'
+        return ': no postremove scripts provided'
       else
         return scripts.join("\n")
       end
@@ -285,6 +359,14 @@ class Vanagon
         end
       end
       ret_dirs
+    end
+
+    # This originally lived in the Makefile.erb template, but it's pretty
+    # domain-inspecific and we should try to minimize assignment
+    # inside an ERB template
+    # @return [Array] all of the paths produced by #get_directories
+    def dirnames
+      get_directories.map(&:path)
     end
 
     # Get any services registered by components in the project

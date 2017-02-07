@@ -18,16 +18,16 @@ class Vanagon
       #
       # @param name [String] name of the platform
       # @return [Vanagon::Platform::DSL] A DSL object to describe the {Vanagon::Platform}
-      def initialize(name)
-        @name = name
+      def initialize(platform_name)
+        @name = platform_name
       end
 
       # Primary way of interacting with the DSL. Also a simple factory to get the right platform object.
       #
       # @param name [String] name of the platform
       # @param block [Proc] DSL definition of the platform to call
-      def platform(name, &block)
-        @platform = case name
+      def platform(platform_name, &block) # rubocop:disable Metrics/AbcSize
+        @platform = case platform_name
                     when /^aix-/
                       Vanagon::Platform::RPM::AIX.new(@name)
                     when /^(cisco-wrlinux|el|fedora)-/
@@ -51,6 +51,7 @@ class Vanagon
                     end
 
         yield(self)
+        environment 'VANAGON_PLATFORM', platform_name.tr('-', '.')
         @platform
       end
 
@@ -81,6 +82,13 @@ class Vanagon
 
       def respond_to_missing?(method_name, include_private = false)
         method_name.to_s.start_with?('get_') || super
+      end
+
+      # Adds an arbitrary environment variable to a Platform, which will be
+      # merged with any environment variables defined by the Project into the
+      # rendered Makefile
+      def environment(key, value)
+        @platform.environment[key] = value
       end
 
       # Set the path to make for the platform
@@ -127,9 +135,10 @@ class Vanagon
 
       # Set the cross_compiled flag for the platform
       #
-      # @param cxx_flag [Boolean] True if this is a cross-compiled platform
-      def cross_compiled(cxx_flag)
-        @platform.cross_compiled = cxx_flag
+      # @param xcc [Boolean] True if this is a cross-compiled platform
+      def cross_compiled(xcc_flag)
+        @platform.cross_compiled = !!xcc_flag
+        environment 'VANAGON_PLATFORM_XCC', @platform.cross_compiled.to_s
       end
 
       # define an explicit Dist for the platform (most likely used for RPM platforms)
@@ -219,38 +228,38 @@ class Vanagon
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name of the target template to use from the vmpooler
-      def vmpooler_template(name)
-        @platform.vmpooler_template = name
+      def vmpooler_template(template_name)
+        @platform.vmpooler_template = template_name
       end
 
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name that the pooler uses for this platform
       # @deprecated Please use vmpooler_template instead, this will be removed in a future vanagon release.
-      def vcloud_name(name)
+      def vcloud_name(cloud_name)
         warn "vcloud_name is a deprecated platform DSL method, and will be removed in a future vanagon release. Please use vmpooler_template instead."
-        self.vmpooler_template(name)
+        self.vmpooler_template(cloud_name)
       end
 
       # Set the name of this platform as always-be-scheduling (ABS) expects it
       #
       # @param name [String] name of the platform to request from always-be-scheduling
-      def abs_resource_name(name)
-        @platform.abs_resource_name = name
+      def abs_resource_name(resource_name)
+        @platform.abs_resource_name = resource_name
       end
 
       # Set the name of the docker image to use
       #
       # @param name [String] name of the docker image to use
-      def docker_image(name)
-        @platform.docker_image = name
+      def docker_image(image_name)
+        @platform.docker_image = image_name
       end
 
       # Set the ami for the platform to use
       #
       # @param ami [String] the ami id used.
-      def aws_ami(ami)
-        @platform.aws_ami = ami
+      def aws_ami(ami_name)
+        @platform.aws_ami = ami_name
       end
 
       # Set the user data used in AWS to do setup. Like cloud-config
@@ -307,6 +316,7 @@ class Vanagon
       # @param user[String] a user string to login with.
       def target_user(user = "root")
         @platform.target_user = user
+        environment 'VANAGON_PLATFORM_USER', user
       end
 
       # Set the target ip address or hostname to start build
@@ -326,9 +336,10 @@ class Vanagon
 
       # Set any codename this platform may have (debian for example)
       #
-      # @param name [String] codename for this platform (squeeze for example)
-      def codename(name)
-        @platform.codename = name
+      # @param codename [String] codename for this platform (squeeze for example)
+      def codename(codename)
+        @platform.codename = codename
+        environment 'VANAGON_PLATFORM_CODENAME', codename
       end
 
       def output_dir(directory)

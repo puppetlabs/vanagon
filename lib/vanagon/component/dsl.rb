@@ -339,8 +339,25 @@ class Vanagon
       # This environment is included in the configure, build and install steps.
       #
       # @param env [Hash] mapping of keys to values to add to the environment for the component
-      def environment(env)
-        @component.environment.merge!(env)
+      def environment(*env) # rubocop:disable Metrics/AbcSize
+        if env.size == 1 && env.first.is_a?(Hash)
+          warn <<-eos.undent
+            the component DSL method signature #environment({Key => Value}) is deprecated
+            and will be removed by Vanagon 1.0.0.
+
+            Please update your project configurations to use the form:
+              #environment(key, value)
+          eos
+          return @component.environment.merge!(env.first)
+        elsif env.size == 2
+          return @component.environment[env.key] = env.value
+        end
+        raise ArgumentError, <<-eos.undent
+          component DSL method #environment only accepts a single Hash (deprecated)
+          or a key-value pair (preferred):
+            environment({"KEY" => "value"})
+            environment("KEY", "value")
+        eos
       end
 
       # Adds action to run during the preinstall phase of packaging

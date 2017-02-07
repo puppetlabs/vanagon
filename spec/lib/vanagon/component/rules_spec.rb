@@ -43,17 +43,14 @@ describe Vanagon::Component::Rules do
 
     it "extracts the source" do
       component.extract_with = "/usr/bin/tar"
-      expect(rule.recipe.first).to eq ": && /usr/bin/tar"
+      expect(rule.recipe.first).to eq "/usr/bin/tar"
     end
 
     it "sets environment variables before running the unpack steps" do
       component.extract_with = "/usr/bin/tar"
       component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
       expect(rule.recipe.first).to eq(
-        [
-          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
-          "/usr/bin/tar"
-        ].join(" && ")
+        [ "/usr/bin/tar" ].join(" && ")
       )
     end
 
@@ -108,7 +105,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe[1]).to eq(
         [
           "cd /foo/bar",
-          ":",
           "./configure",
           "cmake .."
         ].join(" && \\\n")
@@ -121,7 +117,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe[1]).to eq(
         [
           "cd /foo/bar",
-          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
           "./configure",
           "cmake .."
         ].join(" && \\\n")
@@ -145,7 +140,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          ":",
           "make",
           "make test",
         ].join(" && \\\n")
@@ -158,7 +152,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
           "make",
           "make test"
         ].join(" && \\\n")
@@ -188,7 +181,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          ":",
           "make cpplint",
           "make test",
         ].join(" && \\\n")
@@ -201,7 +193,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
           "make cpplint",
           "make test"
         ].join(" && \\\n")
@@ -225,7 +216,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          ":",
           "make install",
           "make reallyinstall",
         ].join(" && \\\n")
@@ -238,7 +228,6 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "export PATH=\"/opt/pl-build-tools/bin:$$PATH\"",
           "make install",
           "make reallyinstall"
         ].join(" && \\\n")

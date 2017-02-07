@@ -5,7 +5,7 @@ describe Makefile::Rule do
     subject { described_class.new("empty") }
 
     it "creates an empty rule" do
-      expect(subject.format).to eq "empty: export VANAGON_TARGET = empty\nempty:\n"
+      expect(subject.format).to eq "empty: export VANAGON_TARGET := empty\nempty:\n"
     end
   end
 
@@ -13,7 +13,7 @@ describe Makefile::Rule do
     subject { described_class.new("simple", recipe: ["touch simple"]) }
 
     it "creates the rule with the recipe" do
-      expect(subject.format).to eq "simple: export VANAGON_TARGET = simple\nsimple:\n\ttouch simple\n"
+      expect(subject.format).to eq "simple: export VANAGON_TARGET := simple\nsimple:\n\ttouch simple\n"
     end
   end
 
@@ -21,7 +21,7 @@ describe Makefile::Rule do
     subject { described_class.new("depends", dependencies: ["mydeps"]) }
 
     it "creates the rule with the recipe" do
-      expect(subject.format).to eq "depends: export VANAGON_TARGET = depends\ndepends: mydeps\n"
+      expect(subject.format).to eq "depends: export VANAGON_TARGET := depends\ndepends: mydeps\n"
     end
   end
 
@@ -29,7 +29,7 @@ describe Makefile::Rule do
     subject { described_class.new("deluxe", recipe: ["touch deluxe"], dependencies: ["mydeps"]) }
 
     it "creates the rule with the recipe" do
-      expect(subject.format).to eq "deluxe: export VANAGON_TARGET = deluxe\ndeluxe: mydeps\n\ttouch deluxe\n"
+      expect(subject.format).to eq "deluxe: export VANAGON_TARGET := deluxe\ndeluxe: mydeps\n\ttouch deluxe\n"
     end
   end
 
@@ -44,7 +44,7 @@ describe Makefile::Rule do
     end
 
     it "inserts tabs after each newline in the recipe" do
-      expect(subject.format).to eq "multiline: export VANAGON_TARGET = multiline\nmultiline:\n\t[ -d build ] || mkdir -p build\n\tcd build &&\n\tcmake .. &&\n\tmake &&\n\tmake install\n"
+      expect(subject.format).to eq "multiline: export VANAGON_TARGET := multiline\nmultiline:\n\t[ -d build ] || mkdir -p build\n\tcd build &&\n\tcmake .. &&\n\tmake &&\n\tmake install\n"
     end
   end
 end
