@@ -6,6 +6,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.10.0] - released on 2017-02-08
+### Added
+- Initial support to the Makefile to enable metrics collection during a build
+
+### Changed
+- Overhaul of how vanagon handles environment variables. Vanagon now has an
+  environment class that allows users to scope environment variables to be
+  project specific, platform specific, or component specific
+
 ## [0.9.2] - released on 2017-01-31
 ### Added
 - Experimental `render` command added to aid in rapid Makefile iteration and testing 
@@ -369,7 +378,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.9.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/puppetlabs/vanagon/compare/0.9.2...0.10.0
 [0.9.2]: https://github.com/puppetlabs/vanagon/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/puppetlabs/vanagon/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/puppetlabs/vanagon/compare/0.8.2...0.9.0
