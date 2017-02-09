@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/platform'
 
 describe "Vanagon::Component" do
   describe "#get_environment" do
@@ -48,20 +49,46 @@ describe "Vanagon::Component" do
       @workdir = Dir.mktmpdir
       @file_name = 'fake_file.txt'
       @fake_file = "file://spec/fixtures/files/#{@file_name}"
+      @fake_dir = 'fake_dir'
+      @fake_tar = "file://spec/fixtures/files/#{@fake_dir}.tar.gz"
     end
 
     subject do
       # Initialize a new instance of Vanagon::Component and define a
-      # new secondary source. We can now reason about this instance and
-      # test behavior for retrieving secondary sources.
+      # new secondary source that's *uncompressed*. We can now reason about 
+      # this instance and test behavior for retrieving secondary sources.
       Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
         comp.sources << OpenStruct.new(url: @fake_file)
       end
+    end  
+
+    it "copies uncompressed secondary sources into the workdir" do
+      component = subject
+      component.get_sources(@workdir)
+      expect(File.exist?(File.join(@workdir, @file_name))).to be true
+    end  
+
+    subject do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source that's *compressed*. We can now reason about
+      # this instance and test behavior for retrieving secondary sources.
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @platform = plat._platform
+
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
+      comp.add_source @fake_file
+      comp.add_source @fake_tar
+      comp._component
     end
 
-    it "copies secondary sources into the workdir" do
-      subject.get_sources(@workdir)
+    it "copies compressed secondary sources into the workdir" do
+      component = subject
+      component.get_sources(@workdir)
       expect(File.exist?(File.join(@workdir, @file_name))).to be true
+      # make sure that our secondary source(s) made it into the workdir
+      expect(File.exist?(File.join(@workdir, "#{@fake_dir}.tar.gz"))).to be true
+      expect(component.extract_with.join(" && ")).to match "#{@fake_dir}.tar.gz"
     end
   end
 end

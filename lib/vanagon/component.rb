@@ -153,6 +153,7 @@ class Vanagon
       @postinstall_actions = []
       @preremove_actions = []
       @postremove_actions = []
+      @extract_with = []
     end
 
     # Adds the given file to the list of files and returns @files.
@@ -200,7 +201,8 @@ class Vanagon
         @source = Vanagon::Component::Source.source(url, opts)
         source.fetch
         source.verify
-        @extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : nil
+        extract_with_set(source.respond_to?(:extract) ? source.extract(platform.tar) : nil)
+
         @cleanup_source = source.cleanup if source.respond_to?(:cleanup)
         @dirname = source.dirname
 
@@ -215,7 +217,7 @@ class Vanagon
         @dirname = './'
 
         # If there is no source, there is nothing to do to extract
-        @extract_with = ': no source, so nothing to extract'
+        extract_with_set(': no source, so nothing to extract')
       end
     end
 
@@ -232,8 +234,6 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_sources(workdir) # rubocop:disable Metrics/AbcSize
-      # create an empty array if @extract_with doesn't already exist
-      @extract_with = Array(@extract_with)
       sources.each do |source|
         src = Vanagon::Component::Source.source(
           source.url, workdir: workdir, ref: source.ref, sum: source.sum
@@ -242,8 +242,13 @@ class Vanagon
         src.verify
         # set src.file to only be populated with the basename instead of entire file path
         src.file = File.basename(src.url)
-        @extract_with << src.extract(platform.tar) if src.respond_to?(:extract)
+        extract_with_set(src.extract(platform.tar)) if src.respond_to?(:extract)
       end
+    end
+
+    # create setter method for extract_with to add sources to the array
+    def extract_with_set(extract)
+      @extract_with << extract
     end
 
     # Fetches patches if any are provided for the project.
