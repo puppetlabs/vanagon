@@ -138,7 +138,7 @@ class Vanagon
       return str if escaped_variables.empty?
 
       warning = [%(Value "#{str}" looks like it's escaping one or more strings for shell interpolation.)]
-      escaped_variables.each { |v| warning.push "\t$$#{p} (will be coerced to $(#{p})" }
+      escaped_variables.each { |v| warning.push "\t$$#{v} (will be coerced to $(#{v})" }
       warning.push <<-eos.undent
         All environment variables will be resolved by Make; these variables will
         be unesecaped for now, but you should update your projects parameters.
