@@ -5,7 +5,7 @@ require 'vanagon/errors'
 class Vanagon
   class Engine
     class Local < Base
-      def initialize(platform, target = nil, opts = {})
+      def initialize(platform, target = nil, **opts)
         # local engine can't be used with a target
         super(platform, 'local machine')
 

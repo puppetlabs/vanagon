@@ -65,7 +65,7 @@ class Vanagon
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, :remote_workdir => @remote_workdir)
+      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, remote_workdir: remote_workdir)
     rescue
       fail "No such engine '#{camelize(engine_type)}'"
     end
