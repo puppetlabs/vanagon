@@ -6,7 +6,7 @@ class Vanagon
     class Base
       attr_accessor :target, :remote_workdir
 
-      def initialize(platform, target = nil, opts = {})
+      def initialize(platform, target = nil, **opts)
         @platform = platform
         @required_attributes = ["ssh_port"]
         @target = target if target

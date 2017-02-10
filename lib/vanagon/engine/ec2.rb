@@ -9,7 +9,7 @@ class Vanagon
       attr_accessor :ami, :key_name, :userdata, :key, :key_name, :shutdown_behavior
       attr_accessor :subnet_id, :instance_type
 
-      def initialize(platform, target = nil, opts = {}) # rubocop:disable Metrics/AbcSize
+      def initialize(platform, target = nil, **opts) # rubocop:disable Metrics/AbcSize
         super
 
         @ami = @platform.aws_ami
