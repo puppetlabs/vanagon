@@ -13,6 +13,9 @@ describe 'Vanagon::Driver' do
     END
   end
 
+  let(:explicit_workdir){ Dir.mktmpdir }
+  let(:explicit_remote_workdir){ Dir.mktmpdir }
+
   def eval_platform(name, definition)
     plat = Vanagon::Platform::DSL.new(name)
     plat.instance_eval(definition)
@@ -27,6 +30,22 @@ describe 'Vanagon::Driver' do
   end
 
   describe 'when resolving build host info' do
+    it 'uses an expicitly specified workdir if provided' do
+      derived = create_driver(redhat)
+      explicit = create_driver(redhat, workdir: explicit_workdir)
+
+      expect(explicit.workdir).to eq(explicit_workdir)
+      expect(explicit.workdir).not_to eq(derived.workdir)
+    end
+
+    it 'uses an expicitly specified remote workdir if provided' do
+      derived = create_driver(redhat)
+      explicit = create_driver(redhat, remote_workdir: explicit_remote_workdir)
+
+      expect(explicit.remote_workdir).to eq(explicit_remote_workdir)
+      expect(explicit.remote_workdir).not_to eq(derived.remote_workdir)
+    end
+
     it 'returns the vmpooler_template using the pooler engine' do
       info = create_driver(redhat).build_host_info
 
