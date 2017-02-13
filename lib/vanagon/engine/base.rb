@@ -6,11 +6,12 @@ class Vanagon
     class Base
       attr_accessor :target, :remote_workdir
 
-      def initialize(platform, target = nil)
+      def initialize(platform, target = nil, **opts)
         @platform = platform
         @required_attributes = ["ssh_port"]
         @target = target if target
         @target_user = @platform.target_user
+        @remote_workdir_path = opts[:remote_workdir]
       end
 
       # Get the engine name
@@ -57,7 +58,15 @@ class Vanagon
       end
 
       def get_remote_workdir
-        @remote_workdir ||= dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp'", true)
+        unless @remote_workdir
+          if @remote_workdir_path
+            dispatch("mkdir -p #{@remote_workdir_path}", true)
+            @remote_workdir = @remote_workdir_path
+          else
+            @remote_workdir = dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp'", true)
+          end
+        end
+        @remote_workdir
       end
 
       def ship_workdir(workdir)

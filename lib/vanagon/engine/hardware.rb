@@ -49,7 +49,7 @@ class Vanagon
         @lockman.unlock(@target, VANAGON_LOCK_USER)
       end
 
-      def initialize(platform, target)
+      def initialize(platform, target, **opts)
         super
 
         Vanagon::Driver.logger.debug "Hardware engine invoked."
