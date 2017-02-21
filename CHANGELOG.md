@@ -6,14 +6,17 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.10.0] - released on 2017-02-08
+## [0.10.0] - released on 2017-02-21
 ### Added
 - Initial support to the Makefile to enable metrics collection during a build
+- Allow user to specify the directory on the build host to place sources and
+  perform build tasks to allow for faster iteration
 
 ### Changed
 - Overhaul of how vanagon handles environment variables. Vanagon now has an
   environment class that allows users to scope environment variables to be
   project specific, platform specific, or component specific
+- Allow `dist` tag used in naming rpm packages to be specified
 
 ## [0.9.2] - released on 2017-01-31
 ### Added
