@@ -587,7 +587,14 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
           comp.install_configfile('thing1', 'place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1', mode: '0644'))
+          expect(comp._component.files).not_to include(Vanagon::Common::Pathname.file('place/to/put/thing1'))
+        end
+
+        it 'sets owner, group, and mode for the configfiles' do
+          comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
+          comp.install_configfile('thing1', 'place/to/put/thing1', owner: 'bob', group: 'timmy', mode: '0022')
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1', mode: '0022', group: 'timmy', owner: 'bob'))
           expect(comp._component.files).not_to include(Vanagon::Common::Pathname.file('place/to/put/thing1'))
         end
       end
@@ -617,7 +624,7 @@ end" }
         it 'adds the file to the configfiles list' do
           comp = Vanagon::Component::DSL.new('install-config-file-test', {}, platform)
           comp.install_configfile('thing1', 'place/to/put/thing1')
-          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1.pristine'))
+          expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('place/to/put/thing1.pristine', mode: '0644'))
           expect(comp._component.configfiles).not_to include(Vanagon::Common::Pathname.file('place/to/put/thing1'))
         end
       end
