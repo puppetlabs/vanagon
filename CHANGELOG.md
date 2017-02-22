@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.10.1] - released on 2017-02-22
+### Fixed
+- Fix a bug in the handling of component environment variables
+
 ## [0.10.0] - released on 2017-02-21
 ### Added
 - Initial support to the Makefile to enable metrics collection during a build

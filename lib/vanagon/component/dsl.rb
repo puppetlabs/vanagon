@@ -350,7 +350,7 @@ class Vanagon
           eos
           return @component.environment.merge!(env.first)
         elsif env.size == 2
-          return @component.environment[env.key] = env.value
+          return @component.environment[env.first] = env.last
         end
         raise ArgumentError, <<-eos.undent
           component DSL method #environment only accepts a single Hash (deprecated)
