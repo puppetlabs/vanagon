@@ -13,14 +13,14 @@ file-list-before-build:
 <%- if dirnames.empty? -%>
 	touch file-list-before-build
 <%- else -%>
-	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-before-build
+	(<%= @platform.find %> -H "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-before-build
 <%- end -%>
 
 file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 <%- if dirnames.empty? -%>
 	touch file-list-after-build
 <%- else -%>
-	(<%= @platform.find %> -L "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" -follow 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-after-build
+	(<%= @platform.find %> -H "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-after-build
 <%- end -%>
 
 <%= @name %>-<%= @version %>.tar.gz: file-list <%= @cleanup ? 'cleanup-components' : '' %>
