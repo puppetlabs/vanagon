@@ -230,14 +230,14 @@ class Vanagon
       # upgrade if it has been modified
       #
       # @param file [String] name of the configfile
-      def configfile(file)
+      def configfile(file, mode: nil, owner: nil, group: nil)
         # I AM SO SORRY
         @component.delete_file file
         if @component.platform.name =~ /solaris-10|osx/
           @component.install << "mv '#{file}' '#{file}.pristine'"
-          @component.add_file Vanagon::Common::Pathname.configfile("#{file}.pristine")
+          @component.add_file Vanagon::Common::Pathname.configfile("#{file}.pristine", mode: mode, owner: owner, group: group)
         else
-          @component.add_file Vanagon::Common::Pathname.configfile(file)
+          @component.add_file Vanagon::Common::Pathname.configfile(file, mode: mode, owner: owner, group: group)
         end
       end
 
@@ -245,9 +245,9 @@ class Vanagon
       #
       # @param source [String] path to the configfile to copy
       # @param target [String] path to the desired target of the configfile
-      def install_configfile(source, target)
-        install_file(source, target)
-        configfile(target)
+      def install_configfile(source, target, mode: '0644', owner: nil, group: nil)
+        install_file(source, target, mode: mode, owner: owner, group: group)
+        configfile(target, mode: mode, owner: owner, group: group)
       end
 
       # link will add a command to the install to create a symlink from source to target
