@@ -73,6 +73,13 @@ class Vanagon
     # project should pass to each platform
     attr_accessor :environment
 
+    # Extra vars to be set in the spec file or debian rules.
+    # Good for setting extra %define or %global things for RPM, or env
+    # variables needed in the debian rules file
+    # No extra munging will be performed, so these should be set as you want
+    # them to appear in your spec/rules files!
+    attr_accessor :package_overrides
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -114,6 +121,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @conflicts = []
+      @package_overrides = []
     end
 
     # Magic getter to retrieve settings in the project

@@ -2,6 +2,10 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+<% @package_overrides.each do |var| %>
+<%= var %>
+<% end -%>
+
 override_dh_auto_install:
 	install -d debian/tmp
 	# Copy each directory into place
