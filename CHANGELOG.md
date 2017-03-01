@@ -6,6 +6,19 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.9.3] - released on 2017-03-01
+### Added
+- Allow user to specify the directory on the build host to place sources and
+  perform build tasks to allow for faster iteration.
+- Add support for linking directories during the install step. Prior to this,
+  if you did an `ln -s sourcedir targetdir` file list autogeneration would fail
+  since we were following symlinks. We now do not follow symlinks when
+  generating the file lists.
+- Add support for setting `owner`, `group` and `mode` for configfiles. This
+  functionality already existed for `install_file` but was missing for
+  `install_configfile`.
+- Allow `dist` tag used in naming rpm packages to be specified.
+
 ## [0.9.2] - released on 2017-01-31
 ### Added
 - Experimental `render` command added to aid in rapid Makefile iteration and testing 
@@ -369,7 +382,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.9.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.9.3...HEAD
+[0.9.3]: https://github.com/puppetlabs/vanagon/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/puppetlabs/vanagon/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/puppetlabs/vanagon/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/puppetlabs/vanagon/compare/0.8.2...0.9.0
