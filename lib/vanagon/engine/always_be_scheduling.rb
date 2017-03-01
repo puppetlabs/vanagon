@@ -66,7 +66,7 @@ class Vanagon
     # $ build_host_info puppet-agent aix-5.3-ppc --engine always_be_scheduling
     # {"name":"aix-53-ppc","engine":"always_be_scheduling"}
     class AlwaysBeScheduling < Base
-      def initialize(platform, target)
+      def initialize(platform, target, **opts)
         super
 
         Vanagon::Driver.logger.debug "AlwaysBeScheduling engine invoked."
