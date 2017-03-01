@@ -9,7 +9,6 @@ workdir := $(PWD)
 
 all: file-list-before-build <%= package_name %>
 
-<%= package_name %>: export VANAGON_TARGET := create-package
 <%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
 	<%= generate_package.join("\n\t") %>
 
