@@ -148,6 +148,13 @@ class Vanagon
         @platform.dist = dist_string
       end
 
+      # define an explicit Dist for the platform (most likely used for RPM platforms)
+      #
+      # @param dist_string [String] the value to use for .dist when building RPMs
+      def dist(dist_string)
+        @platform.dist = dist_string
+      end
+
       # Set the path to rpmbuild for the platform
       #
       # @param rpmbuild_cmd [String] Full path to rpmbuild with arguments to be used by default
