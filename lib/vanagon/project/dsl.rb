@@ -70,6 +70,10 @@ class Vanagon
         @project.settings[name] = value
       end
 
+      def settings
+        @project.settings
+      end
+
       # Sets the description of the project. Mainly for use in packaging.
       #
       # @param descr [String] description of the project
