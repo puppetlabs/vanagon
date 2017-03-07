@@ -24,9 +24,10 @@
 # Write some log files, that can be post-processed
 # relatively easily. While you're at it, store runtimes in batches.
 if [[ -n ${VANAGON_TARGET} ]]; then
-  __batchfile="${VANAGON_TARGET}.csv"
-  __stdout="${VANAGON_TARGET}.stdout.log"
-  __stderr="${VANAGON_TARGET}.stderr.log"
+  __batchfile="runtimes/${VANAGON_TARGET}.csv"
+  __stdout="logs/${VANAGON_TARGET}.stdout.log"
+  __stderr="logs/${VANAGON_TARGET}.stderr.log"
+  mkdir "logs" "runtimes"
 else
   # Alternatively, if there's no defined Target, just
   # dump that stuff in the bitbucket
