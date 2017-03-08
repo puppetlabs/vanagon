@@ -48,15 +48,22 @@ Autoreq: 0
 <%- get_requires.each do |requires| -%>
 Requires:  <%= requires %>
 <%- end -%>
+
 # All rpm packages built by vanagon have the pre-/post-install script
 # boilerplates (defined below). These require `mkdir` and `touch` but previously
 # did not specify a dependency on these.
 # In the future, we will supress pre/post scripts completely if there's nothing
 # specified by the project or the components.
+<%- if @platform.is_aix? -%>
+Requires: /bin/mkdir
+Requires: /bin/touch
+<%- else -%>
 Requires(pre): /bin/mkdir
 Requires(pre): /bin/touch
 Requires(post): /bin/mkdir
 Requires(post): /bin/touch
+<%- end -%>
+
 <%- if has_services? -%>
   <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
