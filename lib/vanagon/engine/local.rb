@@ -44,6 +44,14 @@ class Vanagon
         FileUtils.mkdir_p("output")
         FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
       end
+
+      def retrieve_runtimes
+        FileUtils.mkdir_p "runtimes"
+        FileUtils.cp_r(
+          Dir.glob("#{@remote_workdir}/runtimes/*",
+          "runtimes/")
+        )
+      end
     end
   end
 end

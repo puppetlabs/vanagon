@@ -133,21 +133,41 @@ class Vanagon
     end
     alias to_string to_s
 
-    def sanitize_value(str)
-      escaped_variables = str.scan(/\$\$([\w]+)/).flatten
+    def sanitize_subshells(str)
+      pattern = %r{\$\$\((.*)\)}
+      escaped_variables = str.scan(pattern).flatten
       return str if escaped_variables.empty?
 
-      warning = [%(Value "#{str}" looks like it's escaping one or more strings for shell interpolation.)]
-      escaped_variables.each { |v| warning.push "\t$$#{v} (will be coerced to $(#{v})" }
+      warning = [%(Value "#{str}" looks like it's escaping one or more values for subshell interpolation.)]
+      escaped_variables.each { |v| warning.push "\t$$#{v} (will be coerced to $(shell #{v})" }
       warning.push <<-eos.undent
-        All environment variables will be resolved by Make; these variables will
-        be unesecaped for now, but you should update your projects parameters.
+        All environment variables will now be resolved by Make before they're executed
+        by the shell. These variables will be mangled for you for now, but you should
+        update your project's parameters.
       eos
 
       warn warning.join("\n")
-      str.gsub(/\$\$([\w]+)/, '$(\1)')
+      str.gsub(pattern, '$(shell \1)')
     end
-    private :sanitize_value
+    private :sanitize_subshells
+
+    def sanitize_variables(str)
+      pattern = %r{\$\$([\w]+)}
+      escaped_variables = str.scan(pattern).flatten
+      return str if escaped_variables.empty?
+
+      warning = [%(Value "#{str}" looks like it's escaping one or more shell variable names for shell interpolation.)]
+      escaped_variables.each { |v| warning.push "\t$$#{v} (will be coerced to $(#{v})" }
+      warning.push <<-eos.undent
+        All environment variables will now be resolved by Make before they're executed
+        by the shell. These variables will be mangled for you for now, but you should
+        update your project's parameters.
+      eos
+
+      warn warning.join("\n")
+      str.gsub(pattern, '$(\1)')
+    end
+    private :sanitize_variables
 
     # Validate that a key is a String, that it does not contain invalid
     #   characters, and that it does not begin with a digit
@@ -187,7 +207,7 @@ class Vanagon
 
       # sanitize the value, which should look for any Shell escaped
       # variable names inside of the value.
-      str.is_a?(String) ? sanitize_value(str) : str
+      sanitize_variables(sanitize_subshells(str.to_s))
     end
     private :validate_value
   end

@@ -78,6 +78,16 @@ class Vanagon
         Vanagon::Utilities.rsync_from("#{@remote_workdir}/output/*", "#{@target_user}@#{@target}", "output/", @platform.ssh_port)
       end
 
+      def retrieve_runtimes
+        FileUtils.mkdir_p "runtimes"
+        Vanagon::Utilities.rsync_from(
+          "#{@remote_workdir}/runtimes/*",
+          "#{@target_user}@#{@target}",
+          "runtimes/",
+          @platform.ssh_port
+        )
+      end
+
       # Ensures that the platform defines the attributes that the engine needs to function.
       #
       # @raise [Vanagon::Error] an error is raised if a needed attribute is not defined

@@ -4,14 +4,19 @@ describe "Vanagon::Environment" do
   before :all do
     @good_names = %w(name _name NAME _NAME NAME123 _123NAME)
     @bad_names = ['no-name', '!name', '.name', '123name_', 1, '-name']
+
+    # All environment variables will be cast to Strings, regardless
+    # of whether or not they were Integers or Strings on the way in.
+
     @good_values =[
       'valuable',
       'most\ valuable',
       'extremely-valuable',
       'VALUE_BEYOND_MEASURE',
-      2004,
-      2007,
+      '2004',
+      '2007',
     ]
+
     @bad_values = [
       %w(an array of strings),
       19.81,

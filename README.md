@@ -1,21 +1,32 @@
 ![Build Status](https://travis-ci.org/puppetlabs/vanagon.svg?branch=master)
-The Vanagon Project
-===
- * What is vanagon?
- * Runtime requirements
- * Configuration and Usage
- * Overview
- * Contributing
- * License
- * Maintainers
- * Support
+# The Vanagon Project
 
-What is vanagon?
----
+<!-- MarkdownTOC -->
+
+- [What is Vanagon?](#what-is-vanagon)
+- [Runtime Requirements](#runtime-requirements)
+  - [Local Host:](#local-host)
+  - [Remote Build Target:](#remote-build-target)
+- [Configuration and Usage](#configuration-and-usage)
+  - [`build` usage](#build-usage)
+  - [`inspect` usage](#inspect-usage)
+  - [`devkit` usage](#devkit-usage)
+- [Engines](#engines)
+  - [Amazon Ec2](#amazon-ec2)
+- [Contributing](#contributing)
+- [License](#license)
+- [Overview](#overview)
+- [Maintainers](#maintainers)
+
+<!-- /MarkdownTOC -->
+
+
+## What is Vanagon?
+
 Vanagon is a tool to build a single package out of a project, which can itself
 contain one or more components. This tooling is being used to develop the
 puppet-agent package, which contains components such as openssl, ruby, and
-augeas among others. For a simple example, please see the examples directory.
+augeas among others. For a simple example, please see the project in the `examples/` directory.
 
 Vanagon builds up a Makefile and packaging files (specfile for RPM,
 control/rules/etc for DEB) and copies them to a remote host, where make can be
@@ -28,22 +39,43 @@ creates a master makefile for the project, and configures, builds, and installs
 all components. The result is an environment where you can work on individual
 components, then rebuild the project and test the installed artifacts.
 
-Runtime Requirements
----
-Vanagon is self-contained. A recent version of ruby (2.1 or greater) should be
-all that is required. Beyond that, ssh, rsync and git are also required on the
-host, and ssh-server and rsync is required on the target (package installation
-for the target can be customized in the platform config for the target).
+## Runtime Requirements
 
-Configuration and Usage
----
+Vanagon carries two sets of requirements: requirements for the local host where Vanagon is run, and for the remote target where compilation and packaging happens.
+
+Also, Vanagon ships with a number of engines which may include additional optional dependencies if you wish to use them. These engines are currently considered experimental, and receive less attention than the `Hardware` or `vmpooler` engines do. If you find a bug in these engines, [please open a ticket](https://tickets.puppetlabs.com/browse/PA) and let us know.
+
+### Local Host:
+
+- [Ruby](https://www.ruby-lang.org/en/) (Ruby 2.1.x is the miniumum supported version)
+- [fustigit](https://github.com/mckern/fustigit)
+- [ruby-git](https://github.com/schacon/ruby-git)
+- The command line tool `ssh` ([homepage](https://www.openssh.com/)) available on the local `${PATH}` (any modern version should suffice)
+- The command line tool `rsync` ([homepage](https://rsync.samba.org/)) available on the local `${PATH}` (At least rsync 2.6.x)
+- The command line tool `git` ([homepage](https://git-scm.com/)) available on the local `${PATH}` (Vanagon is tested against Git version 1.8.x but should work with any newer version)
+
+#### Optional requirements
+
+- [AWS SDK for Ruby](https://github.com/aws/aws-sdk-ruby), if you're using the EC2 engine
+- [Docker](https://www.docker.com/community-edition), if you're using the Docker engine
+
+### Remote Build Target:
+
+**Note:** package installation & builder configuration for the remote target can be customized in the `Platform` configuration that defines target provisioning instructions.
+
+- GNU Make ([homepage](https://www.gnu.org/software/make/)) (Vanagon specifically targets the feature set provided by [GNU Make 3.81](http://git.savannah.gnu.org/cgit/make.git/tree/NEWS?h=3.81&id=776d8b7bc2ff83f8ebf5d357ec89e3bbe6d83962) but newer versions are known to work -- older versions are specifically known to **not** work!)
+- Bash ([homepage](https://www.gnu.org/software/bash/)) is required by the Makefiles that Vanagon generates
+- An ssh server ([homepage](https://www.openssh.com/)) is required by most engines
+- The command line tool `rsync` ([homepage](https://rsync.samba.org/)) (At least rsync 2.6.x)
+
+## Configuration and Usage
+
 Vanagon won't be much use without a project to build. Beyond that, you must
 define any platforms you want to build for. Vanagon ships with some simple
 binaries to use, but the one you probably care about is named 'build'.
 
 ### `build` usage
 The build command has positional arguments and position independent flags.
-
 
 #### Arguments (position dependent)
 
@@ -57,7 +89,7 @@ The name of the target platform to build `<project_name>` against; a file named
 directory. This can also be a comma separated list of platforms such as `platform1,platform2`;
 note that there are no spaces after the comma.
 
-##### target host [optional]
+##### target host <optional>
 Target host is an optional argument to override the host selection. Instead of using
 a random VM collected from the pooler (Vanagon's default build engine), the build will
 attempt connect to the target host over SSH as the `root` user.
@@ -70,7 +102,9 @@ than platforms, the extra platforms will be ignored.
 
 Build machines should be cleaned between builds.
 
-#### Flagged arguments (can be anywhere in the command)
+#### Flagged arguments
+
+**Note:** command flags can be used anywhere in the command.
 
 ##### -w DIR, --workdir DIR
 Specifies a directory on the local host where the sources should be placed and builds performed.
@@ -94,15 +128,17 @@ Currently supported engines are:
 * `hardware` - Build on a specific taget and lock it in redis
 * `ec2` - Build on a specific AWS instance.
 
-#### Flags (can be anywhere in the command)
+#### Flags
+
+**Note:** command flags can be used anywhere in the command.
 
 ##### -p, --preserve
 Indicates that the host used for building the project should be left intact
 after the build instead of destroyed. The host is usually destroyed after a
 successful build, or left after a failed build.
 
-##### -v, --verbose (not yet implemented)
-Increase verbosity of output.
+##### -v, --verbose
+(Reserved for future implementation) Will increase the verbosity of output, when implemented.
 
 ##### -h, --help
 Display command-line help.
@@ -172,13 +208,15 @@ directory.
 
 Platform can also be a comma separated list of platforms such as platform1,platform2.
 
-#### Flagged arguments (can be anywhere in the command)
+#### Flagged arguments
+
+**Note:** command flags can be used anywhere in the command.
 
 ##### -w DIR, --workdir DIR
 Specifies a directory where the sources should be placed and builds performed.
 Defaults to a temporary directory created with Ruby's Dir.mktmpdir.
 
-##### -c DIR, --configdir DIR
+##### -c DIR, --configdir DIR <optional>
 Specifies where project configuration is found. Defaults to $pwd/configs.
 
 ##### -e ENGINE, --engine ENGINE
@@ -188,7 +226,9 @@ rendered -- the `inspect` command performs no compilation.
 
 Supported engines are the same as the `build` command.
 
-#### Flags (can be anywhere in the command)
+#### Flags
+
+**Note:** command flags can be used anywhere in the command.
 
 ##### -v, --verbose (not yet implemented)
 Increase verbosity of output.
@@ -223,20 +263,24 @@ As in `build` arguments.
 ##### platform name
 As in `build` arguments.
 
-##### component names [optional]
+##### component names <optional>
 Specifies specific components that should be built. If components are not
 specified, then all components in the project will be built. If components
 are specified as arguments, then any in the project that aren't specified
 as arguments will be retrieved from packages rather than built from source.
 
-#### Flagged arguments (can be anywhere in the command)
+#### Flagged arguments
+
+**Note:** command flags can be used anywhere in the command.
 
 Supports all flagged arguments from the `build` command.
 
 ##### -t HOST, --target HOST
 As in the `build` target host optional argument.
 
-#### Flags (can be anywhere in the command)
+#### Flags
+
+**Note:** command flags can be used anywhere in the command.
 
 ##### -h, --help
 Display command-line help.
@@ -248,7 +292,7 @@ Engines
 
 ### Amazon Ec2
 
-Note: If you have the `aws_ami` setup vanagon will default to the ec2 engine.
+Note: If you have the `aws_ami` setup Vanagon will default to the ec2 engine.
 
 To use the ec2 engine you should have your credentials set either via your `~/.aws/credentials` or environment variables.
 After this you can setup your `configs/platforms/<platform>.rb` to use your
@@ -294,7 +338,7 @@ If I wanted to build it for debian wheezy, I would define a platform called
 wheezy and build my project against it.
 
 For more detailed examples of the DSLs available, please see the
-[examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for vanagon.
+[examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for Vanagon.
 
 ## Maintainers
 See MAINTAINERS file.

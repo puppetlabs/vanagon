@@ -265,10 +265,10 @@ class Vanagon
         The #get_environment method will be removed by Vanagon 1.0.0.
       eos
 
-      if @environment.empty?
+      if environment.empty?
         ": no environment variables defined"
       else
-        env = @environment.map { |key, value| %(#{key}="#{value}") }
+        env = environment.map { |key, value| %(#{key}="#{value}") }
         "export #{env.join(' ')}"
       end
     end

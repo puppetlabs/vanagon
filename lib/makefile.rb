@@ -76,11 +76,17 @@ class Makefile
         .join('.')
     end
 
+    def profiled_target?
+      !!(target =~ /-configure|-build|-install\Z/)
+    end
+
     def tokenized_environment_variable
       "#{target}: export VANAGON_TARGET := #{tokenize_target_name}"
     end
 
     def environment_variables
+      return [] unless profiled_target?
+
       environment.map { |k, v| "#{k} := #{v}" }.map do |env|
         "#{target}: export #{env}"
       end
@@ -105,7 +111,7 @@ class Makefile
       # a corner case between metaprogrammed methods in Component::Rules,
       # and Ruby's preference for pass-by-reference.
       # Ryan McKern 2017-02-02
-      t.unshift tokenized_environment_variable
+      t.unshift tokenized_environment_variable if profiled_target?
 
       # prepend any environment variables to the existing target,
       # using the target prefix to identify them as such. they should

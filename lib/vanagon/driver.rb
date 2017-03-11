@@ -120,14 +120,19 @@ class Vanagon
       puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
       retry_task { @project.fetch_sources(@workdir) }
+
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
       @engine.ship_workdir(@workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
-      @engine.teardown unless @preserve
-      cleanup_workdir unless @preserve
+      @engine.retrieve_runtimes if @platform.profiling
+
+      unless @preserve
+        @engine.teardown
+        cleanup_workdir
+      end
     rescue => e
       puts e
       puts e.backtrace.join("\n")

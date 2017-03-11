@@ -98,6 +98,21 @@ class Vanagon
         @platform.make = make_cmd
       end
 
+      # Set the path for Make's SHELL for the platform
+      #
+      # @param shell_path [String] Full path to the shell Make should use
+      def shell(shell_path)
+        @platform.shell = shell_path
+      end
+
+      # Toggle profiling on or off for the platform
+      #
+      # @param boolean [Boolean] Should this platform try to collect runtimes
+      #   of configuring, building, and installing components
+      def profiling(boolean)
+        @platform.profiling = boolean.to_s.casecmp("true").zero?
+      end
+
       # Set the path to tar for the platform
       #
       # @param tar [String] Full path to the tar command for the platform
