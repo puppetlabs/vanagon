@@ -24,7 +24,6 @@ class Vanagon
       # @param block [Proc] DSL definition of the project to call
       def project(name, &block)
         yield(self)
-        environment 'VANAGON_PROJECT', @name
       end
 
       # Accessor for the project.
@@ -86,9 +85,6 @@ class Vanagon
       # @param the_name [String] name of the project
       def name(the_name)
         @project.name = the_name
-        # Overwrite the environment variable name using the reset name
-        # of the project.
-        environment 'VANAGON_PROJECT_NAME', @project.name
       end
 
       # Sets the homepage for the project. Mainly for use in packaging.
@@ -103,7 +99,6 @@ class Vanagon
       # @param page [Integer] timeout in seconds
       def timeout(to)
         @project.timeout = to
-        environment 'VANAGON_PROJECT_TIMEOUT', @project.timeout
       end
 
       # Sets the run time requirements for the project. Mainly for use in packaging.
@@ -144,7 +139,6 @@ class Vanagon
       # @param ver [String] version of the project
       def version(ver)
         @project.version = ver.tr('-', '.')
-        environment 'VANAGON_PROJECT_VERSION', @project.version
       end
 
       # Sets the release for the project. Mainly for use in packaging.
@@ -152,7 +146,6 @@ class Vanagon
       # @param rel [String] release of the project
       def release(rel)
         @project.release = rel
-        environment 'VANAGON_PROJECT_RELEASE', @project.release
       end
 
       # Sets the version for the project based on a git describe of the
@@ -171,7 +164,6 @@ class Vanagon
       # @param vend [String] vendor or author of the project
       def vendor(vend)
         @project.vendor = vend
-        environment 'VANAGON_PROJECT_VENDOR', @project.vendor
       end
 
       # Adds a directory to the list of directories provided by the project, to be included in any packages of the project
@@ -266,7 +258,6 @@ class Vanagon
       # Counter for the number of times a project should retry a task
       def retry_count(retry_count)
         @project.retry_count = retry_count
-        environment 'VANAGON_PROJECT_RETRY_COUNT', @project.retry_count
       end
     end
   end

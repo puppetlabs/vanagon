@@ -47,20 +47,4 @@ describe Makefile::Rule do
       expect(subject.format).to eq "multiline:\n\t[ -d build ] || mkdir -p build\n\tcd build &&\n\tcmake .. &&\n\tmake &&\n\tmake install\n"
     end
   end
-
-  describe "any rule besides a -configure, -build, or -install rule" do
-    subject { described_class.new("deluxe-clean", recipe: ["touch deluxe"], dependencies: ["mydeps"]) }
-
-    it "does not has a VANAGON_TARGET env. var. exported" do
-      expect(subject.format).not_to match(/VANAGON_TARGET/)
-    end
-  end
-
-  describe "a -configure, -build, or -install rule" do
-    subject { described_class.new("deluxe-configure", recipe: ["touch deluxe"], dependencies: ["mydeps"]) }
-
-    it "has a VANAGON_TARGET env. var. exported" do
-      expect(subject.format).to match(/VANAGON_TARGET/)
-    end
-  end
 end

@@ -1,5 +1,3 @@
-require 'vanagon/environment'
-
 class Makefile
   # The Rule class defines a single Makefile rule.
   #
@@ -12,11 +10,6 @@ class Makefile
     # @!attribute [rw] dependencies
     #   @return [Array<String>] A list of dependencies that this rule depends on.
     attr_accessor :dependencies
-
-    # @!attribute [rw] environment
-    #   @return [Array<String>] A list of environment variables that this rule
-    #     will export
-    attr_accessor :environment
 
     # @!attribute [rw] recipe
     #   @return [Array<String>] A list of commands to execute upon invocation of this rule.
@@ -43,10 +36,9 @@ class Makefile
     #         "make cpplint",
     #       ]
     #     end
-    def initialize(target, dependencies: [], environment: Vanagon::Environment.new, recipe: [], &block)
+    def initialize(target, dependencies: [], recipe: [], &block)
       @target = target
       @dependencies = dependencies
-      @environment = environment
       @recipe = recipe
 
       yield(self) if block
@@ -65,12 +57,11 @@ class Makefile
       ["#{target}:", dependencies].flatten.compact.join("\s")
     end
 
-    def environment_variables
-      return [] unless profiled_target?
-
-      environment.map { |k, v| "#{k} := #{v}" }.map do |env|
-        "#{target}: export #{env}"
-      end
+    def compounded_recipe
+      Array(recipe)
+        .compact
+        .map { |line| "\t" + line.gsub("\n", "\n\t") + "\n" }
+        .join
     end
 
     # Format this rule as a Makefile rule.
@@ -79,27 +70,9 @@ class Makefile
     # newline to ensure that the recipe is parsed as part of a single makefile rule.
     #
     # @return [String]
-    def format # rubocop:disable Metrics/AbcSize
-      # create a base target inside an Array, and construct the rest of
-      # the rule around that.
-      t = [base_target]
-
-      # prepend any environment variables to the existing target,
-      # using the target prefix to identify them as such. they should
-      # end up ahead of the dependencies and the build recipe.
-      environment_variables.each do |env|
-        t.unshift env
-      end
-
-      # finally, append the build recipe after the base target condition.
-      # also, here's a fun edge case: if one were to call #squeeze on
-      # the iterator 'line', basically all of the phony make tasks that
-      # `touch` a file just disapear. Fragility ++.
-      # - Ryan McKern 2017-02-02
-      t.push recipe.compact.map { |line| "\t" + line.gsub("\n", "\n\t") + "\n" }.join
-      t.join("\n")
+    def format
+      [base_target, compounded_recipe].flatten.join("\n")
     end
-
     alias to_s format
   end
 end

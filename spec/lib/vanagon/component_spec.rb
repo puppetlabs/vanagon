@@ -4,18 +4,18 @@ describe "Vanagon::Component" do
   describe "#get_environment" do
     subject { Vanagon::Component.new('env-test', {}, {}) }
 
-    it "prints a deprecation warning to STDERR" do    
+    it "prints a deprecation warning to STDERR" do
       expect { subject.get_environment }.to output(/deprecated/).to_stderr
     end
 
     it "returns a makefile compatible environment" do
-      subject.environment = {'PATH' => '/usr/local/bin'}
-      expect(subject.get_environment).to eq %(export PATH="/usr/local/bin")
+      subject.environment = {'PATH' => '/usr/local/bin', 'CFLAGS' => '-O3'}
+      expect(subject.get_environment).to eq %(PATH="/usr/local/bin" CFLAGS="-O3")
     end
 
     it 'merges against the existing environment' do
       subject.environment = {'PATH' => '/usr/bin', 'CFLAGS' => '-I /usr/local/bin'}
-      expect(subject.get_environment).to eq %(export PATH="/usr/bin" CFLAGS="-I /usr/local/bin")
+      expect(subject.get_environment).to eq %(PATH="/usr/bin" CFLAGS="-I /usr/local/bin")
     end
 
     it 'returns : for an empty environment' do
