@@ -262,8 +262,7 @@ class Vanagon
 
       def package_override(var)
         platform = @project.platform
-        fail "I don't know how to set package overrides for #{platform.name}, teach me?" unless platform.is_rpm? || platform.is_deb?
-        @project.package_overrides << var
+        platform.package_override(self._project, var)
       end
     end
   end

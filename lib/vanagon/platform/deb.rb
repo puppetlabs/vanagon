@@ -102,6 +102,10 @@ class Vanagon
         provisioning << "apt-get -qq update"
       end
 
+      def package_override(project, var)
+        project.package_overrides << var
+      end
+
       # Constructor. Sets up some defaults for the debian platform and calls the parent constructor
       #
       # @param name [String] name of the platform
