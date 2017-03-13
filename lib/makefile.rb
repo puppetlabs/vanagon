@@ -65,25 +65,6 @@ class Makefile
       ["#{target}:", dependencies].flatten.compact.join("\s")
     end
 
-    # @return [String] the Makefile target's name, rendered in a format
-    # suitable for using as a Graphite group -- any periods in the name of
-    # the component being built will be removed.
-    #   e.g. "ruby-2.1.9-unpack" will become "ruby-219.unpack"
-    def tokenize_target_name
-      target_name, _, rule = target.rpartition('-')
-      [target_name.tr('.', ''), rule]
-        .select { |s| !(s.nil? || s.empty?) }
-        .join('.')
-    end
-
-    def profiled_target?
-      !!(target =~ /-configure|-build|-install\Z/)
-    end
-
-    def tokenized_environment_variable
-      "#{target}: export VANAGON_TARGET := #{tokenize_target_name}"
-    end
-
     def environment_variables
       return [] unless profiled_target?
 
@@ -102,16 +83,6 @@ class Makefile
       # create a base target inside an Array, and construct the rest of
       # the rule around that.
       t = [base_target]
-
-      # prepend an environment variable that can be used inside a
-      # given Make rule/target. We have to do it this way instead of
-      # appending it to #environment because for reasons that I cannot
-      # work out, the "sane" way results in previous/incorrect names
-      # being used and objects being recycled. My working theory is
-      # a corner case between metaprogrammed methods in Component::Rules,
-      # and Ruby's preference for pass-by-reference.
-      # Ryan McKern 2017-02-02
-      t.unshift tokenized_environment_variable if profiled_target?
 
       # prepend any environment variables to the existing target,
       # using the target prefix to identify them as such. they should

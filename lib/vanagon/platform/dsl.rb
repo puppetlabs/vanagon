@@ -105,14 +105,6 @@ class Vanagon
         @platform.shell = shell_path
       end
 
-      # Toggle profiling on or off for the platform
-      #
-      # @param boolean [Boolean] Should this platform try to collect runtimes
-      #   of configuring, building, and installing components
-      def profiling(boolean)
-        @platform.profiling = boolean.to_s.casecmp("true").zero?
-      end
-
       # Set the path to tar for the platform
       #
       # @param tar [String] Full path to the tar command for the platform
