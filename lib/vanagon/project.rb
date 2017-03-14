@@ -393,7 +393,7 @@ class Vanagon
       files.push get_files.map(&:path)
       files.push get_configfiles.map(&:path)
       if @platform.is_windows?
-        files.flatten.map { |f| "$$(cygpath --mixed --long-name '#{f}')" }
+        files.flatten.map { |f| "$(shell cygpath --mixed --long-name '#{f}')" }
       else
         files.flatten
       end
