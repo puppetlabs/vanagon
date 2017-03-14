@@ -259,6 +259,11 @@ class Vanagon
       def retry_count(retry_count)
         @project.retry_count = retry_count
       end
+
+      def package_override(var)
+        platform = @project.platform
+        platform.package_override(self._project, var)
+      end
     end
   end
 end

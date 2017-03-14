@@ -1,6 +1,7 @@
 require 'vanagon/project/dsl'
 require 'vanagon/driver'
 require 'vanagon/common'
+require 'vanagon/platform'
 
 describe 'Vanagon::Project::DSL' do
   let (:project_block) {
@@ -228,6 +229,35 @@ end" }
       expect(proj._project.get_conflicts.count).to eq(1)
       expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
       expect(proj._project.get_conflicts.first.version).to eq('1.2.3')
+    end
+  end
+
+  describe "#package_override" do
+    let(:project_block) {
+"project 'test-fixture' do |proj|
+  proj.package_override \"TEST_VAR='foo'\"
+end"
+    }
+
+    before do
+      allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
+      allow(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @osx_plat = Vanagon::Platform::DSL.new('osx-10.10-x86_64')
+      @osx_plat.instance_eval("platform 'osx-10.10-x86_64' do |plat| end")
+
+    end
+
+    it 'adds package_overrides on supported platforms' do
+      proj = Vanagon::Project::DSL.new('test-fixture', @el_plat._platform, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.package_overrides).to include("TEST_VAR='foo'")
+    end
+
+    it 'fails on usupported platforms' do
+      proj = Vanagon::Project::DSL.new('test-fixture', @osx_plat._platform, [])
+      expect{ proj.instance_eval(project_block) }.to raise_error(RuntimeError)
     end
   end
 

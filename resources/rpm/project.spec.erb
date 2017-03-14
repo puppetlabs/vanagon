@@ -25,6 +25,10 @@
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
 <% end -%>
 
+<% @package_overrides.each do |var| %>
+<%= var %>
+<% end -%>
+
 Name:           <%= @name %>
 Version:        <%= @version %>
 Release:        <%= @release %>%{?dist}

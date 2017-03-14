@@ -400,5 +400,9 @@ class Vanagon
     def is_cross_compiled_linux?
       return (is_cross_compiled? && is_linux?)
     end
+
+    def package_override(project, var)
+      fail "I don't know how to set package overrides for #{name}, teach me?"
+    end
   end
 end
