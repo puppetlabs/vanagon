@@ -260,6 +260,10 @@ class Vanagon
         @project.retry_count = retry_count
       end
 
+      # Set a package override. Will call the platform-specific implementation
+      # This will get set in the spec file, deb rules, etc.
+      #
+      # @param var the string to be included in the build script
       def package_override(var)
         platform = @project.platform
         platform.package_override(self._project, var)
