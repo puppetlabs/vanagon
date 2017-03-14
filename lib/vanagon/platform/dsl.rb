@@ -26,7 +26,7 @@ class Vanagon
       #
       # @param name [String] name of the platform
       # @param block [Proc] DSL definition of the platform to call
-      def platform(platform_name, &block) # rubocop:disable Metrics/AbcSize
+      def platform(platform_name, &block)
         @platform = case platform_name
                     when /^aix-/
                       Vanagon::Platform::RPM::AIX.new(@name)
@@ -51,7 +51,6 @@ class Vanagon
                     end
 
         yield(self)
-        environment 'VANAGON_PLATFORM', platform_name.tr('-', '.')
         @platform
       end
 
@@ -105,14 +104,6 @@ class Vanagon
         @platform.shell = shell_path
       end
 
-      # Toggle profiling on or off for the platform
-      #
-      # @param boolean [Boolean] Should this platform try to collect runtimes
-      #   of configuring, building, and installing components
-      def profiling(boolean)
-        @platform.profiling = boolean.to_s.casecmp("true").zero?
-      end
-
       # Set the path to tar for the platform
       #
       # @param tar [String] Full path to the tar command for the platform
@@ -153,7 +144,6 @@ class Vanagon
       # @param xcc [Boolean] True if this is a cross-compiled platform
       def cross_compiled(xcc_flag)
         @platform.cross_compiled = !!xcc_flag
-        environment 'VANAGON_PLATFORM_XCC', @platform.cross_compiled.to_s
       end
 
       # define an explicit Dist for the platform (most likely used for RPM platforms)
@@ -331,7 +321,6 @@ class Vanagon
       # @param user[String] a user string to login with.
       def target_user(user = "root")
         @platform.target_user = user
-        environment 'VANAGON_PLATFORM_USER', user
       end
 
       # Set the target ip address or hostname to start build
@@ -354,7 +343,6 @@ class Vanagon
       # @param codename [String] codename for this platform (squeeze for example)
       def codename(codename)
         @platform.codename = codename
-        environment 'VANAGON_PLATFORM_CODENAME', codename
       end
 
       def output_dir(directory)

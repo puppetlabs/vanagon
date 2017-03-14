@@ -22,7 +22,7 @@ class Vanagon
       #   @return [Makefile::Rule] The $1 rule
       def self.rule(target, &block)
         define_method("#{target}_rule") do
-          Makefile::Rule.new("#{component.name}-#{target}", environment: component.environment) do |rule|
+          Makefile::Rule.new("#{component.name}-#{target}") do |rule|
             instance_exec(rule, &block)
           end
         end
@@ -70,7 +70,7 @@ class Vanagon
       #
       # @return [Makefile::Rule]
       def component_rule
-        Makefile::Rule.new(component.name, environment: component.environment) do |rule|
+        Makefile::Rule.new(component.name) do |rule|
           rule.dependencies = ["#{component.name}-install"]
         end
       end
@@ -81,7 +81,7 @@ class Vanagon
       # @see [Vanagon::Component::Source]
       rule("unpack") do |r|
         r.dependencies = ['file-list-before-build']
-        r.recipe << component.extract_with
+        r.recipe << andand_multiline(component.environment_variables, component.extract_with)
         r.recipe << "touch #{r.target}"
       end
 
@@ -109,6 +109,7 @@ class Vanagon
 
         unless component.configure.empty?
           r.recipe << andand_multiline(
+            component.environment_variables,
             "cd #{component.get_build_dir}",
             component.configure
           )
@@ -122,6 +123,7 @@ class Vanagon
         r.dependencies = ["#{component.name}-configure"]
         unless component.build.empty?
           r.recipe << andand_multiline(
+            component.environment_variables,
             "cd #{component.get_build_dir}",
             component.build
           )
@@ -135,6 +137,7 @@ class Vanagon
         r.dependencies = ["#{component.name}-build"]
         unless component.check.empty? || project.settings[:skipcheck]
           r.recipe << andand_multiline(
+            component.environment_variables,
             "cd #{component.get_build_dir}",
             component.check
           )
@@ -148,6 +151,7 @@ class Vanagon
         r.dependencies = ["#{component.name}-check"]
         unless component.install.empty?
           r.recipe << andand_multiline(
+            component.environment_variables,
             "cd #{component.get_build_dir}",
             component.install
           )

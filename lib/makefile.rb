@@ -1,5 +1,3 @@
-require 'vanagon/environment'
-
 class Makefile
   # The Rule class defines a single Makefile rule.
   #
@@ -12,11 +10,6 @@ class Makefile
     # @!attribute [rw] dependencies
     #   @return [Array<String>] A list of dependencies that this rule depends on.
     attr_accessor :dependencies
-
-    # @!attribute [rw] environment
-    #   @return [Array<String>] A list of environment variables that this rule
-    #     will export
-    attr_accessor :environment
 
     # @!attribute [rw] recipe
     #   @return [Array<String>] A list of commands to execute upon invocation of this rule.
@@ -43,10 +36,9 @@ class Makefile
     #         "make cpplint",
     #       ]
     #     end
-    def initialize(target, dependencies: [], environment: Vanagon::Environment.new, recipe: [], &block)
+    def initialize(target, dependencies: [], recipe: [], &block)
       @target = target
       @dependencies = dependencies
-      @environment = environment
       @recipe = recipe
 
       yield(self) if block
@@ -65,31 +57,11 @@ class Makefile
       ["#{target}:", dependencies].flatten.compact.join("\s")
     end
 
-    # @return [String] the Makefile target's name, rendered in a format
-    # suitable for using as a Graphite group -- any periods in the name of
-    # the component being built will be removed.
-    #   e.g. "ruby-2.1.9-unpack" will become "ruby-219.unpack"
-    def tokenize_target_name
-      target_name, _, rule = target.rpartition('-')
-      [target_name.tr('.', ''), rule]
-        .select { |s| !(s.nil? || s.empty?) }
-        .join('.')
-    end
-
-    def profiled_target?
-      !!(target =~ /-configure|-build|-install\Z/)
-    end
-
-    def tokenized_environment_variable
-      "#{target}: export VANAGON_TARGET := #{tokenize_target_name}"
-    end
-
-    def environment_variables
-      return [] unless profiled_target?
-
-      environment.map { |k, v| "#{k} := #{v}" }.map do |env|
-        "#{target}: export #{env}"
-      end
+    def compounded_recipe
+      Array(recipe)
+        .compact
+        .map { |line| "\t" + line.gsub("\n", "\n\t") + "\n" }
+        .join
     end
 
     # Format this rule as a Makefile rule.
@@ -98,37 +70,9 @@ class Makefile
     # newline to ensure that the recipe is parsed as part of a single makefile rule.
     #
     # @return [String]
-    def format # rubocop:disable Metrics/AbcSize
-      # create a base target inside an Array, and construct the rest of
-      # the rule around that.
-      t = [base_target]
-
-      # prepend an environment variable that can be used inside a
-      # given Make rule/target. We have to do it this way instead of
-      # appending it to #environment because for reasons that I cannot
-      # work out, the "sane" way results in previous/incorrect names
-      # being used and objects being recycled. My working theory is
-      # a corner case between metaprogrammed methods in Component::Rules,
-      # and Ruby's preference for pass-by-reference.
-      # Ryan McKern 2017-02-02
-      t.unshift tokenized_environment_variable if profiled_target?
-
-      # prepend any environment variables to the existing target,
-      # using the target prefix to identify them as such. they should
-      # end up ahead of the dependencies and the build recipe.
-      environment_variables.each do |env|
-        t.unshift env
-      end
-
-      # finally, append the build recipe after the base target condition.
-      # also, here's a fun edge case: if one were to call #squeeze on
-      # the iterator 'line', basically all of the phony make tasks that
-      # `touch` a file just disapear. Fragility ++.
-      # - Ryan McKern 2017-02-02
-      t.push recipe.compact.map { |line| "\t" + line.gsub("\n", "\n\t") + "\n" }.join
-      t.join("\n")
+    def format
+      [base_target, compounded_recipe].flatten.join("\n")
     end
-
     alias to_s format
   end
 end

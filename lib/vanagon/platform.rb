@@ -72,9 +72,6 @@ class Vanagon
     # cross-compiled or natively compiled.
     attr_accessor :cross_compiled
 
-    # Determines if a platform should use the profiling shell.
-    attr_accessor :profiling
-
     # Stores a string, pointing at the shell that should be used
     # if a user needs to change the path or name of the shell that
     # Make will run build recipes in.
@@ -219,15 +216,9 @@ class Vanagon
 
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
-      @profiling ||= false
-    end
-
-    def shell=(value)
-      @shell = value
     end
 
     def shell
-      return "$(PWD)/profiling_shell.sh" if profile?
       @shell ||= "/bin/bash"
     end
 
@@ -408,15 +399,6 @@ class Vanagon
     # @return [true, false] true if it is a cross-compiled Linux variety, false otherwise
     def is_cross_compiled_linux?
       return (is_cross_compiled? && is_linux?)
-    end
-
-    # Utility matcher to determine if the platform should attempt to collect
-    # runtime numbers from -configure, -build, and -install steps during
-    # compilation.
-    #
-    # @return [Boolean] true if a platform should use the profiling shell wrapper
-    def profile?
-      return @profiling
     end
   end
 end

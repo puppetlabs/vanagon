@@ -48,10 +48,10 @@ describe Vanagon::Component::Rules do
 
     it "sets environment variables before running the unpack steps" do
       component.extract_with = "/usr/bin/tar"
-      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
-      expect(rule.recipe.first).to eq(
-        [ "/usr/bin/tar" ].join(" && ")
-      )
+      component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
+
+      expect(rule.recipe.first)
+        .to eq %(export PATH="/opt/pl-build-tools/bin:$(PATH)" && \\\n/usr/bin/tar)
     end
 
     it_behaves_like "a rule that touches the target file"
@@ -113,9 +113,10 @@ describe Vanagon::Component::Rules do
 
     it "sets environment variables before running the configure steps" do
       component.configure = ["./configure", "cmake .."]
-      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
+      component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
       expect(rule.recipe[1]).to eq(
         [
+          'export PATH="/opt/pl-build-tools/bin:$(PATH)"', 
           "cd /foo/bar",
           "./configure",
           "cmake .."
@@ -148,9 +149,10 @@ describe Vanagon::Component::Rules do
 
     it "sets environment variables before running the build steps" do
       component.build = ["make", "make test"]
-      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
+      component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
       expect(rule.recipe.first).to eq(
         [
+          'export PATH="/opt/pl-build-tools/bin:$(PATH)"',
           "cd /foo/bar",
           "make",
           "make test"
@@ -189,9 +191,10 @@ describe Vanagon::Component::Rules do
 
     it "sets environment variables before running the check steps" do
       component.check = ["make cpplint", "make test"]
-      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
+      component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
       expect(rule.recipe.first).to eq(
         [
+          'export PATH="/opt/pl-build-tools/bin:$(PATH)"',
           "cd /foo/bar",
           "make cpplint",
           "make test"
@@ -224,9 +227,10 @@ describe Vanagon::Component::Rules do
 
     it "sets environment variables before running the install steps" do
       component.install = ["make install", "make reallyinstall"]
-      component.environment = {"PATH" => "/opt/pl-build-tools/bin:$$PATH"}
+      component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
       expect(rule.recipe.first).to eq(
         [
+          'export PATH="/opt/pl-build-tools/bin:$(PATH)"',
           "cd /foo/bar",
           "make install",
           "make reallyinstall"

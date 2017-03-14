@@ -462,7 +462,6 @@ class Vanagon
     #
     # @param workdir [String] workdir to put the packaging files into
     def generate_packaging_artifacts(workdir)
-      FileUtils.install File.join(VANAGON_ROOT, "resources", "metrics", "profiling_shell.sh"), File.join(workdir, "profiling_shell.sh"), :mode => 0775
       @platform.generate_packaging_artifacts(workdir, @name, binding)
     end
   end

@@ -127,7 +127,6 @@ class Vanagon
       @engine.ship_workdir(@workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
-      @engine.retrieve_runtimes if @platform.profiling
 
       unless @preserve
         @engine.teardown

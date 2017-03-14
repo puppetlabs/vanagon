@@ -268,9 +268,12 @@ class Vanagon
       if environment.empty?
         ": no environment variables defined"
       else
-        env = environment.map { |key, value| %(#{key}="#{value}") }
-        "export #{env.join(' ')}"
+        environment_variables
       end
+    end
+
+    def environment_variables
+      environment.map { |key, value| %(export #{key}="#{value}") }
     end
 
     def rules(project, platform)
