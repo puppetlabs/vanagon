@@ -17,18 +17,7 @@ describe "Vanagon::Environment" do
       '2007',
     ]
 
-    @bad_values = [
-      %w(an array of strings),
-      19.81,
-      Object.new,
-      Tempfile.new('captain_planet'),
-      lambda { |x| "#{x}" }
-    ]
-
-    @good_hash = @good_names.zip(@good_values.shuffle).to_h
-    @bad_hash = @bad_names.zip(@bad_values.shuffle).to_h
-
-    @good_names_bad_values = @good_names.zip(@bad_values.shuffle).to_h
+    @good_names_good_values = @good_names.zip(@good_values.shuffle).to_h
     @bad_names_good_values = @bad_names.zip(@good_values.shuffle).to_h
   end
 
@@ -51,7 +40,7 @@ describe "Vanagon::Environment" do
 
   describe "#[]=" do
     it "accepts and assigns valid keys and values" do
-      @good_hash.each_pair do |key, value|
+      @good_names_good_values.each_pair do |key, value|
         expect { @local_env[key] = value }
             .to_not raise_error
       end
@@ -63,18 +52,11 @@ describe "Vanagon::Environment" do
             .to raise_error(ArgumentError)
       end
     end
-
-    it "raises an ArgumentError for invalid values" do
-      @good_names_bad_values.each_pair do |key, value|
-          expect { @local_env[key] = value }
-            .to raise_error(ArgumentError)
-      end
-    end
   end
 
   describe "#keys" do
     before do
-      @good_hash.each_pair do |key, value|
+      @good_names_good_values.each_pair do |key, value|
         @local_env[key] = value
       end
     end
@@ -94,7 +76,7 @@ describe "Vanagon::Environment" do
 
   describe "#values" do
     before do
-      @good_hash.each_pair do |key, value|
+      @good_names_good_values.each_pair do |key, value|
         @local_env[key] = value
       end
     end

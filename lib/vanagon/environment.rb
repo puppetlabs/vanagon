@@ -47,22 +47,21 @@ class Vanagon
       @data = {}
     end
 
-    # Associates the value given by value with the key given by key. Keys must
-    # be strings, and should conform to the Open Group's guidelines for portable
-    # shell variable names:
+    # Associates the value given by value with the key given by key. Keys will
+    # be cast to Strings, and should conform to the Open Group's guidelines for
+    # portable shell variable names:
     #     Environment variable names used by the utilities in the Shell and
     #     Utilities volume of IEEE Std 1003.1-2001 consist solely of uppercase
     #     letters, digits, and the '_' (underscore) from the characters defined
     #     in Portable Character Set and do not begin with a digit.
     #
-    # Values must be Strings or Integers, and will be stored precisely as given,
+    # Values will be cast to Strings, and will be stored precisely as given,
     # so any escaped characters, single or double quotes, or whitespace will be
     # preserved exactly as passed during assignment.
     #
     # @param key [String]
     # @param value [String, Integer]
-    # @raise [ArgumentError] if key is not a String, or if value is not a
-    #   String or an Integer
+    # @raise [ArgumentError] if key or value cannot be cast to a String
     def []=(key, value)
       @data.update({ validate_key(key) => validate_value(value) })
     end
@@ -170,16 +169,13 @@ class Vanagon
     end
     private :sanitize_variables
 
-    # Validate that a key is a String, that it does not contain invalid
+    # Cast key to a String, and validate that it does not contain invalid
     #   characters, and that it does not begin with a digit
-    # @param key [String]
+    # @param key [Object]
     # @raise [ArgumentError] if key is not a String, if key contains invalid
     #   characters, or if key begins with a digit
     def validate_key(str)
-      unless str.is_a?(String)
-        raise ArgumentError,
-              'environment variable Name must be a String'
-      end
+      str = str.to_s
 
       if str[0] =~ /\d/
         raise ArgumentError,
@@ -196,16 +192,10 @@ class Vanagon
     end
     private :validate_key
 
-    # Validate that str is a String or an Integer, and that the value
+    # Cast str to a String, and validate that the value
     # of str cannot be split into more than a single String by #shellsplit.
-    # @param value [String, Integer]
-    # @raise [ArgumentError] if key is not a String or an Integer
+    # @param value [Object]
     def validate_value(str)
-      unless str.is_a?(String) || str.is_a?(Integer)
-        raise ArgumentError,
-              'Value must be a String or an Integer'
-      end
-
       # sanitize the value, which should look for any Shell escaped
       # variable names inside of the value.
       sanitize_variables(sanitize_subshells(str.to_s))
