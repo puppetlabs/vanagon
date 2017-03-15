@@ -159,6 +159,23 @@ class Vanagon
         warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
+      # Get the version string from a git branch name. This will look for a '.'
+      # delimited string of numbers of any length and return that as the version.
+      # For example, 'maint/1.7.0/fixing-some-bugs' will return '1.7.0' and '4.8.x'
+      # will return '4.8'.
+      #
+      # @return version string parsed from branch name, fails if unable to find version
+      def version_from_branch
+        branch = Git.open(File.expand_path("..", Vanagon::Driver.configdir)).current_branch
+        if branch =~ /(\d+(\.\d+)+)/
+          return $1
+        else
+          fail "Can't find a version in your branch, make sure it matches <number>.<number>, like maint/1.7.0/fixing-some-bugs"
+        end
+      rescue Git::GitExecuteError => e
+        fail "Something went wrong trying to find your git branch.\n#{e}"
+      end
+
       # Sets the vendor for the project. Used in packaging artifacts.
       #
       # @param vend [String] vendor or author of the project

@@ -53,6 +53,59 @@ end" }
     end
   end
 
+  describe '#version_from_branch' do
+    it 'parses out versions from branch names' do
+      branches = {
+        'maint/3.8.x/fix-bugs' => '3.8',
+        '2017.1.2.3-prep' => '2017.1.2.3',
+        '3.8' => '3.8',
+      }
+
+      expect(Vanagon::Driver).to receive(:configdir).exactly(branches.length).times.and_return(configdir)
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+
+      branches.each do |branch, version|
+        repo = double("repo")
+        expect(::Git)
+          .to receive(:open)
+          .and_return(repo)
+
+        allow(repo)
+          .to receive(:current_branch)
+          .and_return(branch)
+
+        expect(proj.version_from_branch).to eq(version)
+      end
+    end
+
+    it 'fails if there is none' do
+      branches = [
+        'PUP-12345',
+        '200',
+        'just-a-branch-name'
+      ]
+
+      expect(Vanagon::Driver).to receive(:configdir).exactly(branches.length).times.and_return(configdir)
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+
+      branches.each do |branch|
+        repo = double("repo")
+        expect(::Git)
+          .to receive(:open)
+          .and_return(repo)
+
+        allow(repo)
+          .to receive(:current_branch)
+          .and_return(branch)
+
+        expect(proj).to receive(:fail)
+        proj.version_from_branch
+      end
+    end
+  end
+
   describe '#directory' do
     it 'adds a directory to the list of directories' do
       proj = Vanagon::Project::DSL.new('test-fixture', {})
