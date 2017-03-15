@@ -184,8 +184,7 @@ class Vanagon
       #
       # @param command [String] Command to enable the target machine to build packages for the platform
       def provision_with(command)
-        @platform.provisioning << command
-        @platform.provisioning.flatten!
+        @platform.provision_with(command)
       end
 
       # Set the command to install any needed build dependencies for the target machine
@@ -382,11 +381,7 @@ class Vanagon
       # @param *args [Array<String>] List of arguments to pass on to the platform specific method
       # @raise [Vanagon::Error] an arror is raised if the current platform does not define add_repository
       def add_build_repository(*args)
-        if @platform.respond_to?(:add_repository)
-          self.provision_with @platform.send(:add_repository, *args)
-        else
-          raise Vanagon::Error, "Adding a build repository not defined for #{@platform.name}"
-        end
+        @platform.add_build_repository(*args)
       end
     end
   end
