@@ -29,8 +29,8 @@ class Vanagon
     # that they were cloned to. For the outlying flat files, it'll
     # end up being defined explicitly as the string './'
     attr_accessor :dirname
-    # Which specific tool or command line invocations that
-    # should be used to extract a given component's primary source?
+    # The specific tools or command line invocations that
+    # should be used to extract a given component's sources
     attr_accessor :extract_with
     # how should this component be configured?
     attr_accessor :configure
