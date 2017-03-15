@@ -401,6 +401,11 @@ class Vanagon
       return (is_cross_compiled? && is_linux?)
     end
 
+    # Pass in a packaging override. This needs to be implemented for each
+    # individual platform so that this input ends up in the right place.
+    #
+    # @param project
+    # @param var the string that should be added to the build script.
     def package_override(project, var)
       fail "I don't know how to set package overrides for #{name}, teach me?"
     end

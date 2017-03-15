@@ -69,6 +69,11 @@ class Vanagon
         commands
       end
 
+      # Pass in a packaging override. This will get added to the spec file, and
+      # is a good way to pass in arbitrary `%_define` or `%_global`
+      #
+      # @param project
+      # @param var the string that should be added to the build script.
       def package_override(project, var)
         project.package_overrides << var
       end

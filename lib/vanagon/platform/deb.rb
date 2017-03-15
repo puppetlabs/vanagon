@@ -102,6 +102,12 @@ class Vanagon
         provisioning << "apt-get -qq update"
       end
 
+
+      # Pass in a packaging override. This will get added to the rules file, and
+      # is a good way to pass in arbitrary environment variables
+      #
+      # @param project
+      # @param var the string that should be added to the build script.
       def package_override(project, var)
         project.package_overrides << var
       end
