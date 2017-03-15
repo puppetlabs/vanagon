@@ -7,8 +7,8 @@
     <authors><%= @vendor.match(/^(.*) <.*>$/)[1] %></authors>
     <owners><%= @vendor.match(/^(.*) <.*>$/)[1] %></owners>
     <projectUrl><%= @homepage %></projectUrl>
-    <packageSourceUrl><%= "https://github.com/puppetlabs/#{project}-vanagon" %></packageSourceUrl>
-    <projectSourceUrl><%= "https://github.com/puppetlabs/#{project}" %></projectSourceUrl>
+    <packageSourceUrl><%= @homepage %></packageSourceUrl>
+    <projectSourceUrl><%= @homepage %></projectSourceUrl>
     <docsUrl><%= @homepage %></docsUrl>
     <mailingListUrl><%= @homepage %></mailingListUrl>
     <bugTrackerUrl><%= @homepage %></bugTrackerUrl>
