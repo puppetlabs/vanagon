@@ -150,6 +150,8 @@ class Vanagon
 
       puts "rendering Makefile"
       retry_task { @project.fetch_sources(@workdir) }
+      @project.make_bill_of_materials(@workdir)
+      @project.generate_packaging_artifacts(@workdir)
       @project.make_makefile(@workdir)
     end
 
