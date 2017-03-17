@@ -231,13 +231,18 @@ class Vanagon
     # Fetches secondary sources for the component. These are just dumped into the workdir currently.
     #
     # @param workdir [String] working directory to put the source into
-    def get_sources(workdir)
+    def get_sources(workdir) # rubocop:disable Metrics/AbcSize
+      # create an empty array if @extract_with doesn't already exist
+      @extract_with = Array(@extract_with)
       sources.each do |source|
         src = Vanagon::Component::Source.source(
           source.url, workdir: workdir, ref: source.ref, sum: source.sum
         )
         src.fetch
         src.verify
+        # set src.file to only be populated with the basename instead of entire file path
+        src.file = File.basename(src.url)
+        @extract_with << src.extract(platform.tar) if src.respond_to?(:extract)
       end
     end
 
