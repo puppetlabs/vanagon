@@ -63,8 +63,7 @@ describe "Vanagon::Component" do
     end  
 
     it "copies uncompressed secondary sources into the workdir" do
-      component = subject
-      component.get_sources(@workdir)
+      subject.get_sources(@workdir)
       expect(File.exist?(File.join(@workdir, @file_name))).to be true
     end  
 
@@ -83,12 +82,11 @@ describe "Vanagon::Component" do
     end
 
     it "copies compressed secondary sources into the workdir" do
-      component = subject
-      component.get_sources(@workdir)
+      subject.get_sources(@workdir)
       expect(File.exist?(File.join(@workdir, @file_name))).to be true
       # make sure that our secondary source(s) made it into the workdir
       expect(File.exist?(File.join(@workdir, "#{@fake_dir}.tar.gz"))).to be true
-      expect(component.extract_with.join(" && ")).to match "#{@fake_dir}.tar.gz"
+      expect(subject.extract_with.join(" && ")).to match "#{@fake_dir}.tar.gz"
     end
   end
 end
