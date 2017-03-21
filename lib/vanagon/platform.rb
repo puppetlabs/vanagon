@@ -409,5 +409,25 @@ class Vanagon
     def package_override(project, var)
       fail "I don't know how to set package overrides for #{name}, teach me?"
     end
+
+    # Generic adder for build repositories
+    #
+    # @param *args [Array<String>] List of arguments to pass on to the platform specific method
+    # @raise [Vanagon::Error] an arror is raised if the current platform does not define add_repository
+    def add_build_repository(*args)
+      if self.respond_to?(:add_repository)
+        self.provision_with self.send(:add_repository, *args)
+      else
+        raise Vanagon::Error, "Adding a build repository not defined for #{name}"
+      end
+    end
+
+    # Set the command to turn the target machine into a builder for vanagon
+    #
+    # @param command [String] Command to enable the target machine to build packages for the platform
+    def provision_with(command)
+      provisioning << command
+      provisioning.flatten!
+    end
   end
 end
