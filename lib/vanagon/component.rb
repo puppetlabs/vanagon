@@ -29,7 +29,8 @@ class Vanagon
     # that they were cloned to. For the outlying flat files, it'll
     # end up being defined explicitly as the string './'
     attr_accessor :dirname
-    # what special tool should be used to extract the primary source
+    # The specific tools or command line invocations that
+    # should be used to extract a given component's sources
     attr_accessor :extract_with
     # how should this component be configured?
     attr_accessor :configure
@@ -190,7 +191,7 @@ class Vanagon
     end
 
     # Fetches the primary source for the component. As a side effect, also sets
-    # \@extract_with, @dirname and @version for the component for use in the
+    # @extract_with, @dirname and @version for the component for use in the
     # makefile template
     #
     # @param workdir [String] working directory to put the source into
@@ -200,7 +201,8 @@ class Vanagon
         @source = Vanagon::Component::Source.source(url, opts)
         source.fetch
         source.verify
-        @extract_with = source.respond_to?(:extract) ? source.extract(platform.tar) : nil
+        extract_with << source.extract(platform.tar) if source.respond_to? :extract
+
         @cleanup_source = source.cleanup if source.respond_to?(:cleanup)
         @dirname = source.dirname
 
@@ -215,7 +217,7 @@ class Vanagon
         @dirname = './'
 
         # If there is no source, there is nothing to do to extract
-        @extract_with = ': no source, so nothing to extract'
+        extract_with << ': no source, so nothing to extract'
       end
     end
 
@@ -231,14 +233,23 @@ class Vanagon
     # Fetches secondary sources for the component. These are just dumped into the workdir currently.
     #
     # @param workdir [String] working directory to put the source into
-    def get_sources(workdir)
+    def get_sources(workdir) # rubocop:disable Metrics/AbcSize
       sources.each do |source|
         src = Vanagon::Component::Source.source(
           source.url, workdir: workdir, ref: source.ref, sum: source.sum
         )
         src.fetch
         src.verify
+        # set src.file to only be populated with the basename instead of entire file path
+        src.file = File.basename(src.url)
+        extract_with << src.extract(platform.tar) if src.respond_to? :extract
       end
+    end
+
+    # @return [Array] the specific tool or command line invocations that
+    #   should be used to extract a given component's primary source
+    def extract_with
+      @extract_with ||= []
     end
 
     # Fetches patches if any are provided for the project.
