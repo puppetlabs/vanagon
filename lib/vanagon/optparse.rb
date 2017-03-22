@@ -4,7 +4,7 @@ class Vanagon
   class OptParse
     FLAGS = {
         :workdir => ['-w DIR', '--workdir DIR', "Working directory where build source should be put (defaults to a tmpdir)"],
-        :remote_workdir => ['--remote_workdir DIR', "Working directory where build source should be put on the remote host (defaults to a tmpdir)"],
+        :"remote-workdir" => ['-r DIR', '--remote-workdir DIR', "Working directory where build source should be put on the remote host (defaults to a tmpdir)"],
         :configdir => ['-c', '--configdir DIR', 'Configs dir (defaults to $pwd/configs)'],
         :target => ['-t HOST', '--target HOST', 'Configure a target machine for build and packaging (defaults to grabbing one from the pooler)'],
         :engine => ['-e ENGINE', '--engine ENGINE', "A custom engine to use (defaults to the pooler) [base, local, docker, pooler currently supported]"],

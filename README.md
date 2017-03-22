@@ -110,7 +110,7 @@ Build machines should be cleaned between builds.
 Specifies a directory on the local host where the sources should be placed and builds performed.
 Defaults to a temporary directory created with Ruby's `Dir.mktmpdir` method.
 
-##### --remote_dir
+##### -r DIR, --remote-workdir DIR
 Explicitly specify a directory on the remote target to place sources and perform
 builds. Components can then be rebuilt manually on the build host for faster iteration. Sources may not be correctly updated if this directory already exists.
 Defaults to a temporary directory created by running `mktemp -d` on the remote target.

@@ -31,7 +31,7 @@ class Vanagon
       filter_out_components(only_build) if only_build
       loginit('vanagon_hosts.log')
 
-      @remote_workdir = options[:remote_workdir]
+      @remote_workdir = options[:"remote-workdir"]
 
       load_engine(engine, @platform, target)
     rescue LoadError => e

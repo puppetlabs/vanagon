@@ -5,7 +5,7 @@ describe "Vanagon::Component::Source::Git" do
   let(:url) { 'git://github.com/puppetlabs/facter' }
   let(:ref_tag) { 'refs/tags/2.2.0' }
   let(:bad_sha) { 'FEEDBEEF' }
-  let(:workdir) { ENV["TMPDIR"] || "/tmp" }
+  let(:workdir) { ENV["TMPDIR"] || '/tmp' }
 
   after(:each) { %x(rm -rf #{workdir}/facter) }
 
