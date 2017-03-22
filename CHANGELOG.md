@@ -5,10 +5,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- A new Platform DSL method, `shell`, has been added. This allows a user to define a custom shell or path to a specific shell for a given platform.
+- Support for specifying the owner, group, and permission mode has been added to the Component DSL.
 
-## [0.10.1] - released on 2017-02-22
 ### Fixed
-- Fix a bug in the handling of component environment variables
+- Fixed many bugs in the handling of component environment variables. Rendering them as [target-specific variables](https://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html) in a project's Makefile introduced a number of bugs in many Vanagon projects due to target-specific variables being transitive between dependent Make targets.
+
+### Changed
+- All defined Project and Platform environment variables are rendered as [Make variables](https://www.gnu.org/software/make/manual/html_node/Using-Variables.html). Specifically, as "[Simply expanded variables](https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors)".
+- All defined Component environment variables will be rendered as Make variables. This means that escaped literals (`$$VARIABLE_NAME`) and subshells (`$$(echo "I'm a subshell")`) will now be converted to their Makefile equivalents: `$(VARIABLE_NAME)` and `$(shell echo "I'm a subshell")` and Vanagon will emit a deprecation notice for these values. The goal is to provide a single target for formatting environment variables in an effort to make behavior more deterministic.
+- The `build` command line flag, `--remote_workdir`, has been renamed to `--remote-workdir`. This flag allows users to specify a directory on the remote build target for Vanagon to stage components & metadata under when compiling.
+
+### Removed
+- We've removed initial support for metrics collection. The functionality depended on Make's usage of target-specific variables, so if they're unreliable (and they are) then the metrics functionality is also unreliable. Consider instead using [Remake](http://bashdb.sourceforge.net/remake/) if you need to profile a Vanagon build. We may provide official support for `remake --profile` in a future Vanagon release.
 
 ## [0.10.0] - released on 2017-02-21
 ### Added
