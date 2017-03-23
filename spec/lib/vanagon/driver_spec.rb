@@ -30,7 +30,7 @@ describe 'Vanagon::Driver' do
   end
 
   describe 'when resolving build host info' do
-    it 'uses an expicitly specified workdir if provided' do
+    it 'uses an explicitly specified workdir if provided' do
       derived = create_driver(redhat)
       explicit = create_driver(redhat, workdir: explicit_workdir)
 
@@ -38,9 +38,9 @@ describe 'Vanagon::Driver' do
       expect(explicit.workdir).not_to eq(derived.workdir)
     end
 
-    it 'uses an expicitly specified remote workdir if provided' do
+    it 'uses an explicitly specified remote workdir if provided' do
       derived = create_driver(redhat)
-      explicit = create_driver(redhat, remote_workdir: explicit_remote_workdir)
+      explicit = create_driver(redhat, :"remote-workdir" => explicit_remote_workdir)
 
       expect(explicit.remote_workdir).to eq(explicit_remote_workdir)
       expect(explicit.remote_workdir).not_to eq(derived.remote_workdir)
