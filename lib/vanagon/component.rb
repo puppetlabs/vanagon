@@ -204,7 +204,7 @@ class Vanagon
         extract_with << source.extract(platform.tar) if source.respond_to? :extract
 
         @cleanup_source = source.cleanup if source.respond_to?(:cleanup)
-        @dirname = source.dirname
+        @dirname ||= source.dirname
 
         # Git based sources probably won't set the version, so we load it if it hasn't been already set
         if source.respond_to?(:version)
