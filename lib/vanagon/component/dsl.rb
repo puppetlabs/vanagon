@@ -315,6 +315,29 @@ class Vanagon
         end
       end
 
+      # Set a source dir
+      #
+      # The build dir will be created when the source archive is unpacked. This
+      # should be used when the unpacked directory name does not match the
+      # source archive name.
+      #
+      # @example
+      #   pkg.url "http://the-internet.com/a-silly-name-that-unpacks-into-not-this.tar.gz"
+      #   pkg.dirname "really-cool-directory"
+      #   pkg.configure { ["cmake .."] }
+      #   pkg.build { ["make -j 3"] }
+      #   pkg.install { ["make install"] }
+      #
+      # @param path [String] The build directory to use for building the project
+      def dirname(path)
+        if Pathname.new(path).relative?
+          @component.dirname = path
+        else
+          raise Vanagon::Error, "dirname should be a relative path, but '#{path}' looks to be absolute."
+        end
+      end
+
+
       # This will add a source to the project and put it in the workdir alongside the other sources
       #
       # @param uri [String] uri of the source
