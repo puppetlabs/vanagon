@@ -115,7 +115,6 @@ class Vanagon
           end
 
           target_file
-
         rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL,
           Errno::EACCES, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
           Net::HTTPHeaderSyntaxError, Net::ProtocolError => e

@@ -6,7 +6,7 @@ require 'vanagon/extensions/hashable'
 
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
-optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [options]", [:workdir, :configdir, :engine])
+optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [options]", %i(workdir configdir engine))
 options = optparse.parse! ARGV
 
 project = ARGV[0]
