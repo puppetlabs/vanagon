@@ -2,7 +2,7 @@
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
 optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [<component-name>...] [options]",
-                                 [:workdir, :configdir, :target, :engine])
+                                 %i(workdir configdir target engine))
 options = optparse.parse! ARGV
 
 project = ARGV[0]
