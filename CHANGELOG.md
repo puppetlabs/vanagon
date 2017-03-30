@@ -6,6 +6,13 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.11.1] - released on 2017-03-30
+### Fixed
+- Dirname now honors when user overrides the default directory a source unpacks into
+
+### Changed
+- Update git tests to no longer hit the network and run quite a bit faster
+
 ## [0.11.0] - released on 2017-03-22
 ### Added
 - A new Platform DSL method, `shell`, has been added. This allows a user to define a custom shell or path to a specific shell for a given platform.
@@ -410,7 +417,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.1...HEAD
+[0.11.1]: https://github.com/puppetlabs/vanagon/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/puppetlabs/vanagon/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/puppetlabs/vanagon/compare/0.9.2...0.10.0
 [0.9.3]: https://github.com/puppetlabs/vanagon/compare/0.9.2...0.9.3
