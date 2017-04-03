@@ -1,6 +1,7 @@
-require 'vanagon/component/source'
 require 'vanagon/component/dsl'
 require 'vanagon/component/rules'
+require 'vanagon/component/source'
+require 'vanagon/component/source/rewrite'
 
 class Vanagon
   class Component
@@ -18,6 +19,7 @@ class Vanagon
     attr_accessor :sources
     attr_accessor :patches
     attr_accessor :url
+    attr_accessor :mirrors
     attr_accessor :license
 
     # holds an OpenStruct describing all of the particular details about
@@ -190,16 +192,74 @@ class Vanagon
       @files.select(&:configfile?)
     end
 
+    # @return [Set] a list of unique mirror URIs that should be used to
+    #   retrieve the upstream source before attempting to retrieve from
+    #   whatever URI was defined for #uri.
+    def mirrors
+      @mirrors ||= Set.new [deprecated_rewrite_url].compact
+    end
+
+    # Retrieve upstream source file from a mirror, by randomly iterating
+    # through #mirrors until there's no more mirrors left. Will #warn
+    # if the mirror's URI cannot be resolved or if the URI cannot
+    # be retrieved. Does not suppress any errors from
+    # Vanagon::Component::Source.
+    #
+    # @return [Boolean] return True if the source can be retrieved,
+    #   or False otherwise. This is because because each subclass of
+    #   Vanagon::Component::Source returns an inconsistent value
+    #   if #fetch is successful.
+    def fetch_mirrors(options)
+      mirrors.to_a.shuffle.each do |mirror|
+        begin
+          $stderr.puts %(Attempting to fetch from mirror URL "#{mirror}")
+          @source = Vanagon::Component::Source.source(mirror, options)
+          return true if source.fetch
+        rescue SocketError
+          # SocketError means that there was no DNS/name resolution
+          # for whatever remote protocol the mirror tried to use.
+          warn %(Unable to resolve mirror URL "#{mirror}")
+        rescue RuntimeError
+          # Source retrieval does not consistently return a meaningful
+          # namespaced error message, which means we're brute-force rescuing
+          # RuntimeError. Not a good look, and we should fix this.
+          warn %(Unable to retrieve mirror URL "#{mirror}")
+        end
+      end
+      false
+    end
+
+    # Retrieve upstream source file from the canonical URL.
+    # Does not suppress any errors from Vanagon::Component::Source.
+    #
+    # @return [Boolean] return True if the source can be retrieved,
+    #   or False otherwise
+    def fetch_url(options)
+      $stderr.puts %(Attempting to fetch from canonical URL "#{url}")
+      @source = Vanagon::Component::Source.source(url, options)
+      # Explicitly coerce the return value of #source.fetch,
+      # because each subclass of Vanagon::Component::Source returns
+      # an inconsistent value if #fetch is successful.
+      !!source.fetch
+    end
+
+    # This method is deprecated and private. It will return
+    # a rewritten URL if there's any value for #url.
+    def deprecated_rewrite_url
+      return nil unless url
+      Vanagon::Component::Source::Rewrite.parse_and_rewrite(url)
+    end
+    private :deprecated_rewrite_url
+
     # Fetches the primary source for the component. As a side effect, also sets
     # @extract_with, @dirname and @version for the component for use in the
     # makefile template
     #
     # @param workdir [String] working directory to put the source into
-    def get_source(workdir) # rubocop:disable Metrics/AbcSize
+    def get_source(workdir) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       opts = options.merge({ workdir: workdir })
-      if url
-        @source = Vanagon::Component::Source.source(url, opts)
-        source.fetch
+      if url || !mirrors.empty?
+        fetch_mirrors(opts) || fetch_url(opts)
         source.verify
         extract_with << source.extract(platform.tar) if source.respond_to? :extract
 
