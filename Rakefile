@@ -29,6 +29,6 @@ YARD::Rake::YardocTask.new do |t|
 end
 
 desc 'Run all spec tests and linters'
-task check: %w(test:spec rubocop)
+task check: %w[test:spec rubocop]
 
 task default: :check

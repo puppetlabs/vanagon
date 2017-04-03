@@ -165,7 +165,8 @@ class Vanagon
       # @param default_file [String] path to the default file relative to the source
       # @param service_name [String] name of the service
       # @param service_type [String] type of the service (network, application, system, etc)
-      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil) # rubocop:disable Metrics/AbcSize
+      # @param link_target [String] executable service file should be linked to
+      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil, link_target: nil) # rubocop:disable Metrics/AbcSize
         case @component.platform.servicetype
         when "sysv"
           target_service_file = File.join(@component.platform.servicedir, service_name)
@@ -203,7 +204,12 @@ class Vanagon
         end
 
         # Install the service and default files
-        install_file(service_file, target_service_file, mode: target_mode)
+        if link_target
+          install_file(service_file, link_target, mode: target_mode)
+          link link_target, target_service_file
+        else
+          install_file(service_file, target_service_file, mode: target_mode)
+        end
 
         if default_file
           install_file(default_file, target_default_file, mode: default_mode)

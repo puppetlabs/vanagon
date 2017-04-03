@@ -13,7 +13,7 @@ class Vanagon
         attr_accessor :sum, :sum_type
 
         # Allowed checksum algorithms to use when validating files
-        CHECKSUM_TYPES = %w(md5 sha1 sha256 sha512).freeze
+        CHECKSUM_TYPES = %w[md5 sha1 sha256 sha512].freeze
 
         class << self
           def valid_url?(target_url) # rubocop:disable Metrics/AbcSize

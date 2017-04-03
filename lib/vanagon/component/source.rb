@@ -6,7 +6,7 @@ require 'vanagon/component/source/local'
 class Vanagon
   class Component
     class Source
-      SUPPORTED_PROTOCOLS = %w(file http https git).freeze
+      SUPPORTED_PROTOCOLS = %w[file http https git].freeze
       @rewrite_rules = {}
 
       class << self

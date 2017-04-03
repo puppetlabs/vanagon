@@ -8,17 +8,17 @@ class Vanagon
 
         # Extensions for files we intend to unpack during the build
         ARCHIVE_EXTENSIONS = {
-          "7z" => %w(.7z),
-          "bzip2" => %w(.bz2 .bz),
-          "cpio" => %w(.cpio),
-          "gzip" => %w(.gz .z),
-          "rar" => %w(.rar),
-          "tar" => %w(.tar),
-          "tbz2" => %w(.tar.bz2 .tbz2 .tbz),
-          "tgz" => %w(.tar.gz .tgz),
-          "txz" => %w(.tar.xz .txz),
-          "xz" => %w(.xz),
-          "zip" => %w(.zip),
+          "7z" => %w[.7z],
+          "bzip2" => %w[.bz2 .bz],
+          "cpio" => %w[.cpio],
+          "gzip" => %w[.gz .z],
+          "rar" => %w[.rar],
+          "tar" => %w[.tar],
+          "tbz2" => %w[.tar.bz2 .tbz2 .tbz],
+          "tgz" => %w[.tar.gz .tgz],
+          "txz" => %w[.tar.xz .txz],
+          "xz" => %w[.xz],
+          "zip" => %w[.zip],
         }.freeze
 
         class << self
