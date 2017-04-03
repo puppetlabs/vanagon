@@ -188,7 +188,7 @@ class Vanagon
           "#{platform[:make]} clean"
         )
 
-        %w(configure build install).each do |type|
+        %w[configure build install].each do |type|
           touchfile = "#{component.name}-#{type}"
           r.recipe << andand(
             "[ -e #{touchfile} ]",
