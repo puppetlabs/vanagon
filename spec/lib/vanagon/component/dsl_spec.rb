@@ -533,6 +533,27 @@ end" }
       # The component should now have a service registered
       expect(comp._component.service.name).to eq('service-test')
     end
+
+    it 'installs the file as a link when link_target is specified' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_sysv)
+      comp.install_service('component-client.init', 'component-client.sysconfig', link_target: '/tmp/service-test')
+      # Look for servicedir creation and copy
+      expect(comp._component.install).to include("install -d '/etc/init.d'")
+      expect(comp._component.install).to include("cp -p 'component-client.init' '/tmp/service-test'")
+      expect(comp._component.install).to include("([[ '/etc/init.d/service-test' -ef '/tmp/service-test' ]] || ln -s '/tmp/service-test' '/etc/init.d/service-test')")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to include("install -d '/etc/default'")
+      expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
+
+      # Look for files and configfiles
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/tmp/service-test', mode: '0755'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/etc/init.d/service-test'))
+
+      # The component should now have a service registered
+      expect(comp._component.service.name).to eq('service-test')
+    end
   end
 
   describe '#install_file' do
