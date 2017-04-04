@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.11.2] - released on 2017-04-04
+### Added
+- Added the `link_target` keyword argument to `install_service`. If `link_target` is specified, instead of installing the `service_file` in the platform/init system default for service files, the file will be installed to the `link_target` and a link will be added from the system's default for service files to the link target.
+
 ## [0.11.1] - released on 2017-03-30
 ### Fixed
 - Dirname now honors when user overrides the default directory a source unpacks into
@@ -417,7 +421,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.2...HEAD
+[0.11.2]: https://github.com/puppetlabs/vanagon/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/puppetlabs/vanagon/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/puppetlabs/vanagon/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/puppetlabs/vanagon/compare/0.9.2...0.10.0
