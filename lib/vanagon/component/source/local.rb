@@ -58,7 +58,7 @@ class Vanagon
         #
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
         def copy
-          puts "Copying file '#{url.basename}' to workdir"
+          $stderr.puts "Copying file '#{url.basename}' to workdir"
 
           FileUtils.cp_r(url, file)
         end

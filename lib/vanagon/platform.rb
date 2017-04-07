@@ -131,9 +131,9 @@ class Vanagon
       dsl.instance_eval(code, __FILE__, __LINE__)
       dsl._platform
     rescue => e
-      puts "Error loading platform '#{name}' using '#{platfile}':"
-      puts e
-      puts e.backtrace.join("\n")
+      $stderr.puts "Error loading platform '#{name}' using '#{platfile}':"
+      $stderr.puts e
+      $stderr.puts e.backtrace.join("\n")
       raise e
     end
 

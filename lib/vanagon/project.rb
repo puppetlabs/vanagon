@@ -95,9 +95,9 @@ class Vanagon
       dsl.instance_eval(code, __FILE__, __LINE__)
       dsl._project
     rescue => e
-      puts "Error loading project '#{name}' using '#{projfile}':"
-      puts e
-      puts e.backtrace.join("\n")
+      $stderr.puts "Error loading project '#{name}' using '#{projfile}':"
+      $stderr.puts e
+      $stderr.puts e.backtrace.join("\n")
       raise e
     end
 

@@ -14,12 +14,12 @@ platforms = ARGV[1]
 
 unless project or platforms
   warn "project and platform are both required arguments."
-  puts optparse
+  $stderr.puts optparse
   exit 1
 end
 
 platforms.split(',').each do |platform|
   driver = Vanagon::Driver.new(platform, project, options)
   components = driver.project.components.map(&:to_hash)
-  puts JSON.pretty_generate(components)
+  $stdout.puts JSON.pretty_generate(components)
 end
