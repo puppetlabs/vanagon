@@ -58,10 +58,7 @@ Requires:  <%= requires %>
 # did not specify a dependency on these.
 # In the future, we will supress pre/post scripts completely if there's nothing
 # specified by the project or the components.
-<%- if @platform.is_aix? -%>
-Requires: /bin/mkdir
-Requires: /bin/touch
-<%- else -%>
+<%- unless @platform.is_aix? -%>
 Requires(pre): /bin/mkdir
 Requires(pre): /bin/touch
 Requires(post): /bin/mkdir
