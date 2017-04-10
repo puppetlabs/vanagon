@@ -17,6 +17,8 @@ describe "Vanagon::Component::Source::Git" do
     allow(Git)
       .to receive(:ls_remote)
             .and_return(true)
+
+    allow(File).to receive(:realpath).and_return(@workdir)
   end
 
   describe "#initialize" do
@@ -28,6 +30,13 @@ describe "Vanagon::Component::Source::Git" do
 
       expect { @klass.new(@url, ref: @ref_tag, workdir: @workdir) }
         .to raise_error(Vanagon::InvalidRepo)
+    end
+
+    it "uses the realpath of the workdir if we're in a symlinked dir" do
+      expect(File).to receive(:realpath).and_return("/tmp/bar")
+      git_source = @klass.new(@local_url, ref: @ref_tag, workdir: "/tmp/foo")
+      expect(git_source.workdir)
+        .to eq('/tmp/bar')
     end
   end
 
