@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.11.3] - released on 2017-04-10
+### Changed
+- Removed dependency on files `/bin/touch` and `/bin/mkdir` for any RPMs generated for AIX platforms.
+- If the `workdir` path is underneath a symbolically linked path, Vanagon will now resolve the complete path instead of using the symbolically linked path.
+- Vanagon no longer creates backup copies of any source files patched during the staging process.
+
 ## [0.11.2] - released on 2017-04-04
 ### Added
 - Added the `link_target` keyword argument to `install_service`. If `link_target` is specified, instead of installing the `service_file` in the platform/init system default for service files, the file will be installed to the `link_target` and a link will be added from the system's default for service files to the link target.
@@ -421,7 +427,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.3...HEAD
+[0.11.3]: https://github.com/puppetlabs/vanagon/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/puppetlabs/vanagon/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/puppetlabs/vanagon/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/puppetlabs/vanagon/compare/0.10.0...0.11.0
