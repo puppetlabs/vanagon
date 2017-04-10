@@ -32,7 +32,7 @@ class Vanagon
     end
 
     def cmd(platform)
-      "#{platform.patch} --strip=#{@strip} --fuzz=#{@fuzz} --ignore-whitespace < $(workdir)/patches/#{File.basename(@path)}"
+      "#{platform.patch} --strip=#{@strip} --fuzz=#{@fuzz} --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/#{File.basename(@path)}"
     end
   end
 end
