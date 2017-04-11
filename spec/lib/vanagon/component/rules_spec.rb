@@ -75,8 +75,8 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace < $(workdir)/patches/patch0",
-          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace < $(workdir)/patches/patch1"
+          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch0",
+          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch1"
         ].join(" && \\\n")
       )
     end
@@ -246,8 +246,8 @@ describe Vanagon::Component::Rules do
         Vanagon::Patch.new('/foo/postinstall/patch1', 4, 10, 'install', '/foo/quux'),
       ]
 
-      expect(rule.recipe[1]).to eq("cd /foo/baz && /usr/bin/patch --strip=3 --fuzz=9 --ignore-whitespace < $(workdir)/patches/patch0")
-      expect(rule.recipe[2]).to eq("cd /foo/quux && /usr/bin/patch --strip=4 --fuzz=10 --ignore-whitespace < $(workdir)/patches/patch1")
+      expect(rule.recipe[1]).to eq("cd /foo/baz && /usr/bin/patch --strip=3 --fuzz=9 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch0")
+      expect(rule.recipe[2]).to eq("cd /foo/quux && /usr/bin/patch --strip=4 --fuzz=10 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch1")
     end
 
     it_behaves_like "a rule that touches the target file"
