@@ -272,6 +272,12 @@ class Vanagon
       @architecture ||= @name.match(PLATFORM_REGEX)[3]
     end
 
+    # Utility matcher to determine if the platform supports installing
+    # packages via remote urls
+    def supports_remote_package_installs?
+      return !@name.match(/^(huaweios)-.*?/)
+    end
+
     # Utility matcher to determine is the platform is a debian variety
     #
     # @return [true, false] true if it is a debian variety, false otherwise
