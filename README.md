@@ -4,6 +4,7 @@
 <!-- MarkdownTOC -->
 
 - [What is Vanagon?](#what-is-vanagon)
+  - [How is it pronounced?](#how-is-it-pronounced)
 - [Runtime Requirements](#runtime-requirements)
   - [Local Host:](#local-host)
   - [Remote Build Target:](#remote-build-target)
@@ -38,6 +39,10 @@ components of the project. The devkit command installs all required build tools,
 creates a master makefile for the project, and configures, builds, and installs
 all components. The result is an environment where you can work on individual
 components, then rebuild the project and test the installed artifacts.
+
+### How is it pronounced?
+
+Vanagon (/ˈvænəgɪn/) sounds like "van again." It does not sound like "van wagon" or "van and gone."
 
 ## Runtime Requirements
 
