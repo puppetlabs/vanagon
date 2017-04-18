@@ -28,7 +28,7 @@ class Vanagon
         end
 
         opts.on('-h', '--help', 'Display help') do
-          puts opts
+          $stdout.puts opts
           exit 1
         end
       end

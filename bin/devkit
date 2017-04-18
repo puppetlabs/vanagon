@@ -11,7 +11,7 @@ components = ARGV.drop(2)
 
 if project.nil? or platform.nil?
   warn "project and platform are both required arguments."
-  puts optparse
+  $stderr.puts optparse
   exit 1
 end
 

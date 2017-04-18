@@ -11,11 +11,11 @@ platforms = ARGV[1]
 
 if project.nil? or platforms.nil?
   warn "project and platform are both required arguments."
-  puts optparse
+  $stderr.puts optparse
   exit 1
 end
 
 platforms.split(',').each do |platform|
   driver = Vanagon::Driver.new(platform, project, options)
-  puts JSON.generate(driver.build_host_info)
+  $stdout.puts JSON.generate(driver.build_host_info)
 end

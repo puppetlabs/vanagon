@@ -43,8 +43,8 @@ class Vanagon
       # flatten all the results in to one array and set project.components to that.
       @project.components = only_build.flat_map { |comp| @project.filter_component(comp) }.uniq
       if @verbose
-        puts "Only building:"
-        @project.components.each { |comp| puts comp.name }
+        $stderr.puts "Only building:"
+        @project.components.each { |comp| $stderr.puts comp.name }
       end
     end
 
@@ -117,7 +117,7 @@ class Vanagon
 
       @engine.startup(@workdir)
 
-      puts "Target is #{@engine.target}"
+      $stderr.puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
       retry_task { @project.fetch_sources(@workdir) }
 
@@ -133,8 +133,8 @@ class Vanagon
         cleanup_workdir
       end
     rescue => e
-      puts e
-      puts e.backtrace.join("\n")
+      $stderr.puts e
+      $stderr.puts e.backtrace.join("\n")
       raise e
     ensure
       if ["hardware", "ec2"].include?(@engine.name)
@@ -148,7 +148,7 @@ class Vanagon
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      puts "rendering Makefile"
+      $stderr.puts "rendering Makefile"
       retry_task { @project.fetch_sources(@workdir) }
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
@@ -159,7 +159,7 @@ class Vanagon
       @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
       @engine.startup(@workdir)
 
-      puts "Devkit on #{@engine.target}"
+      $stderr.puts "Devkit on #{@engine.target}"
 
       install_build_dependencies
       @project.fetch_sources(@workdir)
@@ -169,8 +169,8 @@ class Vanagon
       @engine.ship_workdir(@workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{@project.name}-project)")
     rescue => e
-      puts e
-      puts e.backtrace.join("\n")
+      $stderr.puts e
+      $stderr.puts e.backtrace.join("\n")
       raise e
     end
 

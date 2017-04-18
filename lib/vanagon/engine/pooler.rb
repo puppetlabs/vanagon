@@ -56,7 +56,7 @@ class Vanagon
         absolute_path = File.expand_path(path)
         return nil unless File.exist?(absolute_path)
 
-        puts "Reading vmpooler token from: #{path}"
+        $stderr.puts "Reading vmpooler token from: #{path}"
         File.read(absolute_path).chomp
       end
       private :read_vanagon_token
@@ -70,7 +70,7 @@ class Vanagon
         absolute_path = File.expand_path(path)
         return nil unless File.exist?(absolute_path)
 
-        puts "Reading vmpooler token from: #{path}"
+        $stderr.puts "Reading vmpooler token from: #{path}"
         YAML.load_file(absolute_path)['token']
       end
       private :read_vmfloaty_token
@@ -119,7 +119,7 @@ class Vanagon
         )
         if response and response["ok"]
           Vanagon::Driver.logger.info "#{@target} has been destroyed"
-          puts "#{@target} has been destroyed"
+          $stderr.puts "#{@target} has been destroyed"
         else
           Vanagon::Driver.logger.info "#{@target} could not be destroyed"
           warn "#{@target} could not be destroyed"
