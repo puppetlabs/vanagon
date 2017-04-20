@@ -65,4 +65,4 @@ clean: <%= @components.map {|comp| "#{comp.name}-clean" }.join(" ") %>
 
 clobber: <%= @components.map {|comp| "#{comp.name}-clobber" }.join(" ") %>
 
-.PHONY: clean clobber  <%= @components.map {|comp| "#{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>
+.PHONY: clean clobber  <%= @components.map {|comp| "#{comp.name} #{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>
