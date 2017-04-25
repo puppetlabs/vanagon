@@ -252,7 +252,7 @@ class Vanagon
       # @param protocol [String] a supported component source type (Http, Git, ...)
       # @param rule [String, Proc] a rule used to rewrite component source urls
       def register_rewrite_rule(protocol, rule)
-        Vanagon::Component::Source.register_rewrite_rule(protocol, rule)
+        Vanagon::Component::Source::Rewrite.register_rewrite_rule(protocol, rule)
       end
 
       # Toggle to apply additional cleanup during the build for space constrained systems

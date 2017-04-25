@@ -44,6 +44,55 @@ describe "Vanagon::Component" do
     end
   end
 
+  describe "#get_source" do
+    before :each do
+      @workdir = Dir.mktmpdir
+      @fake_tar = "file://spec/fixtures/files/fake_file.txt.tar.gz"
+    end
+
+    subject do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source that's *uncompressed*. We can now reason about
+      # this instance and test behavior for retrieving secondary sources.
+      Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
+        comp.url = @fake_tar
+      end
+    end
+
+    before do
+      allow(subject)
+        .to receive(:source)
+        .and_return(OpenStruct.new(verify: true))
+    end
+
+    it "attempts to retrieve from a mirror before a canonical URI" do
+      allow(subject)
+        .to receive(:fetch_url)
+        .and_return(false)
+
+      allow(subject)
+        .to receive(:fetch_mirrors)
+        .and_return(true)
+
+      expect(subject).to receive(:fetch_mirrors)
+      expect(subject).not_to receive(:fetch_url)
+
+      subject.get_source(@workdir)
+    end
+
+    it "retrieves from a canonical URI if mirrors are unavailable" do
+      allow(subject)
+        .to receive(:fetch_url)
+        .and_return(true)
+
+      # We expect #get_source to attempt to use a mirror...
+      expect(subject).to receive(:fetch_mirrors).and_return(false)
+      # But we also expect it to fail when it tries #mirrors.
+      expect(subject).to receive(:fetch_url)
+      subject.get_source(@workdir)
+    end
+  end
+
   describe "#get_sources" do
     before :each do
       @workdir = Dir.mktmpdir
@@ -55,17 +104,18 @@ describe "Vanagon::Component" do
 
     subject do
       # Initialize a new instance of Vanagon::Component and define a
-      # new secondary source that's *uncompressed*. We can now reason about 
+      # new secondary source that's *uncompressed*. We can now reason about
       # this instance and test behavior for retrieving secondary sources.
       Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
         comp.sources << OpenStruct.new(url: @fake_file)
+        comp.mirrors << @fake_tar
       end
-    end  
+    end
 
     it "copies uncompressed secondary sources into the workdir" do
       subject.get_sources(@workdir)
       expect(File.exist?(File.join(@workdir, @file_name))).to be true
-    end  
+    end
 
     subject do
       # Initialize a new instance of Vanagon::Component and define a

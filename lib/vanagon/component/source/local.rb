@@ -39,7 +39,6 @@ class Vanagon
           end
         end
 
-
         # Constructor for the File source type
         #
         # @param path [String] path of the local file to copy

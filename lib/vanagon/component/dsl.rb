@@ -276,11 +276,20 @@ class Vanagon
         @component.version = ver
       end
 
-      # Sets the url for the source of this component
+      # Sets the canonical URL or URI for the upstream source of this component
       #
-      # @param the_url [String] the url to the source for this component
-      def url(the_url)
-        @component.url = the_url
+      # @param uri [String, URI] a URL or URI describing a canonical location
+      #   for a component's source code or artifact
+      def url(uri)
+        @component.url = uri.to_s
+      end
+
+      # Sets a mirror url for the source of this component
+      #
+      # @param url [String] a mirror url to use as the source for this component.
+      #   Can be called more than once to add multiple mirror URLs.
+      def mirror(url)
+        @component.mirrors << url
       end
 
       def sum(value)

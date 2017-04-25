@@ -37,15 +37,27 @@ project "my-app" do |proj|
   # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
   # rewritten as
   # http://buildsources.delivery.puppetlabs.net/openssl-1.0.0r.tar.gz
-  proj.register_rewrite_rule 'http', 'http://buildsources.delivery.puppetlabs.net'
+  #
+  # @deprecated 2017-04-07 - Ryan McKern
+  #   This functionality has been replaced with Component Mirrors. This feature 
+  #   will be removed before Vanagon 1.0.0, but for now it will add all rewritten
+  #   URLs/URIs to the list of mirrors
+  #
+  # proj.register_rewrite_rule 'http', 'http://buildsources.delivery.puppetlabs.net'
 
   # Here we rewrite public git urls to use our internal git mirror It turns
   # urls that look like git://github.com/puppetlabs/puppet.git into
   # git://github.delivery.puppetlabs.net/puppetlabs-puppet.git
-  proj.register_rewrite_rule 'git', Proc.new { |url|
-    match = url.match(/github.com\/(.*)$/)
-    "git://github.delivery.puppetlabs.net/#{match[1].gsub('/', '-')}" if match
-  }
+  #
+  # @deprecated 2017-04-07 - Ryan McKern
+  #   This functionality has been replaced with Component Mirrors. This feature 
+  #   will be removed before Vanagon 1.0.0, but for now it will add all rewritten
+  #   URLs/URIs to the list of mirrors
+  #
+  # proj.register_rewrite_rule 'git', Proc.new { |url|
+  #   match = url.match(/github.com\/(.*)$/)
+  #   "git://github.delivery.puppetlabs.net/#{match[1].gsub('/', '-')}" if match
+  # }
 
   # directory adds a directory (and its contents) to the package that is created
   proj.directory proj.prefix
