@@ -49,7 +49,7 @@ class Vanagon
         # @return [Array] list of commands required to build the SWIX package
         # for the given project from an rpm
         def generate_swix_package(project)
-          target_dir = project.repo ? output_dir(project.repo) : output_dir
+          target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
           commands = ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
           "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
           "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",

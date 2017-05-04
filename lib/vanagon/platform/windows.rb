@@ -141,7 +141,7 @@ class Vanagon
       # @return [Array] list of commands required to build a nuget package for
       # the given project from a tarball
       def generate_nuget_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/tools",
         "#{@copy} #{project.name}.nuspec $(tempdir)/#{project.name}/",
@@ -162,7 +162,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a msi package of
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
       def generate_msi_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
         wix_extensions = "-ext WiXUtilExtension -ext WixUIExtension"
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
         #   dir <directory> - Traverse directory to find all sub-files and directories.
