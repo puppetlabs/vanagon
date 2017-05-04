@@ -6,7 +6,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a osx package of
       # @return [Array] list of commands required to build a osx package for the given project from a tarball
       def generate_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
 
         # Here we maintain backward compatibility with older vanagon versions
         # that did this by default.  This shim should get removed at some point
