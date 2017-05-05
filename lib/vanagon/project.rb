@@ -93,9 +93,8 @@ class Vanagon
     # @raise if the instance_eval on Project fails, the exception is reraised
     def self.load_project(name, configdir, platform, include_components = [])
       projfile = File.join(configdir, "#{name}.rb")
-      code = File.read(projfile)
       dsl = Vanagon::Project::DSL.new(name, platform, include_components)
-      dsl.instance_eval(code, __FILE__, __LINE__)
+      dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
     rescue => e
       $stderr.puts "Error loading project '#{name}' using '#{projfile}':"
