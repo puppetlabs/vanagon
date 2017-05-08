@@ -60,6 +60,9 @@ class Vanagon
     # Stores the local path where retrieved artifacts will be saved.
     attr_accessor :output_dir
 
+    # Stores the local path where source artifacts will be saved.
+    attr_accessor :source_output_dir
+
     # Username to use when connecting to a build target
     attr_accessor :target_user
 
@@ -237,6 +240,17 @@ class Vanagon
     # @return [String] relative path to where packages should be output to
     def output_dir(target_repo = "")
       @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
+    end
+
+    # Get the source dir for packages. Don't change it if it was already defined
+    # by the platform config. Defaults to output_dir unless specified otherwise
+    # (RPM specifies this)
+    #
+    # @param target_repo [String] optional repo target for built source packages
+    # defined at the project level
+    # @return [String] relative path to where source packages should be output to
+    def source_output_dir(target_repo = "")
+      @source_output_dir ||= output_dir(target_repo)
     end
 
     # Get the value of @dist, or derive it from the value of @os_name and @os_version.

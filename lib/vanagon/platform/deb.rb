@@ -7,6 +7,11 @@ class Vanagon
       # @return [Array] list of commands required to build a debian package for the given project from a tarball
       def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
+        if project.source_artifacts
+          copy_extensions = '*.{deb,build,tar.gz,changes,dsc}'
+        else
+          copy_extensions = '*.deb'
+        end
         pkg_arch_opt = project.noarch ? "" : "-a#{@architecture}"
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
@@ -16,7 +21,7 @@ class Vanagon
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
         "sed -i 's/\ /?/g' $(tempdir)/#{project.name}-#{project.version}/debian/install",
         "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian #{pkg_arch_opt} -uc -us)",
-        "cp $(tempdir)/*.deb ./output/#{target_dir}"]
+        "cp $(tempdir)/#{copy_extensions} ./output/#{target_dir}"]
       end
 
       # Method to generate the files required to build a debian package for the project

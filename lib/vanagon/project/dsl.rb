@@ -148,6 +148,15 @@ class Vanagon
         @project.release = rel
       end
 
+      # Generate source packages in addition to binary packages.
+      # Currently only implemented for rpm/deb packages.
+      #
+      # @param source_artifacts [Boolean] whether or not to output
+      #        source packages
+      def generate_source_artifacts(source_artifacts)
+        @project.source_artifacts = source_artifacts
+      end
+
       # Sets the version for the project based on a git describe of the
       # directory that holds the configs. Requires that a git tag be present
       # and reachable from the current commit in that repository.

@@ -348,6 +348,10 @@ class Vanagon
         @platform.output_dir = directory
       end
 
+      def source_output_dir(directory)
+        @platform.source_output_dir = directory
+      end
+
       # Helper to setup a apt repository on a target system
       #
       # @param definition [String] the repo setup file, must be a valid uri, fetched with curl

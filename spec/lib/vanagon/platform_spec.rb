@@ -4,41 +4,51 @@ describe "Vanagon::Platform" do
   let(:platforms) do
     [
       {
-        :name                    => "debian-6-i386",
-        :os_name                 => "debian",
-        :os_version              => "6",
-        :architecture            => "i386",
-        :output_dir              => "deb/lucid/",
-        :output_dir_with_target  => "deb/lucid/thing",
-        :output_dir_empty_string => "deb/lucid/",
-        :block                   => %Q[
+        :name                           => "debian-6-i386",
+        :os_name                        => "debian",
+        :os_version                     => "6",
+        :architecture                   => "i386",
+        :output_dir                     => "deb/lucid/",
+        :output_dir_with_target         => "deb/lucid/thing",
+        :output_dir_empty_string        => "deb/lucid/",
+        :source_output_dir              => "deb/lucid/",
+        :source_output_dir_with_target  => "deb/lucid/thing",
+        :source_output_dir_empty_string => "deb/lucid/",
+        :block                          => %Q[
           platform "debian-6-i386" do |plat|
             plat.codename "lucid"
           end ],
       },
       {
-        :name                    => "el-5-i386",
-        :os_name                 => "el",
-        :os_version              => "5",
-        :architecture            => "i386",
-        :output_dir              => "el/5/products/i386",
-        :output_dir_with_target  => "el/5/thing/i386",
-        :output_dir_empty_string => "el/5/i386",
-        :block                   => %Q[ platform "el-5-i386" do |plat| end ],
+        :name                           => "el-5-i386",
+        :os_name                        => "el",
+        :os_version                     => "5",
+        :architecture                   => "i386",
+        :output_dir                     => "el/5/products/i386",
+        :output_dir_with_target         => "el/5/thing/i386",
+        :output_dir_empty_string        => "el/5/i386",
+        :source_output_dir              => "el/5/products/SRPMS",
+        :source_output_dir_with_target  => "el/5/thing/SRPMS",
+        :source_output_dir_empty_string => "el/5/SRPMS",
+        :block                          => %Q[ platform "el-5-i386" do |plat| end ],
       },
       {
-        :name                    => "debian-6-i386",
-        :os_name                 => "debian",
-        :os_version              => "6",
-        :codename                => "lucid",
-        :architecture            => "i386",
-        :output_dir              => "updated/output",
-        :output_dir_with_target  => "updated/output",
-        :output_dir_empty_string => "updated/output",
-        :block                   => %Q[
+        :name                           => "debian-6-i386",
+        :os_name                        => "debian",
+        :os_version                     => "6",
+        :codename                       => "lucid",
+        :architecture                   => "i386",
+        :output_dir                     => "updated/output",
+        :output_dir_with_target         => "updated/output",
+        :output_dir_empty_string        => "updated/output",
+        :source_output_dir              => "updated/sources",
+        :source_output_dir_with_target  => "updated/sources",
+        :source_output_dir_empty_string => "updated/sources",
+        :block                          => %Q[
           platform "debian-6-i386" do |plat|
             plat.codename "lucid"
             plat.output_dir "updated/output"
+            plat.source_output_dir "updated/sources"
           end ],
       },
     ]
@@ -87,6 +97,33 @@ describe "Vanagon::Platform" do
       end
     end
   end
+
+  describe "#source_output_dir" do
+    it "returns correct source dir" do
+      platforms.each do |plat|
+        cur_plat = Vanagon::Platform::DSL.new(plat[:name])
+        cur_plat.instance_eval(plat[:block])
+        expect(cur_plat._platform.source_output_dir).to eq(plat[:source_output_dir])
+      end
+    end
+
+    it "adds the target repo in the right way" do
+      platforms.each do |plat|
+        cur_plat = Vanagon::Platform::DSL.new(plat[:name])
+        cur_plat.instance_eval(plat[:block])
+        expect(cur_plat._platform.source_output_dir('thing')).to eq(plat[:source_output_dir_with_target])
+      end
+    end
+
+    it "does the right thing with empty strings" do
+      platforms.each do |plat|
+        cur_plat = Vanagon::Platform::DSL.new(plat[:name])
+        cur_plat.instance_eval(plat[:block])
+        expect(cur_plat._platform.source_output_dir('')).to eq(plat[:source_output_dir_empty_string])
+      end
+    end
+  end
+
 
   describe "#architecture" do
     it "returns the architecture for the platform" do

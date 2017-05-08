@@ -80,6 +80,9 @@ class Vanagon
     # them to appear in your spec/rules files!
     attr_accessor :package_overrides
 
+    # Should we include source packages?
+    attr_accessor :source_artifacts
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -122,6 +125,7 @@ class Vanagon
       @provides = []
       @conflicts = []
       @package_overrides = []
+      @source_artifacts = false
     end
 
     # Magic getter to retrieve settings in the project
