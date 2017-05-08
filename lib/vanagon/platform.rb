@@ -239,7 +239,7 @@ class Vanagon
     #   at the project level
     # @return [String] relative path to where packages should be output to
     def output_dir(target_repo = "")
-      @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
+      @output_dir ||= File.join(target_repo, @os_name, @os_version, @architecture)
     end
 
     # Get the source dir for packages. Don't change it if it was already defined

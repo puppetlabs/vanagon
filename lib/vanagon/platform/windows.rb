@@ -208,6 +208,16 @@ class Vanagon
         ]
       end
 
+      # Get the output dir for packages. If the output_dir was defined already (by
+      # the platform config) then don't change it.
+      #
+      # @param target_repo [String] optional repo target for built packages defined
+      #   at the project level
+      # @return [String] relative path to where packages should be output to
+      def output_dir(target_repo = "")
+        @output_dir ||= File.join(@os_name, target_repo)
+      end
+
       # Method to derive the msi (Windows Installer) package name for the project.
       #
       # @param project [Vanagon::Project] project to name

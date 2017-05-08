@@ -77,6 +77,16 @@ class Vanagon
         def swix_package_name(project)
           "#{project.name}-#{project.version}-#{project.release}.#{os_name}#{os_version}.#{project.noarch ? 'noarch' : @architecture}.swix"
         end
+
+        # Get the output dir for packages. If the output_dir was defined already (by
+        # the platform config) then don't change it.
+        #
+        # @param target_repo [String] optional repo target for built packages defined
+        #   at the project level
+        # @return [String] relative path to where packages should be output to
+        def output_dir(target_repo = "")
+          @output_dir ||= File.join(@os_name, target_repo, @os_version, @architecture)
+        end
       end
     end
   end

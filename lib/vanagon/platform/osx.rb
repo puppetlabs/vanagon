@@ -92,6 +92,14 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}.#{@os_name}#{@os_version}.dmg"
       end
 
+      # Get the expected output dir for the debian packages. This allows us to
+      # use some standard tools to ship internally.
+      #
+      # @return [String] relative path to where debian packages should be staged
+      def output_dir(target_repo = "")
+        @output_dir ||= File.join("apple", target_repo, @os_version, @architecture)
+      end
+
       # Constructor. Sets up some defaults for the osx platform and calls the parent constructor
       #
       # @param name [String] name of the platform
