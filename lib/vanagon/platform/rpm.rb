@@ -8,15 +8,24 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build an rpm package of
       # @return [Array] list of commands required to build an rpm package for the given project from a tarball
-      def generate_package(project)
+      def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_source_output_dir = project.repo ? source_output_dir(project.repo) : source_output_dir
+        if project.source_artifacts
+          rpmbuild = "#{@rpmbuild} -ba"
+          artifact_copy = "mkdir -p output/#{target_source_output_dir}; cp $(tempdir)/rpmbuild/RPMS/**/*.rpm ./output/#{target_dir}; cp $(tempdir)/rpmbuild/SRPMS/*.rpm ./output/#{target_source_output_dir}"
+        else
+          rpmbuild = "#{@rpmbuild} -bb"
+          artifact_copy = "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"
+        end
+
         ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
         "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
-        "PATH=/opt/freeware/bin:$$PATH #{@rpmbuild} -bb --target #{@architecture} #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
+        "PATH=/opt/freeware/bin:$$PATH #{rpmbuild} --target #{@architecture} #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
         "mkdir -p output/#{target_dir}",
-        "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"]
+        artifact_copy]
       end
 
       # Method to generate the files required to build an rpm package for the project
@@ -38,6 +47,13 @@ class Vanagon
 
       def output_dir(target_repo = "products")
         super
+      end
+
+      # Method to derive the directory for source artifacts
+      #
+      # @param target_repo [String] repo the source artifacts are targeting
+      def source_output_dir(target_repo = "products")
+        @source_output_dir ||= File.join(@os_name, @os_version, target_repo, 'SRPMS')
       end
 
       def rpm_defines

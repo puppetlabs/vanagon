@@ -26,6 +26,12 @@ describe 'Vanagon::Platform::RPM' do
         end
       end
 
+      describe '#source_output_dir' do
+        it "includes 'SRPMS'" do
+          expect(subject.source_output_dir).to include('SRPMS')
+        end
+      end
+
       describe "#dist" do
         it "uses explicit values when available" do
           expect(subject.dist).to eq(derived_dist) unless platform[:dist]

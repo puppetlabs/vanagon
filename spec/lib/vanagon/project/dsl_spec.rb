@@ -142,6 +142,28 @@ end" }
     end
   end
 
+  describe '#generate_source_artifacts' do
+    it 'defaults to false' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      expect(proj._project.source_artifacts).to eq(false)
+    end
+
+    it 'sets source_artifacts to true' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.generate_source_artifacts true
+      expect(proj._project.source_artifacts).to eq(true)
+    end
+
+    it 'sets source_artifacts to false' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      proj.generate_source_artifacts false
+      expect(proj._project.source_artifacts).to eq(false)
+    end
+  end
+
   describe '#identifier' do
     it 'sets the identifier for the project' do
       proj = Vanagon::Project::DSL.new('test-fixture', {})
