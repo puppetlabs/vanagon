@@ -52,7 +52,7 @@ class Vanagon
       #
       # @param target_repo [String] repo the source artifacts are targeting
       def source_output_dir(target_repo = "products")
-        @source_output_dir ||= File.join(@os_name, @os_version, target_repo, 'SRPMS')
+        @source_output_dir ||= File.join(target_repo, @os_name, @os_version, 'SRPMS')
       end
 
       def rpm_defines
