@@ -119,7 +119,7 @@ class Vanagon
         def clone!
           $stderr.puts "Cloning Git repo '#{url}'"
           $stderr.puts "Successfully cloned '#{dirname}'" if clone
-        rescue Git::GitExecuteError
+        rescue ::Git::GitExecuteError
           raise Vanagon::InvalidRepo, "Unable to clone from '#{url}'"
         end
         private :clone!
