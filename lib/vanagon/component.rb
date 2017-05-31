@@ -116,9 +116,8 @@ class Vanagon
     # @raise if the instance_eval on Component fails, the exception is reraised
     def self.load_component(name, configdir, settings, platform)
       compfile = File.join(configdir, "#{name}.rb")
-      code = File.read(compfile)
       dsl = Vanagon::Component::DSL.new(name, settings, platform)
-      dsl.instance_eval(code, __FILE__, __LINE__)
+      dsl.instance_eval(File.read(compfile), compfile, 1)
       dsl._component
     rescue => e
       $stderr.puts "Error loading project '#{name}' using '#{compfile}':"

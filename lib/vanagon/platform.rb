@@ -129,9 +129,8 @@ class Vanagon
     # @raise if the instance_eval on Platform fails, the exception is reraised
     def self.load_platform(name, configdir)
       platfile = File.join(configdir, "#{name}.rb")
-      code = File.read(platfile)
       dsl = Vanagon::Platform::DSL.new(name)
-      dsl.instance_eval(code, __FILE__, __LINE__)
+      dsl.instance_eval(File.read(platfile), platfile, 1)
       dsl._platform
     rescue => e
       $stderr.puts "Error loading platform '#{name}' using '#{platfile}':"
