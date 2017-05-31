@@ -6,6 +6,23 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.12.0] - released on 2017-05-31
+### Added
+- Added `generate_source_artifacts` method to the platform dsl to allow generation
+  of `.src.rpm` and debian source artifacts.
+- Added support to the Component DSL for Mirror URLs using the `#mirror` method. This functionality supersedes the previous Rewrite Rule functionality and the Rewrite Rule functionality has been deprecated (see *Deprecated* for `0.12.0`).
+  Vanagon will attempt to use any Mirror URLs provided for a component before it attempts to use the canonical upstream URL. Multiple Mirror URLs can be specified, and Vanagon will attempt to retrieve them in random order until a URL returns a `200` code or all Mirror URLs are exhausted.
+  For examples of mirrors in use, see the [example project](examples/projects/project.rb) and [component](examples/components/component2.rb).
+
+### Deprecated
+- The Component DSL Rewrite Engine is deprecated in favor of Component DSL Mirror URLs. Existing Rewrite Rules will be converted to Mirror URLs and added to the Mirror URL list. The Component DSL Rewrite Engine will be removed before Vanagon 1.0.0 is released.
+
+### Changed
+- Updated to sending notification messages on STDERR instead of STDOUT. This both enables easier filtering and helps with some of the fragility around commands expecting formatted output on STDOUT. For more context around this see the [ticket](https://tickets.puppetlabs.com/browse/VANAGON-57) and [pull request](https://github.com/puppetlabs/vanagon/pull/474).
+
+### Fixes
+- Exceptions now provide accurate backtraces if thrown while parsing Component, Platform, or Projects.
+
 ## [0.11.3] - released on 2017-04-10
 ### Changed
 - Removed dependency on files `/bin/touch` and `/bin/mkdir` for any RPMs generated for AIX platforms.
@@ -427,7 +444,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.11.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/puppetlabs/vanagon/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/puppetlabs/vanagon/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/puppetlabs/vanagon/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/puppetlabs/vanagon/compare/0.11.0...0.11.1
