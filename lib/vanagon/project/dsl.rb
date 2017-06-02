@@ -244,6 +244,10 @@ class Vanagon
         end
       end
 
+      def target_nonfinal_repo(repo)
+        @project.nonfinal_repo = repo
+      end
+
       # Adds a target repo for the project
       #
       # @param repo [String] name of the target repository to ship to used in laying out the packages on disk

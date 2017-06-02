@@ -6,7 +6,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a osx package of
       # @return [Array] list of commands required to build a osx package for the given project from a tarball
       def generate_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
 
         # Here we maintain backward compatibility with older vanagon versions
         # that did this by default.  This shim should get removed at some point
@@ -90,6 +90,14 @@ class Vanagon
       # @return [String] name of the osx package for this project
       def package_name(project)
         "#{project.name}-#{project.version}-#{project.release}.#{@os_name}#{@os_version}.dmg"
+      end
+
+      # Get the expected output dir for the debian packages. This allows us to
+      # use some standard tools to ship internally.
+      #
+      # @return [String] relative path to where debian packages should be staged
+      def output_dir(target_repo = "")
+        @output_dir ||= File.join("apple", target_repo, @os_version, @architecture)
       end
 
       # Constructor. Sets up some defaults for the osx platform and calls the parent constructor
