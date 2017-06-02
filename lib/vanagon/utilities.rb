@@ -281,5 +281,16 @@ class Vanagon
       FileUtils.rm_rf erbfile if remove_orig
       outfile
     end
+
+    # Final
+    # - 1.0.0
+    # - 3.0.5.1
+    # - 4.3.0-5
+    # Nonfinal
+    # - 1.0.0-34-g1sadjf9283
+    # - 4.2.1.2344.gfdqw83rh
+    def final_version?(version)
+      !version.match?(/g[a-f0-9]{7}$/)
+    end
   end
 end

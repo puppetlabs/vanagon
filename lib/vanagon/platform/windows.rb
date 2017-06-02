@@ -141,7 +141,7 @@ class Vanagon
       # @return [Array] list of commands required to build a nuget package for
       # the given project from a tarball
       def generate_nuget_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}/tools",
         "#{@copy} #{project.name}.nuspec $(tempdir)/#{project.name}/",
@@ -162,7 +162,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build a msi package of
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
       def generate_msi_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
         wix_extensions = "-ext WiXUtilExtension -ext WixUIExtension"
         # Heat command documentation at: http://wixtoolset.org/documentation/manual/v3/overview/heat.html
         #   dir <directory> - Traverse directory to find all sub-files and directories.
@@ -206,6 +206,16 @@ class Vanagon
           # -loc is required for the UI localization it points to the actual localization .wxl
           "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -loc $$(cygpath -aw $(tempdir)/wix/localization/puppet_en-us.wxl) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
         ]
+      end
+
+      # Get the output dir for packages. If the output_dir was defined already (by
+      # the platform config) then don't change it.
+      #
+      # @param target_repo [String] optional repo target for built packages defined
+      #   at the project level
+      # @return [String] relative path to where packages should be output to
+      def output_dir(target_repo = "")
+        @output_dir ||= File.join(@os_name, target_repo)
       end
 
       # Method to derive the msi (Windows Installer) package name for the project.

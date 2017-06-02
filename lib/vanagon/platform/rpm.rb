@@ -9,7 +9,7 @@ class Vanagon
       # @param project [Vanagon::Project] project to build an rpm package of
       # @return [Array] list of commands required to build an rpm package for the given project from a tarball
       def generate_package(project) # rubocop:disable Metrics/AbcSize
-        target_dir = project.repo ? output_dir(project.repo) : output_dir
+        target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
         target_source_output_dir = project.repo ? source_output_dir(project.repo) : source_output_dir
         if project.source_artifacts
           rpmbuild = "#{@rpmbuild} -ba"
@@ -18,7 +18,6 @@ class Vanagon
           rpmbuild = "#{@rpmbuild} -bb"
           artifact_copy = "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"
         end
-
         ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
         "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
@@ -53,7 +52,7 @@ class Vanagon
       #
       # @param target_repo [String] repo the source artifacts are targeting
       def source_output_dir(target_repo = "products")
-        @source_output_dir ||= File.join(@os_name, @os_version, target_repo, 'SRPMS')
+        @source_output_dir ||= File.join(target_repo, @os_name, @os_version, 'SRPMS')
       end
 
       def rpm_defines

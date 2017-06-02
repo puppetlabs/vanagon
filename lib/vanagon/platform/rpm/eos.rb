@@ -49,7 +49,7 @@ class Vanagon
         # @return [Array] list of commands required to build the SWIX package
         # for the given project from an rpm
         def generate_swix_package(project)
-          target_dir = project.repo ? output_dir(project.repo) : output_dir
+          target_dir = project.get_repo_name ? output_dir(project.get_repo_name) : output_dir
           commands = ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
           "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
           "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
@@ -76,6 +76,16 @@ class Vanagon
         # @return [String] name of the SWIX package for this project
         def swix_package_name(project)
           "#{project.name}-#{project.version}-#{project.release}.#{os_name}#{os_version}.#{project.noarch ? 'noarch' : @architecture}.swix"
+        end
+
+        # Get the output dir for packages. If the output_dir was defined already (by
+        # the platform config) then don't change it.
+        #
+        # @param target_repo [String] optional repo target for built packages defined
+        #   at the project level
+        # @return [String] relative path to where packages should be output to
+        def output_dir(target_repo = "")
+          @output_dir ||= File.join(@os_name, target_repo, @os_version, @architecture)
         end
       end
     end

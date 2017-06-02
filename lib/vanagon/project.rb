@@ -43,6 +43,7 @@ class Vanagon
     # !depreciate
     # !refactor
     attr_accessor :repo
+    attr_accessor :nonfinal_repo
 
     # Mark a project as being architecture independent
     attr_accessor :noarch
@@ -474,6 +475,14 @@ class Vanagon
     # @param workdir [String] workdir to put the packaging files into
     def generate_packaging_artifacts(workdir)
       @platform.generate_packaging_artifacts(workdir, @name, binding)
+    end
+
+    def get_repo_name
+      if @nonfinal_repo && !Vanagon::Utilities.final_version?(@version)
+        @nonfinal_repo
+      else
+        @repo
+      end
     end
   end
 end
