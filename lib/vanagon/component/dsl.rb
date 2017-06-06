@@ -117,7 +117,8 @@ class Vanagon
       # build_requires adds a requirements to the list of build time dependencies
       # that will need to be fetched from an external source before this component
       # can be built. build_requires can also be satisfied by other components in
-      # the same project.
+      # the same project. An optional version number of a desired external package
+      # can be specified by appending '=<version>' to the package name.
       #
       # @param build_requirement [String] a library or other component that is required to build the current component
       def build_requires(build_requirement)
