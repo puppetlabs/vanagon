@@ -226,9 +226,18 @@ class Vanagon
       # @param target [String] path to the desired target of the file
       # @param owner  [String] owner of the file
       # @param group  [String] group owner of the file
-      def install_file(source, target, mode: '0644', owner: nil, group: nil)
+      def install_file(source, target, mode: nil, owner: nil, group: nil) # rubocop:disable Metrics/AbcSize
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "#{@component.platform.copy} -p '#{source}' '#{target}'"
+
+        if @component.platform.is_windows?
+          unless mode.nil? && owner.nil? && group.nil?
+            warn "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
+          end
+        else
+          mode ||= '0644'
+          @component.install << "chmod #{mode} '#{target}'"
+        end
         @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
       end
 
@@ -369,7 +378,16 @@ class Vanagon
       # @param mode [String] octal mode to apply to the directory
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
-      def directory(dir, mode: nil, owner: nil, group: nil)
+      def directory(dir, mode: nil, owner: nil, group: nil) # rubocop:disable Metrics/AbcSize
+        install_flags = ['-d']
+        if @component.platform.is_windows?
+          unless mode.nil? && owner.nil? && group.nil?
+            warn "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
+          end
+        else
+          install_flags << "-m '#{mode}'" unless mode.nil?
+        end
+        @component.install << "#{@component.platform.install} #{install_flags.join(' ')} '#{dir}'"
         @component.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
       end
 
