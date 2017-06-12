@@ -6,6 +6,13 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.12.1] - released on 2017-06-12
+### Fixes
+- install_file was not respecting file mode, which was causing problems with
+  file permissions on platforms like MacOS that do not explicitly manage permissions
+  in the packaging. This should now be fixed for those cases, with the exception of
+  Windows MSI packaging, that still needs to be managed in the WIX files.
+
 ## [0.12.0] - released on 2017-05-31
 ### Added
 - Added `generate_source_artifacts` method to the platform dsl to allow generation
@@ -83,7 +90,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [0.9.2] - released on 2017-01-31
 ### Added
-- Experimental `render` command added to aid in rapid Makefile iteration and testing 
+- Experimental `render` command added to aid in rapid Makefile iteration and testing
 
 ### Deprecated
 - is_osx? method deprecated in favor of is_macos? ([VANAGON-28](https://tickets/puppetlabs.com/browse/VANAGON-28))
@@ -106,7 +113,7 @@ This is a bug-fix release to replace the yanked 0.9.0 release.
 
 ## [0.9.0] - released on 2017-01-06; yanked on 2017-01-06
 ### Added
-- Support for reading vmpooler tokens from a 
+- Support for reading vmpooler tokens from a
   [vmfloaty](https://github.com/briancain/vmfloaty) config file.
   The new order of precedence for defining vmpooler tokens is:
     - `VMPOOLER_TOKEN` environment variable
@@ -114,11 +121,11 @@ This is a bug-fix release to replace the yanked 0.9.0 release.
     - Reading it from the file `~/.vmfloaty.yml`
 - A Rakefile to help ease common development tasks, like running spec tests, code coverage,
   and Rubocop. `bundle exec rake -T` away!
-- Added `--only-build` flag, allowing developers to build a subset of components 
+- Added `--only-build` flag, allowing developers to build a subset of components
   from a Vanagon project.
 
 ### Changed
-- RPMs built with Vanagon now depend on `/bin/mkdir` and `/bin/touch`. 
+- RPMs built with Vanagon now depend on `/bin/mkdir` and `/bin/touch`.
   RPM `pre-` and `post-` scripts use those commands, but the packages did not
   express that dependency. This resolves a problem reported by Mike Schmidt
   in [CPR-393](https://tickets.puppetlabs.com/browse/CPR-393).
@@ -444,7 +451,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.1...HEAD
+[0.12.1]: https://github.com/puppetlabs/vanagon/compare/0.12.0...0.12.1
 [0.12.0]: https://github.com/puppetlabs/vanagon/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/puppetlabs/vanagon/compare/0.11.2...0.11.3
 [0.11.2]: https://github.com/puppetlabs/vanagon/compare/0.11.1...0.11.2
