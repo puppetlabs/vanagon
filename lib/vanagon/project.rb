@@ -476,5 +476,44 @@ class Vanagon
     def generate_packaging_artifacts(workdir)
       @platform.generate_packaging_artifacts(workdir, @name, binding)
     end
+
+    # Generate a json hash which lists all of the dependant components of the
+    # project.
+    #
+    # @return [Hash] where the top level keys are components and their values
+    #   are hashes with additional information on the component.
+    def generate_dependencies_info
+      @components.each_with_object({}) do |component, hsh|
+        hsh.merge!(component.get_dependency_hash)
+      end
+    end
+
+    # Generate a hash which contains relevant information regarding components
+    # of a package, what vanagon built the package, time of build, as well as
+    # version of the thing we were building.
+    #
+    # @return [Hash] of information which is useful to know about how a package
+    #   was built and what went into the package.
+    def build_manifest_json
+      manifest = {
+        "packaging_type" => {
+          "vanagon" => VANAGON_VERSION,
+        },
+        "version" => version,
+        "components" => generate_dependencies_info,
+        "build_time" => BUILD_TIME,
+      }
+    end
+
+    # Writes a json file at `ext/build_metadata.json` containing information
+    # about what went into a built artifact
+    #
+    # @return [Hash] of build information
+    def save_manifest_json
+      manifest = build_manifest_json
+      File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
+        f.write(JSON.pretty_generate(manifest))
+      end
+    end
   end
 end
