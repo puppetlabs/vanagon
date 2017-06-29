@@ -205,7 +205,11 @@ fi
   <%- elsif @platform.servicetype == "sysv" -%>
     chkconfig --add <%= service.name %> >/dev/null 2>&1 || :
   <%- elsif @platform.servicetype == "aix" -%>
-    /usr/bin/mkssys -p <%= service.service_command -%> -w 7 -S -n 15 -f 9 > /dev/null  2>&1 || :
+    if /usr/bin/lssrc -s <%= service.name -%> > /dev/null 2>&1; then
+      /usr/bin/chssys -s <%= service.name -%> -p <%= service.service_command -%> -w 7 -S -n 15 -f 9 > /dev/null 2>&1 || :
+    else
+      /usr/bin/mkssys -p <%= service.service_command -%> -w 7 -S -n 15 -f 9 > /dev/null  2>&1 || :
+    fi
     if /bin/grep -q "^<%= service.name -%>:2:once:startsrc$" /etc/inittab; then
     /usr/sbin/rmitab <%= service.name -%> > /dev/null 2>&1 || :
     fi
