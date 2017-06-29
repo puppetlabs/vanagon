@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.12.2] - released on 2017-06-29
+### Fixes
+- Previously, we created AIX services once at install, but did not have
+  correct logic to update them if they changed. This release adds the necessary
+  logic to reconfigure AIX services.
+
 ## [0.12.1] - released on 2017-06-12
 ### Fixes
 - install_file was not respecting file mode, which was causing problems with
@@ -451,7 +457,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.2...HEAD
+[0.12.2]: https://github.com/puppetlabs/vanagon/compare/0.12.1...0.12.2
 [0.12.1]: https://github.com/puppetlabs/vanagon/compare/0.12.0...0.12.1
 [0.12.0]: https://github.com/puppetlabs/vanagon/compare/0.11.3...0.12.0
 [0.11.3]: https://github.com/puppetlabs/vanagon/compare/0.11.2...0.11.3
