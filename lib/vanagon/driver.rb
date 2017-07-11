@@ -124,6 +124,7 @@ class Vanagon
       @project.make_makefile(@workdir)
       @project.make_bill_of_materials(@workdir)
       @project.generate_packaging_artifacts(@workdir)
+      @project.save_manifest_json
       @engine.ship_workdir(@workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact

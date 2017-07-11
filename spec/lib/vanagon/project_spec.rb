@@ -115,4 +115,55 @@ describe 'Vanagon::Project' do
       expect(@proj.filter_component(comp1.name)).to eq([comp1, comp2, comp3])
     end
   end
+
+  describe '#generate_dependencies_info' do
+    before(:each) do
+      @proj = Vanagon::Project.new('test-project', {})
+    end
+
+    it "returns a hash of components and their versions" do
+      comp1 = Vanagon::Component.new('test-component1', {}, {})
+      comp1.version = '1.0.0'
+      comp2 = Vanagon::Component.new('test-component2', {}, {})
+      comp2.version = '2.0.0'
+      comp2.options[:ref] = '123abcd'
+      comp3 = Vanagon::Component.new('test-component3', {}, {})
+      @proj.components << comp1
+      @proj.components << comp2
+      @proj.components << comp3
+
+      expect(@proj.generate_dependencies_info()).to eq({
+        'test-component1' => { 'version' => '1.0.0' },
+        'test-component2' => { 'version' => '2.0.0', 'ref' => '123abcd' },
+        'test-component3' => {},
+      })
+    end
+  end
+
+  describe '#build_manifest_json' do
+    before(:each) do
+      class Vanagon
+        class Project
+          BUILD_TIME = '2017-07-10T13:34:25-07:00'
+          VANAGON_VERSION = '0.0.0-rspec'
+        end
+      end
+
+      @proj = Vanagon::Project.new('test-project', {})
+    end
+
+    it 'should generate a hash with the expected build metadata' do
+      comp1 = Vanagon::Component.new('test-component1', {}, {})
+      comp1.version = '1.0.0'
+      @proj.components << comp1
+      @proj.version = '123abcde'
+
+      expect(@proj.build_manifest_json()).to eq({
+        'packaging_type' => { 'vanagon' => '0.0.0-rspec' },
+        'version' => '123abcde',
+        'components' => { 'test-component1' => { 'version' => '1.0.0' } },
+        'build_time' => '2017-07-10T13:34:25-07:00',
+      })
+    end
+  end
 end
