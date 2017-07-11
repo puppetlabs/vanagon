@@ -27,8 +27,12 @@ describe 'Vanagon::Platform::RPM' do
       end
 
       describe '#source_output_dir' do
-        it "includes 'SRPMS'" do
-          expect(subject.source_output_dir).to include('SRPMS')
+        it "includes 'SRPMS' when target_repo is set" do
+          expect(subject.source_output_dir('pc1')).to include('SRPMS')
+        end
+
+        it "includes '-srpms' when target_repo is not set" do
+          expect(subject.source_output_dir).to include('-srpms')
         end
       end
 

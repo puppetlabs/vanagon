@@ -45,15 +45,15 @@ class Vanagon
         "#{project.name}-#{project.version}-#{project.release}.#{project.noarch ? 'noarch' : @architecture}.rpm"
       end
 
-      def output_dir(target_repo = "products")
-        super
-      end
-
       # Method to derive the directory for source artifacts
       #
       # @param target_repo [String] repo the source artifacts are targeting
-      def source_output_dir(target_repo = "products")
-        @source_output_dir ||= File.join(@os_name, @os_version, target_repo, 'SRPMS')
+      def source_output_dir(target_repo = nil)
+        if target_repo.nil?
+          @source_output_dir ||= "#{@os_name}-#{@os_version}-srpms"
+        else
+          @source_output_dir ||= File.join(@os_name, @os_version, target_repo, 'SRPMS')
+        end
       end
 
       def rpm_defines

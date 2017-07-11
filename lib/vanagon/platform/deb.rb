@@ -56,8 +56,24 @@ class Vanagon
       # use some standard tools to ship internally.
       #
       # @return [String] relative path to where debian packages should be staged
-      def output_dir(target_repo = "")
-        @output_dir ||= File.join("deb", @codename, target_repo)
+      def output_dir(target_repo = nil)
+        if target_repo.nil?
+          super
+        else
+          @output_dir ||= File.join("deb", @codename, target_repo)
+        end
+      end
+
+
+      # Method to derive the directory for source artifacts
+      #
+      # @param target_repo [String] repo the source artifacts are targeting
+      def source_output_dir(target_repo = nil)
+        if target_repo.nil?
+          @source_output_dir ||= "#{@os_name}-#{@os_version}-source"
+        else
+          super
+        end
       end
 
       # Returns the string to add a target repo to the platforms' provisioning

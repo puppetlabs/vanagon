@@ -237,8 +237,12 @@ class Vanagon
     # @param target_repo [String] optional repo target for built packages defined
     #   at the project level
     # @return [String] relative path to where packages should be output to
-    def output_dir(target_repo = "")
-      @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
+    def output_dir(target_repo = nil)
+      if target_repo.nil?
+        @output_dir ||= "#{@os_name}-#{@os_version}-#{@architecture}"
+      else
+        @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
+      end
     end
 
     # Get the source dir for packages. Don't change it if it was already defined
@@ -248,7 +252,7 @@ class Vanagon
     # @param target_repo [String] optional repo target for built source packages
     # defined at the project level
     # @return [String] relative path to where source packages should be output to
-    def source_output_dir(target_repo = "")
+    def source_output_dir(target_repo = nil)
       @source_output_dir ||= output_dir(target_repo)
     end
 
