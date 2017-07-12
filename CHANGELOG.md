@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.13.0] - released on 2017-07-12
+### Added
+ - A metadata file is generated when producing artifacts which contains
+   metadata about components and various other information about a built
+   artifact. This new file will exist at `ext/build_metadata.json` and contains
+   the version of Vanagon which built the last artifact, a timestamp of when
+   the artifact was created, the version of the artifact that was built, and a
+   list of components with their version information which make up the built
+   artifact.
+
 ## [0.12.2] - released on 2017-06-29
 ### Fixes
 - Previously, we created AIX services once at install, but did not have
@@ -457,7 +467,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.12.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/puppetlabs/vanagon/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/puppetlabs/vanagon/compare/0.12.1...0.12.2
 [0.12.1]: https://github.com/puppetlabs/vanagon/compare/0.12.0...0.12.1
 [0.12.0]: https://github.com/puppetlabs/vanagon/compare/0.11.3...0.12.0
