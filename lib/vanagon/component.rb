@@ -290,7 +290,7 @@ class Vanagon
     end
 
     def get_dependency_hash
-      { name => { 'version' => version, 'ref' => options[:ref] }.delete_if { |_, v| !v } }
+      { name => { 'version' => version, 'url' => url, 'ref' => options[:ref] }.delete_if { |_, v| !v } }
     end
 
     # Fetches secondary sources for the component. These are just dumped into the workdir currently.
