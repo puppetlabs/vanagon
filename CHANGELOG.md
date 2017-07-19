@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.13.1] - released on 2017-07-19
+### Added
+ - Component Url is now reported in the `build_metadata.json` file.
+
 ## [0.13.0] - released on 2017-07-12
 ### Added
  - A metadata file is generated when producing artifacts which contains
@@ -467,7 +471,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.13.1...HEAD
+[0.13.1]: https://github.com/puppetlabs/vanagon/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/puppetlabs/vanagon/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/puppetlabs/vanagon/compare/0.12.1...0.12.2
 [0.12.1]: https://github.com/puppetlabs/vanagon/compare/0.12.0...0.12.1
