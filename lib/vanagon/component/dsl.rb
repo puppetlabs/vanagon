@@ -25,6 +25,30 @@ class Vanagon
         yield(self, @component.settings, @component.platform)
       end
 
+      # Define a gem component with default values. Automatically sets `version`, `url`, `build_requires`,
+      # and `install`. Fixes up the PATH for Windows. Requires `ruby_version`, `gem_path_env`, and
+      # `gem_install` settings.
+      #
+      # @param name [String] name of the gem
+      # @param version [String] name of the componennt
+      # @param block [Proc] DSL definition of the component to call
+      def gem(name, version, &block)
+        self.version version
+        url "https://rubygems.org/gems/#{name}-#{version}.gem"
+
+        build_requires "ruby-#{@component.settings[:ruby_version]}"
+
+        if @component.platform.is_windows?
+          environment "PATH", @component.settings[:gem_path_env]
+        end
+
+        install do
+          "#{@component.settings[:gem_install]} #{name}-#{version}.gem"
+        end
+
+        yield(self, @component.settings, @component.platform) if block_given?
+      end
+
       # Accessor for the component.
       #
       # @return [Vanagon::Component] the component the DSL methods will be acting against
