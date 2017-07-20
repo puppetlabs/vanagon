@@ -1,0 +1,11 @@
+<%- get_activate_triggers.each do |trigger| -%>
+activate <%= trigger %>
+<% end -%>
+
+<%- get_interest_triggers("install").each do |trigger| -%>
+interest <%= trigger.interest_name %>
+<% end -%>
+
+<%-	get_interest_triggers("upgrade").each do |trigger| -%>
+interest <%= trigger.interest_name %>
+<% end -%>

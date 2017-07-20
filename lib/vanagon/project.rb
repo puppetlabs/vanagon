@@ -168,7 +168,7 @@ class Vanagon
     def get_files
       files = []
       files.push @version_file if @version_file
-      files.push @components.map(&:files).flatten
+      files.push components.flat_map(&:files)
       files.flatten.uniq
     end
 
@@ -210,7 +210,7 @@ class Vanagon
     # @return [Array] array of runtime requirements for the project
     def get_requires
       req = []
-      req << @components.map(&:requires).flatten
+      req << components.flat_map(&:requires)
       req << @requires
       req.flatten.uniq
     end
@@ -221,7 +221,7 @@ class Vanagon
     def get_replaces
       replaces = []
       replaces.push @replaces.flatten
-      replaces.push @components.map(&:replaces).flatten
+      replaces.push components.flat_map(&:replaces)
       replaces.flatten.uniq
     end
 
@@ -231,7 +231,7 @@ class Vanagon
 
     # Collects all of the conflicts for the project and its components
     def get_conflicts
-      conflicts = @components.flat_map(&:conflicts) + @conflicts
+      conflicts = components.flat_map(&:conflicts) + @conflicts
       # Mash the whole thing down into a flat Array
       conflicts.flatten.uniq
     end
@@ -248,7 +248,7 @@ class Vanagon
     # @param [string] name of service to grab
     # @return [@component.service obj] specific service
     def get_service(name)
-      @components.each do |component|
+      components.each do |component|
         if component.name == name
           return component.service
         end
@@ -262,7 +262,7 @@ class Vanagon
     def get_provides
       provides = []
       provides.push @provides.flatten
-      provides.push @components.map(&:provides).flatten
+      provides.push components.flat_map(&:provides)
       provides.flatten.uniq
     end
 
@@ -270,15 +270,26 @@ class Vanagon
       !get_provides.empty?
     end
 
-    # Collects the preinstall packaging actions for the project and it's components
-    # for the specified packaging state
+    # Checks that the string pkg_state is valid (install OR upgrade).
+    # Return vanagon error if invalid
+    #
+    # @param pkg_state [String] package state input
+    def check_pkg_state_string(pkg_state)
+      unless ["install", "upgrade"].include? pkg_state
+        raise Vanagon::Error, "#{pkg_state} should be a string containing one of 'install' or 'upgrade'"
+      end
+    end
+
+    # Collects the preinstall packaging actions for the project and its components
+    #  for the specified packaging state
     #
     # @param pkg_state [String] the package state we want to run the given scripts for.
-    #   Can be one or more of 'install' or 'upgrade'
+    #   Can be one of 'install' or 'upgrade'
     # @return [String] string of Bourne shell compatible scriptlets to execute during the preinstall
     #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
     def get_preinstall_actions(pkg_state)
-      scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      check_pkg_state_string(pkg_state)
+      scripts = components.flat_map(&:preinstall_actions).compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no preinstall scripts provided'
       else
@@ -286,16 +297,81 @@ class Vanagon
       end
     end
 
-
-    # Collects the postinstall packaging actions for the project and it's components
-    # for the specified packaging state
+    # Collects the install trigger scripts for the project for the specified packing state
     #
     # @param pkg_state [String] the package state we want to run the given scripts for.
-    #   Can be one or more of 'install' or 'upgrade'
+    #   Can be one of the 'install' or 'upgrade'
+    # @return [Hash] of scriptlets to execute during the pkg_state (install or upgrade)
+    #   there can be more than one script for each package (key)
+    def get_trigger_scripts(pkg_state)
+      triggers = Hash.new { |hsh, key| hsh[key] = [] }
+      check_pkg_state_string(pkg_state)
+      pkgs = components.flat_map(&:install_triggers).compact.select { |s| s.pkg_state.include? pkg_state }
+      pkgs.each do |package|
+        triggers[package.pkg].push package.scripts
+      end
+      triggers
+    end
+
+    # Grabs the install trigger scripts for the specified pkg
+    #
+    # @param pkg [String] the pkg we watch for being installed
+    def get_install_trigger_scripts(pkg)
+      scripts = get_trigger_scripts("install")
+      return scripts[pkg].join("\n")
+    end
+
+    # Grabs the upgrade trigger scripts for the specified pkg
+    #
+    # @param pkg [String] the pkg we watch for being upgraded
+    def get_upgrade_trigger_scripts(pkg)
+      scripts = get_trigger_scripts("upgrade")
+      return scripts[pkg].join("\n")
+    end
+
+    # Grabs all pkgs that have trigger scripts for 'install' and 'upgrade'
+    #
+    # @return [Array] a list of all the pkgs that have trigger scripts
+    def get_all_trigger_pkgs()
+      install_triggers = get_trigger_scripts("install")
+      upgrade_triggers = get_trigger_scripts("upgrade")
+      packages = (install_triggers.keys + upgrade_triggers.keys).uniq
+      return packages
+    end
+
+    # Collects the interest triggers for the project and its scripts for the
+    #  specified packaging state
+    #
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one of 'install' or 'upgrade'
+    # @return [Array] of OpenStructs of all interest triggers for the pkg_state
+    #   Use array of openstructs because we need both interest_name and the scripts
+    def get_interest_triggers(pkg_state)
+      interest_triggers = []
+      check_pkg_state_string(pkg_state)
+      interests = components.flat_map(&:interest_triggers).compact.select { |s| s.pkg_state.include? pkg_state }
+      interests.each do |interest|
+        interest_triggers.push(interest)
+      end
+      interest_triggers.flatten.compact
+    end
+
+    # Collects activate triggers for the project and its components
+    #
+    # @return [Array] of activate triggers
+    def get_activate_triggers()
+      components.flat_map(&:activate_triggers).compact.map(&:activate_name)
+    end
+
+    # Collects the postinstall packaging actions for the project and it's components
+    #  for the specified packaging state
+    #
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #   Can be one of 'install' or 'upgrade'
     # @return [String] string of Bourne shell compatible scriptlets to execute during the postinstall
     #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
     def get_postinstall_actions(pkg_state)
-      scripts = @components.map(&:postinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      scripts = components.flat_map(&:postinstall_actions).compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no postinstall scripts provided'
       else
@@ -311,7 +387,7 @@ class Vanagon
     # @return [String] string of Bourne shell compatible scriptlets to execute during the preremove
     #   phase of packaging during the state of the system defined by pkg_state (either removal or upgrade)
     def get_preremove_actions(pkg_state)
-      scripts = @components.map(&:preremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      scripts = components.flat_map(&:preremove_actions).compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no preremove scripts provided'
       else
@@ -327,7 +403,7 @@ class Vanagon
     # @return [String] string of Bourne shell compatible scriptlets to execute during the postremove
     #   phase of packaging during the state of the system defined by pkg_state (either removal or upgrade)
     def get_postremove_actions(pkg_state)
-      scripts = @components.map(&:postremove_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      scripts = components.flat_map(&:postremove_actions).compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no postremove scripts provided'
       else
@@ -339,7 +415,7 @@ class Vanagon
     #
     # @return [Array] array of configfiles installed by components of the project
     def get_configfiles
-      @components.map(&:configfiles).flatten.uniq
+      components.flat_map(&:configfiles).uniq
     end
 
     def has_configfiles?
@@ -352,7 +428,7 @@ class Vanagon
     def get_directories
       dirs = []
       dirs.push @directories
-      dirs.push @components.map(&:directories).flatten
+      dirs.push components.flat_map(&:directories)
       dirs.flatten.uniq
     end
 
@@ -384,7 +460,7 @@ class Vanagon
     #
     # @return [Array] the services provided by components in the project
     def get_services
-      @components.map(&:service).flatten.compact
+      components.flat_map(&:service).compact
     end
 
     # Simple utility for determining if the components in the project declare
@@ -415,7 +491,7 @@ class Vanagon
     #
     # @return [Array] a listing of component names and versions
     def generate_bill_of_materials
-      @components.map { |comp| "#{comp.name} #{comp.version}" }.sort
+      components.map { |comp| "#{comp.name} #{comp.version}" }.sort
     end
 
     # Method to generate the command to create a tarball of the project
@@ -451,7 +527,7 @@ class Vanagon
     # @param component [Vanagon::Component] component to check for already satisfied build dependencies
     # @return [Array] a list of the build dependencies for the given component that are satisfied by other components in the project
     def list_component_dependencies(component)
-      component.build_requires.select { |dep| @components.map(&:name).include?(dep) }
+      component.build_requires.select { |dep| components.map(&:name).include?(dep) }
     end
 
     # Get the package name for the project on the current platform
@@ -473,7 +549,7 @@ class Vanagon
     #
     # @param workdir [String] workdir to put the packaging files into
     def generate_packaging_artifacts(workdir)
-      @platform.generate_packaging_artifacts(workdir, @name, binding)
+      @platform.generate_packaging_artifacts(workdir, @name, binding, self)
     end
 
     # Generate a json hash which lists all of the dependant components of the
@@ -482,7 +558,7 @@ class Vanagon
     # @return [Hash] where the top level keys are components and their values
     #   are hashes with additional information on the component.
     def generate_dependencies_info
-      @components.each_with_object({}) do |component, hsh|
+      components.each_with_object({}) do |component, hsh|
         hsh.merge!(component.get_dependency_hash)
       end
     end

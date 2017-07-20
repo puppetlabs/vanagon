@@ -337,7 +337,7 @@ end" }
   end
 
   describe '#add_actions' do
-    it 'adds the corect preinstall action to the component' do
+    it 'adds the correct preinstall action to the component' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
       comp.add_preinstall_action(['install', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_preinstall_action('install', 'echo "hello, world"')
@@ -363,6 +363,64 @@ end" }
     it 'fails with empty preinstall action' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
       expect { comp.add_preinstall_action([], '/bin/true') }.to raise_error(Vanagon::Error)
+    end
+
+    # trigger spec testing
+    it 'adds the correct trigger action to the component' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      comp.add_rpm_install_triggers(['install', 'upgrade'], ['chkconfig --list', '/bin/true'], 'puppet-agent')
+      comp.add_rpm_install_triggers('install', 'echo "hello, world"', 'puppet-agent')
+      expect(comp._component.install_triggers.count).to eq(2)
+      expect(comp._component.install_triggers.first.scripts.count).to eq(2)
+      expect(comp._component.install_triggers.first.pkg_state.count).to eq(2)
+      expect(comp._component.install_triggers.first.pkg_state.first).to eq('install')
+      expect(comp._component.install_triggers.first.pkg_state.last).to eq('upgrade')
+      expect(comp._component.install_triggers.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.install_triggers.first.scripts.last).to eq('/bin/true')
+      expect(comp._component.install_triggers.first.pkg).to eq ('puppet-agent')
+
+      expect(comp._component.install_triggers.last.scripts.count).to eq(1)
+      expect(comp._component.install_triggers.last.pkg_state.count).to eq(1)
+      expect(comp._component.install_triggers.last.pkg_state.first).to eq('install')
+      expect(comp._component.install_triggers.last.scripts.first).to eq('echo "hello, world"')
+      expect(comp._component.install_triggers.last.pkg).to eq('puppet-agent')
+    end
+
+    it 'fails with bad install trigger action' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      expect { comp.add_rpm_install_triggers('foo', '/bin/true', 'puppet-agent') }.to raise_error(Vanagon::Error)
+    end
+
+    it 'fails with empty install trigger action' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+      expect { comp.add_rpm_install_triggers([], '/bin/true', 'puppet-agent') }.to raise_error(Vanagon::Error)
+    end
+
+    it 'adds debian interest triggers' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, '')
+      comp.add_debian_interest_triggers(['install', 'upgrade'], ['chkconfig --list', '/bin/true'], 'puppet-agent-interest')
+      comp.add_debian_interest_triggers('install', 'echo "hello, world"', 'puppet-agent-interest')
+      expect(comp._component.interest_triggers.count).to eq(2)
+      expect(comp._component.interest_triggers.first.scripts.count).to eq(2)
+      expect(comp._component.interest_triggers.first.pkg_state.count).to eq(2)
+      expect(comp._component.interest_triggers.first.pkg_state.first).to eq('install')
+      expect(comp._component.interest_triggers.first.pkg_state.last).to eq('upgrade')
+      expect(comp._component.interest_triggers.first.scripts.first).to eq('chkconfig --list')
+      expect(comp._component.interest_triggers.first.scripts.last).to eq('/bin/true')
+      expect(comp._component.interest_triggers.first.interest_name).to eq ('puppet-agent-interest')
+
+      expect(comp._component.interest_triggers.last.scripts.count).to eq(1)
+      expect(comp._component.interest_triggers.last.pkg_state.count).to eq(1)
+      expect(comp._component.interest_triggers.last.pkg_state.first).to eq('install')
+      expect(comp._component.interest_triggers.last.scripts.first).to eq('echo "hello, world"')
+      expect(comp._component.interest_triggers.last.interest_name).to eq('puppet-agent-interest')
+    end
+
+    it 'adds debian activate triggers' do
+      comp = Vanagon::Component::DSL.new('action-test', {}, '')
+      comp.add_debian_activate_triggers('puppet-agent-activate')
+      expect(comp._component.activate_triggers.count).to eq(1)
+      expect(comp._component.activate_triggers.first.activate_name).to eq ('puppet-agent-activate')
     end
 
     it 'adds the corect postinstall action to the component' do
@@ -393,7 +451,7 @@ end" }
       expect { comp.add_postinstall_action([], '/bin/true') }.to raise_error(Vanagon::Error)
     end
 
-    it 'adds the corect preremove action to the component' do
+    it 'adds the correct preremove action to the component' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
       comp.add_preremove_action(['removal', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_preremove_action('removal', 'echo "hello, world"')
