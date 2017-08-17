@@ -107,7 +107,7 @@ class Vanagon
           when "xz"
             %(unxz "#{file}")
           when "zip"
-            "unzip -d '#{File.basename(file, '.zip')}' '#{file}' || 7za x -r -tzip -o'#{File.basename(file, '.zip')}' '#{file}'"
+            "unzip -d '#{File.basename(file, '.zip')}' '#{file}' || 7za x -r -tzip -o'#{File.basename(file, '.zip')}' '#{file}' || 7z x -r -tzip -o'#{File.basename(file, '.zip')}' '#{file}'"
           else
             raise Vanagon::Error, "Don't know how to decompress #{extension} archives"
           end
