@@ -26,7 +26,7 @@ group(:development, :test) do
   gem 'packaging', github: 'puppetlabs/packaging', branch: 'master'
   gem 'rake', require: false
   gem 'rspec', '~> 3.0', require: false
-  gem 'rubocop', "~> 0.47", require: false
+  gem 'rubocop', "~> 0.49.1", require: false
   gem 'simplecov', require: false
   gem 'yard', require: false
 end
