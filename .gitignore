@@ -8,6 +8,8 @@ Gemfile.local
 .bundle/
 .rspec
 
+vanagon_hosts.log
+
 /.project
 .idea/
 .ruby-version

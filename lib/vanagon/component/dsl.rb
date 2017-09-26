@@ -416,19 +416,59 @@ class Vanagon
         eos
       end
 
+      # Checks that the array of pkg_state is valid (install AND/OR upgrade).
+      # Returns vanagon error if invalid
+      #
+      # @param pkg_state [Array] array of pkg_state input to test
+      def check_pkg_state_array(pkg_state)
+        if pkg_state.empty? || (pkg_state - ["install", "upgrade"]).any?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+        end
+      end
+
       # Adds action to run during the preinstall phase of packaging
       #
-      # @param pkg_state [Array] the state in which the scripts should execute. Can be
-      #   one or multiple of 'install' and 'upgrade'.
+      # @param pkg_state [String, Array] the package state during which the scripts should execute.
+      #   Accepts either a single string ("install" or "upgrade"), or an Array of Strings (["install", "upgrade"]).
       # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
       def add_preinstall_action(pkg_state, scripts)
         pkg_state = Array(pkg_state)
         scripts = Array(scripts)
-
-        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
-          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
-        end
+        check_pkg_state_array(pkg_state)
         @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
+      end
+
+      # Adds trigger for scripts to be run on specified pkg_state.
+      #
+      # @param pkg_state [String, Array] the package state during which the scripts should execute.
+      #   Accepts either a single string ("install" or "upgrade"), or an Array of Strings (["install", "upgrade"]).
+      # @param scripts [Array] the rpm pkg scriptlet(s) to execute
+      # @param pkg [String] the package the trigger will be set in
+      def add_rpm_install_triggers(pkg_state, scripts, pkg)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+        check_pkg_state_array(pkg_state)
+        @component.install_triggers << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts, :pkg => pkg)
+      end
+
+      # Adds interest trigger based on the specified packaging state and interest name.
+      #
+      # @param pkg_state [String, Array] the package state during which the scripts should execute.
+      #   Accepts either a single string ("install" or "upgrade"), or an Array of Strings (["install", "upgrade"]).
+      # @param scripts [Array] the scripts to run for the interest trigger
+      # @param interest_name [String] the name of the interest trigger
+      def add_debian_interest_triggers(pkg_state, scripts, interest_name)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+        check_pkg_state_array(pkg_state)
+        @component.interest_triggers << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts, :interest_name => interest_name)
+      end
+
+      # Adds activate trigger name to be watched
+      #
+      # @param activate_name [String] the activate trigger name
+      def add_debian_activate_triggers(activate_name)
+        @component.activate_triggers << OpenStruct.new(:activate_name => activate_name)
       end
 
       # Adds action to run during the postinstall phase of packaging
@@ -439,10 +479,7 @@ class Vanagon
       def add_postinstall_action(pkg_state, scripts)
         pkg_state = Array(pkg_state)
         scripts = Array(scripts)
-
-        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
-          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
-        end
+        check_pkg_state_array(pkg_state)
         @component.postinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 

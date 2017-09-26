@@ -81,7 +81,8 @@ class Vanagon
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
-      def generate_packaging_artifacts(workdir, name, binding)
+      # @param project [Vanagon::Project] Vanagon::Project we are building for
+      def generate_packaging_artifacts(workdir, name, binding, project)
         ["pkginfo", "depend", "preinstall", "preremove", "postinstall", "proto"].each do |template|
           target_dir = File.join(workdir, 'packaging')
           FileUtils.mkdir_p(target_dir)

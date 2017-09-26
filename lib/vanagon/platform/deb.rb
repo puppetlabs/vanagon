@@ -29,9 +29,14 @@ class Vanagon
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
-      def generate_packaging_artifacts(workdir, name, binding)
+      # @param project [Vanagon::Project] Vanagon::Project we are building for
+      def generate_packaging_artifacts(workdir, name, binding, project) # rubocop:disable Metrics/AbcSize
         deb_dir = File.join(workdir, "debian")
         FileUtils.mkdir_p(deb_dir)
+
+        unless project.get_interest_triggers("install").empty? && project.get_interest_triggers("upgrade").empty? && project.get_activate_triggers.empty?
+          erb_file(File.join(VANAGON_ROOT, "resources/deb/triggers.erb"), File.join(deb_dir, "#{name}.triggers"), false, { :binding => binding })
+        end
 
         # Lots of templates here
         ["changelog", "conffiles", "control", "docs", "dirs", "install", "preinst", "postinst", "postrm", "prerm", "rules"].each do |deb_file|

@@ -64,7 +64,8 @@ class Vanagon
       # @param workdir [String] working directory to stage the evaluated templates in
       # @param name [String] name of the project
       # @param binding [Binding] binding to use in evaluating the packaging templates
-      def generate_packaging_artifacts(workdir, name, binding) # rubocop:disable Metrics/AbcSize
+      # @param project [Vanagon::Project] Vanagon::Project we are building for
+      def generate_packaging_artifacts(workdir, name, binding, project) # rubocop:disable Metrics/AbcSize
         resources_dir = File.join(workdir, "resources", "osx")
         FileUtils.mkdir_p(resources_dir)
         script_dir = File.join(workdir, "scripts")

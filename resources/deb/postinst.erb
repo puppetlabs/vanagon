@@ -44,6 +44,21 @@ fi
   <%- end -%>
 <%- end -%>
 
+# Run trigger scripts on install if defined
+if [ $1 = triggered ] && [ -z $2 ]; then
+<%- get_interest_triggers("install").each do |trigger| -%>
+<%= trigger.scripts.join("\n") %>
+<%- end -%>
+fi
+
+if [ $1 = triggered ]&& [ -n $2 ]; then
+<%- get_interest_triggers("upgrade").each do |trigger| -%>
+# Run trigger scripts on upgrade if defined
+  <%= trigger.scripts.join("\n") %>
+<%- end -%>
+fi
+
+
 # Run postinstall scripts on install if defined
 if [ $1 = configure ] && [ -z $2 ] ; then
   <%= get_postinstall_actions("install") %>

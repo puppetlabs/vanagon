@@ -10,6 +10,15 @@ describe 'Vanagon::Project' do
     proj.component 'some-component'
     end"
   }
+  let (:dummy_platform_sysv) {
+    plat = Vanagon::Platform::DSL.new('debian-6-i386')
+    plat.instance_eval("platform 'debian-6-i386' do |plat|
+                       plat.servicetype 'sysv'
+                       plat.servicedir '/etc/init.d'
+                       plat.defaultdir '/etc/default'
+                    end")
+    plat._platform
+  }
 
 
   describe '#get_root_directories' do
@@ -113,6 +122,55 @@ describe 'Vanagon::Project' do
       @proj.components << comp2
       @proj.components << comp3
       expect(@proj.filter_component(comp1.name)).to eq([comp1, comp2, comp3])
+    end
+  end
+
+  describe '#get_preinstall_actions' do
+    it "Collects the preinstall actions for the specified package state" do
+      proj = Vanagon::Project.new('action-test', {})
+      proj.get_preinstall_actions('upgrade')
+      proj.get_preinstall_actions('install')
+      expect(proj.get_preinstall_actions('install')).to be_instance_of(String)
+    end
+  end
+
+  describe '#get_trigger_scripts' do
+    it "Collects the install triggers for the project for the specified packing state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_trigger_scripts('install')).to eq({})
+      expect(proj.get_trigger_scripts('upgrade')).to be_instance_of(Hash)
+    end
+    it 'fails with empty install trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_trigger_scripts([]) }.to raise_error(Vanagon::Error)
+    end
+    it 'fails with incorrect install trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_trigger_scripts('foo') }.to raise_error(Vanagon::Error)
+    end
+  end
+
+  describe '#get_interest_triggers' do
+    it "Collects the interest triggers for the project for the specified packaging state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_interest_triggers('install')).to eq([])
+      expect(proj.get_interest_triggers('upgrade')).to be_instance_of(Array)
+    end
+    it 'fails with empty interest trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_interest_triggers([]) }.to raise_error(Vanagon::Error)
+    end
+    it 'fails with incorrect interest trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_interest_triggers('foo') }.to raise_error(Vanagon::Error)
+    end
+  end
+
+  describe '#get_activate_triggers' do
+    it "Collects the activate triggers for the project for the specified packaging state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_activate_triggers()).to be_instance_of(Array)
+      expect(proj.get_activate_triggers()).to be_instance_of(Array)
     end
   end
 

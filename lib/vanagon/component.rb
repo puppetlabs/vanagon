@@ -92,6 +92,15 @@ class Vanagon
     # preinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed before a given component is installed.
     attr_accessor :preinstall_actions
+    # install_triggers is a one-dimensional Array of OpenStructs, describing scripts that
+    # should be executed when a package is installed or upgraded
+    attr_accessor :install_triggers
+    # interest_triggers is a one-dimensional Array of OpenStructs, describing scripts that
+    # should be executed when a package identifies an interest trigger
+    attr_accessor :interest_triggers
+    # activate_triggers is a one-dimentional Array of Strings, describing scripts that
+    # should be executed when a package identifies an activate trigger
+    attr_accessor :activate_triggers
     # postinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed after a given component is installed.
     attr_accessor :postinstall_actions
@@ -152,6 +161,9 @@ class Vanagon
       @environment = Vanagon::Environment.new
       @sources = []
       @preinstall_actions = []
+      @install_triggers = []
+      @interest_triggers = []
+      @activate_triggers = []
       @postinstall_actions = []
       @preremove_actions = []
       @postremove_actions = []
