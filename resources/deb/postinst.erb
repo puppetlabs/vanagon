@@ -49,13 +49,15 @@ if [ $1 = triggered ] && [ -z $2 ]; then
 <%- get_interest_triggers("install").each do |trigger| -%>
 <%= trigger.scripts.join("\n") %>
 <%- end -%>
+: # no trigger scripts provided
 fi
 
+# Run trigger scripts on upgrade if defined
 if [ $1 = triggered ]&& [ -n $2 ]; then
 <%- get_interest_triggers("upgrade").each do |trigger| -%>
-# Run trigger scripts on upgrade if defined
   <%= trigger.scripts.join("\n") %>
 <%- end -%>
+: # no trigger scripts provided
 fi
 
 
