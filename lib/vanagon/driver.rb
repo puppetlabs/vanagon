@@ -129,11 +129,15 @@ class Vanagon
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
 
-      unless @preserve
+      if %i[never on-failure].include? @preserve
         @engine.teardown
         cleanup_workdir
       end
     rescue => e
+      if [:never].include? @preserve
+        @engine.teardown
+        cleanup_workdir
+      end
       $stderr.puts e
       $stderr.puts e.backtrace.join("\n")
       raise e

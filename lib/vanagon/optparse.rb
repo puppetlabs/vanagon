@@ -2,40 +2,86 @@ require 'optparse'
 
 class Vanagon
   class OptParse
-    FLAGS = {
-        :workdir => ['-w DIR', '--workdir DIR', "Working directory where build source should be put (defaults to a tmpdir)"],
-        :"remote-workdir" => ['-r DIR', '--remote-workdir DIR', "Working directory where build source should be put on the remote host (defaults to a tmpdir)"],
-        :configdir => ['-c', '--configdir DIR', 'Configs dir (defaults to $pwd/configs)'],
-        :target => ['-t HOST', '--target HOST', 'Configure a target machine for build and packaging (defaults to grabbing one from the pooler)'],
-        :engine => ['-e ENGINE', '--engine ENGINE', "A custom engine to use (defaults to the pooler) [base, local, docker, pooler currently supported]"],
-        :skipcheck => ['--skipcheck', 'Skip the `check` stage when building components'],
-        :preserve => ['-p', '--preserve', 'Whether to tear down the VM on success or not (defaults to false)'],
-        :verbose => ['-v', '--verbose', 'Verbose output (does nothing)'],
-        :only_build => ["--only-build COMPONENT,COMPONENT,...", Array, 'Only build this array of components']
-      }.freeze
+    def initialize(banner, symbols = []) # rubocop:disable Metrics/AbcSize
+      ## symbols array kept for backward compatibility but ignored
 
-    def initialize(banner, options = [])
-      @options = Hash[options.map { |v| [v, nil] }]
-      @optparse = OptionParser.new do |opts|
+      @options = Hash.new
+      @options[:preserve] = :never
+
+      @option_parser = OptionParser.new do |opts| # rubocop:disable Metrics/BlockLength
         opts.banner = banner
+        opts.separator ""
+        opts.separator "Options:"
 
-        FLAGS.each_pair do |name, args|
-          if @options.include?(name)
-            opts.on(*args) do |value|
-              @options[name] = value
-            end
+        opts.on("-h",
+                "--help",
+                "Display help") do
+          $stdout.puts opts
+          exit 1
+        end
+
+        opts.on("-v",
+                "--verbose",
+                "Verbose output (does nothing)") do |verbose|
+          @options[:verbose] = verbose
+        end
+
+        opts.on("-w DIRECTORY",
+                "--workdir DIRECTORY",
+                "Working directory on the local host (defaults to calling mktemp)") do |workdir|
+          @options[:workdir] = workdir
+        end
+
+        opts.on("-r DIRECTORY",
+                "--remote-workdir DIRECTORY",
+                "Working directory on the remote host (defaults to calling mktemp)") do |remote|
+          @options[:"remote-workdir"] = remote
+        end
+
+        opts.on("-c DIRECTORY",
+                "--configdir DIRECTORY",
+                "Configuration directory (defaults to $CWD/configs)") do |configuration_directory|
+          @options[:configdir] = configuration_directory
+        end
+
+        opts.on("-t HOST",
+                "--target HOST",
+                "Name of target machine for build and packaging (defaults to requesting from the pooler)") do |target|
+          @options[:target] = target
+        end
+
+        opts.on("-e ENGINE",
+                "--engine ENGINE",
+                "Custom engine to use [base, local, docker, pooler] (defaults to \"pooler\")") do |engine|
+          @options[:engine] = engine
+        end
+
+        opts.on("--skipcheck",
+                "Skip the \"check\" stage when building components") do |skipcheck|
+          @options[:skipcheck] = skipcheck
+        end
+
+        opts.on("-p [RULE]",
+                "--preserve [RULE]",
+                ["never", "on-failure", "always"],
+                "Rule for VM preservation. [never, on-failure, always]") do |rule|
+          if rule.nil?
+            @options[:preserve] = :always
+          else
+            @options[:preserve] = rule.to_sym
           end
         end
 
-        opts.on('-h', '--help', 'Display help') do
-          $stdout.puts opts
-          exit 1
+        opts.on("--only-build COMPONENT,COMPONENT,...",
+                Array,
+                "Only build listed COMPONENTs") do |components|
+          @options[:only_build] = components
         end
       end
     end
 
     def parse!(args)
-      @optparse.parse!(args)
+      @option_parser.parse!(args)
       @options
     end
 
