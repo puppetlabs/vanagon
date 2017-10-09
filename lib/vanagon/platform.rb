@@ -446,6 +446,8 @@ class Vanagon
       target_directory = project.repo ? output_dir(project.repo) : output_dir
       name_and_version = "#{project.name}-#{project.version}"
       archive_directory = "#{project.name}-archive"
+      metadata = project.build_manifest_json(true)
+      metadata.gsub!(/\n/, '\n')
       [
         "mkdir -p output/#{target_directory}",
         "mkdir #{archive_directory}",
@@ -453,6 +455,9 @@ class Vanagon
         "rm #{name_and_version}.tar.gz",
         "#{tar} cf #{name_and_version}.tar -C #{archive_directory}/#{name_and_version} `#{find} #{archive_directory}/#{name_and_version} -maxdepth 1 -mindepth 1 -type d | sed -e 's|#{archive_directory}/#{name_and_version}/||'`",
         "gzip -9c #{name_and_version}.tar > #{name_and_version}.tar.gz",
+        "echo -e \"#{metadata}\" > output/#{target_directory}/#{name_and_version}.json",
+        "cp bill-of-materials output/#{target_directory}/#{name_and_version}-bill-of-materials ||:",
+        "cp #{name_and_version}.tar.gz output/#{target_directory}"
       ]
     end
 
