@@ -222,6 +222,16 @@ describe 'Vanagon::Project' do
         'build_time' => '2017-07-10T13:34:25-07:00',
       })
     end
+
+    it 'should call pretty-print when we want pretty json' do
+      comp1 = Vanagon::Component.new('test-component1', {}, {})
+      comp1.version = '1.0.0'
+      @proj.components << comp1
+      @proj.version = '123abcde'
+
+      expect(JSON).to receive(:pretty_generate)
+      @proj.build_manifest_json(true)
+    end
   end
 
   describe '#generate_package' do

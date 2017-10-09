@@ -585,7 +585,7 @@ class Vanagon
     #
     # @return [Hash] of information which is useful to know about how a package
     #   was built and what went into the package.
-    def build_manifest_json
+    def build_manifest_json(pretty = false)
       manifest = {
         "packaging_type" => {
           "vanagon" => VANAGON_VERSION,
@@ -594,6 +594,11 @@ class Vanagon
         "components" => generate_dependencies_info,
         "build_time" => BUILD_TIME,
       }
+      if pretty
+        JSON.pretty_generate(manifest)
+      else
+        manifest
+      end
     end
 
     # Writes a json file at `ext/build_metadata.json` containing information
@@ -601,9 +606,9 @@ class Vanagon
     #
     # @return [Hash] of build information
     def save_manifest_json
-      manifest = build_manifest_json
+      manifest = build_manifest_json(true)
       File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
-        f.write(JSON.pretty_generate(manifest))
+        f.write(manifest)
       end
     end
   end
