@@ -83,6 +83,13 @@ class Vanagon
     # Should we include source packages?
     attr_accessor :source_artifacts
 
+    # Should we include platform-specific archives as final outputs
+    # probably gzipped tarball for *nix, and probably 7z for win
+    attr_accessor :compiled_archive
+
+    # Should we generate platform-specific packages (rpm, deb, dmg, msi, etc)
+    attr_accessor :generate_packages
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -109,7 +116,7 @@ class Vanagon
     # @param name [String] name of the project
     # @param platform [Vanagon::Platform] platform for the project to be built for
     # @return [Vanagon::Project] the project with the given name and platform
-    def initialize(name, platform)
+    def initialize(name, platform) # rubocop:disable Metrics/AbcSize
       @name = name
       @components = []
       @requires = []
@@ -125,6 +132,8 @@ class Vanagon
       @conflicts = []
       @package_overrides = []
       @source_artifacts = false
+      @compiled_archive = false
+      @generate_packages = true
     end
 
     # Magic getter to retrieve settings in the project
@@ -541,7 +550,14 @@ class Vanagon
     #
     # @return [String, Array] commands to build a package for the current project as defined by the platform
     def generate_package
-      @platform.generate_package(self)
+      cmds = []
+      if generate_packages
+        cmds << @platform.generate_package(self)
+      end
+      if compiled_archive
+        cmds << @platform.generate_compiled_archive(self)
+      end
+      cmds.flatten
     end
 
     # Generate any required files to build a package for this project on the

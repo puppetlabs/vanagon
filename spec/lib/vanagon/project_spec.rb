@@ -20,7 +20,6 @@ describe 'Vanagon::Project' do
     plat._platform
   }
 
-
   describe '#get_root_directories' do
 
     before do
@@ -222,6 +221,44 @@ describe 'Vanagon::Project' do
         'components' => { 'test-component1' => { 'version' => '1.0.0' } },
         'build_time' => '2017-07-10T13:34:25-07:00',
       })
+    end
+  end
+
+  describe '#generate_package' do
+    it "builds packages by default" do
+      platform = Vanagon::Platform::DSL.new('el-7-x86_64')
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
+      expect(proj._project.generate_package).to eq(["# making a package"])
+    end
+
+    it "builds packages and archives if configured for both" do
+      platform = Vanagon::Platform::DSL.new('el-7-x86_64')
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj.generate_archives(true)
+      expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
+      expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
+      expect(proj._project.generate_package).to eq(["# making a package", "# making an archive"])
+    end
+
+    it "can build only archives" do
+      platform = Vanagon::Platform::DSL.new('el-7-x86_64')
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj.generate_archives(true)
+      proj.generate_packages(false)
+      expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
+      expect(proj._project.generate_package).to eq(["# making an archive"])
+    end
+
+    it "builds nothing if that's what you really want" do
+      platform = Vanagon::Platform::DSL.new('el-7-x86_64')
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj.generate_packages(false)
+      expect(proj._project.generate_package).to eq([])
     end
   end
 end

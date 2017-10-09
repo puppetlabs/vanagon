@@ -435,6 +435,27 @@ class Vanagon
       end
     end
 
+    # Save the generic compiled archive and relevant metadata as packaging
+    # output. This will include a json file with all of the components/versions
+    # that were built and a bill of materials when relevant. The archive will be
+    # a gzipped tarball.
+    #
+    # @param project The Vanagon::Project to run this on
+    # @return array of commands to be run
+    def generate_compiled_archive(project)
+      target_directory = project.repo ? output_dir(project.repo) : output_dir
+      name_and_version = "#{project.name}-#{project.version}"
+      archive_directory = "#{project.name}-archive"
+      [
+        "mkdir -p output/#{target_directory}",
+        "mkdir #{archive_directory}",
+        "gunzip -c #{name_and_version}.tar.gz | '#{tar}' -C #{archive_directory} -xf -",
+        "rm #{name_and_version}.tar.gz",
+        "#{tar} cf #{name_and_version}.tar -C #{archive_directory}/#{name_and_version} `#{find} #{archive_directory}/#{name_and_version} -maxdepth 1 -mindepth 1 -type d | sed -e 's|#{archive_directory}/#{name_and_version}/||'`",
+        "gzip -9c #{name_and_version}.tar > #{name_and_version}.tar.gz",
+      ]
+    end
+
     # Set the command to turn the target machine into a builder for vanagon
     #
     # @param command [String] Command to enable the target machine to build packages for the platform

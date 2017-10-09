@@ -157,6 +157,20 @@ class Vanagon
         @project.source_artifacts = source_artifacts
       end
 
+      # Generate os-specific packaging artifacts (rpm, deb, etc)
+      #
+      # @param pkg [Boolean] whether or not to output packages
+      def generate_packages(pkg)
+        @project.generate_packages = pkg
+      end
+
+      # Output os-specific archives containing the binary output
+      #
+      # @param archive [Boolean] whether or not to output archives
+      def generate_archives(archive)
+        @project.compiled_archive = archive
+      end
+
       # Sets the version for the project based on a git describe of the
       # directory that holds the configs. Requires that a git tag be present
       # and reachable from the current commit in that repository.
