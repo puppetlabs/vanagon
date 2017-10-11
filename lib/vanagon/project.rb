@@ -83,6 +83,13 @@ class Vanagon
     # Should we include source packages?
     attr_accessor :source_artifacts
 
+    # Should we include platform-specific archives as final outputs
+    # probably gzipped tarball for *nix, and probably 7z for win
+    attr_accessor :compiled_archive
+
+    # Should we generate platform-specific packages (rpm, deb, dmg, msi, etc)
+    attr_accessor :generate_packages
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -109,7 +116,7 @@ class Vanagon
     # @param name [String] name of the project
     # @param platform [Vanagon::Platform] platform for the project to be built for
     # @return [Vanagon::Project] the project with the given name and platform
-    def initialize(name, platform)
+    def initialize(name, platform) # rubocop:disable Metrics/AbcSize
       @name = name
       @components = []
       @requires = []
@@ -125,6 +132,8 @@ class Vanagon
       @conflicts = []
       @package_overrides = []
       @source_artifacts = false
+      @compiled_archive = false
+      @generate_packages = true
     end
 
     # Magic getter to retrieve settings in the project
@@ -541,7 +550,14 @@ class Vanagon
     #
     # @return [String, Array] commands to build a package for the current project as defined by the platform
     def generate_package
-      @platform.generate_package(self)
+      cmds = []
+      if generate_packages
+        cmds << @platform.generate_package(self)
+      end
+      if compiled_archive
+        cmds << @platform.generate_compiled_archive(self)
+      end
+      cmds.flatten
     end
 
     # Generate any required files to build a package for this project on the
@@ -569,7 +585,7 @@ class Vanagon
     #
     # @return [Hash] of information which is useful to know about how a package
     #   was built and what went into the package.
-    def build_manifest_json
+    def build_manifest_json(pretty = false)
       manifest = {
         "packaging_type" => {
           "vanagon" => VANAGON_VERSION,
@@ -578,6 +594,11 @@ class Vanagon
         "components" => generate_dependencies_info,
         "build_time" => BUILD_TIME,
       }
+      if pretty
+        JSON.pretty_generate(manifest)
+      else
+        manifest
+      end
     end
 
     # Writes a json file at `ext/build_metadata.json` containing information
@@ -585,9 +606,9 @@ class Vanagon
     #
     # @return [Hash] of build information
     def save_manifest_json
-      manifest = build_manifest_json
+      manifest = build_manifest_json(true)
       File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
-        f.write(JSON.pretty_generate(manifest))
+        f.write(manifest)
       end
     end
   end

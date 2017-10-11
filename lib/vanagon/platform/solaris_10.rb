@@ -48,7 +48,6 @@ class Vanagon
 
           bom_install,
 
-          "rm #{name_and_version}.tar.gz",
           "cp -r packaging $(tempdir)/",
 
           # Here we are tweaking file/dir ownership and perms in the following ways
