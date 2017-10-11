@@ -292,4 +292,88 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe).to eq(["[ -d /foo/bar ] && rm -r /foo/bar", "[ -e leatherman-unpack ] && rm leatherman-unpack"])
     end
   end
+
+  describe "With `Vanagon::Component.install_only = true`" do
+    before do
+      component.install_only = true
+    end
+
+    context "the component rule" do
+      it "depends on the component-install rule" do
+        rule = subject.component_rule
+        expect(rule.dependencies).to eq(["leatherman-install"])
+      end
+    end
+
+    context "the install rule" do
+      let(:rule) { subject.install_rule }
+
+      it { expect(rule.dependencies).to be_empty }
+
+      it "does nothing when the install step is empty" do
+        expect(rule.recipe.size).to eq 1
+      end
+
+      it "runs all of the install commands when given" do
+        component.install = ["make install", "make reallyinstall"]
+        expect(rule.recipe.first).to eq(
+          [
+            "make install",
+            "make reallyinstall",
+          ].join(" && \\\n")
+        )
+      end
+
+      it "sets environment variables before running the install steps" do
+        component.install = ["make install", "make reallyinstall"]
+        component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
+        expect(rule.recipe.first).to eq(
+          [
+            'export PATH="/opt/pl-build-tools/bin:$(PATH)"',
+            "make install",
+            "make reallyinstall"
+          ].join(" && \\\n")
+        )
+      end
+
+      it_behaves_like "a rule that touches the target file"
+    end
+
+    context "the clean rule" do
+      let(:rule) { subject.clean_rule }
+
+      it { expect(rule.dependencies).to be_empty }
+
+      it "runs a `make clean` in the build dir" do
+        expect(rule.recipe.first).to eq '[ -d /foo/bar ] && cd /foo/bar && /usr/bin/make clean'
+      end
+
+      it "remotes the touch files for the configure, build, and install steps" do
+        %w[configure build install].each_with_index do |type, i|
+          touchfile = "leatherman-#{type}"
+          expect(rule.recipe[i + 1]).to eq "[ -e #{touchfile} ] && rm #{touchfile}"
+        end
+      end
+    end
+
+    context "the clobber rule" do
+      let(:rule) { subject.clobber_rule }
+
+      it { expect(rule.dependencies).to eq(['leatherman-clean']) }
+
+      it "removes the source directory and unpack touchfile" do
+        expect(rule.recipe).to eq(["[ -d /foo/bar ] && rm -r /foo/bar", "[ -e leatherman-unpack ] && rm leatherman-unpack"])
+      end
+    end
+
+    context "the clobber rule" do
+      let(:rule) { subject.clobber_rule }
+
+      it { expect(rule.dependencies).to eq(['leatherman-clean']) }
+
+      it "removes the source directory and unpack touchfile" do
+        expect(rule.recipe).to eq(["[ -d /foo/bar ] && rm -r /foo/bar", "[ -e leatherman-unpack ] && rm leatherman-unpack"])
+      end
+    end
+  end
 end

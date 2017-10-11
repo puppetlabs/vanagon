@@ -516,6 +516,10 @@ class Vanagon
       def license(license)
         @component.license = license
       end
+
+      def install_only(install_only)
+        @component.install_only = install_only
+      end
     end
   end
 end
