@@ -47,8 +47,8 @@ class Vanagon
       # in the returned rules.
       #
       # @return [Array<Makefile::Rule>]
-      def rules
-        list = [
+      def rules # rubocop:disable Metrics/AbcSize
+        list_of_rules = [
           component_rule,
           unpack_rule,
           patch_rule,
@@ -59,11 +59,20 @@ class Vanagon
           clean_rule,
           clobber_rule,
         ]
+
+        if component.install_only
+          list_of_rules = [
+            component_rule,
+            install_rule,
+            clean_rule,
+            clobber_rule,
+          ]
+        end
         if project.cleanup
-          list << cleanup_rule
+          list_of_rules << cleanup_rule
         end
 
-        list
+        list_of_rules
       end
 
       # Generate a top level rule to build this component.
@@ -148,13 +157,20 @@ class Vanagon
 
       # Install this component.
       rule("install") do |r|
-        r.dependencies = ["#{component.name}-check"]
+        r.dependencies = ["#{component.name}-check"] unless component.install_only
         unless component.install.empty?
-          r.recipe << andand_multiline(
-            component.environment_variables,
-            "cd #{component.get_build_dir}",
-            component.install
-          )
+          if component.install_only
+            r.recipe << andand_multiline(
+              component.environment_variables,
+              component.install
+            )
+          else
+            r.recipe << andand_multiline(
+              component.environment_variables,
+              "cd #{component.get_build_dir}",
+              component.install
+            )
+          end
         end
 
         after_install_patches = component.patches.select { |patch| patch.after == "install" }
