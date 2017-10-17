@@ -37,6 +37,10 @@ describe Vanagon::OptParse do
         end
       end
     end
+    it "preserve defaults to :on-failure" do
+      subject = described_class.new("test")
+      expect(subject.parse!([])).to include(:preserve => :'on-failure')
+    end
   end
 
 
