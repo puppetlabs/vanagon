@@ -443,21 +443,21 @@ class Vanagon
     # @param project The Vanagon::Project to run this on
     # @return array of commands to be run
     def generate_compiled_archive(project)
-      target_directory = project.repo ? output_dir(project.repo) : output_dir
       name_and_version = "#{project.name}-#{project.version}"
+      name_and_version_and_platform = "#{name_and_version}.#{name}"
       archive_directory = "#{project.name}-archive"
       metadata = project.build_manifest_json(true)
       metadata.gsub!(/\n/, '\n')
       [
-        "mkdir -p output/#{target_directory}",
+        "mkdir output",
         "mkdir #{archive_directory}",
         "gunzip -c #{name_and_version}.tar.gz | '#{tar}' -C #{archive_directory} -xf -",
         "rm #{name_and_version}.tar.gz",
-        "#{tar} cf #{name_and_version}.tar -C #{archive_directory}/#{name_and_version} `#{find} #{archive_directory}/#{name_and_version} -maxdepth 1 -mindepth 1 -type d | sed -e 's|#{archive_directory}/#{name_and_version}/||'`",
-        "gzip -9c #{name_and_version}.tar > #{name_and_version}.tar.gz",
-        "echo -e \"#{metadata}\" > output/#{target_directory}/#{name_and_version}.json",
-        "cp bill-of-materials output/#{target_directory}/#{name_and_version}-bill-of-materials ||:",
-        "cp #{name_and_version}.tar.gz output/#{target_directory}"
+        "#{tar} cf #{name_and_version_and_platform}.tar -C #{archive_directory}/#{name_and_version} `#{find} #{archive_directory}/#{name_and_version} -maxdepth 1 -mindepth 1 -type d | sed -e 's|#{archive_directory}/#{name_and_version}/||'`",
+        "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
+        "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
+        "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
+        "cp #{name_and_version_and_platform}.tar.gz output"
       ]
     end
 
