@@ -6,7 +6,7 @@ class Vanagon
       ## symbols array kept for backward compatibility but ignored
 
       @options = Hash.new
-      @options[:preserve] = :never
+      @options[:preserve] = :'on-failure'
 
       @option_parser = OptionParser.new do |opts| # rubocop:disable Metrics/BlockLength
         opts.banner = banner
