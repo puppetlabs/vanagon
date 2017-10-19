@@ -11,6 +11,10 @@ class Vanagon
           return generate_msi_package(project)
         when "nuget"
           return generate_nuget_package(project)
+        when "archive"
+          # We don't need to generate the package for archives, return an
+          # empty array
+          return []
         else
           raise Vanagon::Error, "I don't know how to build package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
@@ -26,6 +30,8 @@ class Vanagon
           return msi_package_name(project)
         when "nuget"
           return nuget_package_name(project)
+        when "archive"
+          return "#{project.name}-#{project.version}-archive"
         else
           raise Vanagon::Error, "I don't know how to name package type '#{project.platform.package_type}' for Windows. Teach me?"
         end
@@ -43,6 +49,9 @@ class Vanagon
           return generate_msi_packaging_artifacts(workdir, name, binding)
         when "nuget"
           return generate_nuget_packaging_artifacts(workdir, name, binding)
+        when "archive"
+          # We don't need to generate packaging artifacts if this is an archive
+          return
         else
           raise Vanagon::Error, "I don't know how create packaging artifacts for package type '#{project.platform.package_type}' for Windows. Teach me?"
         end

@@ -38,6 +38,7 @@ describe "Vanagon::Platform::Windows" do
       let (:project_block) {
         <<-HERE.undent
           project 'test-fixture' do |proj|
+            proj.version '0.0.0'
             proj.setting(:company_name, "Test Name")
             proj.setting(:company_id, "TestID")
             proj.setting(:product_id, "TestProduct")
@@ -65,6 +66,33 @@ describe "Vanagon::Platform::Windows" do
           expect(cur_plat._platform.wix_product_version("1.0.g0")).to eq("1.0.0")
         end
       end
+
+      describe '#package_type' do
+        it "skips package generation for 'archive' package types" do
+          cur_plat.instance_eval(plat[:block])
+          cur_plat.package_type 'archive'
+          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj.instance_eval(project_block)
+          expect(cur_plat._platform.generate_package(proj._project)).to eq([])
+        end
+
+        it "generates a package_name for 'archive' package types" do
+          cur_plat.instance_eval(plat[:block])
+          cur_plat.package_type 'archive'
+          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj.instance_eval(project_block)
+          expect(cur_plat._platform.package_name(proj._project)).to eq('test-fixture-0.0.0-archive')
+        end
+
+        it "skips packaging artifact generation for 'archive' package types" do
+          cur_plat.instance_eval(plat[:block])
+          cur_plat.package_type 'archive'
+          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj.instance_eval(project_block)
+          expect(cur_plat._platform.generate_packaging_artifacts('',proj._project.name,'',proj._project)).to eq(nil)
+        end
+      end
+
       describe '#generate_msi_packaging_artifacts' do
         before(:each) do
           # Create Workdir and temp root directory
