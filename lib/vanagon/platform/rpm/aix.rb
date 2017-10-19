@@ -17,6 +17,7 @@ class Vanagon
           @make = "/usr/bin/gmake"
           @tar = "/opt/freeware/bin/tar"
           @patch = "/opt/freeware/bin/patch"
+          @shasum = "/opt/freeware/bin/sha1sum"
           @num_cores = "lsdev -Cc processor |wc -l"
           @install = "/opt/freeware/bin/install"
           @rpmbuild = "/usr/bin/rpm"

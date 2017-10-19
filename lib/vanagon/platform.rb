@@ -37,6 +37,7 @@ class Vanagon
     attr_accessor :rpmbuild # This is RedHat/EL/Fedora/SLES specific
     attr_accessor :sort
     attr_accessor :tar
+    attr_accessor :shasum
 
     # Hold a string containing the values that a given platform
     # should use when a Makefile is run - resolves to the CFLAGS
@@ -215,6 +216,7 @@ class Vanagon
       @find ||= "find"
       @sort ||= "sort"
       @copy ||= "cp"
+      @shasum ||= "sha1sum"
 
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
@@ -445,6 +447,7 @@ class Vanagon
     def generate_compiled_archive(project)
       name_and_version = "#{project.name}-#{project.version}"
       name_and_version_and_platform = "#{name_and_version}.#{name}"
+      final_archive = "output/#{name_and_version_and_platform}.tar.gz"
       archive_directory = "#{project.name}-archive"
       metadata = project.build_manifest_json(true)
       metadata.gsub!(/\n/, '\n')
@@ -457,7 +460,8 @@ class Vanagon
         "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
         "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
         "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
-        "cp #{name_and_version_and_platform}.tar.gz output"
+        "cp #{name_and_version_and_platform}.tar.gz output",
+        "#{shasum} #{final_archive} > #{final_archive}.sha1"
       ]
     end
 
