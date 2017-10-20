@@ -147,7 +147,7 @@ class Vanagon
       end
     end
 
-    def render
+    def render # rubocop:disable Metrics/AbcSize
       # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
@@ -159,24 +159,6 @@ class Vanagon
       @project.generate_packaging_artifacts(@workdir)
       @project.make_makefile(@workdir)
     end
-
-    def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize
-      @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
-      @engine.startup(@workdir)
-
-      $stderr.puts "Devkit on #{@engine.target}"
-
-      install_build_dependencies
-      @project.fetch_sources(@workdir)
-      @project.make_makefile(@workdir)
-      @project.make_bill_of_materials(@workdir)
-      # Builds only the project, skipping packaging into an artifact.
-      @engine.ship_workdir(@workdir)
-      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{@project.name}-project)")
-    rescue => e
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
-      raise e
     end
 
     # Retry the provided block, use the retry count and timeout
