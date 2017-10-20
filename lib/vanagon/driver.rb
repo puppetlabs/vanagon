@@ -77,7 +77,7 @@ class Vanagon
     end
 
     def cleanup_workdir
-      FileUtils.rm_rf(@workdir)
+      FileUtils.rm_rf(workdir)
     end
 
     def self.configdir
@@ -115,17 +115,17 @@ class Vanagon
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      @engine.startup(@workdir)
+      @engine.startup(workdir)
 
       $stderr.puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
-      retry_task { @project.fetch_sources(@workdir) }
+      retry_task { @project.fetch_sources(workdir) }
 
-      @project.make_makefile(@workdir)
-      @project.make_bill_of_materials(@workdir)
-      @project.generate_packaging_artifacts(@workdir)
+      @project.make_makefile(workdir)
+      @project.make_bill_of_materials(workdir)
+      @project.generate_packaging_artifacts(workdir)
       @project.save_manifest_json
-      @engine.ship_workdir(@workdir)
+      @engine.ship_workdir(workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
 
@@ -154,11 +154,10 @@ class Vanagon
       end
 
       $stderr.puts "rendering Makefile"
-      retry_task { @project.fetch_sources(@workdir) }
-      @project.make_bill_of_materials(@workdir)
-      @project.generate_packaging_artifacts(@workdir)
-      @project.make_makefile(@workdir)
-    end
+      retry_task { @project.fetch_sources(workdir) }
+      @project.make_bill_of_materials(workdir)
+      @project.generate_packaging_artifacts(workdir)
+      @project.make_makefile(workdir)
     end
 
     # Retry the provided block, use the retry count and timeout
