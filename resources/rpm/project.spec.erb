@@ -149,11 +149,11 @@ install -d %{buildroot}
 <%- end -%>
 
 # Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
-for entry in `cat %{SOURCE1}`; do
+while read entry; do
   if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
     PATH=/opt/freeware/bin:$PATH sed -i "s|^\($entry\)\$|%dir \1|g" %{SOURCE1}
   fi
-done
+done < %{SOURCE1}
 
 
 %pre
