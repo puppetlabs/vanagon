@@ -77,7 +77,7 @@ class Vanagon
     end
 
     def cleanup_workdir
-      FileUtils.rm_rf(@workdir)
+      FileUtils.rm_rf(workdir)
     end
 
     def self.configdir
@@ -115,17 +115,17 @@ class Vanagon
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      @engine.startup(@workdir)
+      @engine.startup(workdir)
 
       $stderr.puts "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
-      retry_task { @project.fetch_sources(@workdir) }
+      retry_task { @project.fetch_sources(workdir) }
 
-      @project.make_makefile(@workdir)
-      @project.make_bill_of_materials(@workdir)
-      @project.generate_packaging_artifacts(@workdir)
+      @project.make_makefile(workdir)
+      @project.make_bill_of_materials(workdir)
+      @project.generate_packaging_artifacts(workdir)
       @project.save_manifest_json
-      @engine.ship_workdir(@workdir)
+      @engine.ship_workdir(workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
       @engine.retrieve_built_artifact
 
@@ -147,36 +147,17 @@ class Vanagon
       end
     end
 
-    def render
+    def render # rubocop:disable Metrics/AbcSize
       # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
       $stderr.puts "rendering Makefile"
-      retry_task { @project.fetch_sources(@workdir) }
-      @project.make_bill_of_materials(@workdir)
-      @project.generate_packaging_artifacts(@workdir)
-      @project.make_makefile(@workdir)
-    end
-
-    def prepare(workdir = nil) # rubocop:disable Metrics/AbcSize
-      @workdir = workdir ? FileUtils.mkdir_p(workdir).first : Dir.mktmpdir
-      @engine.startup(@workdir)
-
-      $stderr.puts "Devkit on #{@engine.target}"
-
-      install_build_dependencies
-      @project.fetch_sources(@workdir)
-      @project.make_makefile(@workdir)
-      @project.make_bill_of_materials(@workdir)
-      # Builds only the project, skipping packaging into an artifact.
-      @engine.ship_workdir(@workdir)
-      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{@project.name}-project)")
-    rescue => e
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
-      raise e
+      retry_task { @project.fetch_sources(workdir) }
+      @project.make_bill_of_materials(workdir)
+      @project.generate_packaging_artifacts(workdir)
+      @project.make_makefile(workdir)
     end
 
     # Retry the provided block, use the retry count and timeout

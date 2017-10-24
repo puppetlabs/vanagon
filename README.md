@@ -11,7 +11,6 @@
 - [Configuration and Usage](#configuration-and-usage)
   - [`build` usage](#build-usage)
   - [`inspect` usage](#inspect-usage)
-  - [`devkit` usage](#devkit-usage)
 - [Engines](#engines)
   - [Amazon Ec2](#amazon-ec2)
 - [Contributing](#contributing)
@@ -32,13 +31,6 @@ augeas among others. For a simple example, please see the project in the `exampl
 Vanagon builds up a Makefile and packaging files (specfile for RPM,
 control/rules/etc for DEB) and copies them to a remote host, where make can be
 invoked to build all of the components and make a package of the contents.
-
-Vanagon also provides a devkit command that will prepare a machine as a
-development environment for the entire project, or restricted to individual
-components of the project. The devkit command installs all required build tools,
-creates a master makefile for the project, and configures, builds, and installs
-all components. The result is an environment where you can work on individual
-components, then rebuild the project and test the installed artifacts.
 
 ### How is it pronounced?
 
@@ -252,43 +244,6 @@ Supported environment variables are the same as the `build` command.
 `inspect puppet-agent el-6-i386` will load the puppet-agent project
 on the el-6-i386 platform and print the resulting list of dependencies,
 build-time configuration, environment variables, and expected artifacts.
-
----
-
-### `devkit` usage
-
-The devkit command has positional arguments and position independent flagged
-arguments.
-
-#### Arguments (position dependent)
-
-##### project name
-As in `build` arguments.
-
-##### platform name
-As in `build` arguments.
-
-##### component names <optional>
-Specifies specific components that should be built. If components are not
-specified, then all components in the project will be built. If components
-are specified as arguments, then any in the project that aren't specified
-as arguments will be retrieved from packages rather than built from source.
-
-#### Flagged arguments
-
-**Note:** command flags can be used anywhere in the command.
-
-Supports all flagged arguments from the `build` command.
-
-##### -t HOST, --target HOST
-As in the `build` target host optional argument.
-
-#### Flags
-
-**Note:** command flags can be used anywhere in the command.
-
-##### -h, --help
-Display command-line help.
 
 ---
 
