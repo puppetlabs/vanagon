@@ -111,6 +111,10 @@ class Vanagon
         @platform.tar = tar_cmd
       end
 
+      def shasum(sha1sum_command)
+        @platform.shasum = sha1sum_command
+      end
+
       # Set the type of package we are going to build for this platform
       #
       # @param pkg_type [String] The type of package we are going to build for this platform

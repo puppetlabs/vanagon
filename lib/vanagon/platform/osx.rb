@@ -101,6 +101,7 @@ class Vanagon
         @name = name
         @make = "/usr/bin/make"
         @tar = "tar"
+        @shasum = "/usr/bin/shasum"
         @pkgbuild = "/usr/bin/pkgbuild"
         @productbuild = "/usr/bin/productbuild"
         @hdiutil = "/usr/bin/hdiutil"
