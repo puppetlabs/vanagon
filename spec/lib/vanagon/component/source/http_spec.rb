@@ -19,6 +19,10 @@ describe "Vanagon::Component::Source::Http" do
       expect { Vanagon::Component::Source::Http.new(plaintext_url, sum: md5sum, workdir: workdir, sum_type: "md4") }
         .to raise_error(RuntimeError)
     end
+    it "fails if neither sum nor sum_url are passed" do
+      expect { Vanagon::Component::Source::Http.new(plaintext_url, workdir: workdir, sum_type: "md5") }
+        .to raise_error(RuntimeError)
+    end
   end
 
   describe "#dirname" do

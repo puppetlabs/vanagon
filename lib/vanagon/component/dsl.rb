@@ -311,6 +311,14 @@ class Vanagon
       alias_method :sha256sum, :sum
       alias_method :sha512sum, :sum
 
+      # URL of a file to get the source checksum from
+      #
+      # @param url [String] Checksum file URL
+      def sum_url(url)
+        @component.options[:sum_url] = url
+        @component.options[:sum_type] = File.extname(url).sub(/\./, '').downcase
+      end
+
       # Sets the ref of the source for use in a git source
       #
       # @param the_ref [String] ref, sha, branch or tag to checkout for a git source

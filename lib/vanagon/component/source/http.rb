@@ -10,7 +10,7 @@ class Vanagon
         include Vanagon::Utilities
 
         # Accessors :url, :file, :extension, :workdir, :cleanup are inherited from Local
-        attr_accessor :sum, :sum_type
+        attr_accessor :sum, :sum_type, :sum_url
 
         # Allowed checksum algorithms to use when validating files
         CHECKSUM_TYPES = %w[md5 sha1 sha256 sha512].freeze
@@ -44,12 +44,13 @@ class Vanagon
         #
         # @param url [String] url of the http source to fetch
         # @param sum [String] sum to verify the download against
+        # @param sum_url [String] URL to file containing checksum
         # @param workdir [String] working directory to download into
         # @param sum_type [String] type of sum we are verifying
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum:, workdir:, sum_type:, **options)
-          unless sum
-            fail "sum is required to validate the http source"
+        def initialize(url, sum: nil, sum_url: nil, workdir:, sum_type:, **options)
+          unless sum || sum_url
+            fail "one of sum or sum_url is required to validate the http source"
           end
           unless sum_type
             fail "sum_type is required to validate the http source"
@@ -62,6 +63,16 @@ class Vanagon
           @sum = sum
           @workdir = workdir
           @sum_type = sum_type
+
+          if sum_url
+            sum_file = download(sum_url)
+            File.open(sum_file) do |file|
+              # the sha1 files generated during archive creation  are formatted
+              # "<sha1sum> <filename>". This will also work for sources that
+              # only contain the checksum.
+              @sum = file.read.split.first
+            end
+          end
         end
 
         # Download the source from the url specified. Sets the full path to the

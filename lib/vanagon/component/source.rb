@@ -28,6 +28,7 @@ class Vanagon
           if Vanagon::Component::Source::Http.valid_url?(uri)
             return Vanagon::Component::Source::Http.new uri,
               sum: options[:sum],
+              sum_url: options[:sum_url],
               workdir: options[:workdir],
               # Default sum_type is md5 if unspecified:
               sum_type: options[:sum_type] || "md5"

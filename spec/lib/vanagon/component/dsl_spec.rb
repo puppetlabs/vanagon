@@ -65,11 +65,46 @@ end" }
   let(:dummy_sha1_sum) { "fdaa03c3f506d7b71635f2c32dfd41b0cc8b904f" }
   let(:dummy_sha256_sum) { "fd9c922702eb2e2fb26376c959753f0fc167bb6bc99c79262fcff7bcc8b34be1" }
   let(:dummy_sha512_sum) { "8feda1e9896be618dd6c65120d10afafce93888df8569c598f52285083c23befd1477da5741939d4eae042f822e45ca2e45d8d4d18cf9224b7acaf71d883841e" }
+  let(:dummy_md5_url) { "http://example.com/example.tar.gz.md5" }
+  let(:dummy_sha1_url) { "http://example.com/example.tar.gz.sha1" }
+  let(:dummy_sha256_url) { "http://example.com/example.tar.gz.sha256" }
+  let(:dummy_sha512_url) { "http://example.com/example.tar.gz.sha512" }
 
   before do
     allow(platform).to receive(:install).and_return('install')
     allow(platform).to receive(:copy).and_return('cp')
     allow(platform).to receive(:is_windows?).and_return(false)
+  end
+
+  describe "#sum_url" do
+    it "sets md5 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sum_url(dummy_md5_url)
+
+      expect(comp._component.options[:sum_url]).to eq(dummy_md5_url)
+      expect(comp._component.options[:sum_type]).to eq('md5')
+    end
+    it "sets sha1 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sum_url(dummy_sha1_url)
+
+      expect(comp._component.options[:sum_url]).to eq(dummy_sha1_url)
+      expect(comp._component.options[:sum_type]).to eq('sha1')
+    end
+    it "sets sha256 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sum_url(dummy_sha256_url)
+
+      expect(comp._component.options[:sum_url]).to eq(dummy_sha256_url)
+      expect(comp._component.options[:sum_type]).to eq('sha256')
+    end
+    it "sets sha512 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sum_url(dummy_sha512_url)
+
+      expect(comp._component.options[:sum_url]).to eq(dummy_sha512_url)
+      expect(comp._component.options[:sum_type]).to eq('sha512')
+    end
   end
 
   describe "#md5sum" do
