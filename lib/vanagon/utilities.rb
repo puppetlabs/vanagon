@@ -131,7 +131,7 @@ class Vanagon
     # @param timeout [Integer] number of seconds to run the block before timing out
     # @return [true] If the block succeeds, true is returned
     # @raise [Vanagon::Error] if the block fails after the retries are exhausted, an error is raised
-    def retry_with_timeout(tries = 5, timeout = 1, &blk)
+    def retry_with_timeout(tries = 5, timeout = 1, &blk) # rubocop:disable Metrics/AbcSize
       error = nil
       tries.to_i.times do
         Timeout::timeout(timeout.to_i) do
@@ -146,7 +146,9 @@ class Vanagon
       end
 
       message = "Block failed maximum number of #{tries} tries"
-      message += "\n with error #{error.message}" unless error.nil?
+      unless error.nil?
+        message += "\n with error #{error.message}" + "\n#{error.backtrace.join("\n")}"
+      end
       message += "\nExiting..."
       raise error, message unless error.nil?
       raise Vanagon::Error, "Block failed maximum number of #{tries} tries"
