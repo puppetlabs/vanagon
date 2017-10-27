@@ -456,7 +456,7 @@ class Vanagon
         "mkdir #{archive_directory}",
         "gunzip -c #{name_and_version}.tar.gz | '#{tar}' -C #{archive_directory} -xf -",
         "rm #{name_and_version}.tar.gz",
-        "cd #{archive_directory}/#{name_and_version}; #{tar} cf ../../#{name_and_version_and_platform}.tar *",
+        "cd #{archive_directory}/#{name_and_version}; rm -f bill-of-materials; #{tar} cf ../../#{name_and_version_and_platform}.tar *",
         "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
         "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
         "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
