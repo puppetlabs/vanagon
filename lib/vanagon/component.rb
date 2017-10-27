@@ -318,7 +318,7 @@ class Vanagon
     def get_sources(workdir) # rubocop:disable Metrics/AbcSize
       sources.each do |source|
         src = Vanagon::Component::Source.source(
-          source.url, workdir: workdir, ref: source.ref, sum: source.sum
+          source.url, workdir: workdir, ref: source.ref, sum: source.sum, sum_url: source.sum_url
         )
         src.fetch
         src.verify
