@@ -48,7 +48,7 @@ class Vanagon
         # @param workdir [String] working directory to download into
         # @param sum_type [String] type of sum we are verifying
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum:, workdir:, sum_type:, **options)
+        def initialize(url, sum:, workdir:, sum_type:, **options) # rubocop:disable Metrics/AbcSize
           unless sum
             fail "sum is required to validate the http source"
           end
@@ -70,7 +70,11 @@ class Vanagon
               # the sha1 files generated during archive creation  are formatted
               # "<sha1sum> <filename>". This will also work for sources that
               # only contain the checksum.
-              @sum = file.read.split.first
+              remote_sum = file.read.split.first
+              unless remote_sum
+                fail "Downloaded checksum file seems to be empty, make sure you have the correct URL"
+              end
+              @sum = remote_sum
             end
           end
         end
