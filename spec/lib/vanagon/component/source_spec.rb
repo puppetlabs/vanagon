@@ -70,21 +70,26 @@ describe "Vanagon::Component::Source" do
 
     context "takes a HTTP/HTTPS file" do
       before do
-        allow_any_instance_of(Vanagon::Component::Source::Http)
-          .to receive(:valid_url?)
-          .and_return(true)
-
         allow(Vanagon::Component::Source::Http)
           .to receive(:valid_url?)
-          .and_return(true)
+          .with(sum)
+          .and_return(false)
       end
 
       it "returns an object of the correct type for http:// URLS" do
+        allow(Vanagon::Component::Source::Http)
+          .to receive(:valid_url?)
+          .with(http_url)
+          .and_return(true)
         expect(klass.source(http_url, sum: sum, workdir: workdir, sum_type: "md5").class)
           .to equal(Vanagon::Component::Source::Http)
       end
 
       it "returns an object of the correct type for https:// URLS" do
+        allow(Vanagon::Component::Source::Http)
+          .to receive(:valid_url?)
+          .with(https_url)
+          .and_return(true)
         expect(klass.source(https_url, sum: sum, workdir: workdir, sum_type: "md5").class)
           .to equal(Vanagon::Component::Source::Http)
       end

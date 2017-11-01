@@ -43,11 +43,12 @@ class Vanagon
         # Constructor for the Http source type
         #
         # @param url [String] url of the http source to fetch
-        # @param sum [String] sum to verify the download against
+        # @param sum [String] sum to verify the download against or URL to fetch
+        #                     sum from
         # @param workdir [String] working directory to download into
         # @param sum_type [String] type of sum we are verifying
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum:, workdir:, sum_type:, **options)
+        def initialize(url, sum:, workdir:, sum_type:, **options) # rubocop:disable Metrics/AbcSize
           unless sum
             fail "sum is required to validate the http source"
           end
@@ -62,6 +63,20 @@ class Vanagon
           @sum = sum
           @workdir = workdir
           @sum_type = sum_type
+
+          if Vanagon::Component::Source::Http.valid_url?(@sum)
+            sum_file = download(@sum)
+            File.open(File.join(@workdir, sum_file)) do |file|
+              # the sha1 files generated during archive creation  are formatted
+              # "<sha1sum> <filename>". This will also work for sources that
+              # only contain the checksum.
+              remote_sum = file.read.split.first
+              unless remote_sum
+                fail "Downloaded checksum file seems to be empty, make sure you have the correct URL"
+              end
+              @sum = remote_sum
+            end
+          end
         end
 
         # Download the source from the url specified. Sets the full path to the
