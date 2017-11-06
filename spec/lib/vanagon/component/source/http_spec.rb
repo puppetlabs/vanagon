@@ -1,7 +1,7 @@
 require 'vanagon/component/source/git'
 
 describe "Vanagon::Component::Source::Http" do
-  let (:base_url) { 'http://buildsources.delivery.puppetlabs.net' }
+  let (:base_url) { 'https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/' }
   let (:file_base) { 'thing-1.2.3' }
   let (:tar_filename) { 'thing-1.2.3.tar.gz' }
   let (:tar_url) { "#{base_url}/#{tar_filename}" }

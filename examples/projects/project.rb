@@ -8,6 +8,8 @@ project "my-app" do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
+  proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
+  proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
   if platform.is_windows?
     proj.setting(:company_name, "BananaLand Inc.")
@@ -36,14 +38,14 @@ project "my-app" do |proj|
   # Here we rewrite public http urls to use our internal source host instead.
   # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
   # rewritten as
-  # http://buildsources.delivery.puppetlabs.net/openssl-1.0.0r.tar.gz
+  # https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/openssl-1.0.0r.tar.gz
   #
   # @deprecated 2017-04-07 - Ryan McKern
   #   This functionality has been replaced with Component Mirrors. This feature 
   #   will be removed before Vanagon 1.0.0, but for now it will add all rewritten
   #   URLs/URIs to the list of mirrors
   #
-  # proj.register_rewrite_rule 'http', 'http://buildsources.delivery.puppetlabs.net'
+  # proj.register_rewrite_rule 'http', proj.buildsources_url
 
   # Here we rewrite public git urls to use our internal git mirror It turns
   # urls that look like git://github.com/puppetlabs/puppet.git into
