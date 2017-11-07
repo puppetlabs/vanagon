@@ -2,6 +2,8 @@ require 'vanagon/component/source'
 
 describe "Vanagon::Component::Source::Rewrite" do
   let(:klass) { Vanagon::Component::Source::Rewrite }
+  let(:artifactory_url) { "https://artifactory.delivery.puppetlabs.net/artifactory" }
+  let(:buildsources_url) { "#{artifactory_url}/generic/buildsources" }
   before(:each) { klass.rewrite_rules.clear }
 
   describe ".parse_and_rewrite" do
@@ -14,10 +16,10 @@ describe "Vanagon::Component::Source::Rewrite" do
     end
 
     it 'replaces the first section of a url with a string if string is given' do
-      klass.register_rewrite_rule('http', 'http://buildsources.delivery.puppetlabs.net')
+      klass.register_rewrite_rule('http', buildsources_url)
 
       expect(klass.rewrite('http://things.and.stuff/foo.tar.gz', 'http'))
-        .to eq('http://buildsources.delivery.puppetlabs.net/foo.tar.gz')
+        .to eq("#{buildsources_url}/foo.tar.gz")
     end
 
     it 'applies the rule to the url if a proc is given as the rule' do
@@ -46,10 +48,10 @@ describe "Vanagon::Component::Source::Rewrite" do
         .to raise_error Vanagon::Error
     end
 
-    before { klass.register_rewrite_rule('http', 'http://buildsources.delivery.puppetlabs.net') }
+    before { klass.register_rewrite_rule('http', buildsources_url) }
     it 'registers the rule for the given protocol' do
       expect(klass.rewrite_rules)
-        .to eq({'http' => 'http://buildsources.delivery.puppetlabs.net'})
+        .to eq({'http' => buildsources_url})
     end
   end
 end
