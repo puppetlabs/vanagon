@@ -212,7 +212,9 @@ class Vanagon
 
     # @return [Set] a list of unique mirror URIs that should be used to
     #   retrieve the upstream source before attempting to retrieve from
-    #   whatever URI was defined for #uri.
+    #   whatever URI was defined for #uri. If no mirrors are set and the
+    #   deprecated rewrite system has been configured, this will return
+    #   rewritten URIs
     def mirrors
       @mirrors ||= Set.new [deprecated_rewrite_url].compact
     end
@@ -262,10 +264,12 @@ class Vanagon
     end
 
     # This method is deprecated and private. It will return
-    # a rewritten URL if there's any value for #url.
+    # a rewritten URL if there's any value for #url and a
+    # rewrite rule for that URL has been set
     def deprecated_rewrite_url
       return nil unless url
-      Vanagon::Component::Source::Rewrite.parse_and_rewrite(url)
+      rewritten_url = Vanagon::Component::Source::Rewrite.parse_and_rewrite(url)
+      url == rewritten_url ? nil : rewritten_url
     end
     private :deprecated_rewrite_url
 

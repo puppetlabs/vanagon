@@ -65,6 +65,10 @@ describe "Vanagon::Component" do
         .and_return(OpenStruct.new(verify: true))
     end
 
+    it "will not consider a non-rewritten URI as a mirror" do
+      expect(subject.mirrors).to eq Set.new []
+    end
+
     it "attempts to retrieve from a mirror before a canonical URI" do
       allow(subject)
         .to receive(:fetch_url)
