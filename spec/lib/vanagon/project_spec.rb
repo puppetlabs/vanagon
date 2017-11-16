@@ -10,6 +10,40 @@ describe 'Vanagon::Project' do
     proj.component 'some-component'
     end"
   }
+
+  let(:upstream_project_block) {
+    "project 'upstream-test' do |proj|
+    proj.setting(:test, 'upstream-test')
+    end"
+  }
+
+  let(:inheriting_project_block) {
+    "project 'inheritance-test' do |proj|
+    proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
+    end"
+  }
+
+  let(:inheriting_project_block_with_settings) {
+    "project 'inheritance-test' do |proj|
+    proj.setting(:merged, 'yup')
+    proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
+    end"
+  }
+
+  let(:preset_inheriting_project_block) {
+    "project 'inheritance-test' do |proj|
+    proj.setting(:test, 'inheritance-test')
+    proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
+    end"
+  }
+
+  let(:postset_inheriting_project_block) {
+    "project 'inheritance-test' do |proj|
+    proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
+    proj.setting(:test, 'inheritance-test')
+    end"
+  }
+
   let (:dummy_platform_sysv) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
@@ -49,6 +83,46 @@ describe 'Vanagon::Project' do
         set[:directories].each {|dir| proj.directory dir }
         expect(proj._project.get_root_directories.sort).to eq(set[:results].sort)
       end
+    end
+  end
+
+  describe "#load_upstream_settings" do
+    before(:each) do
+      # stub out all of the git methods so we don't actually clone
+      allow(Vanagon::Component::Source::Git).to receive(:valid_remote?).with(URI.parse('git://some.url')).and_return(true)
+      git_source = Vanagon::Component::Source::Git.new('git://some.url', workdir: Dir.getwd)
+      allow(Vanagon::Component::Source::Git).to receive(:new).and_return(git_source)
+      expect(git_source).to receive(:fetch).and_return(true)
+
+      # stubs for the upstream project
+      upstream_proj = Vanagon::Project::DSL.new('upstream-test', {}, [])
+      upstream_proj.instance_eval(upstream_project_block)
+      expect(Vanagon::Project).to receive(:load_project).and_return(upstream_proj._project)
+    end
+
+    it 'loads upstream settings' do
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj.instance_eval(inheriting_project_block)
+      expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
+    end
+
+    it 'overrides duplicate settings from before the load' do
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj.instance_eval(preset_inheriting_project_block)
+      expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
+    end
+
+    it 'lets you override settings after the load' do
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj.instance_eval(postset_inheriting_project_block)
+      expect(inheriting_proj._project.settings[:test]).to eq('inheritance-test')
+    end
+
+    it 'merges settings' do
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj.instance_eval(inheriting_project_block_with_settings)
+      expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
+      expect(inheriting_proj._project.settings[:merged]).to eq('yup')
     end
   end
 

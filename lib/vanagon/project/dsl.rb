@@ -300,6 +300,15 @@ class Vanagon
         @project.retry_count = retry_count
       end
 
+      # Inherit the settings hash from an upstream project
+      #
+      # @param upstream_project_name [String] The vanagon project to load settings from
+      # @param upstream_git_url [String] The git URL for the vanagon project to load settings from
+      # @param upstream_git_branch [String] The git branch for the vanagon project to load settings from
+      def inherit_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
+        @project.load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
+      end
+
       # Set a package override. Will call the platform-specific implementation
       # This will get set in the spec file, deb rules, etc.
       #
