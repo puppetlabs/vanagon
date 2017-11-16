@@ -10,7 +10,7 @@ class Vanagon
       def initialize(platform, target = nil, **opts)
         super
 
-        @pooler = "http://vmpooler.delivery.puppetlabs.net"
+        @available_poolers = ["http://vmpooler.delivery.puppetlabs.net", "https://nspooler-service-prod-1.delivery.puppetlabs.net"]
         @token = load_token
         @required_attributes << "vmpooler_template"
       end
@@ -76,36 +76,58 @@ class Vanagon
       private :read_vmfloaty_token
 
       # This method is used to obtain a vm to build upon using the Puppet Labs'
-      # vmpooler (https://github.com/puppetlabs/vmpooler)
+      # vmpooler (https://github.com/puppetlabs/vmpooler) or other pooler technologies
+      # leveraging the same API
       # @raise [Vanagon::Error] if a target cannot be obtained
-      def select_target # rubocop:disable Metrics/AbcSize
+      def select_target
+        @available_poolers.each do |current_pooler|
+          @pooler = select_target_from(current_pooler)
+          break unless @pooler.empty?
+        end
+        raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{build_host_name} is empty?" if @pooler.empty?
+      end
+
+      # Attempt to provision a host from a specific pooler.
+      #
+      def select_target_from(pooler) # rubocop:disable Metrics/AbcSize
         response = Vanagon::Utilities.http_request(
-          "#{@pooler}/vm",
+          "#{pooler}/vm",
           'POST',
           '{"' + build_host_name + '":"1"}',
           { 'X-AUTH-TOKEN' => @token }
         )
         if response["ok"]
-          @target = response[build_host_name]['hostname'] + '.' + response['domain']
+          @target = response[build_host_name]['hostname']
+          # The nspooler does not use 'domain' in the response: 'hostname' just returns the fqdn.
+          # in the future we should make the two APIs the same in this sense, but for now, just check
+          # if 'domain' is a thing and use it if so.
+          if response['domain']
+            @target += '.' + response['domain']
+          end
           Vanagon::Driver.logger.info "Reserving #{@target} (#{build_host_name}) [#{@token ? 'token used' : 'no token used'}]"
-
-          tags = {
-            'tags' => {
-              'jenkins_build_url' => ENV['BUILD_URL'],
-              'project' => ENV['JOB_NAME'] || 'vanagon',
-              'created_by' => ENV['USER'] || ENV['USERNAME'] || 'unknown'
-            }
-          }
-
-          Vanagon::Utilities.http_request(
-            "#{@pooler}/vm/#{response[build_host_name]['hostname']}",
-            'PUT',
-            tags.to_json,
-            { 'X-AUTH-TOKEN' => @token }
-          )
+          add_tags_to_target(pooler, response[build_host_name]['hostname'])
         else
-          raise Vanagon::Error, "Something went wrong getting a target vm to build on, maybe the pool for #{build_host_name} is empty?"
+          pooler = ''
         end
+        pooler
+      end
+
+      # Add tags to a provisioned target using the pooler API
+      #
+      def add_tags_to_target(pooler, hostname)
+        tags = {
+          'tags' => {
+            'jenkins_build_url' => ENV['BUILD_URL'],
+            'project' => ENV['JOB_NAME'] || 'vanagon',
+            'created_by' => ENV['USER'] || ENV['USERNAME'] || 'unknown'
+          }
+        }
+        Vanagon::Utilities.http_request(
+          "#{pooler}/vm/#{hostname}",
+          'PUT',
+          tags.to_json,
+          { 'X-AUTH-TOKEN' => @token }
+        )
       end
 
       # This method is used to tell the vmpooler to delete the instance of the
