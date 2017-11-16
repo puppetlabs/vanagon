@@ -52,6 +52,7 @@ class Vanagon
     def http_request(url, type, payload = {}.to_json, header = nil) # rubocop:disable Metrics/AbcSize
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
 
       case type.downcase
       when "get"
