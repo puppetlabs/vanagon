@@ -611,5 +611,33 @@ class Vanagon
         f.write(manifest)
       end
     end
+
+    # Load the settings hash from an upstream vanagon project.
+    # This will clone a git repo at a specified branch and load the specified
+    # vanagon project (with no components). The settings hash of the upstream
+    # project will be merged with the existing settings hash, overriding any
+    # duplicates at the time of calling with the value from upstream. To
+    # override settings from upstream, you need to set the `proj.setting` after
+    # `proj.inherit_settings`.
+    #
+    # As the settings are not lazy-loaded, if you need to override a setting
+    # from upstream that is used in later settings, you'll need to override all
+    # of the settings based on the one you're overriding.
+    #
+    # @param upstream_project_name [String] The name of the vanagon project to load
+    # @param upstream_git_url [URI] The URL to clone this vanagon project from
+    # @param upstream_git_branch [String] The branch of the vanagon project to clone from
+    def load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
+      Dir.mktmpdir do |working_directory|
+        upstream_source = Vanagon::Component::Source::Git.new(upstream_git_url, workdir: working_directory, ref: upstream_git_branch)
+        upstream_source.fetch
+        # We don't want to load any of the upstream components, so we're going to
+        # pass an array with an empty string as the component list for load_project
+        no_components = ['']
+        upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), platform, no_components)
+        @settings.merge!(upstream_project.settings)
+        upstream_project.cleanup
+      end
+    end
   end
 end
