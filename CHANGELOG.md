@@ -6,6 +6,52 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.14.0] - released on 2017-11-21
+### Added
+ - (VANAGON-59) Adds support for RPM and deb triggers. These can be added using
+   `add_rpm_install_triggers`, `add_debian_interest_triggers`, and
+   `add_debian_activate_triggers` in the component DSL.
+ - (VANAGON-96) Add support for generating binary archives (gzipped tarballs)
+   instead of or in addition to generating platform-native packaging. The
+   project DSL now includes `generate_packages` and `generate_archives` which
+   take a binary. By default projects will generate platform-native packages and
+   projects will not generate binary archives.
+ - (VANAGON-97) When generating binary archives, make sure the bill of materials
+   (when applicable) and generated build metadata are included in the build
+   output.
+ - (VANAGON-76) Implement a more flexible `--preserve` flag. `--preserve` now
+   supports `always`, `never`, and `on-failure`. Default behavior of preserving
+   on failure has been maintained, and `--preserve` with no additional arguments
+   is equivalent to `--preserve always`.
+ - (VANAGON-99) Add `install_only` to the component dsl to make it easier to
+   consume artifacts generated via `generate_archives`.
+ - (VANAGON-111) When using `generate_archives`, generate a sha1sum at build
+   time. To enable this, `shasum` has been added to the platform DSL for
+   specifying alternate paths for the sha1sum command.
+ - (VANAGON-111) Enable consumption of remote checksums. Each of the supported
+   component checksums (sha1sum, md5sum, sha256sum, sha512sum) can now either
+   take a checksum or a URL where the checksum can be found.
+ - Add `archive` package type for windows so you can generate an archive without
+   needing to generate WIX or nuget artifacts.
+ - Add nspooler support to the pooler engine.
+ - (VANAGON-110) Add support for inheriting the project hash from an upstream
+   project. `inherit_settings` has been added to the project DSL for this.
+
+### Fixed
+ - Avoid duplicate file warnings when RPMs have files containing spaces in their
+   path.
+ - Print backtrace if the command executed in `retry_with_timeout` fails.
+
+### Changed
+ - The `mirrors` list will no longer include the source URI so you don't end up
+   hitting the upstream source instead of the configured mirrors.
+ - Updated to pull from github.com/puppetlabs/packaging 1.0.x branch to enable
+   shipping artifacts to artifactory in addition to the internal build server.
+
+### Removed
+ - The `devkit` command has been removed since much of its initial functionality
+   has been built into `build`, `render`, and `inspect`.
+
 ## [0.13.1] - released on 2017-07-19
 ### Added
  - Component Url is now reported in the `build_metadata.json` file.
@@ -471,7 +517,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.13.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/puppetlabs/vanagon/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/puppetlabs/vanagon/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/puppetlabs/vanagon/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/puppetlabs/vanagon/compare/0.12.1...0.12.2
