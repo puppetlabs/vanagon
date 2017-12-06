@@ -14,7 +14,7 @@ else
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship', 'artifacts', 'output')
   begin
     Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship_to_artifactory', 'output')
-  rescue
+  rescue LoadError
     warn <<-DOC
   Unable to ship packages to artifactory. Please make sure you are pointing to a
   recent version of packaging in your Gemfile. Please also make sure you include
