@@ -9,13 +9,13 @@
   - [Local Host:](#local-host)
   - [Remote Build Target:](#remote-build-target)
 - [Configuration and Usage](#configuration-and-usage)
+  - [Overview](#overview)
   - [`build` usage](#build-usage)
   - [`inspect` usage](#inspect-usage)
 - [Engines](#engines)
   - [Amazon Ec2](#amazon-ec2)
 - [Contributing](#contributing)
 - [License](#license)
-- [Overview](#overview)
 - [Maintainers](#maintainers)
 
 <!-- /MarkdownTOC -->
@@ -26,7 +26,8 @@
 Vanagon is a tool to build a single package out of a project, which can itself
 contain one or more components. This tooling is being used to develop the
 puppet-agent package, which contains components such as openssl, ruby, and
-augeas among others. For a simple example, please see the project in the `examples/` directory.
+augeas among others. For a simple example, please see the project in the
+[`examples/`](examples) directory.
 
 Vanagon builds up a Makefile and packaging files (specfile for RPM,
 control/rules/etc for DEB) and copies them to a remote host, where make can be
@@ -70,6 +71,18 @@ Also, Vanagon ships with a number of engines which may include additional option
 Vanagon won't be much use without a project to build. Beyond that, you must
 define any platforms you want to build for. Vanagon ships with some simple
 binaries to use, but the one you probably care about is named 'build'.
+
+### Overview
+
+Vanagon is broken down into three core ideas: the project, the component and
+the platform. The project contains one or more components and is built for a
+platform. As a quick example, if I had a ruby app and wanted to package it, the
+project would probably contain a component for ruby and a component for my app.
+If I wanted to build it for debian wheezy, I would define a platform called
+wheezy and build my project against it.
+
+For more detailed examples of the DSLs available, please see the
+[examples](examples) directory and the YARD documentation for Vanagon.
 
 ### `build` usage
 The build command has positional arguments and position independent flags.
@@ -281,24 +294,12 @@ end
 Contributing
 ---
 We'd love to get contributions from you! Once you are up and running, take a look at the
-[Contribution Documents](https://github.com/puppetlabs/vanagon/blob/master/docs/CONTRIBUTING.md) to see how to get your changes merged
+[Contribution Documents](docs/CONTRIBUTING.md) to see how to get your changes merged
 in.
 
 License
 ---
-See [LICENSE](https://github.com/puppetlabs/vanagon/blob/master/LICENSE) file.
-
-Overview
----
-Vanagon is broken down into three core ideas: the project, the component and
-the platform. The project contains one or more components and is built for a
-platform. As a quick example, if I had a ruby app and wanted to package it, the
-project would probably contain a component for ruby and a component for my app.
-If I wanted to build it for debian wheezy, I would define a platform called
-wheezy and build my project against it.
-
-For more detailed examples of the DSLs available, please see the
-[examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for Vanagon.
+See [LICENSE](LICENSE) file.
 
 ## Maintainers
-See MAINTAINERS file.
+See [MAINTAINERS](MAINTAINERS) file.
