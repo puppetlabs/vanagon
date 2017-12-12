@@ -18,9 +18,10 @@ module HashableAttributes
   end
 end
 
-# Vanagon classes generally don't implement JSON or Hash functionality
-# so those need to be monkey-patched for useful inspection.
 class Vanagon
+  # Vanagon classes generally don't implement JSON or Hash functionality
+  # so those need to be monkey-patched for useful inspection.
+
   class Platform
     include HashableAttributes
   end

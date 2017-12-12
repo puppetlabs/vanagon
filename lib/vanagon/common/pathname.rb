@@ -21,7 +21,7 @@ class Vanagon
       #     representing the group name of the owner of self.
       attr_accessor :path, :mode, :owner, :group
 
-      # Each Pathname requires a filesystem path, and has many optional
+      # Each {Pathname} requires a filesystem path, and has many optional
       # properties that may be set at initialization time.
       # @param [String, Integer] mode the UNIX Octal permission string to use when this file is archived
       # @param [String, Integer] owner the username or UID to use when this file is archived
@@ -38,17 +38,17 @@ class Vanagon
       end
 
       # An alias to {Vanagon::Common::Pathname}'s constructor method,
-      #   which returns a new Vanagon::Common::Pathname, explicitly marked as a file
+      #   which returns a new {Vanagon::Common::Pathname}, explicitly marked as a file
       # @see Vanagon::Common::Pathname#initialize
       #
-      # @example Create a new Vanagon::Common::Pathname, marked as a file.
+      # @example Create a new {Vanagon::Common::Pathname}, marked as a file.
       #   Vanagon::Common::Pathname.file('/etc/puppet/puppet/puppet.conf')
       def self.file(path, **args)
         new(path, **args.merge!({ config: false }))
       end
 
       # An alias to {Vanagon::Common::Pathname}'s constructor method,
-      #   which returns a new Vanagon::Common::Pathname, explicitly marked as a configuration file
+      #   which returns a new {Vanagon::Common::Pathname}, explicitly marked as a configuration file
       # @see Vanagon::Common::Pathname#initialize
       #
       # @example Create a new configuration file, marked as a configuration file.
@@ -69,9 +69,9 @@ class Vanagon
         !!(@mode || @owner || @group)
       end
 
-      # Equality -- Two instances of Vanagon::Common::Pathname are equal if they
+      # Equality -- Two instances of {Vanagon::Common::Pathname} are equal if they
       #   contain the same number attributes and if each attribute is equal to
-      #   (according to {Object#==}) the corresponding attribute in other_pathname.
+      #   (according to `Object#==`) the corresponding attribute in other_pathname.
       #
       # @return [Boolean] true if all attributes have equal values, or otherwise false.
       def ==(other)
@@ -79,8 +79,11 @@ class Vanagon
       end
       alias :eql? :==
 
-      # @return [Fixnum] Compute a hash-code for self, derived from its attributes;
-      #   two Pathnames with the same content will have the same hash code (and will compare using {#eql?}).
+      # Compute a hash-code for self, derived from its attributes. Two
+      # {Pathname} objects with the same content will have the same hash code
+      # (and will compare as equal using {#eql?})
+      #
+      # @return [Fixnum]
       def hash
         instance_variables.map { |v| instance_variable_get(v) }.hash
       end

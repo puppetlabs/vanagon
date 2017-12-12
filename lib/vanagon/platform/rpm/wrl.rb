@@ -1,11 +1,11 @@
-# This platform definition was created to account for oddities with
-# the RPM available on WindRiver Linux based systems. WRL uses RPMv5
-# and some of the WRL-based OS platforms we support (e.g, HuaweiOS)
-# do not have package repo systems or support for installing remote
-# RPMs via urls
 class Vanagon
   class Platform
     class RPM
+      # This platform definition was created to account for oddities with
+      # the RPM available on WindRiver Linux based systems. WRL uses RPMv5
+      # and some of the WRL-based OS platforms we support (e.g, HuaweiOS)
+      # do not have package repo systems or support for installing remote
+      # RPMs via urls
       class WRL < Vanagon::Platform::RPM
         # Some WRL RPM platforms (e.g, HuaweiOS) don't allow you to
         # install remote packages via url, so we'll do a dance to

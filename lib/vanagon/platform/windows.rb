@@ -71,6 +71,7 @@ class Vanagon
 
       # Method to recursively copy from a source project resource directory
       # to a destination (wix) work directory.
+      #
       # strongly suspect the original cp_r command would have done all of this.
       #
       # @param proj_resources [String] Project Resource File directory
@@ -81,7 +82,8 @@ class Vanagon
       end
 
       # Method to merge in the files from the Vanagon (generic) directories.
-      # Project Specific files take precedence, so since these are copied prior
+      #
+      # Project specific files take precedence, so since these are copied prior
       # to this function, then this merge operation will ignore existing files
       #
       # @param vanagon_root [String] Vanagon wix resources directory
@@ -143,13 +145,14 @@ class Vanagon
       end
 
       # The specific bits used to generate a windows nuget package for a given project
-      # Nexus expects packages to be named #{name}-#{version}.nupkg. However, chocolatey
-      # will generate them to be #{name}.#{version}.nupkg. So, we have to rename the
+      #
+      # Nexus expects packages to be named `#{name}-#{version}.nupkg`. However, chocolatey
+      # will generate them to be `#{name}.#{version}.nupkg`. So, we have to rename the
       # package after we build it.
       #
       # @param project [Vanagon::Project] project to build a nuget package of
       # @return [Array] list of commands required to build a nuget package for
-      # the given project from a tarball
+      #   the given project from a tarball
       def generate_nuget_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         ["mkdir -p output/#{target_dir}",
@@ -163,11 +166,13 @@ class Vanagon
       end
 
       # The specific bits used to generate a windows msi package for a given project
+      #
       # Have changed this to reflect the overall commands we need to generate the package.
       # Question - should we break this down into some simpler Make tasks ?
-      # 1. Heat the directory tree to produce the file list
-      # 2. Compile (candle) all the wxs files into wixobj files
-      # 3. Run light to produce the final MSI
+      #
+      #    1. Heat the directory tree to produce the file list
+      #    2. Compile (candle) all the wxs files into wixobj files
+      #    3. Run light to produce the final MSI
       #
       # @param project [Vanagon::Project] project to build a msi package of
       # @return [Array] list of commands required to build an msi package for the given project from a tarball
@@ -228,6 +233,7 @@ class Vanagon
       end
 
       # Method to derive the package name for the project.
+      #
       # Neither chocolatey nor nexus know how to deal with architecture, so
       # we are just pretending it's part of the package name.
       #
@@ -261,12 +267,14 @@ class Vanagon
       # determine what version type to deliver.
       #
       # Examples of final versions:
-      #   1.2.3
-      #   1.5.3.1
+      #
+      #    * 1.2.3
+      #    * 1.5.3.1
       #
       # Examples of prerelease versions:
-      #   1.2.3.1234-g124dm9302
-      #   3.2.5.23-gd329nd
+      #
+      #    * 1.2.3.1234-g124dm9302
+      #    * 3.2.5.23-gd329nd
       #
       # @param project [Vanagon::Project] project to version
       # @return [String] the version of the nuget package for this project
@@ -281,6 +289,7 @@ class Vanagon
       end
 
       # Add a repository (or install Chocolatey)
+      #
       # Note - this only prepares the list of commands to be executed once the Platform
       # has been setup
       #
@@ -304,13 +313,14 @@ class Vanagon
         commands
       end
 
-      # Generate the underlying directory structure of
-      # any binary files referenced in services. note that
-      # this function does not generate the structure of
-      # the installation directory, only the structure above it.
+      # Generate the underlying directory structure of any binary files
+      # referenced in services.
       #
-      # @param services, list of all services in a project
-      # @param project, actual project we are creating the directory structure for
+      # Note that this function does not generate the structure of the
+      # installation directory, only the structure above it.
+      #
+      # @param services list of all services in a project
+      # @param project actual project we are creating the directory structure for
       def generate_service_bin_dirs(services, project)
         # All service files will need a directory reference
         items = services.map do |svc|
@@ -389,7 +399,7 @@ class Vanagon
       # Recursively generate wix element structure
       #
       # @param root, the (empty) root of an n-ary tree containing the
-      # structure of directories
+      #   structure of directories
       def generate_wix_from_graph(root)
         string = ''
         unless root[:children].empty?
@@ -409,7 +419,7 @@ class Vanagon
       end
 
       # Grab only the first three values from the version input
-      # and strip off any non-digit characters.\
+      # and strip off any non-digit characters.
       #
       # @param [string] version, the original version number
       def wix_product_version(version)
