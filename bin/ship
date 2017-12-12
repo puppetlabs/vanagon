@@ -6,6 +6,16 @@ ENV["PROJECT_ROOT"] = Dir.pwd
 # This is not intended to function outside of Puppet Labs' infrastructure.
 # End of warning.
 
+artifactory_warning = <<-DOC
+  Unable to ship packages to artifactory. Please make sure you are pointing to a
+  recent version of packaging in your Gemfile. Please also make sure you include
+  the artifactory gem in your Gemfile.
+
+  i.e.,
+  gem 'packaging', :github => 'puppetlabs/packaging', branch: '1.0.x'
+  gem 'artifactory'
+DOC
+
 if Dir["output/**/*"].select { |entry| File.file?(entry) }.empty?
   fail "No packages to ship in the output directory. Maybe you want to build some first?"
 else
@@ -15,14 +25,8 @@ else
   begin
     Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship_to_artifactory', 'output')
   rescue LoadError
-    warn <<-DOC
-  Unable to ship packages to artifactory. Please make sure you are pointing to a
-  recent version of packaging in your Gemfile. Please also make sure you include
-  the artifactory gem in your Gemfile.
-
-  i.e.,
-  gem 'packaging', :github => 'puppetlabs/packaging', branch: '1.0.x'
-  gem 'artifactory'
-    DOC
+    warn artifactory_warning
+  rescue
+    warn artifactory_warning
   end
 end
