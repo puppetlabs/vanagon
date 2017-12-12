@@ -1,8 +1,8 @@
-# SLES is special, mainly in the differences between yum and zypper,
-# so here we subclass SLES off of rpm.
 class Vanagon
   class Platform
     class RPM
+      # SLES is special, mainly in the differences between yum and zypper,
+      # so here we subclass SLES off of rpm.
       class SLES < Vanagon::Platform::RPM
         # Helper to setup a zypper repository on a target system
         #

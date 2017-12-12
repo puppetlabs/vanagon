@@ -28,7 +28,7 @@ class Vanagon
     attr_accessor :defaultdir
 
     # Each of these holds the path or name of the command in question,
-    # e.g. `copy = "/usr/local/bin/gcp"`, or `copy = "cp"
+    # e.g. `copy = "/usr/local/bin/gcp"`, or `copy = "cp"`
     attr_accessor :copy
     attr_accessor :find
     attr_accessor :install
@@ -42,14 +42,14 @@ class Vanagon
     # Hold a string containing the values that a given platform
     # should use when a Makefile is run - resolves to the CFLAGS
     # and LDFLAGS variables. This should be changed to take advantage
-    # of the Environment, so that we can better leverage Make's
-    # Implicit Variables:
-    #   https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+    # of the {Vanagon::Environment}, so that we can better leverage Make's
+    # {https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html Implicit Variables}.
+    #
     # It should also be extended to support CXXFLAGS and CPPFLAGS ASAP.
     attr_accessor :cflags
     attr_accessor :ldflags
 
-    # The overall Environment that a given platform
+    # The overall {Vanagon::Environment} that a given platform
     # should pass to each component
     attr_accessor :environment
 

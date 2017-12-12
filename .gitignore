@@ -5,7 +5,6 @@
 .bundle/
 Gemfile.lock
 Gemfile.local
-.bundle/
 .rspec
 
 vanagon_hosts.log
@@ -17,3 +16,6 @@ vanagon_hosts.log
 
 # emacs backup files
 *~
+
+.yardoc/
+doc/

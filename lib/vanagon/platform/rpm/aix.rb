@@ -1,8 +1,8 @@
-# AIX is special. This subclassing gives us the chance to define some sane
-# defaults for aix without cluttering the main rpm class in if statements.
 class Vanagon
   class Platform
     class RPM
+      # AIX is special. This subclassing gives us the chance to define some sane
+      # defaults for aix without cluttering the main rpm class in if statements.
       class AIX < Vanagon::Platform::RPM
         def rpm_defines
           %(--define '_topdir $(tempdir)/rpmbuild' )

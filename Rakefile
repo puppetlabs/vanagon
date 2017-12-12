@@ -24,9 +24,7 @@ RuboCop::RakeTask.new(:rubocop) do |task|
 end
 
 desc 'Generate doc using Yard'
-YARD::Rake::YardocTask.new do |t|
-  t.files = ['lib/**/*.rb', 'bin/*']
-end
+YARD::Rake::YardocTask.new
 
 desc 'Run all spec tests and linters'
 task check: %w[test:spec rubocop]
