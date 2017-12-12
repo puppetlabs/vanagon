@@ -26,7 +26,8 @@
 Vanagon is a tool to build a single package out of a project, which can itself
 contain one or more components. This tooling is being used to develop the
 puppet-agent package, which contains components such as openssl, ruby, and
-augeas among others. For a simple example, please see the project in the `examples/` directory.
+augeas among others. For a simple example, please see the project in the
+[`examples/`](examples) directory.
 
 Vanagon builds up a Makefile and packaging files (specfile for RPM,
 control/rules/etc for DEB) and copies them to a remote host, where make can be
@@ -81,7 +82,7 @@ If I wanted to build it for debian wheezy, I would define a platform called
 wheezy and build my project against it.
 
 For more detailed examples of the DSLs available, please see the
-[examples](https://github.com/puppetlabs/vanagon/tree/master/examples) directory and the YARD documentation for Vanagon.
+[examples](examples) directory and the YARD documentation for Vanagon.
 
 ### `build` usage
 The build command has positional arguments and position independent flags.
@@ -293,12 +294,12 @@ end
 Contributing
 ---
 We'd love to get contributions from you! Once you are up and running, take a look at the
-[Contribution Documents](https://github.com/puppetlabs/vanagon/blob/master/docs/CONTRIBUTING.md) to see how to get your changes merged
+[Contribution Documents](docs/CONTRIBUTING.md) to see how to get your changes merged
 in.
 
 License
 ---
-See [LICENSE](https://github.com/puppetlabs/vanagon/blob/master/LICENSE) file.
+See [LICENSE](LICENSE) file.
 
 ## Maintainers
-See MAINTAINERS file.
+See [MAINTAINERS](MAINTAINERS) file.
