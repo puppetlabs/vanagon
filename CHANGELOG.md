@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.14.2] - released on 2017-12-12
+### Fixed
+ - In the `ship` binary we were incorrectly rescuing a LoadError when shipping
+   to artifactory. The `rescue` has been updated to explicitly `rescue LoadError`
+   since LoadError doesn't inherit from Exception.
+
 ## [0.14.1] - released on 2017-11-21
 ### Fixed
  - Remove devkit as an executable in the gemspec
@@ -521,7 +527,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.2...HEAD
+[0.14.1]: https://github.com/puppetlabs/vanagon/compare/0.14.1...0.14.2
 [0.14.1]: https://github.com/puppetlabs/vanagon/compare/0.14.0...0.14.1
 [0.14.0]: https://github.com/puppetlabs/vanagon/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/puppetlabs/vanagon/compare/0.13.0...0.13.1
