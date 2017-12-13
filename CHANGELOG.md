@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.14.3] - released on 2017-12-12
+### Fixed
+ - In the `ship` command we need to rescue both `LoadError`s and generic
+   `Exception`s to ensure the job doesn't fail on packaging < 1.0.x.
 ## [0.14.2] - released on 2017-12-12
 ### Fixed
  - In the `ship` binary we were incorrectly rescuing a LoadError when shipping
