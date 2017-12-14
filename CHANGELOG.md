@@ -531,7 +531,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.3...HEAD
+[0.14.3]: https://github.com/puppetlabs/vanagon/compare/0.14.2...0.14.3
 [0.14.2]: https://github.com/puppetlabs/vanagon/compare/0.14.1...0.14.2
 [0.14.1]: https://github.com/puppetlabs/vanagon/compare/0.14.0...0.14.1
 [0.14.0]: https://github.com/puppetlabs/vanagon/compare/0.13.1...0.14.0
