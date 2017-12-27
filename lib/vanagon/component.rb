@@ -356,11 +356,11 @@ class Vanagon
     # @return [String] environment suitable for inclusion in a Makefile
     # @deprecated
     def get_environment
-      warn <<-EOS.undent
+      warn <<-WARNING.undent
         #get_environment is deprecated; environment variables have been moved
         into the Makefile, and should not be used within a Makefile's recipe.
         The #get_environment method will be removed by Vanagon 1.0.0.
-      EOS
+      WARNING
 
       if environment.empty?
         ": no environment variables defined"
