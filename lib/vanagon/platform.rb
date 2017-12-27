@@ -222,7 +222,7 @@ class Vanagon
       @cross_compiled ||= false
     end
 
-    def shell
+    def shell # rubocop:disable Lint/DuplicateMethods
       @shell ||= "/bin/bash"
     end
 
@@ -239,7 +239,7 @@ class Vanagon
     # @param target_repo [String] optional repo target for built packages defined
     #   at the project level
     # @return [String] relative path to where packages should be output to
-    def output_dir(target_repo = "")
+    def output_dir(target_repo = "") # rubocop:disable Lint/DuplicateMethods
       @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
     end
 
@@ -250,7 +250,7 @@ class Vanagon
     # @param target_repo [String] optional repo target for built source packages
     # defined at the project level
     # @return [String] relative path to where source packages should be output to
-    def source_output_dir(target_repo = "")
+    def source_output_dir(target_repo = "") # rubocop:disable Lint/DuplicateMethods
       @source_output_dir ||= output_dir(target_repo)
     end
 
@@ -267,7 +267,7 @@ class Vanagon
     # Also has the side effect of setting the @os_name instance attribute
     #
     # @return [String] the operating system name as specified in the platform
-    def os_name
+    def os_name # rubocop:disable Lint/DuplicateMethods
       @os_name ||= @name.match(PLATFORM_REGEX)[1]
     end
 
@@ -275,7 +275,7 @@ class Vanagon
     # Also has the side effect of setting the @os_version instance attribute
     #
     # @return [String] the operating system version as specified in the platform
-    def os_version
+    def os_version # rubocop:disable Lint/DuplicateMethods
       @os_version ||= @name.match(PLATFORM_REGEX)[2]
     end
 
@@ -283,7 +283,7 @@ class Vanagon
     # Also has the side effect of setting the @architecture instance attribute
     #
     # @return [String] the architecture of the platform
-    def architecture
+    def architecture # rubocop:disable Lint/DuplicateMethods
       @architecture ||= @name.match(PLATFORM_REGEX)[3]
     end
 

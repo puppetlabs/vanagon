@@ -6,7 +6,7 @@ require 'vanagon/engine/base'
 class Vanagon
   class Engine
     class Ec2 < Base
-      attr_accessor :ami, :key_name, :userdata, :key, :key_name, :shutdown_behavior
+      attr_accessor :ami, :key_name, :userdata, :key, :shutdown_behavior
       attr_accessor :subnet_id, :instance_type
 
       def initialize(platform, target = nil, **opts) # rubocop:disable Metrics/AbcSize

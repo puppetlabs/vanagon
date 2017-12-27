@@ -29,7 +29,7 @@ class Vanagon
 
         # Default options used when cloning; this may expand
         # or change over time.
-        def default_options
+        def default_options # rubocop:disable Lint/DuplicateMethods
           @default_options ||= { ref: "HEAD" }
         end
         private :default_options
@@ -82,7 +82,7 @@ class Vanagon
         end
 
         # Use `git describe` to lazy-load a version for this component
-        def version
+        def version # rubocop:disable Lint/DuplicateMethods
           @version ||= describe
         end
 

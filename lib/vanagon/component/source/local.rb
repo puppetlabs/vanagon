@@ -63,11 +63,11 @@ class Vanagon
         end
         alias_method :fetch, :copy
 
-        def file
+        def file # rubocop:disable Lint/DuplicateMethods
           @file ||= workdir + File.basename(url)
         end
 
-        def extension
+        def extension # rubocop:disable Lint/DuplicateMethods
           @extension ||= extname
         end
 
@@ -117,7 +117,7 @@ class Vanagon
         #
         # @return [String] command to cleanup the source
         # @raise [RuntimeError] an exception is raised if there is no known extraction method for @extension
-        def cleanup
+        def cleanup # rubocop:disable Lint/DuplicateMethods
           archive? ? "rm #{file}; rm -r #{dirname}" : "rm #{file}"
         end
 

@@ -215,7 +215,7 @@ class Vanagon
     #   whatever URI was defined for #uri. If no mirrors are set and the
     #   deprecated rewrite system has been configured, this will return
     #   rewritten URIs
-    def mirrors
+    def mirrors # rubocop:disable Lint/DuplicateMethods
       @mirrors ||= Set.new [deprecated_rewrite_url].compact
     end
 
@@ -334,7 +334,7 @@ class Vanagon
 
     # @return [Array] the specific tool or command line invocations that
     #   should be used to extract a given component's primary source
-    def extract_with
+    def extract_with # rubocop:disable Lint/DuplicateMethods
       @extract_with ||= []
     end
 
