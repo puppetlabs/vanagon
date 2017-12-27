@@ -1,8 +1,18 @@
 require 'vanagon/environment'
 require 'vanagon/platform/dsl'
+require 'vanagon/utilities'
 
 class Vanagon
   class Platform
+    # Rubocop complains about Style/MixinUsage:
+    #   "include is used at the top level. Use inside class or module."
+    # Moving this include to this level passes spec tests -- any deeper than this,
+    # and spec tests collapse. I think an unfortunate number of platforms rely
+    # on these utilities without an explicit `require` and that's something we
+    # should refactor at some point.
+    #   - Ryan McKern 2017-12-27
+    include Vanagon::Utilities
+
     # Basic generic information related to a given instance of Platform.
     # e.g. The name we call it, the platform triplet (name-version-arch), etc.
     attr_accessor :name

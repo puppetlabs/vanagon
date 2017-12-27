@@ -1,6 +1,3 @@
-require 'vanagon/utilities'
-include Vanagon::Utilities
-
 class Vanagon
   class Platform
     class RPM < Vanagon::Platform
