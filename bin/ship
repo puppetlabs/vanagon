@@ -26,7 +26,7 @@ else
     Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship_to_artifactory', 'output')
   rescue LoadError
     warn artifactory_warning
-  rescue
+  rescue StandardError
     warn artifactory_warning
   end
 end

@@ -13,7 +13,7 @@ targets = ARGV[2]
 
 if project.nil? or platforms.nil?
   warn "project and platform are both required arguments."
-  $stderr.puts optparse
+  warn optparse
   exit 1
 end
 

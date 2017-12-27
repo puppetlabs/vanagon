@@ -134,10 +134,10 @@ class Vanagon
       dsl = Vanagon::Component::DSL.new(name, settings, platform)
       dsl.instance_eval(File.read(compfile), compfile, 1)
       dsl._component
-    rescue => e
-      $stderr.puts "Error loading project '#{name}' using '#{compfile}':"
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
+    rescue StandardError => e
+      warn "Error loading project '#{name}' using '#{compfile}':"
+      warn e
+      warn e.backtrace.join("\n")
       raise e
     end
 
@@ -232,7 +232,7 @@ class Vanagon
     def fetch_mirrors(options)
       mirrors.to_a.shuffle.each do |mirror|
         begin
-          $stderr.puts %(Attempting to fetch from mirror URL "#{mirror}")
+          warn %(Attempting to fetch from mirror URL "#{mirror}")
           @source = Vanagon::Component::Source.source(mirror, options)
           return true if source.fetch
         rescue SocketError
@@ -255,7 +255,7 @@ class Vanagon
     # @return [Boolean] return True if the source can be retrieved,
     #   or False otherwise
     def fetch_url(options)
-      $stderr.puts %(Attempting to fetch from canonical URL "#{url}")
+      warn %(Attempting to fetch from canonical URL "#{url}")
       @source = Vanagon::Component::Source.source(url, options)
       # Explicitly coerce the return value of #source.fetch,
       # because each subclass of Vanagon::Component::Source returns

@@ -93,7 +93,7 @@ class Vanagon
         #
         # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
         def verify # rubocop:disable Metrics/AbcSize
-          $stderr.puts "Verifying file: #{file} against sum: '#{sum}'"
+          warn "Verifying file: #{file} against sum: '#{sum}'"
           actual = get_sum(File.join(workdir, file), sum_type)
           return true if sum == actual
 
@@ -107,7 +107,7 @@ class Vanagon
           uri = URI.parse(target_url.to_s)
           target_file ||= File.basename(uri.path)
 
-          $stderr.puts "Downloading file '#{target_file}' from url '#{target_url}'"
+          warn "Downloading file '#{target_file}' from url '#{target_url}'"
 
           Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
             http.request(Net::HTTP::Get.new(uri, headers)) do |response|

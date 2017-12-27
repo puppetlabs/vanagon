@@ -103,10 +103,10 @@ class Vanagon
       dsl = Vanagon::Project::DSL.new(name, platform, include_components)
       dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
-    rescue => e
-      $stderr.puts "Error loading project '#{name}' using '#{projfile}':"
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
+    rescue StandardError => e
+      warn "Error loading project '#{name}' using '#{projfile}':"
+      warn e
+      warn e.backtrace.join("\n")
       raise e
     end
 
