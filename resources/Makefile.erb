@@ -4,7 +4,7 @@ SHELL = <%=  @platform.shell %>
 export <%= var %>
 <%- end -%>
 
-tempdir := $(shell mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp')
+tempdir := $(shell <%= @platform.mktemp %> 2>/dev/null)
 workdir := $(PWD)
 
 all: file-list-before-build <%= package_name %>

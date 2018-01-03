@@ -63,7 +63,7 @@ class Vanagon
             dispatch("mkdir -p #{@remote_workdir_path}", true)
             @remote_workdir = @remote_workdir_path
           else
-            @remote_workdir = dispatch("mktemp -d -p /var/tmp 2>/dev/null || mktemp -d -t 'tmp'", true)
+            @remote_workdir = dispatch("#{@platform.mktemp} 2>/dev/null", true)
           end
         end
         @remote_workdir
