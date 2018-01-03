@@ -17,12 +17,12 @@
 <%- end -%>
 
 # Turn off the brp-python-bytecompile script
-%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+%global __os_install_post %(echo '%{__os_install_post}' | <%= @platform.sed %> -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 <% if @platform.is_cross_compiled_linux? -%>
 # Disable brp-strip-static-archive, which on EL platforms causes
 # cross-compiled static libs to end up with "no machine" as their
 # architure, breaking builds:
-%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
+%global __os_install_post %(echo '%{__os_install_post}' | <%= @platform.sed %> -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
 <% end -%>
 
 <% @package_overrides.each do |var| %>
@@ -136,7 +136,7 @@ install -d %{buildroot}
   # automatically does this implicitly, but RPMv5 is more strict and you
   # need to list the dirs for them to be packaged properly.
   <%- get_directories.map {|d| "%{buildroot}#{d.path}"}.each do |dir| -%>
-    find <%= dir %> -type d | sed -e "s#%{buildroot}##" | sed -e 's/\(^.*\s.*$\)/"\1"/g' >> dir-list-rpm
+    find <%= dir %> -type d | <%= @platform.sed %> -e "s#%{buildroot}##" | <%= @platform.sed %> -e 's/\(^.*\s.*$\)/"\1"/g' >> dir-list-rpm
   <%- end -%>
   cat dir-list-rpm | sort | uniq >> %{SOURCE1}
 <%- end -%>
@@ -145,13 +145,13 @@ install -d %{buildroot}
 # %files section separately because rpm3 on aix errors on duplicate files in
 # the package.
 <%- (get_directories + get_files + get_configfiles).map do |filething| -%>
-  PATH=/opt/freeware/bin:$PATH sed -i 's|^<%= filething.path.include?(" ") ? %Q["#{filething.path}"] : filething.path %>$||g' %{SOURCE1}
+  PATH=/opt/freeware/bin:$PATH <%= @platform.sed %> -i 's|^<%= filething.path.include?(" ") ? %Q["#{filething.path}"] : filething.path %>$||g' %{SOURCE1}
 <%- end -%>
 
 # Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
 while read entry; do
   if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
-    PATH=/opt/freeware/bin:$PATH sed -i "s|^\($entry\)\$|%dir \1|g" %{SOURCE1}
+    PATH=/opt/freeware/bin:$PATH <%= @platform.sed %> -i "s|^\($entry\)\$|%dir \1|g" %{SOURCE1}
   fi
 done < %{SOURCE1}
 

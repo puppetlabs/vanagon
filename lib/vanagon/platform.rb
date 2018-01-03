@@ -35,6 +35,7 @@ class Vanagon
     attr_accessor :make
     attr_accessor :patch
     attr_accessor :rpmbuild # This is RedHat/EL/Fedora/SLES specific
+    attr_accessor :sed
     attr_accessor :sort
     attr_accessor :tar
     attr_accessor :shasum
@@ -214,6 +215,7 @@ class Vanagon
       @install ||= "install"
       @target_user ||= "root"
       @find ||= "find"
+      @sed ||= "sed"
       @sort ||= "sort"
       @copy ||= "cp"
       @shasum ||= "sha1sum"

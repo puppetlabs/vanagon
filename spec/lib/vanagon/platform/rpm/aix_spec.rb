@@ -20,7 +20,7 @@ describe "Vanagon::Platform::RPM::AIX" do
 
   describe "aix puts commands in weird places" do
     it "uses /opt/freeware/bin everwhere" do
-      ['tar', 'patch', 'install'].each do |cmd|
+      ['tar', 'patch', 'install', 'sed'].each do |cmd|
         expect(plat._platform.send(cmd.to_sym)).to eq(File.join('/opt/freeware/bin', cmd))
       end
     end

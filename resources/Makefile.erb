@@ -31,7 +31,7 @@ file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
 
 file-list: file-list-before-build <%= @name %>-project
 	comm -23 file-list-after-build file-list-before-build > file-list
-	comm -23 file-list-after-build file-list-before-build | sed -e 's/\(^.*[[:space:]].*$$\)/"\1"/g' > file-list-for-rpm
+	comm -23 file-list-after-build file-list-before-build | <%= @platform.sed %> -e 's/\(^.*[[:space:]].*$$\)/"\1"/g' > file-list-for-rpm
 
 <%- if @version_file -%>
 <%= @version_file.path %>:

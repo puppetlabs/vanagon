@@ -62,7 +62,7 @@ class Vanagon
             $$1 ~ /^d$$/ && (#{explicit_search_string}) {print "d",$$2,$$3,"0755 root sys";} \
             $$1 ~ /^s$$/ {print;} \
             $$1 ~ /^f$$/ {print "f",$$2,$$3,$$4,"root sys";} \
-            $$1 !~ /^[dfs]$$/ {print;} ' | /opt/csw/bin/gsed \
+            $$1 !~ /^[dfs]$$/ {print;} ' | #{sed} \
                -e '/^[fd] [^ ]\\+ .*[/]s\\?bin[^ ]\\+/ {s/root sys$$/root bin/}' \
                -e '/^[fd] [^ ]\\+ .*[/]lib[/][^ ]\\+/ {s/root sys$$/root bin/}' \
                -e '/^[fd] [^ ]\\+ .*[/][^ ]\\+[.]so/ {s/root sys$$/root bin/}' >> ../packaging/proto)),
@@ -185,6 +185,7 @@ class Vanagon
         @make = "/opt/csw/bin/gmake"
         @tar = "/usr/sfw/bin/gtar"
         @patch = "/usr/bin/gpatch"
+        @sed = "/opt/csw/bin/gsed"
         @shasum = "/opt/csw/bin/shasum"
         # solaris 10
         @num_cores = "/usr/bin/kstat cpu_info | awk '{print $$1}' | grep '^core_id$$' | wc -l"
