@@ -43,8 +43,8 @@ class Vanagon
       # flatten all the results in to one array and set project.components to that.
       @project.components = only_build.flat_map { |comp| @project.filter_component(comp) }.uniq
       if @verbose
-        $stderr.puts "Only building:"
-        @project.components.each { |comp| $stderr.puts comp.name }
+        warn "Only building:"
+        @project.components.each { |comp| warn comp.name }
       end
     end
 
@@ -66,7 +66,7 @@ class Vanagon
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
       @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, remote_workdir: remote_workdir)
-    rescue
+    rescue StandardError
       fail "No such engine '#{camelize(engine_type)}'"
     end
 
@@ -117,7 +117,7 @@ class Vanagon
 
       @engine.startup(workdir)
 
-      $stderr.puts "Target is #{@engine.target}"
+      warn "Target is #{@engine.target}"
       retry_task { install_build_dependencies }
       retry_task { @project.fetch_sources(workdir) }
 
@@ -133,13 +133,13 @@ class Vanagon
         @engine.teardown
         cleanup_workdir
       end
-    rescue => e
+    rescue StandardError => e
       if [:never].include? @preserve
         @engine.teardown
         cleanup_workdir
       end
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
+      warn e
+      warn e.backtrace.join("\n")
       raise e
     ensure
       if ["hardware", "ec2"].include?(@engine.name)
@@ -153,7 +153,7 @@ class Vanagon
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      $stderr.puts "rendering Makefile"
+      warn "rendering Makefile"
       retry_task { @project.fetch_sources(workdir) }
       @project.make_bill_of_materials(workdir)
       @project.generate_packaging_artifacts(workdir)

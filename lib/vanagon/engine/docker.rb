@@ -38,7 +38,7 @@ class Vanagon
         Vanagon::Utilities.retry_with_timeout do
           Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @platform.ssh_port)
         end
-      rescue => e
+      rescue StandardError => e
         raise Vanagon::Error.wrap(e, "Something went wrong getting a target vm to build on using docker. Ssh was not up in the container after 5 seconds.")
       end
 

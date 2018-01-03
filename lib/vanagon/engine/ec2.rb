@@ -6,7 +6,7 @@ require 'vanagon/engine/base'
 class Vanagon
   class Engine
     class Ec2 < Base
-      attr_accessor :ami, :key_name, :userdata, :key, :key_name, :shutdown_behavior
+      attr_accessor :ami, :key_name, :userdata, :key, :shutdown_behavior
       attr_accessor :subnet_id, :instance_type
 
       def initialize(platform, target = nil, **opts) # rubocop:disable Metrics/AbcSize
@@ -57,17 +57,17 @@ class Vanagon
       end
 
       def select_target
-        $stderr.puts "Instance created id: #{instance.id}"
-        $stderr.puts "Created instance waiting for status ok"
+        warn "Instance created id: #{instance.id}"
+        warn "Created instance waiting for status ok"
         @ec2.wait_until(:instance_status_ok, instance_ids: [instance.id])
-        $stderr.puts "Instance running"
+        warn "Instance running"
         @target = instance.private_ip_address
       rescue ::Aws::Waiters::Errors::WaiterFailed => error
         fail "Failed to wait for ec2 instance to start got error #{error}"
       end
 
       def teardown
-        $stderr.puts "Destroying instance on AWS id: #{instance.id}"
+        warn "Destroying instance on AWS id: #{instance.id}"
         instances.batch_terminate!
       end
     end

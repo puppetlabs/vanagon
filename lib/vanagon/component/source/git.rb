@@ -29,7 +29,7 @@ class Vanagon
 
         # Default options used when cloning; this may expand
         # or change over time.
-        def default_options
+        def default_options # rubocop:disable Lint/DuplicateMethods
           @default_options ||= { ref: "HEAD" }
         end
         private :default_options
@@ -71,7 +71,7 @@ class Vanagon
         # There is no md5 to manually verify here, so this is a noop.
         def verify
           # nothing to do here, so just tell users that and return
-          $stderr.puts "Nothing to verify for '#{dirname}' (using Git reference '#{ref}')"
+          warn "Nothing to verify for '#{dirname}' (using Git reference '#{ref}')"
         end
 
         # The dirname to reference when building from the repo
@@ -82,7 +82,7 @@ class Vanagon
         end
 
         # Use `git describe` to lazy-load a version for this component
-        def version
+        def version # rubocop:disable Lint/DuplicateMethods
           @version ||= describe
         end
 
@@ -117,8 +117,8 @@ class Vanagon
         # Clone a remote repo, make noise about it, and fail entirely
         # if we're unable to retrieve the remote repo
         def clone!
-          $stderr.puts "Cloning Git repo '#{url}'"
-          $stderr.puts "Successfully cloned '#{dirname}'" if clone
+          warn "Cloning Git repo '#{url}'"
+          warn "Successfully cloned '#{dirname}'" if clone
         rescue ::Git::GitExecuteError
           raise Vanagon::InvalidRepo, "Unable to clone from '#{url}'"
         end
@@ -127,7 +127,7 @@ class Vanagon
         # Checkout desired ref/sha, make noise about it, and fail
         # entirely if we're unable to checkout that given ref/sha
         def checkout!
-          $stderr.puts "Checking out '#{ref}'' from Git repo '#{dirname}'"
+          warn "Checking out '#{ref}'' from Git repo '#{dirname}'"
           clone.checkout(ref)
         rescue ::Git::GitExecuteError
           raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{url}'"
@@ -137,7 +137,7 @@ class Vanagon
         # Attempt to update submodules, and do not panic
         # if there are no submodules to initialize
         def update_submodules
-          $stderr.puts "Attempting to update submodules for repo '#{dirname}'"
+          warn "Attempting to update submodules for repo '#{dirname}'"
           clone.update_submodules(init: true)
         end
         private :update_submodules

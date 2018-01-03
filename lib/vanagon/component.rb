@@ -134,10 +134,10 @@ class Vanagon
       dsl = Vanagon::Component::DSL.new(name, settings, platform)
       dsl.instance_eval(File.read(compfile), compfile, 1)
       dsl._component
-    rescue => e
-      $stderr.puts "Error loading project '#{name}' using '#{compfile}':"
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
+    rescue StandardError => e
+      warn "Error loading project '#{name}' using '#{compfile}':"
+      warn e
+      warn e.backtrace.join("\n")
       raise e
     end
 
@@ -215,7 +215,7 @@ class Vanagon
     #   whatever URI was defined for #uri. If no mirrors are set and the
     #   deprecated rewrite system has been configured, this will return
     #   rewritten URIs
-    def mirrors
+    def mirrors # rubocop:disable Lint/DuplicateMethods
       @mirrors ||= Set.new [deprecated_rewrite_url].compact
     end
 
@@ -232,7 +232,7 @@ class Vanagon
     def fetch_mirrors(options)
       mirrors.to_a.shuffle.each do |mirror|
         begin
-          $stderr.puts %(Attempting to fetch from mirror URL "#{mirror}")
+          warn %(Attempting to fetch from mirror URL "#{mirror}")
           @source = Vanagon::Component::Source.source(mirror, options)
           return true if source.fetch
         rescue SocketError
@@ -255,7 +255,7 @@ class Vanagon
     # @return [Boolean] return True if the source can be retrieved,
     #   or False otherwise
     def fetch_url(options)
-      $stderr.puts %(Attempting to fetch from canonical URL "#{url}")
+      warn %(Attempting to fetch from canonical URL "#{url}")
       @source = Vanagon::Component::Source.source(url, options)
       # Explicitly coerce the return value of #source.fetch,
       # because each subclass of Vanagon::Component::Source returns
@@ -334,7 +334,7 @@ class Vanagon
 
     # @return [Array] the specific tool or command line invocations that
     #   should be used to extract a given component's primary source
-    def extract_with
+    def extract_with # rubocop:disable Lint/DuplicateMethods
       @extract_with ||= []
     end
 
@@ -356,11 +356,11 @@ class Vanagon
     # @return [String] environment suitable for inclusion in a Makefile
     # @deprecated
     def get_environment
-      warn <<-eos.undent
+      warn <<-WARNING.undent
         #get_environment is deprecated; environment variables have been moved
         into the Makefile, and should not be used within a Makefile's recipe.
         The #get_environment method will be removed by Vanagon 1.0.0.
-      eos
+      WARNING
 
       if environment.empty?
         ": no environment variables defined"

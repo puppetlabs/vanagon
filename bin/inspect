@@ -14,7 +14,7 @@ platforms = ARGV[1]
 
 unless project or platforms
   warn "project and platform are both required arguments."
-  $stderr.puts optparse
+  warn optparse
   exit 1
 end
 

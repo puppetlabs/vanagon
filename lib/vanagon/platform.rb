@@ -1,8 +1,18 @@
 require 'vanagon/environment'
 require 'vanagon/platform/dsl'
+require 'vanagon/utilities'
 
 class Vanagon
   class Platform
+    # Rubocop complains about Style/MixinUsage:
+    #   "include is used at the top level. Use inside class or module."
+    # Moving this include to this level passes spec tests -- any deeper than this,
+    # and spec tests collapse. I think an unfortunate number of platforms rely
+    # on these utilities without an explicit `require` and that's something we
+    # should refactor at some point.
+    #   - Ryan McKern 2017-12-27
+    include Vanagon::Utilities
+
     # Basic generic information related to a given instance of Platform.
     # e.g. The name we call it, the platform triplet (name-version-arch), etc.
     attr_accessor :name
@@ -133,10 +143,10 @@ class Vanagon
       dsl = Vanagon::Platform::DSL.new(name)
       dsl.instance_eval(File.read(platfile), platfile, 1)
       dsl._platform
-    rescue => e
-      $stderr.puts "Error loading platform '#{name}' using '#{platfile}':"
-      $stderr.puts e
-      $stderr.puts e.backtrace.join("\n")
+    rescue StandardError => e
+      warn "Error loading platform '#{name}' using '#{platfile}':"
+      warn e
+      warn e.backtrace.join("\n")
       raise e
     end
 
@@ -222,7 +232,7 @@ class Vanagon
       @cross_compiled ||= false
     end
 
-    def shell
+    def shell # rubocop:disable Lint/DuplicateMethods
       @shell ||= "/bin/bash"
     end
 
@@ -239,7 +249,7 @@ class Vanagon
     # @param target_repo [String] optional repo target for built packages defined
     #   at the project level
     # @return [String] relative path to where packages should be output to
-    def output_dir(target_repo = "")
+    def output_dir(target_repo = "") # rubocop:disable Lint/DuplicateMethods
       @output_dir ||= File.join(@os_name, @os_version, target_repo, @architecture)
     end
 
@@ -250,7 +260,7 @@ class Vanagon
     # @param target_repo [String] optional repo target for built source packages
     # defined at the project level
     # @return [String] relative path to where source packages should be output to
-    def source_output_dir(target_repo = "")
+    def source_output_dir(target_repo = "") # rubocop:disable Lint/DuplicateMethods
       @source_output_dir ||= output_dir(target_repo)
     end
 
@@ -267,7 +277,7 @@ class Vanagon
     # Also has the side effect of setting the @os_name instance attribute
     #
     # @return [String] the operating system name as specified in the platform
-    def os_name
+    def os_name # rubocop:disable Lint/DuplicateMethods
       @os_name ||= @name.match(PLATFORM_REGEX)[1]
     end
 
@@ -275,7 +285,7 @@ class Vanagon
     # Also has the side effect of setting the @os_version instance attribute
     #
     # @return [String] the operating system version as specified in the platform
-    def os_version
+    def os_version # rubocop:disable Lint/DuplicateMethods
       @os_version ||= @name.match(PLATFORM_REGEX)[2]
     end
 
@@ -283,7 +293,7 @@ class Vanagon
     # Also has the side effect of setting the @architecture instance attribute
     #
     # @return [String] the architecture of the platform
-    def architecture
+    def architecture # rubocop:disable Lint/DuplicateMethods
       @architecture ||= @name.match(PLATFORM_REGEX)[3]
     end
 

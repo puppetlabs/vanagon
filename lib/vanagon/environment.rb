@@ -141,11 +141,11 @@ class Vanagon
 
       warning = [%(Value "#{str}" looks like it's escaping one or more values for subshell interpolation.)]
       escaped_variables.each { |v| warning.push %(\t"$$(#{v})" will be coerced to "$(shell #{v})") }
-      warning.push <<-eos.undent
+      warning.push <<-WARNING.undent
         All environment variables will now be resolved by Make before they're executed
         by the shell. These variables will be mangled for you for now, but you should
         update your project's parameters.
-      eos
+      WARNING
 
       warn warning.join("\n")
       str.gsub(pattern, '$(shell \1)')
@@ -159,11 +159,11 @@ class Vanagon
 
       warning = [%(Value "#{str}" looks like it's escaping one or more shell variable names for shell interpolation.)]
       escaped_variables.each { |v| warning.push %(\t"$$#{v}" will be coerced to "$(#{v})") }
-      warning.push <<-eos.undent
+      warning.push <<-WARNING.undent
         All environment variables will now be resolved by Make before they're executed
         by the shell. These variables will be mangled for you for now, but you should
         update your project's parameters.
-      eos
+      WARNING
 
       warn warning.join("\n")
       str.gsub(pattern, '$(\1)')
