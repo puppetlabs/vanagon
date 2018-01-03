@@ -18,7 +18,7 @@ class Vanagon
         def install_build_dependencies(build_dependencies)
           commands = []
           unless build_dependencies.empty?
-            commands << "tmpdir=$(mktemp -p /var/tmp -d)"
+            commands << "tmpdir=$(#{mktemp})"
             commands << "cd ${tmpdir}"
             build_dependencies.each do |build_dependency|
               if build_dependency =~ /^http.*\.rpm$/

@@ -107,6 +107,7 @@ class Vanagon
         @hdiutil = "/usr/bin/hdiutil"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/sbin/sysctl -n hw.physicalcpu"
+        @mktemp = "mktemp -d -t 'tmp'"
         super(name)
       end
     end

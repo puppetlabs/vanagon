@@ -43,6 +43,7 @@ class Vanagon
     attr_accessor :find
     attr_accessor :install
     attr_accessor :make
+    attr_accessor :mktemp
     attr_accessor :patch
     attr_accessor :rpmbuild # This is RedHat/EL/Fedora/SLES specific
     attr_accessor :sort
@@ -222,6 +223,7 @@ class Vanagon
       @environment = Vanagon::Environment.new
       @provisioning = []
       @install ||= "install"
+      @mktemp ||= "mktemp -d -p /var/tmp"
       @target_user ||= "root"
       @find ||= "find"
       @sort ||= "sort"

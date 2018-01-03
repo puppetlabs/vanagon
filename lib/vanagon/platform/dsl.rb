@@ -170,6 +170,13 @@ class Vanagon
         @platform.install = install_cmd
       end
 
+      # Set the path and options for the mktemp command
+      # @param command [String] Full path (if needed) for the mktemp command with arguments to
+      # be used by default
+      def mktemp(command)
+        @platform.mktemp = command
+      end
+
       # Set the path to patch for the platform
       #
       # @param patch_cmd [String] Full path to the patch command for the platform
