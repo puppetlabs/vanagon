@@ -129,6 +129,13 @@ class Vanagon
         @platform.find = find_cmd
       end
 
+      # Set the path to sed for the platform
+      #
+      # @param command [String] full path to the sed command for the platform
+      def sed(command)
+        @platform.sed = command
+      end
+
       # Set the path to sort for the platform
       #
       # @param sort_cmd [String] Full path to the sort command for the platform

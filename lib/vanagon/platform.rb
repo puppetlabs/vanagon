@@ -46,6 +46,7 @@ class Vanagon
     attr_accessor :mktemp
     attr_accessor :patch
     attr_accessor :rpmbuild # This is RedHat/EL/Fedora/SLES specific
+    attr_accessor :sed
     attr_accessor :sort
     attr_accessor :tar
     attr_accessor :shasum
@@ -226,6 +227,7 @@ class Vanagon
       @mktemp ||= "mktemp -d -p /var/tmp"
       @target_user ||= "root"
       @find ||= "find"
+      @sed ||= "sed"
       @sort ||= "sort"
       @copy ||= "cp"
       @shasum ||= "sha1sum"
