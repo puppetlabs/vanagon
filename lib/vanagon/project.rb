@@ -231,7 +231,11 @@ class Vanagon
       replaces = []
       replaces.push @replaces.flatten
       replaces.push components.flat_map(&:replaces)
-      replaces.flatten.uniq
+      replaces.flatten!
+      replaces.each do |replace|
+        replace.version = @platform.version_munger(replace.version) if replace.version
+      end
+      replaces.uniq
     end
 
     def has_replaces?
