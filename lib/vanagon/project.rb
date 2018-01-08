@@ -233,7 +233,9 @@ class Vanagon
       replaces.push components.flat_map(&:replaces)
       replaces.flatten!
       replaces.each do |replace|
-        replace.version = @platform.version_munger(replace.version) if replace.version
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        replace.version = @platform.version_munger(replace.version, default: '<') if replace.version
       end
       replaces.uniq
     end
@@ -248,7 +250,9 @@ class Vanagon
       # Mash the whole thing down into a flat Array
       conflicts.flatten!
       conflicts.each do |conflict|
-        conflict.version = @platform.version_munger(conflict.version) if conflict.version
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        conflict.version = @platform.version_munger(conflict.version, default: '<') if conflict.version
       end
       conflicts.uniq
     end
@@ -282,7 +286,9 @@ class Vanagon
       provides.push components.flat_map(&:provides)
       provides.flatten!
       provides.each do |provide|
-        provide.version = @platform.version_munger(provide.version) if provide.version
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        provide.version = @platform.version_munger(provide.version, default: '>=') if provide.version
       end
       provides.uniq
     end

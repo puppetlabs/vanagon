@@ -496,14 +496,12 @@ class Vanagon
     # based on platform.
     #
     # @param version_string operator(<,>,=,<=,>=) and version to be munged
-    def version_munger(version_string)
+    def version_munger(version_string, default: '=')
       match = version_string.match(VERSION_REGEX)
 
       if match.nil?
         warn "Passing a version without an operator is deprecated!"
-        # TODO: Make this a more reasonable default before 1.0.0
-        # but in the interim, maintain the current behavior
-        operator = '<'
+        operator = default
         version = version_string
       end
       operator ||= match[1]

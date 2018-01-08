@@ -122,7 +122,7 @@ class Vanagon
         project.package_overrides << var
       end
 
-      def version_munger(version_strin)
+      def version_munger(version_string, default: '=')
         operator, version = super.split(' ')
         if operator =~ /^[<>]$/
           operator = "#{operator}#{operator}"
