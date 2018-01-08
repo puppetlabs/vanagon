@@ -104,7 +104,7 @@ Conflicts: <%= conflict.pkgname %><%= conflict.version ? " #{conflict.version}" 
 <%- end -%>
 
 <%- get_provides.each do |prov| -%>
-Provides: <%= prov.provide %><%= prov.version ? " >= #{prov.version}" : "" %>
+Provides: <%= prov.provide %><%= prov.version ? " #{prov.version}" : "" %>
 <%- end -%>
 
 %description

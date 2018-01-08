@@ -280,7 +280,11 @@ class Vanagon
       provides = []
       provides.push @provides.flatten
       provides.push components.flat_map(&:provides)
-      provides.flatten.uniq
+      provides.flatten!
+      provides.each do |provide|
+        provide.version = @platform.version_munger(provide.version) if provide.version
+      end
+      provides.uniq
     end
 
     def has_provides?
