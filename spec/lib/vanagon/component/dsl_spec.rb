@@ -366,6 +366,16 @@ end" }
       expect(comp._component.conflicts.first.pkgname).to eq('thing1')
       expect(comp._component.conflicts.first.version).to eq('1.2.3')
     end
+
+    it "doesn't add a version operator if it's already there" do
+      operators = ['<', '>', '=', '<=', '>=']
+      operators.each do |operator|
+        comp = Vanagon::Component::DSL.new('conflicts-test', {}, {})
+        comp.conflicts('thing1', "#{operator}1.2.3")
+        expect(comp._component.conflicts.first.pkgname).to eq('thing1')
+        expect(comp._component.conflicts.first.version).to eq("#{operator}1.2.3")
+      end
+    end
   end
 
   describe '#add_actions' do

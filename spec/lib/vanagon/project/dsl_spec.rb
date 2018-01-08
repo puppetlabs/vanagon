@@ -277,6 +277,15 @@ end" }
   end
 
   describe "#conflicts" do
+    before do
+      allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
+      allow(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
+      @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
+    end
+
     it 'adds the package conflict to the list of conflicts' do
       proj = Vanagon::Project::DSL.new('test-fixture', {})
       proj.instance_eval(project_block)
@@ -288,22 +297,61 @@ end" }
      end
 
     it 'supports versioned conflicts' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', @el_plat._platform, [])
       proj.instance_eval(project_block)
       proj.conflicts('thing1', '1.2.3')
       expect(proj._project.get_conflicts.count).to eq(1)
       expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
-      expect(proj._project.get_conflicts.first.version).to eq('1.2.3')
+      expect(proj._project.get_conflicts.first.version).to eq('< 1.2.3')
      end
 
+    it 'supports deb versioned conflicts' do
+      proj = Vanagon::Project::DSL.new('test-fixture', @deb_plat._platform, [])
+      proj.instance_eval(project_block)
+      proj.conflicts('thing1', '1.2.3')
+      expect(proj._project.get_conflicts.count).to eq(1)
+      expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+      expect(proj._project.get_conflicts.first.version).to eq('<< 1.2.3')
+    end
+
+    it 'munges deb* versions' do
+      operators = {
+        '<' => '<<',
+        '>' => '>>',
+        '<=' => '<=',
+        '>=' => '>=',
+        '=' => '='
+      }
+      operators.each do |initial, munged|
+        proj = Vanagon::Project::DSL.new('test-fixture', @deb_plat._platform, [])
+        proj.instance_eval(project_block)
+        proj.conflicts('thing1', "#{initial}1.2.3")
+        expect(proj._project.get_conflicts.count).to eq(1)
+        expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+        expect(proj._project.get_conflicts.first.version).to eq("#{munged} 1.2.3")
+      end
+    end
+
+    it 'adds whitespace for rpm versions' do
+      operators=['<','>','<=','>=','=']
+      operators.each do |operator|
+        proj = Vanagon::Project::DSL.new('test-fixture', @el_plat._platform, [])
+        proj.instance_eval(project_block)
+        proj.conflicts('thing1', "#{operator}1.2.3")
+        expect(proj._project.get_conflicts.count).to eq(1)
+        expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
+        expect(proj._project.get_conflicts.first.version).to eq("#{operator} 1.2.3")
+      end
+    end
+
     it 'gets rid of duplicates' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', @el_plat._platform, [])
       proj.instance_eval(project_block)
       proj.conflicts('thing1', '1.2.3')
       proj.conflicts('thing1', '1.2.3')
       expect(proj._project.get_conflicts.count).to eq(1)
       expect(proj._project.get_conflicts.first.pkgname).to eq('thing1')
-      expect(proj._project.get_conflicts.first.version).to eq('1.2.3')
+      expect(proj._project.get_conflicts.first.version).to eq('< 1.2.3')
     end
   end
 

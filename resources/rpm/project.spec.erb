@@ -100,7 +100,7 @@ Obsoletes: <%= replace.replacement %><%= replace.version ? " < #{replace.version
 <%- end -%>
 
 <%- get_conflicts.each do |conflict| -%>
-Conflicts: <%= conflict.pkgname %><%= conflict.version ? " < #{conflict.version}" : "" %>
+Conflicts: <%= conflict.pkgname %><%= conflict.version ? " #{conflict.version}" : "" %>
 <%- end -%>
 
 <%- get_provides.each do |prov| -%>

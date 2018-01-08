@@ -122,6 +122,14 @@ class Vanagon
         project.package_overrides << var
       end
 
+      def version_munger(version_strin)
+        operator, version = super.split(' ')
+        if operator =~ /^[<>]$/
+          operator = "#{operator}#{operator}"
+        end
+
+        "#{operator} #{version}"
+      end
       # Constructor. Sets up some defaults for the debian platform and calls the parent constructor
       #
       # @param name [String] name of the platform
@@ -132,6 +140,7 @@ class Vanagon
         @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/bin/nproc"
+        @valid_operators = ['<', '>', '<=', '>=', '=', '<<', '>>']
         super(name)
       end
     end
