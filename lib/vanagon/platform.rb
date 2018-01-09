@@ -495,7 +495,10 @@ class Vanagon
     # version strings for dependencies, conflicts, replaces, etc need some munging
     # based on platform.
     #
-    # @param version_string operator(<,>,=,<=,>=) and version to be munged
+    # @param version_string operator(<,>,=,<=,>=) and version to be munged, like
+    #        '<1.2.3'
+    # @param default [deprecated] default operator to use if version string doesn't
+    #        contain an operator
     def version_munger(version_string, default: '=')
       match = version_string.match(VERSION_REGEX)
 
