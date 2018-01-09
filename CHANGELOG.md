@@ -6,10 +6,34 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.0] - released on 2018-01-09
+### Added
+ - (VANAGON-69) Allow path for `sed` to be customized in platform definitions.
+ - (VANAGON-108) Allow path and default options for `mktemp` to be customized in
+   platform definitions.
+
+### Changed
+ - Updated to rubocop 0.52.1
+ - RPMs were not being completely stripped of debug symbols. We weren't setting
+   the correct variables in the spec file to completely strip RPMs. We've updated
+   the spec file to set the correct variables for EL, SLES, and Fedora builds.
+   AIX and Cisco WRLinux have had no changes to stripping at this time.
+
+### Fixed
+ - (VANAGON-34) Usage for version in `conflicts`, `replaces`, and `provides` is
+   confusing. Previously the version for those settings was intended to only
+   contain the version number, and then in the packaging the default comparison
+   operator was added. This default was `<` for `conflicts` and `replaces`, and
+   `>=` for provides. Those defaults are being maintained for the time being,
+   but in the future the default will move to `=`. Those version settings should
+   now be set with a comparison operator, and methods have been added to do the
+   necessary munging for version comparison in Debian packages.
+
 ## [0.14.3] - released on 2017-12-12
 ### Fixed
  - In the `ship` command we need to rescue both `LoadError`s and generic
    `Exception`s to ensure the job doesn't fail on packaging < 1.0.x.
+
 ## [0.14.2] - released on 2017-12-12
 ### Fixed
  - In the `ship` binary we were incorrectly rescuing a LoadError when shipping
@@ -531,7 +555,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.14.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.0...HEAD
+[0.15.0]: https://github.com/puppetlabs/vanagon/compare/0.14.3...0.15.0
 [0.14.3]: https://github.com/puppetlabs/vanagon/compare/0.14.2...0.14.3
 [0.14.2]: https://github.com/puppetlabs/vanagon/compare/0.14.1...0.14.2
 [0.14.1]: https://github.com/puppetlabs/vanagon/compare/0.14.0...0.14.1
