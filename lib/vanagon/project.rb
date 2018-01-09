@@ -231,7 +231,13 @@ class Vanagon
       replaces = []
       replaces.push @replaces.flatten
       replaces.push components.flat_map(&:replaces)
-      replaces.flatten.uniq
+      replaces.flatten!
+      replaces.each do |replace|
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        replace.version = @platform.version_munger(replace.version, default: '<') if replace.version
+      end
+      replaces.uniq
     end
 
     def has_replaces?
@@ -242,7 +248,13 @@ class Vanagon
     def get_conflicts
       conflicts = components.flat_map(&:conflicts) + @conflicts
       # Mash the whole thing down into a flat Array
-      conflicts.flatten.uniq
+      conflicts.flatten!
+      conflicts.each do |conflict|
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        conflict.version = @platform.version_munger(conflict.version, default: '<') if conflict.version
+      end
+      conflicts.uniq
     end
 
     def has_conflicts?
@@ -272,7 +284,13 @@ class Vanagon
       provides = []
       provides.push @provides.flatten
       provides.push components.flat_map(&:provides)
-      provides.flatten.uniq
+      provides.flatten!
+      provides.each do |provide|
+        # TODO: Make this a more reasonable default before 1.0.0
+        # but in the interim, maintain the current behavior
+        provide.version = @platform.version_munger(provide.version, default: '>=') if provide.version
+      end
+      provides.uniq
     end
 
     def has_provides?

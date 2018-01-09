@@ -129,10 +129,14 @@ class Vanagon
     # Freeform Hash of leftover settings
     attr_accessor :settings
 
+    attr_accessor :valid_operators
+
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
     # extract those fields.
     PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/
+
+    VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/
 
     # Loads a given platform from the configdir
     #
@@ -234,6 +238,7 @@ class Vanagon
 
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
+      @valid_operators ||= ['<', '>', '<=', '>=', '=']
     end
 
     def shell # rubocop:disable Lint/DuplicateMethods
@@ -485,6 +490,31 @@ class Vanagon
     def provision_with(command)
       provisioning << command
       provisioning.flatten!
+    end
+
+    # version strings for dependencies, conflicts, replaces, etc need some munging
+    # based on platform.
+    #
+    # @param version_string operator(<,>,=,<=,>=) and version to be munged, like
+    #        '<1.2.3'
+    # @param default [deprecated] default operator to use if version string doesn't
+    #        contain an operator
+    def version_munger(version_string, default: '=')
+      match = version_string.match(VERSION_REGEX)
+
+      if match.nil?
+        warn "Passing a version without an operator is deprecated!"
+        operator = default
+        version = version_string
+      end
+      operator ||= match[1]
+      version ||= match[2]
+      fail "Operator '#{operator}' is invalid" unless validate_operator(operator)
+      "#{operator} #{version}"
+    end
+
+    def validate_operator(operator_string)
+      valid_operators.include?(operator_string)
     end
   end
 end
