@@ -17,7 +17,10 @@ class Vanagon
         # @return [Vanagon::Component::Source] the correct subtype for the given source
         def source(uri, **options)
           # First we try git
-          if Vanagon::Component::Source::Git.valid_remote?(uri)
+          # Add a 5 second timeout for the `git remote-ls` execution to deal with
+          # URLs that incorrectly respond to git queries
+          timeout = 5
+          if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
             return Vanagon::Component::Source::Git.new uri,
               sum: options[:sum],
               ref: options[:ref],

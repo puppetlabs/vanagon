@@ -6,6 +6,7 @@ require 'English'
 require 'fustigit'
 require 'git/basic_submodules'
 require 'logger'
+require 'timeout'
 
 class Vanagon
   class Component
@@ -19,10 +20,18 @@ class Vanagon
           # return True or False depending on whether or not
           # `git` thinks it's a valid Git repo.
           #
+          # @param url
+          # @param timeout Time (in seconds) to wait before assuming the
+          #        git command has failed. Useful in instances where a URL
+          #        prompts for credentials despite not being a git remote
           # @return [Boolean] whether #url is a valid Git repo or not
-          def valid_remote?(url)
-            !!::Git.ls_remote(url)
+          def valid_remote?(url, timeout = 0)
+            Timeout.timeout(timeout) do
+              !!::Git.ls_remote(url)
+            end
           rescue ::Git::GitExecuteError
+              false
+          rescue Timeout::Error
             false
           end
         end
