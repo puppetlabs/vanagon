@@ -15,12 +15,15 @@ class Vanagon
         # @param options [Hash] hash of the options needed for the subtype
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
-        def source(uri, **options)
+        def source(uri, **options) # rubocop:disable Metrics/AbcSize
+          if options[:source_type].nil?
+            source_type = determine_source_type(uri)
+          else
+            source_type = options[:source_type].to_sym
+          end
+
           # First we try git
-          # Add a 5 second timeout for the `git remote-ls` execution to deal with
-          # URLs that incorrectly respond to git queries
-          timeout = 5
-          if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
+          if source_type == :git
             return Vanagon::Component::Source::Git.new uri,
               sum: options[:sum],
               ref: options[:ref],
@@ -28,7 +31,7 @@ class Vanagon
           end
 
           # Then we try HTTP
-          if Vanagon::Component::Source::Http.valid_url?(uri)
+          if source_type == :http
             return Vanagon::Component::Source::Http.new uri,
               sum: options[:sum],
               workdir: options[:workdir],
@@ -37,7 +40,7 @@ class Vanagon
           end
 
           # Then we try local
-          if Vanagon::Component::Source::Local.valid_file?(uri)
+          if source_type == :local
             return Vanagon::Component::Source::Local.new uri,
               workdir: options[:workdir]
           end
@@ -45,6 +48,28 @@ class Vanagon
           # Failing all of that, we give up
           raise Vanagon::Error,
             "Unknown file type: '#{uri}'; cannot continue"
+        end
+
+        def determine_source_type(uri)
+          # if source_type isn't specified, let's try to figure out what we have
+          # order of precedence for this is git, then http, then local
+
+          # Add a 5 second timeout for the `git remote-ls` execution to deal with
+          # URLs that incorrectly respond to git queries
+          timeout = 5
+          if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
+            return :git
+          end
+
+          if Vanagon::Component::Source::Http.valid_url?(uri)
+            return :http
+          end
+
+          if Vanagon::Component::Source::Local.valid_file?(uri)
+            return :local
+          end
+
+          return :unknown
         end
       end
     end

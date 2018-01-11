@@ -30,7 +30,7 @@ class Vanagon
               !!::Git.ls_remote(url)
             end
           rescue ::Git::GitExecuteError
-              false
+            false
           rescue Timeout::Error
             false
           end

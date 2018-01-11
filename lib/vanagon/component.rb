@@ -21,6 +21,7 @@ class Vanagon
     attr_accessor :url
     attr_accessor :mirrors
     attr_accessor :license
+    attr_accessor :source_type
 
     # holds an OpenStruct describing all of the particular details about
     # how any services associated with a given component should be defined.
@@ -174,6 +175,7 @@ class Vanagon
       @preremove_actions = []
       @postremove_actions = []
       @install_only = false
+      @source_type = nil
     end
 
     # Adds the given file to the list of files and returns @files.
@@ -256,6 +258,7 @@ class Vanagon
     #   or False otherwise
     def fetch_url(options)
       warn %(Attempting to fetch from canonical URL "#{url}")
+      options[:source_type] = source_type
       @source = Vanagon::Component::Source.source(url, options)
       # Explicitly coerce the return value of #source.fetch,
       # because each subclass of Vanagon::Component::Source returns
