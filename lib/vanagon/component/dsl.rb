@@ -520,10 +520,6 @@ class Vanagon
       def install_only(install_only)
         @component.install_only = install_only
       end
-
-      def source_type(type)
-        @component.source_type = type.to_sym
-      end
     end
   end
 end

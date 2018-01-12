@@ -16,13 +16,16 @@ class Vanagon
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
         def source(uri, **options) # rubocop:disable Metrics/AbcSize
-          if options[:source_type].nil?
-            source_type = determine_source_type(uri)
+          if uri.start_with?('git')
+            source_type = :git
+            # when using an http(s) source for a git repo, you should prefix the
+            # url with `git:`, so something like `git:https://github.com/puppetlabs/vanagon`
+            # strip the leading `git:` so we have a valid uri
+            uri.sub!(/^git:http/, 'http')
           else
-            source_type = options[:source_type].to_sym
+            source_type = determine_source_type(uri)
           end
 
-          # First we try git
           if source_type == :git
             return Vanagon::Component::Source::Git.new uri,
               sum: options[:sum],
@@ -30,7 +33,6 @@ class Vanagon
               workdir: options[:workdir]
           end
 
-          # Then we try HTTP
           if source_type == :http
             return Vanagon::Component::Source::Http.new uri,
               sum: options[:sum],
@@ -39,13 +41,12 @@ class Vanagon
               sum_type: options[:sum_type] || "md5"
           end
 
-          # Then we try local
           if source_type == :local
             return Vanagon::Component::Source::Local.new uri,
               workdir: options[:workdir]
           end
 
-          # Failing all of that, we give up
+          # Unknown source type!
           raise Vanagon::Error,
             "Unknown file type: '#{uri}'; cannot continue"
         end
@@ -58,6 +59,9 @@ class Vanagon
           # URLs that incorrectly respond to git queries
           timeout = 5
           if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
+            if uri =~ /^http/
+              warn "Passing git URLs as http(s) addresses is deprecated! Please prefix your source URL with `git:`"
+            end
             return :git
           end
 
