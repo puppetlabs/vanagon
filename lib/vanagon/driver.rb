@@ -11,7 +11,14 @@ class Vanagon
   class Driver
     include Vanagon::Utilities
     attr_accessor :platform, :project, :target, :workdir, :remote_workdir, :verbose, :preserve
-    attr_accessor :timeout, :retry_count
+
+    def timeout
+      @timeout ||= @project.timeout || ENV["VANAGON_TIMEOUT"] || 7200
+    end
+
+    def retry_count
+      @retry_count ||= @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
+    end
 
     def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
@@ -118,8 +125,10 @@ class Vanagon
       @engine.startup(workdir)
 
       warn "Target is #{@engine.target}"
-      retry_task { install_build_dependencies }
-      retry_task { @project.fetch_sources(workdir) }
+      Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
+        install_build_dependencies
+      end
+      @project.fetch_sources(workdir, retry_count, timeout)
 
       @project.make_makefile(workdir)
       @project.make_bill_of_materials(workdir)
@@ -154,21 +163,11 @@ class Vanagon
       end
 
       warn "rendering Makefile"
-      retry_task { @project.fetch_sources(workdir) }
+      @project.fetch_sources(workdir, retry_count, timeout)
       @project.make_bill_of_materials(workdir)
       @project.generate_packaging_artifacts(workdir)
       @project.make_makefile(workdir)
     end
-
-    # Retry the provided block, use the retry count and timeout
-    # values from the project, if available, otherwise use some
-    # sane defaults.
-    def retry_task(&block)
-      @timeout = @project.timeout || ENV["VANAGON_TIMEOUT"] || 7200
-      @retry_count = @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
-      Vanagon::Utilities.retry_with_timeout(@retry_count, @timeout) { yield }
-    end
-    private :retry_task
 
     # Initialize the logging instance
     def loginit(logfile)

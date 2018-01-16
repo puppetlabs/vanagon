@@ -3,7 +3,7 @@ require 'vanagon/project'
 require 'vanagon/platform'
 
 describe 'Vanagon::Driver' do
-  let (:project) { double(:project, :settings => {} ) }
+  let (:project) { double(:project, :settings => {}, :timeout => 9001, :retry_count => 42 ) }
 
   let (:redhat) do
     eval_platform('el-7-x86_64', <<-END)
