@@ -4,6 +4,7 @@ describe 'Vanagon::Platform::DSL' do
   let (:deb_platform_block)    { "platform 'debian-test-fixture' do |plat| end" }
   let (:el_5_platform_block)   { "platform 'el-5-fixture'        do |plat| end" }
   let (:el_6_platform_block)   { "platform 'el-6-fixture'        do |plat| end" }
+  let (:redhat_7_platform_block) { "platform 'redhat-7-fixture' do |plat| end" }
   let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
   let (:cicso_wrlinux_platform_block) { "platform 'cisco-wrlinux-fixture'      do |plat| end" }
   let (:solaris_10_platform_block) { "platform 'solaris-10-fixture'      do |plat| end" }
@@ -56,6 +57,14 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('el-5-fixture')
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(el_5_platform_block)
+      plat.yum_repo(el_definition)
+      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
+    end
+
+    it "works for specifically redhat platforms" do
+      plat = Vanagon::Platform::DSL.new('redhat-7-fixture')
+      expect(SecureRandom).to receive(:hex).and_return(hex_value)
+      plat.instance_eval(redhat_7_platform_block)
       plat.yum_repo(el_definition)
       expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
     end

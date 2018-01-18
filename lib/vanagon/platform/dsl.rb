@@ -30,7 +30,7 @@ class Vanagon
         @platform = case platform_name
                     when /^aix-/
                       Vanagon::Platform::RPM::AIX.new(@name)
-                    when /^(cisco-wrlinux|el|fedora)-/
+                    when /^(cisco-wrlinux|el|fedora|redhat)-/
                       Vanagon::Platform::RPM.new(@name)
                     when /^sles-/
                       Vanagon::Platform::RPM::SLES.new(@name)
