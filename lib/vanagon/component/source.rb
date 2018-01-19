@@ -16,6 +16,11 @@ class Vanagon
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
         def source(uri, **options) # rubocop:disable Metrics/AbcSize
+          # Sometimes the uri comes in as a string, but sometimes it's already been
+          # coerced into a URI object. The individual source providers will turn
+          # the passed uri into a URI object if needed, but for this method we
+          # want to work with the uri as a string.
+          uri = uri.to_s
           if uri.start_with?('git')
             source_type = :git
             # when using an http(s) source for a git repo, you should prefix the
