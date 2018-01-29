@@ -1,6 +1,6 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-def lock_manager_location_for(place)
+def location_for(place)
   if place =~ /^(git[:@][^#]*)#(.*)/
     [{ git: $1, branch: $2, require: false }]
   elsif place =~ /^file:\/\/(.*)/
@@ -22,8 +22,8 @@ end
 # the use of unreleased versions of "lock_manager" during development.
 group(:development, :test) do
   gem 'json'
-  gem 'lock_manager', *lock_manager_location_for(ENV['LOCK_MANAGER_LOCATION'] || '>= 0')
-  gem 'packaging', :git => 'https://github.com/puppetlabs/packaging', branch: '1.0.x'
+  gem 'lock_manager', *location_for(ENV['LOCK_MANAGER_LOCATION'] || '>= 0')
+  gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '~>0.99')
   gem 'rake', require: false
   gem 'rspec', '~> 3.0', require: false
   gem 'rubocop', "~> 0.52.1", require: false
