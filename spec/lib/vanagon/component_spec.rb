@@ -102,6 +102,7 @@ describe "Vanagon::Component" do
       @workdir = Dir.mktmpdir
       @file_name = 'fake_file.txt'
       @fake_file = "file://spec/fixtures/files/#{@file_name}"
+      @fake_erb_file = "file://spec/fixtures/files/#{@file_name}.erb"
       @fake_dir = 'fake_dir'
       @fake_tar = "file://spec/fixtures/files/#{@fake_dir}.tar.gz"
     end
@@ -141,6 +142,55 @@ describe "Vanagon::Component" do
       # make sure that our secondary source(s) made it into the workdir
       expect(File.exist?(File.join(@workdir, "#{@fake_dir}.tar.gz"))).to be true
       expect(subject.extract_with.join(" && ")).to match "#{@fake_dir}.tar.gz"
+    end
+
+    it "Performs an erb translation when erb: is true" do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source that's *compressed*. We can now reason about
+      # this instance and test behavior for retrieving secondary sources.
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @platform = plat._platform
+
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
+      comp.add_source  @fake_erb_file, erb: true
+      subject = comp._component
+
+      file_path = File.join(@workdir, File.basename(@fake_erb_file))
+      expect(subject).to receive(:erb_file).with(Pathname.new(file_path), file_path.gsub('.erb', ''), true)
+      subject.get_sources(@workdir)
+    end
+
+    it "Does not perform an erb transformation when erb: is false" do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source that's *compressed*. We can now reason about
+      # this instance and test behavior for retrieving secondary sources.
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @platform = plat._platform
+
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
+      comp.add_source  @fake_file, erb: false
+      subject = comp._component
+
+      expect(subject).to_not receive(:erb_file)
+      subject.get_sources(@workdir)
+    end
+
+    it "Does not perform an erb transformation when erb: is nil (not set)" do
+      # Initialize a new instance of Vanagon::Component and define a
+      # new secondary source that's *compressed*. We can now reason about
+      # this instance and test behavior for retrieving secondary sources.
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @platform = plat._platform
+
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
+      comp.add_source  @fake_file
+      subject = comp._component
+
+      expect(subject).to_not receive(:erb_file)
+      subject.get_sources(@workdir)
     end
   end
 end
