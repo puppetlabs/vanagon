@@ -53,6 +53,35 @@ end" }
     end
   end
 
+  describe '#release_from_git' do
+    it 'sets the release based on commits since last tag' do
+      repo = double
+      tag = double
+      log = double
+      diff = double
+      expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      repo = double("repo")
+      expect(::Git)
+        .to receive(:open)
+        .and_return(repo)
+
+
+      expect(repo)
+        .to receive(:describe)
+        .and_return('1.2.3')
+
+      expect(repo)
+        .to receive(:rev_list)
+        .with('1.2.3..HEAD', { :count => true })
+        .and_return('999')
+
+      proj.release_from_git
+      expect(proj._project.release).to eq('999')
+    end
+  end
+
   describe '#version_from_branch' do
     it 'parses out versions from branch names' do
       branches = {

@@ -2,6 +2,7 @@ require 'vanagon/project'
 require 'vanagon/utilities'
 require 'vanagon/component/source'
 require 'set'
+require 'git/rev_list'
 
 class Vanagon
   class Project
@@ -169,6 +170,18 @@ class Vanagon
       # @param archive [Boolean] whether or not to output archives
       def generate_archives(archive)
         @project.compiled_archive = archive
+      end
+
+      # Sets the release for the project to the number of commits since the
+      # last tag. Requires that a git tag be present
+      # and reachable from the current commit in that repository.
+      #
+      def release_from_git
+        repo_object = Git.open(File.expand_path("..", Vanagon::Driver.configdir))
+        last_tag = repo_object.describe('HEAD', { :abbrev => 0 })
+        release(repo_object.rev_list("#{last_tag}..HEAD", { :count => true }))
+      rescue Git::GitExecuteError
+        warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Sets the version for the project based on a git describe of the
