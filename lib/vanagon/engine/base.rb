@@ -73,9 +73,15 @@ class Vanagon
         Vanagon::Utilities.rsync_to("#{workdir}/*", "#{@target_user}@#{@target}", @remote_workdir, @platform.ssh_port)
       end
 
-      def retrieve_built_artifact
-        FileUtils.mkdir_p("output")
-        Vanagon::Utilities.rsync_from("#{@remote_workdir}/output/*", "#{@target_user}@#{@target}", "output/", @platform.ssh_port)
+      def retrieve_built_artifact(artifacts_to_fetch, no_packaging)
+        output_path = 'output/'
+        FileUtils.mkdir_p(output_path)
+        unless no_packaging
+          artifacts_to_fetch << "#{@remote_workdir}/output/*"
+        end
+        artifacts_to_fetch.each do |path|
+          Vanagon::Utilities.rsync_from(path, "#{@target_user}@#{@target}", output_path, @platform.ssh_port)
+        end
       end
 
       # Ensures that the platform defines the attributes that the engine needs to function.

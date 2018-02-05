@@ -517,4 +517,75 @@ end"
       expect(proj._project.components).to_not include(component)
     end
   end
+
+  describe "#fetch_artifact" do
+    let(:project_block) {
+      "project 'test-fixture' do |proj|
+        proj.fetch_artifact 'foo/bar/baz.file'
+      end"
+    }
+    let(:project_block_multiple) {
+      "project 'test-fixture' do |proj|
+        proj.fetch_artifact 'foo/bar/baz.file'
+        proj.fetch_artifact 'foo/foobar/foobarbaz.file'
+      end"
+    }
+    let(:empty_project_block) {
+      "project 'test-fixture' do |proj|
+      end"
+    }
+
+    it 'has an empty project.fetch_artifact when fetch_artifact is not called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(empty_project_block)
+      expect(proj._project.artifacts_to_fetch).to eq([])
+    end
+
+    it 'Adds a path to project.fetch_artifact when fetch_artifact is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file'])
+    end
+
+    it 'Adds multiple paths to project.fetch_artifact when fetch_artifact is called more than once' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block_multiple)
+      expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file', 'foo/foobar/foobarbaz.file'])
+    end
+  end
+
+  describe "#no_packaging" do
+    let(:project_block) {
+      "project 'test-fixture' do |proj|
+        proj.no_packaging true
+      end"
+    }
+    let(:project_block_false) {
+      "project 'test-fixture' do |proj|
+        proj.no_packaging false
+      end"
+    }
+    let(:empty_project_block) {
+      "project 'test-fixture' do |proj|
+      end"
+    }
+
+    it 'has no_packaging set to false by default' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(empty_project_block)
+      expect(proj._project.no_packaging).to eq(false)
+    end
+
+    it 'sets no_packaging to true when proj.no_packaging true is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.no_packaging).to eq(true)
+    end
+
+    it 'sets no_packaging to false when proj.no_packaging false is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block_false)
+      expect(proj._project.no_packaging).to eq(false)
+    end
+  end
 end

@@ -317,6 +317,20 @@ class Vanagon
         platform = @project.platform
         platform.package_override(self._project, var)
       end
+
+      # Set additional artifacts to fetch from the build
+      #
+      # @param [String] path to artifact to fetch from builder
+      def fetch_artifact(path)
+        @project.artifacts_to_fetch << path
+      end
+
+      # Set to true to skip packaging steps during the vanagon build
+      #
+      # @param [Boolean] var whether or not execute packaging steps during build
+      def no_packaging(var)
+        @project.no_packaging = var
+      end
     end
   end
 end

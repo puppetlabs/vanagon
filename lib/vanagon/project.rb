@@ -90,6 +90,17 @@ class Vanagon
     # Should we generate platform-specific packages (rpm, deb, dmg, msi, etc)
     attr_accessor :generate_packages
 
+    # Additional File(s) to retrieve from the system after the installation
+    # steps are all complete.
+    attr_accessor :artifacts_to_fetch
+
+    # Specify that the project should not perform the packaging steps in vanagon
+    # and instead just stop after installation.
+    #
+    # Useful alongside fetch_artifact when you don't need vanagon's packaging system and
+    # you just want to perform installation and pull down a file.
+    attr_accessor :no_packaging
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -134,6 +145,8 @@ class Vanagon
       @source_artifacts = false
       @compiled_archive = false
       @generate_packages = true
+      @no_packaging = false
+      @artifacts_to_fetch = []
     end
 
     # Magic getter to retrieve settings in the project

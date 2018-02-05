@@ -116,14 +116,20 @@ class Vanagon
       end
     end
 
-    def run # rubocop:disable Metrics/AbcSize
+    def run # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      @engine.startup(workdir)
+      # if no_packaging has been set in the project, don't execute the
+      # whole makefile. Instead just perform the installation.
+      make_target = ''
+      if @project.no_packaging
+        make_target = @project.name + '-project'
+      end
 
+      @engine.startup(workdir)
       warn "Target is #{@engine.target}"
       Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
         install_build_dependencies
@@ -132,11 +138,12 @@ class Vanagon
 
       @project.make_makefile(workdir)
       @project.make_bill_of_materials(workdir)
-      @project.generate_packaging_artifacts(workdir)
+      # Don't generate packaging artifacts if no_packaging is set
+      @project.generate_packaging_artifacts(workdir) unless @project.no_packaging
       @project.save_manifest_json
       @engine.ship_workdir(workdir)
-      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make})")
-      @engine.retrieve_built_artifact
+      @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{make_target})")
+      @engine.retrieve_built_artifact(@project.artifacts_to_fetch, @project.no_packaging)
 
       if %i[never on-failure].include? @preserve
         @engine.teardown
