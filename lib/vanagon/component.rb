@@ -5,6 +5,7 @@ require 'vanagon/component/source/rewrite'
 
 class Vanagon
   class Component
+    include Vanagon::Utilities
     # @!attribute [r] files
     #   @return [Set] the list of files marked for installation
 
@@ -326,6 +327,9 @@ class Vanagon
         )
         src.fetch
         src.verify
+        if source.erb
+          erb_file(src.file, File.join(File.dirname(src.file), File.basename(src.file, ".erb")), true)
+        end
         # set src.file to only be populated with the basename instead of entire file path
         src.file = File.basename(src.url)
         extract_with << src.extract(platform.tar) if src.respond_to? :extract

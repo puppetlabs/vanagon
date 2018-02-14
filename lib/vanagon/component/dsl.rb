@@ -368,6 +368,7 @@ class Vanagon
       # @param [Hash] options optional keyword arguments used to instatiate a new source
       #   @option opts [String] :sum
       #   @option opts [String] :ref
+      #   @option opts [Bool] :erb set to 'true' to specify that the source file should be translated by erb
       def add_source(uri, **options)
         @component.sources << OpenStruct.new(options.merge({ url: uri }))
       end

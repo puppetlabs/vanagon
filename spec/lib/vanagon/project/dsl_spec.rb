@@ -53,6 +53,35 @@ end" }
     end
   end
 
+  describe '#release_from_git' do
+    it 'sets the release based on commits since last tag' do
+      repo = double
+      tag = double
+      log = double
+      diff = double
+      expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
+      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj.instance_eval(project_block)
+      repo = double("repo")
+      expect(::Git)
+        .to receive(:open)
+        .and_return(repo)
+
+
+      expect(repo)
+        .to receive(:describe)
+        .and_return('1.2.3')
+
+      expect(repo)
+        .to receive(:rev_list)
+        .with('1.2.3..HEAD', { :count => true })
+        .and_return('999')
+
+      proj.release_from_git
+      expect(proj._project.release).to eq('999')
+    end
+  end
+
   describe '#version_from_branch' do
     it 'parses out versions from branch names' do
       branches = {
@@ -515,6 +544,77 @@ end"
       proj = Vanagon::Project::DSL.new('test-fixture', {}, ['some-different-component'])
       proj.instance_eval(project_block)
       expect(proj._project.components).to_not include(component)
+    end
+  end
+
+  describe "#fetch_artifact" do
+    let(:project_block) {
+      "project 'test-fixture' do |proj|
+        proj.fetch_artifact 'foo/bar/baz.file'
+      end"
+    }
+    let(:project_block_multiple) {
+      "project 'test-fixture' do |proj|
+        proj.fetch_artifact 'foo/bar/baz.file'
+        proj.fetch_artifact 'foo/foobar/foobarbaz.file'
+      end"
+    }
+    let(:empty_project_block) {
+      "project 'test-fixture' do |proj|
+      end"
+    }
+
+    it 'has an empty project.fetch_artifact when fetch_artifact is not called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(empty_project_block)
+      expect(proj._project.artifacts_to_fetch).to eq([])
+    end
+
+    it 'Adds a path to project.fetch_artifact when fetch_artifact is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file'])
+    end
+
+    it 'Adds multiple paths to project.fetch_artifact when fetch_artifact is called more than once' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block_multiple)
+      expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file', 'foo/foobar/foobarbaz.file'])
+    end
+  end
+
+  describe "#no_packaging" do
+    let(:project_block) {
+      "project 'test-fixture' do |proj|
+        proj.no_packaging true
+      end"
+    }
+    let(:project_block_false) {
+      "project 'test-fixture' do |proj|
+        proj.no_packaging false
+      end"
+    }
+    let(:empty_project_block) {
+      "project 'test-fixture' do |proj|
+      end"
+    }
+
+    it 'has no_packaging set to false by default' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(empty_project_block)
+      expect(proj._project.no_packaging).to eq(false)
+    end
+
+    it 'sets no_packaging to true when proj.no_packaging true is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block)
+      expect(proj._project.no_packaging).to eq(true)
+    end
+
+    it 'sets no_packaging to false when proj.no_packaging false is called' do
+      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj.instance_eval(project_block_false)
+      expect(proj._project.no_packaging).to eq(false)
     end
   end
 end
