@@ -8,7 +8,7 @@ module LibRevList
       # allow for passing, say, :max-count or :max_count
       k = k.to_s
       k.tr!('_', '-')
-      if v && v.downcase.to_s == 'true'
+      if v && v.to_s.downcase == 'true'
         arr_opts << "--#{k}"
       elsif v
         arr_opts << "--#{k}=#{v}"
