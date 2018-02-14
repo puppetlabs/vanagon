@@ -6,6 +6,20 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.4] - released on 2018-02-14
+### Added
+ - Added support for performing erb transforms on sources. This can be done by
+   passing `erb: true` to `add_sources`.
+ - `fetch_artifact` was added to the project DSL. With this, you can specify
+   additional artifacts to retrieve from the builder.
+ - `no_packaging` was added to the project DSL. With this, you can specify that
+   you want to skip the packaging steps during the vanagon build. This is useful
+   in cases where you only need to run through the build steps. `fetch_artifact`
+   should be used along with `no_packaging` to pull back the build artifact
+   you're looking for.
+ - `release_from_git` was added to the project DSL. With this, you can set the
+   project release number to be the number of commits since the last tag.
+
 ## [0.15.3] - released on 2018-02-06
 ### Changed
  - Added a runtime dependency on the packaging gem, which is required for the
@@ -587,7 +601,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.4...HEAD
+[0.15.4]: https://github.com/puppetlabs/vanagon/compare/0.15.3...0.15.4
 [0.15.3]: https://github.com/puppetlabs/vanagon/compare/0.15.2...0.15.3
 [0.15.2]: https://github.com/puppetlabs/vanagon/compare/0.15.1...0.15.2
 [0.15.1]: https://github.com/puppetlabs/vanagon/compare/0.15.0...0.15.1
