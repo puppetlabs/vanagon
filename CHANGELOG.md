@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.5] - released on 2018-03-05
+### Fixed
+- (VANAGON-120) Postinstall scripts for upgrades now run in the postinstall
+  phase, as expected. Previously, they were run in the postuninstall phase.
+
 ## [0.15.4] - released on 2018-02-14
 ### Added
  - Added support for performing erb transforms on sources. This can be done by
@@ -601,7 +606,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.4...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.5...HEAD
+[0.15.5]: https://github.com/puppetlabs/vanagon/compare/0.15.4...0.15.5
 [0.15.4]: https://github.com/puppetlabs/vanagon/compare/0.15.3...0.15.4
 [0.15.3]: https://github.com/puppetlabs/vanagon/compare/0.15.2...0.15.3
 [0.15.2]: https://github.com/puppetlabs/vanagon/compare/0.15.1...0.15.2
