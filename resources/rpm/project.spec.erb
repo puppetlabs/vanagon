@@ -226,11 +226,6 @@ fi
 if [ "$1" -eq 1 ] ; then
   <%= get_postinstall_actions("install") %>
 fi
-
-# Run postinstall scripts on upgrade if defined
-if [ "$1" -eq 2 ] ; then
-  <%= get_postinstall_actions("upgrade") %>
-fi
 <%- end -%>
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
@@ -254,6 +249,19 @@ fi
     fi
     /usr/sbin/mkitab "<%= service.name -%>:2:once:/usr/bin/startsrc -s <%= service.name -%>" > /dev/null 2>&1 || :
   <%- end -%>
+<%- end -%>
+
+%triggerpostun -- <%= @name %>
+<%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
+  # old versions of vanagon generated an unconditional service stop in
+  # the preun. This means that postinstall actions that mess with the
+  # service need to be run AFTER that step. To do so, we can run them
+  # in the "triggerpostun" when an upgrade is happening.
+
+  # Run postinstall scripts on upgrade if defined
+  if [ "$2" -gt 0 ] ; then
+    <%= get_postinstall_actions("upgrade") %>
+  fi
 <%- end -%>
 
 
