@@ -194,6 +194,14 @@ if [ "$1" -gt 1 ] ; then
   <%= get_preinstall_actions("upgrade") %>
 fi
 
+<%- if @platform.is_aix? -%>
+    <%- get_services.each do |service| -%>
+        # Stop service on upgrade so that it can be restarted at the end
+        if [ "$1" -gt 1 ] ; then
+            /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
+        fi
+    <%- end -%>
+<%- end -%>
 
 <%- get_all_trigger_pkgs.each do |pkg| %>
 
@@ -306,7 +314,10 @@ fi
       chkconfig --del <%= service.name %> || :
     fi
   <%- elsif @platform.servicetype == "aix" -%>
-      /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
+      # stop the service only on a real uninstall, not on upgrades
+      if [ "$1" -eq 0 ] ; then
+          /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
+      fi
   <%- end -%>
 <%- end -%>
 
