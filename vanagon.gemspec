@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('packaging')
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
-  gem.executables  = %w[build inspect ship render repo build_host_info]
+  gem.executables  = %w[build inspect ship render repo sign build_host_info]
 
   # Ensure the gem is built out of versioned files
   gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & %x(git ls-files -z).split("\0")
