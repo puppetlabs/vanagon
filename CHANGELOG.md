@@ -6,6 +6,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.6] - released on 2018-03-19
+### Fixed
+- (VANAGON-125) On AIX, postinstall scripts for upgrades now run in
+  the triggerpostun phase. This ensures they run after any postun
+  scripts which can interfere with the operation of the postinstall
+  scripts.
+- (VANAGON-125) On AIX, service stop in postun now only runs on an
+  uninstall, not on upgrades.
+
 ## [0.15.5] - released on 2018-03-05
 ### Fixed
 - (VANAGON-120) Postinstall scripts for upgrades now run in the postinstall
@@ -606,7 +615,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.5...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.6...HEAD
+[0.15.6]: https://github.com/puppetlabs/vanagon/compare/0.15.5...0.15.6
 [0.15.5]: https://github.com/puppetlabs/vanagon/compare/0.15.4...0.15.5
 [0.15.4]: https://github.com/puppetlabs/vanagon/compare/0.15.3...0.15.4
 [0.15.3]: https://github.com/puppetlabs/vanagon/compare/0.15.2...0.15.3
