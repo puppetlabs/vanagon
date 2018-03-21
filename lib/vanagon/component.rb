@@ -349,7 +349,12 @@ class Vanagon
       unless @patches.empty?
         patchdir = File.join(workdir, "patches")
         FileUtils.mkdir_p(patchdir)
-        FileUtils.cp(@patches.map(&:path), patchdir)
+        @patches.each do |p|
+          target = File.join(patchdir, File.basename(p.path))
+          raise Vanagon::Error, "Duplicate patch files detected, '#{p.path}' would have overwritten '#{target}'! Please ensure patch file names are unique across all components." if File.exist?(target)
+
+          FileUtils.cp(p.path, patchdir)
+        end
       end
     end
 
