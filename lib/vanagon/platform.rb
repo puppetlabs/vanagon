@@ -131,6 +131,7 @@ class Vanagon
 
     attr_accessor :valid_operators
 
+    attr_accessor :build_requirement_overrides
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
     # extract those fields.
@@ -239,6 +240,8 @@ class Vanagon
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
       @valid_operators ||= ['<', '>', '<=', '>=', '=']
+
+      @build_requirement_overrides ||= {}
     end
 
     def shell # rubocop:disable Lint/DuplicateMethods

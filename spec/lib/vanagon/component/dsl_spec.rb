@@ -298,12 +298,35 @@ end" }
   end
 
   describe '#build_requires' do
+    let(:fake_platform) { double }
+
     it 'adds the build requirement to the list of build requirements' do
-      comp = Vanagon::Component::DSL.new('buildreq-test', {}, {})
+      allow(fake_platform).to receive(:build_requirement_overrides).and_return({})
+      comp = Vanagon::Component::DSL.new('buildreq-test', {}, fake_platform)
       comp.build_requires('library1')
       comp.build_requires('library2')
       expect(comp._component.build_requires).to include('library1')
       expect(comp._component.build_requires).to include('library2')
+    end
+
+    it 'Uses the override specified by the platform object' do
+      allow(fake_platform).to receive(:build_requirement_overrides).and_return({ 'library2' => 'override' })
+      comp = Vanagon::Component::DSL.new('buildreq-test', {}, fake_platform)
+      comp.build_requires('library1')
+      comp.build_requires('library2')
+      expect(comp._component.build_requires).to include('library1')
+      expect(comp._component.build_requires).to_not include('library2')
+      expect(comp._component.build_requires).to include('override')
+    end
+
+    it 'Does not the override specified by the platform object when ignore_overrides is true' do
+      allow(fake_platform).to receive(:build_requirement_overrides).and_return({ 'library2' => 'override' })
+      comp = Vanagon::Component::DSL.new('buildreq-test', {}, fake_platform)
+      comp.build_requires('library1')
+      comp.build_requires('library2', ignore_overrides: true)
+      expect(comp._component.build_requires).to include('library1')
+      expect(comp._component.build_requires).to include('library2')
+      expect(comp._component.build_requires).to_not include('override')
     end
   end
 
