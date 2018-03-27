@@ -469,13 +469,27 @@ class Vanagon
       final_archive = "output/#{name_and_version_and_platform}.tar.gz"
       archive_directory = "#{project.name}-archive"
       metadata = project.build_manifest_json(true)
+
+      # previously, we weren't properly handling the case of custom BOM paths.
+      # If we have a custom BOM path, during Makefile execution, the top-level
+      # BOM is moved to the custom path. So, when cleaning up BOMs for non-custom
+      # paths we just want to remove the BOM at the top level of the tarball.
+      # But, if we have a custom BOM path we want to move it back to where it
+      # was prior to the Makefile execution so we can preserve it as an artifact
+      # but not leave it to conflict if it's installed in the same custom path
+      # as a project using this archive.
+      bill_of_materials_command = 'rm -f bill-of-materials'
+      if project.bill_of_materials
+        bill_of_materials_command = "mv .#{project.bill_of_materials.path}/bill-of-materials ../.."
+      end
+
       metadata.gsub!(/\n/, '\n')
       [
         "mkdir output",
         "mkdir #{archive_directory}",
         "gunzip -c #{name_and_version}.tar.gz | '#{tar}' -C #{archive_directory} -xf -",
         "rm #{name_and_version}.tar.gz",
-        "cd #{archive_directory}/#{name_and_version}; rm -f bill-of-materials; #{tar} cf ../../#{name_and_version_and_platform}.tar *",
+        "cd #{archive_directory}/#{name_and_version}; #{bill_of_materials_command}; #{tar} cf ../../#{name_and_version_and_platform}.tar *",
         "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
         "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
         "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
