@@ -319,14 +319,14 @@ class Vanagon
     # @return [true, false] true if it is a redhat variety or uses rpm
     # under the hood, false otherwise
     def is_rpm?
-      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|sles|redhat)-.*$/)
+      return !!@name.match(/^(aix|cisco-wrlinux|el|eos|fedora|sles|redhat|redhatfips)-.*$/)
     end
 
     # Utility matcher to determine is the platform is an enterprise linux variety
     #
     # @return [true, false] true if it is a enterprise linux variety, false otherwise
     def is_el?
-      return !!@name.match(/^(el|redhat)-.*$/)
+      return !!@name.match(/^(el|redhat|redhatfips)-.*$/)
     end
 
     # Utility matcher to determine is the platform is a sles variety
