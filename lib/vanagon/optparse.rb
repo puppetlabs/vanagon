@@ -44,12 +44,6 @@ class Vanagon
           @options[:configdir] = configuration_directory
         end
 
-        opts.on("-t HOST",
-                "--target HOST",
-                "Name of target machine for build and packaging (defaults to requesting from the pooler)") do |target|
-          @options[:target] = target
-        end
-
         opts.on("-e ENGINE",
                 "--engine ENGINE",
                 "Custom engine to use [base, local, docker, pooler] (defaults to \"pooler\")") do |engine|
