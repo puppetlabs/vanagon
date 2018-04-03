@@ -45,7 +45,7 @@ describe Vanagon::OptParse do
 
 
   describe "options that take a value" do
-    [:workdir, :configdir, :target, :engine].each do |option|
+    [:workdir, :configdir, :engine].each do |option|
       it "can create an option parser that accepts the #{option} option" do
         subject = described_class.new("test", [option])
         expect(subject.parse!(["--#{option}", "hello"])).to include(option => "hello")
@@ -53,7 +53,7 @@ describe Vanagon::OptParse do
     end
 
     describe "short options" do
-      [["w", :workdir], ["c", :configdir], ["t", :target], ["e", :engine]].each do |short, long|
+      [["w", :workdir], ["c", :configdir], ["e", :engine]].each do |short, long|
         it "maps the short option #{short} to #{long}" do
           subject = described_class.new("test", [long])
           expect(subject.parse!(["-#{short}", "hello"])).to include(long => "hello")
