@@ -193,4 +193,35 @@ describe "Vanagon::Component" do
       subject.get_sources(@workdir)
     end
   end
+
+  describe "#get_patches" do
+    before :each do
+      @workdir = Dir.mktmpdir
+    end
+
+    let(:platform) do
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat._platform
+    end
+
+    let(:component) { Vanagon::Component::DSL.new('patches-test', {}, platform) }
+
+    context("when new patch file would overwrite existing patch file") do
+      let(:patch_file) { 'path/to/test.patch' }
+
+      before :each do
+        allow(FileUtils).to receive(:mkdir_p)
+        allow(FileUtils).to receive(:cp)
+
+        expect(File).to receive(:exist?).with(File.join(@workdir, 'patches', File.basename(patch_file))).and_return(true)
+
+        component.apply_patch(patch_file)
+      end
+
+      it "fails the build" do
+        expect { component._component.get_patches(@workdir) }.to raise_error(Vanagon::Error, /duplicate patch files/i)
+      end
+    end
+  end
 end
