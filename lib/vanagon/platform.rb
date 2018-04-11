@@ -560,7 +560,7 @@ class Vanagon
         raise Vanagon::Error, "You can only have one service dir for each service type. Found '#{servicedir.join(',')}' for service type #{servicetype}"
       end
 
-      servicedir.join('')
+      servicedir.first
     end
   end
 end
