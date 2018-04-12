@@ -136,7 +136,7 @@ class Vanagon
         # Checkout desired ref/sha, make noise about it, and fail
         # entirely if we're unable to checkout that given ref/sha
         def checkout!
-          warn "Checking out '#{ref}'' from Git repo '#{dirname}'"
+          warn "Checking out '#{ref}' from Git repo '#{dirname}'"
           clone.checkout(ref)
         rescue ::Git::GitExecuteError
           raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{url}'"
