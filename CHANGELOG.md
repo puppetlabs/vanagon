@@ -6,6 +6,32 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.7] - released on 2018-04-13
+### Added
+- Added task to sign packages after being built and before you ship.
+Simply run `bundle exec sign`.
+- Added redhatfips as an RPM platform.
+
+### Changed
+- (VANAGON-75) Fail build explicitly when patch filenames conflict.
+- (VANAGON-117) Updated build help message to indicate platform/target
+can be comma-separated.
+
+### Fixed
+- Previously custom BOM paths were not properly handled. When using
+compiled archives, bill of materials installed in custom paths were not
+removed prior to packing up the archive which could lead to conflicts
+when the archive was used in other projects with custom BOM paths.
+When generating the list of files to tar up, bill-of-materials was
+always added. However, if project.bill_of_materials is set that file
+won't exist. This change makes it conditionally add bill-of-materials
+or #{proj.bill_of_materials.path}/bill-of-materials.
+
+### Removed
+- (VANAGON-117) Removed `--target` from options parser. It was added with part of the
+now-removed devkit work, and any of the other subcommands that accept a
+target take target as a positional parameter, so that flag is completely unused.
+
 ## [0.15.6] - released on 2018-03-19
 ### Fixed
 - (VANAGON-125) On AIX, postinstall scripts for upgrades now run in
@@ -615,7 +641,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.6...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.7...HEAD
+[0.15.7]: https://github.com/puppetlabs/vanagon/compare/0.15.6...0.15.7
 [0.15.6]: https://github.com/puppetlabs/vanagon/compare/0.15.5...0.15.6
 [0.15.5]: https://github.com/puppetlabs/vanagon/compare/0.15.4...0.15.5
 [0.15.4]: https://github.com/puppetlabs/vanagon/compare/0.15.3...0.15.4
