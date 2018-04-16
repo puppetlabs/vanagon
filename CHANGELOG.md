@@ -6,7 +6,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.15.7] - released on 2018-04-13
+## [0.15.7] - released on 2018-04-16
 ### Added
 - Added task to sign packages after being built and before you ship.
 Simply run `bundle exec sign`.
