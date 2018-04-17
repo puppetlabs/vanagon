@@ -144,4 +144,21 @@ describe 'Vanagon::Platform::DSL' do
       expect(plat._platform.vmpooler_template).to eq('solaris-11-x86_64')
     end
   end
+
+  describe '#override_build_requirement' do
+    it 'sets build_requirement_overrides' do
+      plat = Vanagon::Platform::DSL.new('override-simpletest-fixture')
+      plat.instance_eval(solaris_11_platform_block)
+      plat.override_build_requirement 'gcc', 'pl-gcc'
+      plat.override_build_requirement 'tar', 'pl-tar'
+      expect(plat._platform.build_requirement_overrides).to eq({ 'gcc' => 'pl-gcc', 'tar' => 'pl-tar' })
+    end
+
+    it 'fails if called twice with the same build requirement to override' do
+      plat = Vanagon::Platform::DSL.new('override-simpletest-fixture')
+      plat.instance_eval(solaris_11_platform_block)
+      plat.override_build_requirement 'gcc', 'pl-gcc'
+      expect{ plat.override_build_requirement 'gcc', 'another-gcc' }.to raise_error(Vanagon::Error)
+    end
+  end
 end

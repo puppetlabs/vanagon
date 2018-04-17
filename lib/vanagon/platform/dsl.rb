@@ -405,6 +405,20 @@ class Vanagon
       def add_build_repository(*args)
         @platform.add_build_repository(*args)
       end
+
+      # Adds an override to a build requirement. When component.build_requires is
+      # called, the component will check to see if the requirement matches one of
+      # these overrides, and use the override if there's a match.
+      #
+      # @param build_requirement [String] build requirement to overrides
+      # @param override [String] value of the override
+      # @raise [Vanagon::Error] an arror is raised if an attempt is made to override a requirement that already has one
+      def override_build_requirement(build_requirement, override)
+        if @platform.build_requirement_overrides.key?(build_requirement)
+          raise Vanagon::Error, "build requirement already overridden by #{@platform.build_requirement_overrides[build_requirement]}"
+        end
+        @platform.build_requirement_overrides[build_requirement] = override
+      end
     end
   end
 end

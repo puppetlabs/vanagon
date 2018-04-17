@@ -119,8 +119,17 @@ class Vanagon
       # can be built. build_requires can also be satisfied by other components in
       # the same project.
       #
+      # If the platform object specifies any build_requirement_overrides and the
+      # build requirement matches one of the overrides, build_requires will insert
+      # the override instead. This functionaliy can be ignored by setting
+      # ignore_overrides: true
+      #
       # @param build_requirement [String] a library or other component that is required to build the current component
-      def build_requires(build_requirement)
+      # @param ignore_overrides  [Bool] whether or not to ignore any overrides set by the platform
+      def build_requires(build_requirement, ignore_overrides: false)
+        if @component.platform.build_requirement_overrides.key?(build_requirement) && !ignore_overrides
+          build_requirement = @component.platform.build_requirement_overrides[build_requirement]
+        end
         @component.build_requires << build_requirement
       end
 
