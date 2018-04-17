@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.8] - released on 2018-04-17
+### Fixed
+- The fix for bill-of-materials in release [0.15.7] broke tar generation. This
+  release fixes that issue.
+
 ## [0.15.7] - released on 2018-04-17
 ### Added
 - Added task to sign packages after being built and before you ship.
@@ -641,7 +646,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.7...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.8...HEAD
+[0.15.8]: https://github.com/puppetlabs/vanagon/compare/0.15.7...0.15.8
 [0.15.7]: https://github.com/puppetlabs/vanagon/compare/0.15.6...0.15.7
 [0.15.6]: https://github.com/puppetlabs/vanagon/compare/0.15.5...0.15.6
 [0.15.5]: https://github.com/puppetlabs/vanagon/compare/0.15.4...0.15.5
