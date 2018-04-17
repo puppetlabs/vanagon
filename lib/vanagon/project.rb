@@ -524,14 +524,17 @@ class Vanagon
     # for the project
     #
     # @return [Array] all the files and directories that should be included in the tarball
-    def get_tarball_files
-      files = ['bill-of-materials']
+    def get_tarball_files # rubocop:disable Metrics/AbcSize
+      # It is very important that 'file-list' remains the first element in this
+      # array, lest the tar command be malformed and the package creation fail
+      files = ['file-list']
 
       if bill_of_materials
-        files = ["#{bill_of_materials.path}/bill-of-materials"]
+        files.push "#{bill_of_materials.path}/bill-of-materials"
+      else
+        files.push 'bill-of-materials'
       end
 
-      files.push 'file-list'
       files.push get_files.map(&:path)
       files.push get_configfiles.map(&:path)
       if @platform.is_windows?
