@@ -168,10 +168,10 @@ class Vanagon
       #        service_type [String] type of the service (network, application, system, etc)
       #        link_target [String] executable service file should be linked to
       def install_service(service_file, default_file = nil, service_name = @component.name, **options) # rubocop:disable Metrics/AbcSize
-        servicetype = options[:init_system] || @component.platform.servicetype
-        servicedir = @component.platform.get_service_dir(servicetype)
+        init_system = options[:init_system] || @component.platform.servicetype
+        servicedir = @component.platform.get_service_dir(init_system)
 
-        case servicetype
+        case init_system
         when "sysv"
           target_service_file = File.join(servicedir, service_name)
           target_default_file = File.join(@component.platform.defaultdir, service_name)
@@ -204,7 +204,7 @@ class Vanagon
           # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
         else
-          fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
+          fail "Don't know how to install the #{init_system}. Please teach #install_service how to do this."
         end
 
         # Install the service and default files
