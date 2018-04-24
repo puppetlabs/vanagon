@@ -44,6 +44,39 @@ describe 'Vanagon::Project' do
     end"
   }
 
+  let(:local_project_block) {
+    "project 'local-inheritance-test' do |proj|
+    proj.setting(:test, 'local-test')
+    end"
+  }
+
+  let(:local_inheriting_project_block) {
+    "project 'local-inheritance-test' do |proj|
+    proj.inherit_local_settings 'local-test', '/path/to/project'
+    end"
+  }
+
+  let(:local_inheriting_project_block_with_settings) {
+    "project 'local-inheritance-test' do |proj|
+    proj.setting(:merged, 'yup')
+    proj.inherit_local_settings 'local-test', '/path/to/project'
+    end"
+  }
+
+  let(:preset_local_inheriting_project_block) {
+    "project 'local-inheritance-test' do |proj|
+    proj.setting(:test, 'local-inheritance-test')
+    proj.inherit_local_settings 'local-test', '/path/to/project'
+    end"
+  }
+
+  let(:postset_local_inheriting_project_block) {
+    "project 'inheritance-test' do |proj|
+    proj.inherit_local_settings 'local-test', '/path/to/project'
+    proj.setting(:test, 'local-inheritance-test')
+    end"
+  }
+
   let (:dummy_platform_sysv) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
@@ -124,6 +157,40 @@ describe 'Vanagon::Project' do
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
       expect(inheriting_proj._project.settings[:merged]).to eq('yup')
     end
+  end
+
+  describe "#load_local_settings" do
+    before(:each) do
+      # stubs for the local project
+      local_proj = Vanagon::Project::DSL.new('local-test', {}, {})
+      local_proj.instance_eval(local_project_block)
+      expect(Vanagon::Project).to receive(:load_project).and_return(local_proj._project)
+    end
+
+     it 'loads local settings' do
+       inheriting_proj = Vanagon::Project::DSL.new('local-inheritance-test', {}, [])
+       inheriting_proj.instance_eval(local_inheriting_project_block)
+       expect(inheriting_proj._project.settings[:test]).to eq('local-test')
+     end
+
+     it 'overrides_duplicate settings from before the load' do
+       inheriting_proj = Vanagon::Project::DSL.new('local-inheritance-test', {}, [])
+       inheriting_proj.instance_eval(preset_local_inheriting_project_block)
+       expect(inheriting_proj._project.settings[:test]).to eq('local-test')
+     end
+
+     it 'lets you override settings after the load' do
+       inheriting_proj = Vanagon::Project::DSL.new('local-inheritance-test', {}, [])
+       inheriting_proj.instance_eval(postset_local_inheriting_project_block)
+       expect(inheriting_proj._project.settings[:test]).to eq('local-inheritance-test')
+     end
+
+     it 'merges settings' do
+      inheriting_proj = Vanagon::Project::DSL.new('local-inheritance-test', {}, [])
+      inheriting_proj.instance_eval(local_inheriting_project_block_with_settings)
+      expect(inheriting_proj._project.settings[:test]).to eq('local-test')
+      expect(inheriting_proj._project.settings[:merged]).to eq('yup')
+     end
   end
 
   describe "#filter_component" do

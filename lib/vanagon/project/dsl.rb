@@ -322,6 +322,14 @@ class Vanagon
         @project.load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
       end
 
+      # Inherit the settings hash from a locally cloned git repository
+      #
+      # @param local_project_name [String] The vanagon project to load settings from
+      # @param local_project_path [String] The path to the local project directory to load settings from
+      def inherit_local_settings(local_project_name, local_project_path)
+        @project.load_local_settings(local_project_name, local_project_path)
+      end
+
       # Set a package override. Will call the platform-specific implementation
       # This will get set in the spec file, deb rules, etc.
       #
