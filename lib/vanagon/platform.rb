@@ -32,6 +32,9 @@ class Vanagon
     # Where does a given platform expect to find init scripts/service files?
     # e.g. /etc/init.d, /usr/lib/systemd/system
     attr_accessor :servicedir
+    # Array of OpenStructs containing the servicetype and the corresponding
+    # servicedir
+    attr_accessor :servicetypes
     # Where does a given platform's init system expect to find
     # something resembling 'defaults' files. Most likely to apply
     # to Linux systems that use SysV-ish, upstart, or systemd init systems.
@@ -239,6 +242,7 @@ class Vanagon
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
       @valid_operators ||= ['<', '>', '<=', '>=', '=']
+      @servicetypes = []
     end
 
     def shell # rubocop:disable Lint/DuplicateMethods
@@ -529,6 +533,34 @@ class Vanagon
 
     def validate_operator(operator_string)
       valid_operators.include?(operator_string)
+    end
+
+    # Get all configured service types (added through plat.servicetype)
+    # @return array of service types, empty array if none have been configured
+    def get_service_types
+      if @servicetypes.any?
+        @servicetypes.flat_map(&:servicetype).compact
+      elsif @servicetype
+        [@servicetype]
+      else
+        []
+      end
+    end
+
+    # Get configured service dir (added through plat.servicedir, or plat.servicetype 'foo', servicedir: 'bar')
+    # @param servicetype the service type you want the service dir for (optional)
+    # @raises VanagonError if more than one service dir is found
+    def get_service_dir(servicetype = '')
+      if @servicetypes.empty?
+        return @servicedir
+      end
+      servicedir = @servicetypes.select { |s| s.servicetype.include?(servicetype) }.flat_map(&:servicedir).compact
+
+      if servicedir.size > 1
+        raise Vanagon::Error, "You can only have one service dir for each service type. Found '#{servicedir.join(',')}' for service type #{servicetype}"
+      end
+
+      servicedir.first
     end
   end
 end
