@@ -692,5 +692,19 @@ class Vanagon
         upstream_project.cleanup
       end
     end
+
+    # Load the settings hash from a local vanagon project.
+    # This will load the specified vanagon project (with no components) and
+    # merge its settings hash with local settings, overriding any duplicates at
+    # the time of calling. No attempt will be made to check out a specific
+    # version of the local repo; Settings will be used as they are.
+    def load_local_settings(local_project_name, local_project_path)
+      local_directory = File.expand_path(local_project_path)
+      # We don't want to load any of the upstream components, so we're going to
+      # pass an array with an empty string as the component list for load_project
+      no_components = ['']
+      local_project = Vanagon::Project.load_project(local_project_name, File.join(local_directory, ["configs", "projects"]), platform, no_components)
+      @settings.merge!(local_project.settings)
+    end
   end
 end
