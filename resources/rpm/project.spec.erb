@@ -161,7 +161,7 @@ install -d %{buildroot}
 # Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
 while read entry; do
   if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
-    PATH=/opt/freeware/bin:$PATH <%= @platform.sed %> -i "s|^\($entry\)\$|%dir \1|g" %{SOURCE1}
+    <%= @platform.sed %> -i "\|^$entry\$|s|^|%dir |" %{SOURCE1}
   fi
 done < %{SOURCE1}
 
