@@ -6,6 +6,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.9] - released on 2018-05-08
+### Added
+- (VANAGON-123) Add support for multiple service types for a single platform.
+  This is intended primarily for Debian packages supporting both systemd and
+  sysv init systems.
+
 ## [0.15.8] - released on 2018-04-17
 ### Fixed
 - The fix for bill-of-materials in release [0.15.7] broke tar generation. This
@@ -646,7 +652,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.8...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.9...HEAD
+[0.15.9]: https://github.com/puppetlabs/vanagon/compare/0.15.8...0.15.9
 [0.15.8]: https://github.com/puppetlabs/vanagon/compare/0.15.7...0.15.8
 [0.15.7]: https://github.com/puppetlabs/vanagon/compare/0.15.6...0.15.7
 [0.15.6]: https://github.com/puppetlabs/vanagon/compare/0.15.5...0.15.6
