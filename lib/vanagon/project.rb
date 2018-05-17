@@ -718,5 +718,37 @@ class Vanagon
         upstream_project.cleanup
       end
     end
+
+    # Load the settings hash for the current project/platform combination from a
+    # yaml file as produced by `publish_yaml_settings`. file:// and http:// URIs
+    # are accepted. If the URI uses http://, a sha1 URI is also required.
+    #
+    # @param settings_uri [String] A URI to a yaml settings file
+    # @param settings_sha1_uri [String] A URI to a sha1sum file for the yaml settings file
+    # @raise [Vanagon::Error] when the settings file can't be found
+    def load_yaml_settings(settings_uri, settings_sha1_uri = nil) # rubocop:disable Metrics/AbcSize
+      source_type = Vanagon::Component::Source.determine_source_type(settings_uri)
+
+      if %i[unknown git].include?(source_type)
+        message = "Can't inherit settings from '#{settings_uri}'. Only http and file URIs are valid."
+        if settings_uri =~ /^file/
+          message = "Tried to load YAML settings from '#{settings_uri}', but the file doesn't exist."
+        end
+        raise Vanagon::Error, message
+      end
+
+      if (source_type == :http) && !settings_sha1_uri
+        raise Vanagon::Error, "You must provide a sha1sum URI for the YAML file when inheriting YAML settings over http"
+      end
+
+      Dir.mktmpdir do |working_directory|
+        source = Vanagon::Component::Source.source(settings_uri,
+                                                   workdir: working_directory,
+                                                   sum: settings_sha1_uri,
+                                                   sum_type: 'sha1')
+        source.fetch
+        @settings.merge!(YAML.safe_load(File.read(File.join(working_directory, source.file)), [Symbol]))
+      end
+    end
   end
 end
