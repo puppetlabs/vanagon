@@ -1,8 +1,9 @@
 require 'vanagon/project'
 require 'vanagon/utilities'
 require 'vanagon/component/source'
-require 'set'
 require 'git/rev_list'
+require 'set'
+require 'yaml'
 
 class Vanagon
   class Project
@@ -300,6 +301,11 @@ class Vanagon
       # @param target [String] a full path to the version file for the project
       def write_version_file(target)
         @project.version_file = Vanagon::Common::Pathname.file(target)
+      end
+
+      # This method will write the project's settings (per-platform) to the output directory as yaml after building
+      def publish_yaml_settings
+        @project.yaml_settings = true
       end
 
       # This method will write the project's bill-of-materials to a designated directory during package creation.

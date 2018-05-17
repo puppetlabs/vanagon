@@ -61,6 +61,9 @@ class Vanagon
     # !refactor
     attr_accessor :version_file
 
+    # Store whether Vanagon should write the project's settings to a yaml file during builds
+    attr_accessor :yaml_settings
+
     # Stores the location for the bill-of-materials (a receipt of all
     # files written during) project package assembly
     attr_accessor :bill_of_materials
@@ -145,6 +148,7 @@ class Vanagon
       @source_artifacts = false
       @compiled_archive = false
       @generate_packages = true
+      @yaml_settings = false
       @no_packaging = false
       @artifacts_to_fetch = []
     end
@@ -662,6 +666,28 @@ class Vanagon
       manifest = build_manifest_json(true)
       File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
         f.write(manifest)
+      end
+    end
+
+    # Writes a yaml file at `output/<name>-<version>.<platform>.settings.yaml`
+    # containing settings used to build the current project on the platform
+    # provided (and a corresponding sha1sum file) if `yaml_settings` has been
+    # set in the project definition.
+    #
+    # @param [Vanagon::Platform] the platform to publish settings for
+    def publish_yaml_settings(platform)
+      return unless yaml_settings
+      raise(Vanagon::Error, "You must specify a project version") unless version
+
+      filename = "#{name}-#{version}.#{platform.name}.settings.yaml"
+      filepath = File.join('output', filename)
+
+      File.open(filepath, 'w') do |f|
+        f.write(@settings.to_yaml)
+      end
+
+      File.open("#{filepath}.sha1", 'w') do |f|
+        f.write(system("#{platform.shasum} #{filepath}", err: File::NULL))
       end
     end
 

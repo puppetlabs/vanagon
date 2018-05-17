@@ -308,6 +308,50 @@ describe 'Vanagon::Project' do
     end
   end
 
+  describe '#publish_yaml_settings' do
+    let(:platform_name) { 'aix-7.2-ppc' }
+    let(:platform) { Vanagon::Platform.new(platform_name) }
+
+    subject(:project) do
+      project = Vanagon::Project.new('test-project', platform)
+      project.settings = { key: 'value' }
+      project.version = 'version'
+      project.yaml_settings = true
+      project
+    end
+
+    let(:yaml_output_path) { "output/test-project-version.#{platform_name}.settings.yaml" }
+    let(:sha1_output_path) { "output/test-project-version.#{platform_name}.settings.yaml.sha1" }
+
+    let(:yaml_file) { double('yaml_file') }
+    let(:sha1_file) { double('sha1_file') }
+
+    it 'writes project settings as yaml and a sha1sum for the settings to the output directory' do
+      expect(File).to receive(:open).with(yaml_output_path, "w").and_yield(yaml_file)
+      expect(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
+      expect(yaml_file).to receive(:write).with({key: 'value'}.to_yaml)
+      expect(sha1_file).to receive(:write)
+      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+    end
+
+    it 'does not write yaml settings or a sha1sum unless told to' do
+      project.yaml_settings = false
+      expect(File).not_to receive(:open)
+      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+    end
+
+    it "fails if the output directory doesn't exist" do
+      allow_any_instance_of(File).to receive(:open).with(yaml_output_path).and_raise(Errno::ENOENT)
+      allow_any_instance_of(File).to receive(:open).with(sha1_output_path).and_raise(Errno::ENOENT)
+      expect { project.publish_yaml_settings(platform) }.to raise_error(Errno::ENOENT)
+    end
+
+    it "fails unless the project has a version" do
+      project.version = nil
+      expect { project.publish_yaml_settings(platform) }.to raise_error(Vanagon::Error)
+    end
+  end
+
   describe '#generate_package' do
     it "builds packages by default" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
