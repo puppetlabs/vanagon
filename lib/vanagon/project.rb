@@ -61,6 +61,9 @@ class Vanagon
     # !refactor
     attr_accessor :version_file
 
+    # Store whether Vanagon should write the project's settings to a yaml file during builds
+    attr_accessor :yaml_settings
+
     # Stores the location for the bill-of-materials (a receipt of all
     # files written during) project package assembly
     attr_accessor :bill_of_materials
@@ -145,6 +148,7 @@ class Vanagon
       @source_artifacts = false
       @compiled_archive = false
       @generate_packages = true
+      @yaml_settings = false
       @no_packaging = false
       @artifacts_to_fetch = []
     end
@@ -665,6 +669,28 @@ class Vanagon
       end
     end
 
+    # Writes a yaml file at `output/<name>-<version>.<platform>.settings.yaml`
+    # containing settings used to build the current project on the platform
+    # provided (and a corresponding sha1sum file) if `yaml_settings` has been
+    # set in the project definition.
+    #
+    # @param [Vanagon::Platform] the platform to publish settings for
+    def publish_yaml_settings(platform)
+      return unless yaml_settings
+      raise(Vanagon::Error, "You must specify a project version") unless version
+
+      filename = "#{name}-#{version}.#{platform.name}.settings.yaml"
+      filepath = File.join('output', filename)
+
+      File.open(filepath, 'w') do |f|
+        f.write(@settings.to_yaml)
+      end
+
+      File.open("#{filepath}.sha1", 'w') do |f|
+        f.write(system("#{platform.shasum} #{filepath}", err: File::NULL))
+      end
+    end
+
     # Load the settings hash from an upstream vanagon project.
     # This will clone a git repo at a specified branch and load the specified
     # vanagon project (with no components). The settings hash of the upstream
@@ -690,6 +716,38 @@ class Vanagon
         upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), platform, no_components)
         @settings.merge!(upstream_project.settings)
         upstream_project.cleanup
+      end
+    end
+
+    # Load the settings hash for the current project/platform combination from a
+    # yaml file as produced by `publish_yaml_settings`. file:// and http:// URIs
+    # are accepted. If the URI uses http://, a sha1 URI is also required.
+    #
+    # @param settings_uri [String] A URI to a yaml settings file
+    # @param settings_sha1_uri [String] A URI to a sha1sum file for the yaml settings file
+    # @raise [Vanagon::Error] when the settings file can't be found
+    def load_yaml_settings(settings_uri, settings_sha1_uri = nil) # rubocop:disable Metrics/AbcSize
+      source_type = Vanagon::Component::Source.determine_source_type(settings_uri)
+
+      if %i[unknown git].include?(source_type)
+        message = "Can't inherit settings from '#{settings_uri}'. Only http and file URIs are valid."
+        if settings_uri =~ /^file/
+          message = "Tried to load YAML settings from '#{settings_uri}', but the file doesn't exist."
+        end
+        raise Vanagon::Error, message
+      end
+
+      if (source_type == :http) && !settings_sha1_uri
+        raise Vanagon::Error, "You must provide a sha1sum URI for the YAML file when inheriting YAML settings over http"
+      end
+
+      Dir.mktmpdir do |working_directory|
+        source = Vanagon::Component::Source.source(settings_uri,
+                                                   workdir: working_directory,
+                                                   sum: settings_sha1_uri,
+                                                   sum_type: 'sha1')
+        source.fetch
+        @settings.merge!(YAML.safe_load(File.read(File.join(working_directory, source.file)), [Symbol]))
       end
     end
   end

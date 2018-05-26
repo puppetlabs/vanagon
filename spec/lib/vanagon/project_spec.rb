@@ -1,5 +1,6 @@
 require 'vanagon/project'
 require 'vanagon/driver'
+require 'vanagon/errors'
 
 describe 'Vanagon::Project' do
   let(:component) { double(Vanagon::Component) }
@@ -123,6 +124,75 @@ describe 'Vanagon::Project' do
       inheriting_proj.instance_eval(inheriting_project_block_with_settings)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
       expect(inheriting_proj._project.settings[:merged]).to eq('yup')
+    end
+  end
+
+  describe "#load_yaml_settings" do
+    subject(:project) do
+      project = Vanagon::Project.new('yaml-inheritance-test', Vanagon::Platform.new('aix-7.2-ppc'))
+      project.settings = { merged: 'nope', original: 'original' }
+      project
+    end
+
+    let(:yaml_filename) { 'settings.yaml' }
+    let(:sha1_filename) { "#{yaml_filename}.sha1" }
+
+    let(:yaml_path) { "/path/to/#{yaml_filename}" }
+    let(:sha1_path) { "/path/to/#{sha1_filename}" }
+
+    let(:yaml_content) { { other: 'other', merged: 'yup' }.to_yaml }
+
+    let(:local_yaml_uri) { "file://#{yaml_path}" }
+    let(:http_yaml_uri) { "http:/#{yaml_path}" }
+
+    before(:each) do
+      allow(Dir).to receive(:mktmpdir) { |&block| block.yield '' }
+    end
+
+    it "fails for a local source if the settings file doesn't exist" do
+      expect { project.load_yaml_settings(local_yaml_uri) }.to raise_error(Vanagon::Error)
+    end
+
+    it "fails if given a git source" do
+      expect { project.load_yaml_settings('git://some/repo.uri') }.to raise_error(Vanagon::Error)
+    end
+
+    it "fails when given an unknown source" do
+      expect { project.load_yaml_settings("fake://source.uri") }.to raise_error(Vanagon::Error)
+    end
+
+    it "fails if downloading over HTTP without a valid sha1sum URI" do
+      allow(Vanagon::Component::Source::Http).to receive(:valid_url?).with(http_yaml_uri).and_return(true)
+      http_source = instance_double(Vanagon::Component::Source::Http)
+      allow(Vanagon::Component::Source).to receive(:source).and_return(http_source)
+
+      expect { project.load_yaml_settings(http_yaml_uri) }.to raise_error(Vanagon::Error)
+    end
+
+    context "given a valid source" do
+      before(:each) do
+        local_source = instance_double(Vanagon::Component::Source::Local)
+        allow(local_source).to receive(:fetch)
+        allow(local_source).to receive(:file).and_return(yaml_path)
+
+        allow(Vanagon::Component::Source).to receive(:determine_source_type).and_return(:local)
+        allow(Vanagon::Component::Source).to receive(:source).and_return(local_source)
+        allow(File).to receive(:read).with(yaml_path).and_return(yaml_content)
+
+        expect { project.load_yaml_settings(local_yaml_uri) }.not_to raise_exception
+      end
+
+      it "overwrites the current project's settings when they conflict" do
+        expect(project.settings[:merged]).to eq('yup')
+      end
+
+      it "adopts new settings found in the other project" do
+        expect(project.settings[:other]).to eq('other')
+      end
+
+      it "keeps its own settings when there are no conflicts" do
+        expect(project.settings[:original]).to eq('original')
+      end
     end
   end
 
@@ -305,6 +375,50 @@ describe 'Vanagon::Project' do
 
       expect(JSON).to receive(:pretty_generate)
       @proj.build_manifest_json(true)
+    end
+  end
+
+  describe '#publish_yaml_settings' do
+    let(:platform_name) { 'aix-7.2-ppc' }
+    let(:platform) { Vanagon::Platform.new(platform_name) }
+
+    subject(:project) do
+      project = Vanagon::Project.new('test-project', platform)
+      project.settings = { key: 'value' }
+      project.version = 'version'
+      project.yaml_settings = true
+      project
+    end
+
+    let(:yaml_output_path) { "output/test-project-version.#{platform_name}.settings.yaml" }
+    let(:sha1_output_path) { "output/test-project-version.#{platform_name}.settings.yaml.sha1" }
+
+    let(:yaml_file) { double('yaml_file') }
+    let(:sha1_file) { double('sha1_file') }
+
+    it 'writes project settings as yaml and a sha1sum for the settings to the output directory' do
+      expect(File).to receive(:open).with(yaml_output_path, "w").and_yield(yaml_file)
+      expect(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
+      expect(yaml_file).to receive(:write).with({key: 'value'}.to_yaml)
+      expect(sha1_file).to receive(:write)
+      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+    end
+
+    it 'does not write yaml settings or a sha1sum unless told to' do
+      project.yaml_settings = false
+      expect(File).not_to receive(:open)
+      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+    end
+
+    it "fails if the output directory doesn't exist" do
+      allow_any_instance_of(File).to receive(:open).with(yaml_output_path).and_raise(Errno::ENOENT)
+      allow_any_instance_of(File).to receive(:open).with(sha1_output_path).and_raise(Errno::ENOENT)
+      expect { project.publish_yaml_settings(platform) }.to raise_error(Errno::ENOENT)
+    end
+
+    it "fails unless the project has a version" do
+      project.version = nil
+      expect { project.publish_yaml_settings(platform) }.to raise_error(Vanagon::Error)
     end
   end
 
