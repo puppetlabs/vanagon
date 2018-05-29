@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.10] - released on 2018-05-29
+### Added
+- (VANAGON-130) Add `publish_yaml_settings` to the project DSL to let you output
+  the project's settings at build time as a yaml file.
+- (VANAGON-131) Add `inherit_yaml_settings` to the project DSL to let you load
+  the settings file created by `publish_yaml_settings`.
+
+### Fixed
+- A looped sed call during RPM generation was optimized.
+
 ## [0.15.9] - released on 2018-05-08
 ### Added
 - (VANAGON-123) Add support for multiple service types for a single platform.
@@ -652,7 +662,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.9...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.10...HEAD
+[0.15.10]: https://github.com/puppetlabs/vanagon/compare/0.15.9...0.15.10
 [0.15.9]: https://github.com/puppetlabs/vanagon/compare/0.15.8...0.15.9
 [0.15.8]: https://github.com/puppetlabs/vanagon/compare/0.15.7...0.15.8
 [0.15.7]: https://github.com/puppetlabs/vanagon/compare/0.15.6...0.15.7
