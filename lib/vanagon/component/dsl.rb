@@ -163,40 +163,36 @@ class Vanagon
       #
       # @param service_file [String] path to the service file relative to the source
       # @param default_file [String] path to the default file relative to the source
-      # @param options optional extra parameters
-      #        service_name [String] name of the service
-      #        service_type [String] type of the service (network, application, system, etc)
-      #        link_target [String] executable service file should be linked to
-      def install_service(service_file, default_file = nil, service_name = @component.name, **options) # rubocop:disable Metrics/AbcSize
-        init_system = options[:init_system] || @component.platform.servicetype
-        servicedir = @component.platform.get_service_dir(init_system)
-
-        case init_system
+      # @param service_name [String] name of the service
+      # @param service_type [String] type of the service (network, application, system, etc)
+      # @param link_target [String] executable service file should be linked to
+      def install_service(service_file, default_file = nil, service_name = @component.name, service_type: nil, link_target: nil) # rubocop:disable Metrics/AbcSize
+        case @component.platform.servicetype
         when "sysv"
-          target_service_file = File.join(servicedir, service_name)
+          target_service_file = File.join(@component.platform.servicedir, service_name)
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0755'
           default_mode = '0644'
         when "systemd"
-          target_service_file = File.join(servicedir, "#{service_name}.service")
+          target_service_file = File.join(@component.platform.servicedir, "#{service_name}.service")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
           default_mode = '0644'
         when "launchd"
-          target_service_file = File.join(servicedir, "#{service_name}.plist")
+          target_service_file = File.join(@component.platform.servicedir, "#{service_name}.plist")
           target_mode = '0644'
           default_mode = '0644'
         when "smf"
-          target_service_file = File.join(servicedir, options[:service_type].to_s, "#{service_name}.xml")
+          target_service_file = File.join(@component.platform.servicedir, service_type.to_s, "#{service_name}.xml")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
           default_mode = '0755'
         when "aix"
-          @component.service << OpenStruct.new(:name => service_name, :service_command => File.read(service_file).chomp)
+          @component.service = OpenStruct.new(:name => service_name, :service_command => File.read(service_file).chomp)
           # Return here because there is no file to install, just a string read in
           return
         when "windows"
-          @component.service << OpenStruct.new(\
+          @component.service = OpenStruct.new(\
             :bindir_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '').upcase}BINDIR", \
             :service_file => service_file, \
             :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Component"\
@@ -204,13 +200,13 @@ class Vanagon
           # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
         else
-          fail "Don't know how to install the #{init_system}. Please teach #install_service how to do this."
+          fail "Don't know how to install the #{@component.platform.servicetype}. Please teach #install_service how to do this."
         end
 
         # Install the service and default files
-        if options[:link_target]
-          install_file(service_file, options[:link_target], mode: target_mode)
-          link options[:link_target], target_service_file
+        if link_target
+          install_file(service_file, link_target, mode: target_mode)
+          link link_target, target_service_file
         else
           install_file(service_file, target_service_file, mode: target_mode)
         end
@@ -221,7 +217,7 @@ class Vanagon
         end
 
         # Register the service for use in packaging
-        @component.service << OpenStruct.new(:name => service_name, :service_file => target_service_file, :type => options[:service_type])
+        @component.service = OpenStruct.new(:name => service_name, :service_file => target_service_file, :type => service_type)
       end
 
       # Copies a file from source to target during the install phase of the component

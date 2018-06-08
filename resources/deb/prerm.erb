@@ -13,19 +13,15 @@ fi
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
-  <%- if service.init_system.nil? || service.init_system.eq?('systemd') -%>
-if [ -d '/run/systemd/system' ] ; then
-  if [ "$1" = remove ]; then
-    systemctl --no-reload disable <%= service.name %>.service > /dev/null 2>&1 || :
-    systemctl stop <%= service.name %>.service > /dev/null 2>&1 || :
-  fi
+  <%- if @platform.servicetype == "systemd" -%>
+if [ "$1" = remove ]; then
+  systemctl --no-reload disable <%= service.name %>.service > /dev/null 2>&1 || :
+  systemctl stop <%= service.name %>.service > /dev/null 2>&1 || :
 fi
-  <%- end -%>
-  <%- if service.init_system.nil? || service.init_system.eq?('sysv') -%>
-if [ ! -d '/run/systemd/system' ] ; then
-  if [ -x "<%= service.service_file %>" ] && [ "$1" = remove ]; then
-    invoke-rc.d <%= service.name %> stop || true
-  fi
+
+  <%- elsif @platform.servicetype == "sysv" -%>
+if [ -x "<%= service.service_file %>" ] && [ "$1" = remove ]; then
+  invoke-rc.d <%= service.name %> stop || true
 fi
   <%- end -%>
 <%- end -%>

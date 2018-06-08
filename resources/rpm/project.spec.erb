@@ -76,7 +76,7 @@ Requires(post): /bin/touch
 <%- end -%>
 
 <%- if has_services? -%>
-  <%- if @platform.get_service_types.include?("systemd") -%>
+  <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
 BuildRequires:    systemd
 %{?systemd_requires}
@@ -86,7 +86,7 @@ Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
     <%- end -%>
-  <%- elsif @platform.get_service_types.include?("sysv") -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
     <%- if @platform.is_sles? -%>
 Requires: aaa_base
     <%- elsif @platform.is_linux? -%>
@@ -230,15 +230,15 @@ fi
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
   #
-  <%- if @platform.get_service_types.include?("systemd") -%>
+  <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
       %service_add_post <%= service.name %>.service
     <%- else -%>
       %systemd_post <%= service.name %>.service
     <%- end -%>
-  <%- elsif @platform.get_service_types.include?("sysv") -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
     chkconfig --add <%= service.name %> >/dev/null 2>&1 || :
-  <%- elsif @platform.get_service_types.include?("aix") -%>
+  <%- elsif @platform.servicetype == "aix" -%>
     if /usr/bin/lssrc -s <%= service.name -%> > /dev/null 2>&1; then
       /usr/bin/chssys -s <%= service.name -%> -p <%= service.service_command -%> -w 7 -S -n 15 -f 9 > /dev/null 2>&1 || :
     else
@@ -279,17 +279,17 @@ fi
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv vs smf vs aix
   #
-  <%- if @platform.get_service_types.include?("systemd") -%>
+  <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
       %service_del_postun <%= service.name %>.service
     <%- else -%>
       %systemd_postun_with_restart <%= service.name %>.service
     <%- end -%>
-  <%- elsif @platform.get_service_types.include?("sysv") -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
     if [ "$1" -eq 1 ]; then
       /sbin/service <%= service.name %> condrestart || :
     fi
-  <%- elsif @platform.get_service_types.include?("aix") -%>
+  <%- elsif @platform.servicetype == "aix" -%>
     if  [ "$1" -eq 0 ]; then
       /usr/bin/rmssys -s <%= service.name -%> > /dev/null 2>&1 || :
       /usr/sbin/rmitab <%= service.name -%> > /dev/null 2>&1 || :
@@ -310,18 +310,18 @@ if [ "$1" -eq 0 ] ; then
 fi
 
 <%- get_services.each do |service| -%>
-  <%- if @platform.get_service_types.include?("systemd") -%>
+  <%- if @platform.servicetype == "systemd" -%>
     <%- if @platform.is_sles? -%>
       %service_del_preun <%= service.name %>.service
     <%- else -%>
       %systemd_preun <%= service.name %>.service
     <%- end -%>
-  <%- elsif @platform.get_service_types.include?("sysv") -%>
+  <%- elsif @platform.servicetype == "sysv" -%>
     if [ "$1" -eq 0 ]; then
       /sbin/service <%= service.name %> stop >/dev/null 2>&1 || :
       chkconfig --del <%= service.name %> || :
     fi
-  <%- elsif @platform.get_service_types.include?("aix") -%>
+  <%- elsif @platform.servicetype == "aix" -%>
       # stop the service only on a real uninstall, not on upgrades
       if [ "$1" -eq 0 ] ; then
           /usr/bin/stopsrc -s <%= service.name -%> > /dev/null 2>&1 || :
