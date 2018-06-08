@@ -173,6 +173,7 @@ class Vanagon
       warn "rendering Makefile"
       @project.fetch_sources(workdir, retry_count, timeout)
       @project.make_bill_of_materials(workdir)
+      @project.publish_yaml_settings(workdir, @project.platform)
       @project.generate_packaging_artifacts(workdir)
       @project.make_makefile(workdir)
     end
