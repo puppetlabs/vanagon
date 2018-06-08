@@ -747,7 +747,11 @@ class Vanagon
                                                    sum: settings_sha1_uri,
                                                    sum_type: 'sha1')
         source.fetch
-        @settings.merge!(YAML.safe_load(File.read(File.join(working_directory, source.file)), [Symbol]))
+        yaml_path = source.file
+        if source_type == :http
+          yaml_path = File.join(working_directory, source.file)
+        end
+        @settings.merge!(YAML.safe_load(File.read(yaml_path), [Symbol]))
       end
     end
   end
