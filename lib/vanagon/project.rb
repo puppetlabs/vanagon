@@ -674,13 +674,14 @@ class Vanagon
     # provided (and a corresponding sha1sum file) if `yaml_settings` has been
     # set in the project definition.
     #
-    # @param [Vanagon::Platform] the platform to publish settings for
-    def publish_yaml_settings(platform)
+    # @param workdir [String] directory to write the files to
+    # @param platform [Vanagon::Platform] the platform to publish settings for
+    def publish_yaml_settings(workdir, platform)
       return unless yaml_settings
       raise(Vanagon::Error, "You must specify a project version") unless version
 
       filename = "#{name}-#{version}.#{platform.name}.settings.yaml"
-      filepath = File.join('output', filename)
+      filepath = File.join(workdir, filename)
 
       File.open(filepath, 'w') do |f|
         f.write(@settings.to_yaml)
