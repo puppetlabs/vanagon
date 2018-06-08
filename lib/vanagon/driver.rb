@@ -144,7 +144,7 @@ class Vanagon
       @engine.ship_workdir(workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{make_target})")
       @engine.retrieve_built_artifact(@project.artifacts_to_fetch, @project.no_packaging)
-      @project.publish_yaml_settings(@platform)
+      @project.publish_yaml_settings(workdir, @platform)
 
       if %i[never on-failure].include? @preserve
         @engine.teardown
@@ -173,6 +173,7 @@ class Vanagon
       warn "rendering Makefile"
       @project.fetch_sources(workdir, retry_count, timeout)
       @project.make_bill_of_materials(workdir)
+      @project.publish_yaml_settings(workdir, @project.platform)
       @project.generate_packaging_artifacts(workdir)
       @project.make_makefile(workdir)
     end

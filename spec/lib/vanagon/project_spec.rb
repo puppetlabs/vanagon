@@ -381,6 +381,7 @@ describe 'Vanagon::Project' do
   describe '#publish_yaml_settings' do
     let(:platform_name) { 'aix-7.2-ppc' }
     let(:platform) { Vanagon::Platform.new(platform_name) }
+    let(:workdir) { '/path/to/workdir' }
 
     subject(:project) do
       project = Vanagon::Project.new('test-project', platform)
@@ -390,8 +391,8 @@ describe 'Vanagon::Project' do
       project
     end
 
-    let(:yaml_output_path) { "output/test-project-version.#{platform_name}.settings.yaml" }
-    let(:sha1_output_path) { "output/test-project-version.#{platform_name}.settings.yaml.sha1" }
+    let(:yaml_output_path) { "#{workdir}/test-project-version.#{platform_name}.settings.yaml" }
+    let(:sha1_output_path) { "#{workdir}/test-project-version.#{platform_name}.settings.yaml.sha1" }
 
     let(:yaml_file) { double('yaml_file') }
     let(:sha1_file) { double('sha1_file') }
@@ -401,24 +402,24 @@ describe 'Vanagon::Project' do
       expect(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
       expect(yaml_file).to receive(:write).with({key: 'value'}.to_yaml)
       expect(sha1_file).to receive(:write)
-      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+      expect { project.publish_yaml_settings(workdir, platform) }.not_to raise_error
     end
 
     it 'does not write yaml settings or a sha1sum unless told to' do
       project.yaml_settings = false
       expect(File).not_to receive(:open)
-      expect { project.publish_yaml_settings(platform) }.not_to raise_error
+      expect { project.publish_yaml_settings(workdir, platform) }.not_to raise_error
     end
 
     it "fails if the output directory doesn't exist" do
       allow_any_instance_of(File).to receive(:open).with(yaml_output_path).and_raise(Errno::ENOENT)
       allow_any_instance_of(File).to receive(:open).with(sha1_output_path).and_raise(Errno::ENOENT)
-      expect { project.publish_yaml_settings(platform) }.to raise_error(Errno::ENOENT)
+      expect { project.publish_yaml_settings(workdir, platform) }.to raise_error(Errno::ENOENT)
     end
 
     it "fails unless the project has a version" do
       project.version = nil
-      expect { project.publish_yaml_settings(platform) }.to raise_error(Vanagon::Error)
+      expect { project.publish_yaml_settings(workdir, platform) }.to raise_error(Vanagon::Error)
     end
   end
 
