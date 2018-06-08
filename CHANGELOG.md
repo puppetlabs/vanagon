@@ -6,6 +6,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.11] - released on 2018-06-08
+### Changed
+- (VANAGON-123) This work has been reverted. It was causing a regression for
+  installation on debian systems using automated installers or chroots.
+
+### Fixed
+- (VANAGON-131) Paths were being incorrectly determined when inheriting yaml
+  settings from a local file source.
+
 ## [0.15.10] - released on 2018-05-29
 ### Added
 - (VANAGON-130) Add `publish_yaml_settings` to the project DSL to let you output
@@ -662,7 +671,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.10...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.11...HEAD
+[0.15.11]: https://github.com/puppetlabs/vanagon/compare/0.15.10...0.15.11
 [0.15.10]: https://github.com/puppetlabs/vanagon/compare/0.15.9...0.15.10
 [0.15.9]: https://github.com/puppetlabs/vanagon/compare/0.15.8...0.15.9
 [0.15.8]: https://github.com/puppetlabs/vanagon/compare/0.15.7...0.15.8
