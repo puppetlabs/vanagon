@@ -390,17 +390,21 @@ describe 'Vanagon::Project' do
       project
     end
 
-    let(:yaml_output_path) { "output/test-project-version.#{platform_name}.settings.yaml" }
-    let(:sha1_output_path) { "output/test-project-version.#{platform_name}.settings.yaml.sha1" }
+    let(:yaml_output_path) { File.expand_path("test-project-version.#{platform_name}.settings.yaml", "output") }
+    let(:sha1_output_path) { File.expand_path("test-project-version.#{platform_name}.settings.yaml.sha1", "output") }
 
     let(:yaml_file) { double('yaml_file') }
     let(:sha1_file) { double('sha1_file') }
 
+    let(:sha1_content) { 'abcdef' }
+    let(:sha1_object) { instance_double(Digest::SHA1, hexdigest: sha1_content) }
+
     it 'writes project settings as yaml and a sha1sum for the settings to the output directory' do
       expect(File).to receive(:open).with(yaml_output_path, "w").and_yield(yaml_file)
+      expect(Digest::SHA1).to receive(:file).with(yaml_output_path).and_return(sha1_object)
       expect(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
       expect(yaml_file).to receive(:write).with({key: 'value'}.to_yaml)
-      expect(sha1_file).to receive(:write)
+      expect(sha1_file).to receive(:puts).with(sha1_content)
       expect { project.publish_yaml_settings(platform) }.not_to raise_error
     end
 
