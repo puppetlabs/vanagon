@@ -3,6 +3,7 @@ require 'vanagon/environment'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
 require 'vanagon/utilities'
+require 'digest'
 require 'ostruct'
 
 class Vanagon
@@ -671,20 +672,19 @@ class Vanagon
     # set in the project definition.
     #
     # @param [Vanagon::Platform] the platform to publish settings for
-    def publish_yaml_settings(platform)
+    def publish_yaml_settings(platform) # rubocop:disable Metrics/AbcSize
       return unless yaml_settings
       raise(Vanagon::Error, "You must specify a project version") unless version
 
       filename = "#{name}-#{version}.#{platform.name}.settings.yaml"
-      filepath = File.join('output', filename)
+      filepath = File.expand_path(File.join('output', filename))
 
       File.open(filepath, 'w') do |f|
         f.write(@settings.to_yaml)
       end
 
-      File.open("#{filepath}.sha1", 'w') do |f|
-        f.write(system("#{platform.shasum} #{filepath}", err: File::NULL))
-      end
+      sha1 = Digest::SHA1.file(filepath).hexdigest
+      File.open("#{filepath}.sha1", 'w') { |f| f.puts(sha1) }
     end
 
     # Load the settings hash from an upstream vanagon project.
@@ -743,6 +743,7 @@ class Vanagon
                                                    sum: settings_sha1_uri,
                                                    sum_type: 'sha1')
         source.fetch
+        source.verify
         yaml_path = source.file
         if source_type == :http
           yaml_path = File.join(working_directory, source.file)
