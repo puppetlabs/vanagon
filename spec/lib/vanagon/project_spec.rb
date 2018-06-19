@@ -165,6 +165,7 @@ describe 'Vanagon::Project' do
       allow(Vanagon::Component::Source::Http).to receive(:valid_url?).with(http_yaml_uri).and_return(true)
       http_source = instance_double(Vanagon::Component::Source::Http)
       allow(Vanagon::Component::Source).to receive(:source).and_return(http_source)
+      allow(http_source).to receive(:verify).and_return(true)
 
       expect { project.load_yaml_settings(http_yaml_uri) }.to raise_error(Vanagon::Error)
     end
@@ -173,6 +174,7 @@ describe 'Vanagon::Project' do
       before(:each) do
         local_source = instance_double(Vanagon::Component::Source::Local)
         allow(local_source).to receive(:fetch)
+        allow(local_source).to receive(:verify).and_return(true)
         allow(local_source).to receive(:file).and_return(yaml_path)
 
         allow(Vanagon::Component::Source).to receive(:determine_source_type).and_return(:local)

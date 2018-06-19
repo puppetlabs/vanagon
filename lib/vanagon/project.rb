@@ -743,6 +743,7 @@ class Vanagon
                                                    sum: settings_sha1_uri,
                                                    sum_type: 'sha1')
         source.fetch
+        source.verify
         yaml_path = source.file
         if source_type == :http
           yaml_path = File.join(working_directory, source.file)
