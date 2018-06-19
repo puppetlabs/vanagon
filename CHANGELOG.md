@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.12] - released on 2018-06-19
+### Fixed
+- (VANAGON-138) Fix incorrect sha1sum output when publishing yaml settings.
+
 ## [0.15.11] - released on 2018-06-08
 ### Changed
 - (VANAGON-123) This work has been reverted. It was causing a regression for
@@ -671,7 +675,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.11...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.12...HEAD
+[0.15.12]: https://github.com/puppetlabs/vanagon/compare/0.15.11...0.15.12
 [0.15.11]: https://github.com/puppetlabs/vanagon/compare/0.15.10...0.15.11
 [0.15.10]: https://github.com/puppetlabs/vanagon/compare/0.15.9...0.15.10
 [0.15.9]: https://github.com/puppetlabs/vanagon/compare/0.15.8...0.15.9
