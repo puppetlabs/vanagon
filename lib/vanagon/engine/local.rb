@@ -40,9 +40,15 @@ class Vanagon
         FileUtils.cp_r(Dir.glob("#{workdir}/*"), @remote_workdir)
       end
 
-      def retrieve_built_artifact
-        FileUtils.mkdir_p("output")
-        FileUtils.cp_r(Dir.glob("#{@remote_workdir}/output/*"), "output/")
+      def retrieve_built_artifact(artifacts_to_fetch, no_packaging)
+        output_path = 'output/'
+        FileUtils.mkdir_p(output_path)
+        unless no_packaging
+          artifacts_to_fetch << "#{@remote_workdir}/output/*"
+        end
+        artifacts_to_fetch.each do |path|
+          FileUtils.cp_r(Dir.glob(path), "output/")
+        end
       end
     end
   end

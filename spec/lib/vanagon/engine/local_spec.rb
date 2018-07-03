@@ -26,6 +26,24 @@ describe 'Vanagon::Engine::Local' do
     end
   end
 
+  describe '#retrieve_built_artifacts' do
+    it 'copies everything if we package' do
+      engine = Vanagon::Engine::Local.new(platform)
+      expect(FileUtils).to receive(:mkdir_p).with('output/').and_return true
+      expect(Dir).to receive(:glob).with('/output/*').and_return(['tmp/foo', 'tmp/bar'])
+      expect(FileUtils).to receive(:cp_r).with(['tmp/foo', 'tmp/bar'], 'output/')
+      engine.retrieve_built_artifact([], false)
+    end
+
+    it "only copies what you tell it to if we don't package" do
+      engine = Vanagon::Engine::Local.new(platform)
+      expect(FileUtils).to receive(:mkdir_p).with('output/').and_return true
+      expect(Dir).to receive(:glob).with('tmp/bar').and_return(['tmp/bar'])
+      expect(FileUtils).to receive(:cp_r).with(['tmp/bar'], 'output/')
+      engine.retrieve_built_artifact(['tmp/bar'], true)
+    end
+  end
+
   it 'returns "local" name' do
     expect(Vanagon::Engine::Local.new(platform).name).to eq('local')
   end
