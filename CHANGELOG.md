@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.13] - released on 2018-07-11
+### Fixed
+- (VANAGON-139) Fix `retrieve_built_artifact` in the local engine to match
+previous updates to the method signature.
+
 ## [0.15.12] - released on 2018-06-19
 ### Fixed
 - (VANAGON-138) Fix incorrect sha1sum output when publishing yaml settings.
@@ -675,7 +680,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.12...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.13...HEAD
+[0.15.13]: https://github.com/puppetlabs/vanagon/compare/0.15.12...0.15.13
 [0.15.12]: https://github.com/puppetlabs/vanagon/compare/0.15.11...0.15.12
 [0.15.11]: https://github.com/puppetlabs/vanagon/compare/0.15.10...0.15.11
 [0.15.10]: https://github.com/puppetlabs/vanagon/compare/0.15.9...0.15.10
