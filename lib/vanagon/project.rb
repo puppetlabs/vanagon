@@ -661,6 +661,7 @@ class Vanagon
     # @return [Hash] of build information
     def save_manifest_json
       manifest = build_manifest_json(true)
+      FileUtils.mkdir_p 'ext'
       File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
         f.write(manifest)
       end
