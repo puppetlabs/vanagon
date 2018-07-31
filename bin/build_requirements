@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'json'
+require 'vanagon/extensions/ostruct/json'
+require 'vanagon/extensions/set/json'
+require 'vanagon/extensions/hashable'
+
+load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
+
+optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [options]", %i[workdir configdir engine])
+options = optparse.parse! ARGV
+
+project = ARGV[0]
+platform = ARGV[1]
+
+unless project and platform
+  warn "project and platform are both required arguments."
+  warn optparse
+  exit 1
+end
+
+driver = Vanagon::Driver.new(platform, project)
+components = driver.project.components
+component_names = components.map(&:name)
+build_requirements = []
+components.each do |component|
+  build_requirements << component.build_requires.reject do |req|
+    # only include external requirements: i.e. those that do not match
+    # other components in the project
+    component_names.include?(req)
+  end
+end
+$stdout.puts
+$stdout.puts "**** External packages required to build #{project} on #{platform}: ***"
+$stdout.puts JSON.pretty_generate(build_requirements.flatten.uniq.sort)
+
