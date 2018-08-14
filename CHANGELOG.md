@@ -8,7 +8,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [0.15.14] - released on 2018-08-14
 ### Changed
--  (RE-11270) Create `ext` directory before writing build_metadata
+-  (RE-11270) Create `ext` directory before writing build_metadata.
 -  Add the --no-progress switch for choco downloads in an effort to shrink
    the size of build logs.
 
