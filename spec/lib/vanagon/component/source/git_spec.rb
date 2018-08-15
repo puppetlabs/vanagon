@@ -60,5 +60,11 @@ describe "Vanagon::Component::Source::Git" do
       expect(git_source.ref)
         .to eq('HEAD')
     end
+
+    it "returns a default value of HEAD when Git reference is nil" do
+      git_source = @klass.new(@url, ref: nil, workdir: @workdir)
+      expect(git_source.ref)
+        .to eq('HEAD')
+    end
   end
 end
