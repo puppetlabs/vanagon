@@ -521,6 +521,13 @@ class Vanagon
       def install_only(install_only)
         @component.install_only = install_only
       end
+
+      # Set the homepage for the component
+      #
+      # @param homepage
+      def homepage(homepage)
+        @component.homepage = homepage
+      end
     end
   end
 end
