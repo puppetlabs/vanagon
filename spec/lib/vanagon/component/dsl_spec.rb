@@ -816,6 +816,14 @@ end" }
     end
   end
 
+  describe '#homepage' do
+    it 'adds the homepage to the component' do
+      comp = Vanagon::Component::DSL.new('homepage-test', {}, platform)
+      comp.homepage('https://puppet.com')
+      expect(comp._component.homepage).to eq('https://puppet.com')
+    end
+  end
+
   describe '#directory' do
     it 'adds a directory with the desired path to the directory collection for the component' do
       comp = Vanagon::Component::DSL.new('directory-test', {}, platform)

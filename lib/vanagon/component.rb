@@ -13,7 +13,8 @@ class Vanagon
     # - Ryan McKern, 2017-01-27
 
     # The name, version, primary source, supplementary sources,
-    # associated patches, upstream URL, and license of a given component
+    # associated patches, upstream URL (for fetching the source),
+    # homepage, and license of a given component
     attr_accessor :name
     attr_accessor :version
     attr_accessor :source
@@ -22,6 +23,7 @@ class Vanagon
     attr_accessor :url
     attr_accessor :mirrors
     attr_accessor :license
+    attr_accessor :homepage
 
     # holds an OpenStruct describing all of the particular details about
     # how any services associated with a given component should be defined.
