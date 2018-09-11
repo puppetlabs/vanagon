@@ -6,6 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.15] - released on 2018-09-11
+### Added
+- (VANAGON-106) Add homepage to component DSL.
+- Add `build_requirements` command to list external build requirements.
+
+### Fixed
+- (VANAGON-141) Ensure git reference defaults to HEAD.
+
 ## [0.15.14] - released on 2018-08-14
 ### Changed
 -  (RE-11270) Create `ext` directory before writing build_metadata.
@@ -686,7 +694,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.14...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.15...HEAD
+[0.15.15]: https://github.com/puppetlabs/vanagon/compare/0.15.14...0.15.15
 [0.15.14]: https://github.com/puppetlabs/vanagon/compare/0.15.13...0.15.14
 [0.15.13]: https://github.com/puppetlabs/vanagon/compare/0.15.12...0.15.13
 [0.15.12]: https://github.com/puppetlabs/vanagon/compare/0.15.11...0.15.12
