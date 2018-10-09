@@ -95,6 +95,18 @@ describe "Vanagon::Component" do
       expect(subject).to receive(:fetch_url)
       subject.get_source(@workdir)
     end
+
+    it 'retrieves from a canonical URI if VANAGON_USE_MIRRORS is set to "n"' do
+      allow(ENV).to receive(:[]).with('VANAGON_USE_MIRRORS').and_return('n')
+      allow(subject)
+        .to receive(:fetch_url)
+        .and_return(true)
+
+      # We expect #get_source to skip mirrors
+      expect(subject).not_to receive(:fetch_mirrors)
+      expect(subject).to receive(:fetch_url)
+      subject.get_source(@workdir)
+    end
   end
 
   describe "#get_sources" do

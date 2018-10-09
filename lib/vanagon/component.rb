@@ -284,7 +284,11 @@ class Vanagon
     def get_source(workdir) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       opts = options.merge({ workdir: workdir })
       if url || !mirrors.empty?
-        fetch_mirrors(opts) || fetch_url(opts)
+        if ENV['VANAGON_USE_MIRRORS'] == 'n'
+          fetch_url(opts)
+        else
+          fetch_mirrors(opts) || fetch_url(opts)
+        end
         source.verify
         extract_with << source.extract(platform.tar) if source.respond_to? :extract
 
