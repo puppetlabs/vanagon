@@ -176,6 +176,13 @@ when using the hardware engine. It defaults to *redis*, with no domain.
 ##### `LOCK_MANAGER_PORT`
 Port of the system where redis is running. Defaults to *6379*.
 
+##### `VANAGON_USE_MIRRORS`
+Controls whether component sources are downloaded directly from upstream URLs
+or from configured mirrors. Most Puppet projects using Vanagon default to
+fetching components from internal mirrors. Set this variable to `n` when
+building outside of the Puppet private network to download directly from
+upstream sources.
+
 ##### `VANAGON_RETRY_COUNT`
 Some phases of compilation support retries. The default value is *1* but
 setting to any integer value greater than 1 will causes these components
