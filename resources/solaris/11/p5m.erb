@@ -26,13 +26,6 @@ depend fmri=pkg:/<%= requirement %> type=require
 <transform dir path=usr$ -> drop>
 <transform dir path=var$ -> drop>
 
-# (CPR-251) In solaris 11, /var/run is a symlink to /system/volatile, which
-# causes conflicts during package installation. To avoid this, we transform any
-# directory under /var/run to repoint under /system/volatile and drop
-# /system/volatile itself to avoid conflicts.
-<transform dir -> edit path var/run system/volatile>
-<transform dir path=system/volatile$ -> drop>
-
 <%- get_root_directories.each do |dir| -%>
 <transform dir path=<%= strip_and_escape(dir.split('/')[0..-2].join('/')) %>$ -> drop>
 <%- end -%>
