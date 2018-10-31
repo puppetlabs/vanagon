@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.16] - released on 2018-11-01
+### Added
+- (VANAGON-122) Add `VANAGON_USE_MIRRORS` environment variable that, when set
+  to 'n', will skip internal mirrors when fetching sources.
+
+### Fixed
+- Stop delivering content to the `system/volatile` directory on Solaris 11.
+  Previously, package installation on Solaris 11.4 failed because this is a
+  "reserved" directory.
+
 ## [0.15.15] - released on 2018-09-11
 ### Added
 - (VANAGON-106) Add homepage to component DSL.
@@ -694,7 +704,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.15...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.16...HEAD
+[0.15.16]: https://github.com/puppetlabs/vanagon/compare/0.15.15...0.15.16
 [0.15.15]: https://github.com/puppetlabs/vanagon/compare/0.15.14...0.15.15
 [0.15.14]: https://github.com/puppetlabs/vanagon/compare/0.15.13...0.15.14
 [0.15.13]: https://github.com/puppetlabs/vanagon/compare/0.15.12...0.15.13
