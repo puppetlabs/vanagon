@@ -1,6 +1,19 @@
 class Vanagon
   class Platform
     class OSX < Vanagon::Platform
+      # Because homebrew does not support being run by root
+      # we need to have this method to run it in the context of another user
+      #
+      # @param build_dependencies [Array] list of all build dependencies to install
+      # @return [String] a command to install all of the build dependencies
+      def install_build_dependencies(list_build_dependencies)
+        <<-HERE.undent
+          mkdir -p /etc/homebrew
+          cd /etc/homebrew
+          su test -c '/usr/local/bin/brew install #{list_build_dependencies.join(' ')}'
+        HERE
+      end
+
       # The specific bits used to generate a osx package for a given project
       #
       # @param project [Vanagon::Project] project to build a osx package of
