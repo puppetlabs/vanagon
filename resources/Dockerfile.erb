@@ -1,0 +1,42 @@
+FROM <%= @platform.base_docker_image %>
+
+# Declare some top-level variables that other
+# commands can reference.
+ARG workdir=<%= remote_workdir %>
+
+SHELL ["/bin/bash", "-c"]
+
+<%- merged_environment.to_a(' ').each do |var| -%>
+ENV <%= var %>
+<%- end -%>
+
+<%- unless @platform.provisioning.empty? -%>
+# Run the provisioning step
+RUN <%= @platform.provisioning.join(" && \\\n   ") %>
+<%- end -%>
+
+<%- unless install_build_dependencies_cmd.empty? -%>
+# Install any external build dependencies
+RUN <%= install_build_dependencies_cmd %>
+<%- end -%>
+
+# Create the remote working directory, then copy
+# over the fetched sources
+RUN mkdir -p ${workdir}
+COPY sources ${workdir}
+
+<%- unless create_directories_cmd.empty? -%>
+# Create the project directories
+RUN <%= create_directories_cmd.join(" && \\\n   ") %>
+<%- end -%>
+
+WORKDIR ${workdir}
+
+# Build the components
+<%- sorted_components.each do |comp| -%>
+
+<%= comp.to_dockerfile(self, @platform) %>
+<%- end -%>
+
+# Mark Bash as the entrypoint
+ENTRYPOINT ["/bin/bash"]

@@ -1,3 +1,4 @@
+require 'vanagon/component/dockerfile'
 require 'vanagon/component/dsl'
 require 'vanagon/component/rules'
 require 'vanagon/component/source'
@@ -390,6 +391,14 @@ class Vanagon
 
     def rules(project, platform)
       Vanagon::Component::Rules.new(self, project, platform)
+    end
+
+    # Converts the component to a Dockerfile that contains the
+    # build instructions.
+    #
+    # @return [String] the contents of the component's Dockerfile
+    def to_dockerfile(project, platform)
+      Vanagon::Component::Dockerfile.new(self, project, platform).generate
     end
   end
 end

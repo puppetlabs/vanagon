@@ -71,6 +71,11 @@ class Vanagon
                 "Only build listed COMPONENTs") do |components|
           @options[:only_build] = components
         end
+
+        opts.on("--build_with_docker",
+                "Builds the project with Docker on the local machine.") do |build_with_docker|
+          @options[:build_with_docker] = build_with_docker
+        end
       end
     end
 

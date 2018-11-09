@@ -1,3 +1,4 @@
+require 'vanagon/docker'
 require 'vanagon/project'
 require 'vanagon/platform'
 require 'vanagon/component'
@@ -20,10 +21,11 @@ class Vanagon
       @retry_count ||= @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
     end
 
-    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil, build_with_docker: false }) # rubocop:disable Metrics/AbcSize
       @verbose = options[:verbose]
       @preserve = options[:preserve]
       @workdir = options[:workdir] || Dir.mktmpdir
+      @build_with_docker = options[:build_with_docker]
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
@@ -116,7 +118,23 @@ class Vanagon
       end
     end
 
-    def run # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+    def build_with_docker
+      if @platform.base_docker_image.nil?
+        raise Vanagon::Error, "The platform must specify the base Docker image that the project will be building from"
+      end
+
+      # Fetching our sources in <workdir>/sources ensures that Docker will not
+      # restart the build from the `COPY <workdir> <remote_workdir>` instruction
+      # everytime the Dockerfile or the .dockerignore files change.
+      sources_dir = File.join(workdir, "sources")
+      FileUtils.mkdir_p(sources_dir)
+
+      @project.fetch_sources(sources_dir, retry_count, timeout)
+      @project.make_dockerfile(workdir, @remote_workdir || "/root")
+      Vanagon::Docker.build(workdir)
+    end
+
+    def build_with_make # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       # Simple sanity check for the project
       if @project.version.nil? or @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
@@ -161,6 +179,16 @@ class Vanagon
     ensure
       if ["hardware", "ec2"].include?(@engine.name)
         @engine.teardown
+      end
+    end
+
+    def run
+      if @build_with_docker
+        warn "Building the project with docker ..."
+        build_with_docker
+      else
+        warn "Building the project with make ..."
+        build_with_make
       end
     end
 

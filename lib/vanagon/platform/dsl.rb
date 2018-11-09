@@ -254,6 +254,14 @@ class Vanagon
         @platform.vmpooler_template = template_name
       end
 
+      # Specify the platform's base docker image that will be used to
+      # build the project if the project's being built with Docker
+      #
+      # @param image [String] the name of the base docker image
+      def base_docker_image(image)
+        @platform.base_docker_image = image
+      end
+
       # Set the name of this platform as the vm pooler expects it
       #
       # @param name [String] name that the pooler uses for this platform

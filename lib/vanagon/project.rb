@@ -577,6 +577,51 @@ class Vanagon
       erb_file(File.join(VANAGON_ROOT, "resources/Makefile.erb"), File.join(workdir, "Makefile"))
     end
 
+    # Returns a command to install the external build dependencies.
+    #
+    # @return [String] a command to install all of the build dependencies
+    def install_build_dependencies_cmd # rubocop:disable Metrics/AbcSize
+      # TODO: This was essentially copy-pasted from Vanagon::Driver. We should
+      # refactor Vanagon::Driver at some point to remove the build dependency
+      # logic and call this method instead.
+      build_dependencies = components.map(&:build_requires).flatten.uniq - components.map(&:name)
+      return "" if build_dependencies.empty?
+
+      if @platform.build_dependencies && @platform.build_dependencies.command && !@platform.build_dependencies.command.empty?
+        return "#{@platform.build_dependencies.command} #{build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}"
+      elsif @platform.respond_to?(:install_build_dependencies)
+        return @platform.install_build_dependencies(build_dependencies)
+      end
+
+      raise Vanagon::Error, "No method defined to install build dependencies for #{@platform.name}"
+    end
+
+    # Evaluates the Dockerfile template and writes the contents to the workdir
+    # for use in building the project
+    #
+    # @param workdir [String] full path to the workdir to send the evaluated template
+    # @param remote_workdir [String] full path to the remote working directory in the image
+    # @return [String] full path to the generated Dockerfile
+    def make_dockerfile(workdir, remote_workdir)
+      # This variable will be passed into the Dockerfile template.
+      create_directories_cmd = dirnames.map do |dir|
+        "mkdir -p #{dir}"
+      end
+
+      dockerfile_path = erb_file(
+        File.join(VANAGON_ROOT, "resources/Dockerfile.erb"),
+        File.join(workdir, "Dockerfile"),
+        false,
+        binding: binding
+      )
+
+      File.open(File.join(workdir, ".dockerignore"), "w") do |f|
+        f.puts("**/.git")
+      end
+
+      dockerfile_path
+    end
+
     # Generates a bill-of-materials and writes the contents to the workdir for use in
     # building the project
     #
