@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/dag'
 require 'vanagon/environment'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
@@ -591,6 +592,24 @@ class Vanagon
     # @return [Array] a list of the build dependencies for the given component that are satisfied by other components in the project
     def list_component_dependencies(component)
       component.build_requires.select { |dep| components.map(&:name).include?(dep) }
+    end
+
+    # Returns a topological sort of all of the project's components.
+    #
+    # @return [Array] a list of topologically sorted components
+    def sorted_components
+      dependencies = {}
+      components.each do |component|
+        dependencies[component.name] = list_component_dependencies(component)
+      end
+
+      sorted_component_names = Vanagon::DAG.new(dependencies).tsort
+
+      # Now get the component objects. We should probably optimize this
+      # at some point.
+      sorted_component_names.map do |component_name|
+        components.find { |component| component.name == component_name }
+      end
     end
 
     # Get the package name for the project on the current platform

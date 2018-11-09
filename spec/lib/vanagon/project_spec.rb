@@ -465,4 +465,49 @@ describe 'Vanagon::Project' do
       expect(proj._project.generate_package).to eq([])
     end
   end
+
+  describe "#sorted_components" do
+    let(:components) do
+      component_objs = {}
+      (1..6).each do |i|
+        component_objs[i] = Vanagon::Component.new(i.to_s, {}, nil)
+        component_objs[i].build_requires = []
+      end
+
+      component_objs
+    end
+
+    subject(:project) do
+      project = Vanagon::Project.new('test-project', nil)
+      project.components = components.values
+
+      project
+    end
+
+    before(:each) do
+      # Default dependency graph is:
+      #   4 => 2, 4 => 3
+      #   5 => 3, 5 => 6,
+      #   2 => 1,
+      #   1 => 6
+      components[2].build_requires.push("4")
+      components[3].build_requires.push("4")
+      components[3].build_requires.push("5")
+      components[6].build_requires.push("5")
+      components[1].build_requires.push("2")
+      components[6].build_requires.push("1")
+    end
+
+    it "should return a topological sort of the components" do
+      expected_components = ["4", "2", "1", "5", "3", "6"]
+
+      expect(project.sorted_components.map(&:name)).to eql(expected_components)
+    end
+
+    it "should raise an error if there is a cycle" do
+      components[4].build_requires.push("2")
+
+      expect { project.sorted_components }.to raise_error
+    end
+  end
 end
