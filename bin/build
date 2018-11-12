@@ -2,7 +2,7 @@
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
 optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name>[,<platform-name>...] [<target>,<target>...] [options]",
-                                 %i[workdir configdir engine preserve verbose skipcheck only_build remote-workdir build_with_docker])
+                                 %i[workdir configdir engine preserve verbose skipcheck only_build remote-workdir build-with-docker])
 options = optparse.parse! ARGV
 
 project = ARGV[0]

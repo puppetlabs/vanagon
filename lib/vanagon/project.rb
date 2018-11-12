@@ -184,17 +184,30 @@ class Vanagon
     # @param retry_count [Integer] number of times to retry each fetch
     # @param timeout [Integer] How long to wait (in seconds) for each
     #   fetch before aborting
-    def fetch_sources(workdir, retry_count = 1, timeout = 7200)
+    # @param in_subdirectory [Boolean] when set, fetch each component's
+    #   sources in a <component_name>_sources subdirectory inside the
+    #   working directory. This is useful for Docker builds because then
+    #   we can copy over component-specific sources at the component's
+    #   build step so that if a downstream component's source changes,
+    #   then the upstream components will not be affected.
+    def fetch_sources(workdir, retry_count = 1, timeout = 7200, in_subdirectory = false)
       @components.each do |component|
+        if in_subdirectory
+          sources_dir = File.join(workdir, "#{component.name}_sources")
+          FileUtils.mkdir_p(sources_dir)
+        else
+          sources_dir = workdir
+        end
+
         Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
-          component.get_source(workdir)
+          component.get_source(sources_dir)
         end
         # Fetch secondary sources
         Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
-          component.get_sources(workdir)
+          component.get_sources(sources_dir)
         end
         Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
-          component.get_patches(workdir)
+          component.get_patches(sources_dir)
         end
       end
     end
@@ -587,6 +600,12 @@ class Vanagon
       build_dependencies = components.map(&:build_requires).flatten.uniq - components.map(&:name)
       return "" if build_dependencies.empty?
 
+      # Sorting the build dependencies ensures that the install_build_dependencies_cmd
+      # does not change when the components list changes but the build dependencies
+      # don't. This way, we can take advantage of cached builds when running e.g.
+      # only_build.
+      build_dependencies.sort!
+
       if @platform.build_dependencies && @platform.build_dependencies.command && !@platform.build_dependencies.command.empty?
         return "#{@platform.build_dependencies.command} #{build_dependencies.join(' ')} #{@platform.build_dependencies.suffix}"
       elsif @platform.respond_to?(:install_build_dependencies)
@@ -604,7 +623,16 @@ class Vanagon
     # @return [String] full path to the generated Dockerfile
     def make_dockerfile(workdir, remote_workdir)
       # This variable will be passed into the Dockerfile template.
-      create_directories_cmd = dirnames.map do |dir|
+      #
+      # NOTE: We do _not_ use dirnames here because that adds the
+      # component-specific directories on top of the project-specific
+      # ones. Thus if we did use dirnames, then there is a chance that
+      # the create_directories_cmd may change if we ever tried building
+      # the project with only_build, thus failing Docker's cache validation.
+      #
+      # Instead, we create the component-specific directories in the component's
+      # build step.
+      create_directories_cmd = @directories.map(&:path).map do |dir|
         "mkdir -p #{dir}"
       end
 

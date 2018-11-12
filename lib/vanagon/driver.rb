@@ -118,20 +118,29 @@ class Vanagon
       end
     end
 
-    def build_with_docker
+    def build_with_docker # rubocop:disable Metrics/AbcSize
       if @platform.base_docker_image.nil?
         raise Vanagon::Error, "The platform must specify the base Docker image that the project will be building from"
       end
 
-      # Fetching our sources in <workdir>/sources ensures that Docker will not
-      # restart the build from the `COPY <workdir> <remote_workdir>` instruction
-      # everytime the Dockerfile or the .dockerignore files change.
-      sources_dir = File.join(workdir, "sources")
-      FileUtils.mkdir_p(sources_dir)
+      # Check if the user has Docker installed on their machine.
+      # Vanagon::Docker.docker_cmd will raise an error for us if
+      # they don't.
+      #
+      # TODO: We should probably add a has_docker? method to Vanagon::Docker,
+      # but only when we refactor Vanagon::Utilities.find_program_on_path to
+      # _not_ fail (i.e. throw a RuntimeError), but have it raise a Vanagon::Error
+      # instead.
+      Vanagon::Docker.docker_cmd
 
-      @project.fetch_sources(sources_dir, retry_count, timeout)
-      @project.make_dockerfile(workdir, @remote_workdir || "/root")
-      Vanagon::Docker.build(workdir)
+      @project.fetch_sources(workdir, retry_count, timeout, true)
+      @project.make_dockerfile(workdir, @remote_workdir || "/build")
+
+      # TODO: We should add the version_from_git helper to the project class
+      # instead. For now, just create a Project::DSL object and call that.
+      project_version = Vanagon::Project::DSL.new(@project.name, @platform).version_from_git
+      image_tag = "#{project.name}-#{project_version}:latest"
+      Vanagon::Docker.build(workdir, tag: image_tag)
     end
 
     def build_with_make # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
@@ -184,10 +193,10 @@ class Vanagon
 
     def run
       if @build_with_docker
-        warn "Building the project with docker ..."
+        puts "Building the project with docker ..."
         build_with_docker
       else
-        warn "Building the project with make ..."
+        puts "Building the project with make ..."
         build_with_make
       end
     end

@@ -66,21 +66,48 @@ class Vanagon
       # @return [String] the contents of the component's Dockerfile.
       def generate
         steps = [
-          unpack_step,
-          patch_step,
-          configure_step,
-          build_step,
-          check_step,
-          install_step,
+          create_directories_step(),
+          copy_sources_step(),
+          unpack_step(),
+          patch_step(),
+          configure_step(),
+          build_step(),
+          check_step(),
+          install_step(),
         ]
 
         if component.install_only
           steps = [
-            install_step,
+            create_directories_step(),
+            copy_sources_step(),
+            install_step(),
           ]
         end
 
         steps.join("\n")
+      end
+
+      # Create the component's directories
+      def create_directories_step
+        create_directories_cmd = component.directories.map(&:path).map do |dir|
+          "mkdir -p #{dir}"
+        end
+
+        return "" if create_directories_cmd.empty?
+
+        <<-DOCKERFILE.undent
+  # #{component.name}-create-directories
+  RUN #{andand_multiline(create_directories_cmd)}
+        DOCKERFILE
+      end
+
+      # Copy the component's sources.
+      def copy_sources_step
+        <<-DOCKERFILE.undent
+  # #{component.name}-copy-sources
+  COPY #{component.name}_sources ${workdir}
+  #{"COPY #{component.name}_sources/patches ${workdir}/patches" unless component.patches.empty?}
+        DOCKERFILE
       end
 
       # Unpack the source for this component. The unpacking behavior depends on

@@ -397,7 +397,7 @@ class Vanagon
     # build instructions.
     #
     # @return [String] the contents of the component's Dockerfile
-    def to_dockerfile(project, platform)
+    def dockerfile(project, platform)
       Vanagon::Component::Dockerfile.new(self, project, platform).generate
     end
   end

@@ -20,10 +20,8 @@ RUN <%= @platform.provisioning.join(" && \\\n   ") %>
 RUN <%= install_build_dependencies_cmd %>
 <%- end -%>
 
-# Create the remote working directory, then copy
-# over the fetched sources
+# Create the remote working directory
 RUN mkdir -p ${workdir}
-COPY sources ${workdir}
 
 <%- unless create_directories_cmd.empty? -%>
 # Create the project directories
@@ -35,7 +33,7 @@ WORKDIR ${workdir}
 # Build the components
 <%- sorted_components.each do |comp| -%>
 
-<%= comp.to_dockerfile(self, @platform) %>
+<%= comp.dockerfile(self, @platform) %>
 <%- end -%>
 
 # Mark Bash as the entrypoint
