@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.17] - released on 2018-11-13
+### Added
+- (PA-1272) Add `Vanagon::Platform::OSX.install_build_dependencies` method to
+  install with homebrew as a non-root user.
+
 ## [0.15.16] - released on 2018-11-01
 ### Added
 - (VANAGON-122) Add `VANAGON_USE_MIRRORS` environment variable that, when set
@@ -704,7 +709,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.16...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.17...HEAD
+[0.15.17]: https://github.com/puppetlabs/vanagon/compare/0.15.16...0.15.17
 [0.15.16]: https://github.com/puppetlabs/vanagon/compare/0.15.15...0.15.16
 [0.15.15]: https://github.com/puppetlabs/vanagon/compare/0.15.14...0.15.15
 [0.15.14]: https://github.com/puppetlabs/vanagon/compare/0.15.13...0.15.14
