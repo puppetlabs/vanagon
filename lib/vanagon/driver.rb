@@ -141,6 +141,7 @@ class Vanagon
       project_version = Vanagon::Project::DSL.new(@project.name, @platform).version_from_git
       image_tag = "#{project.name}-#{project_version}:latest"
       Vanagon::Docker.build(workdir, tag: image_tag)
+      @project.publish_yaml_settings(@platform)
     end
 
     def build_with_make # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
