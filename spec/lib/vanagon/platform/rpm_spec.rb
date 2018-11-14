@@ -18,7 +18,7 @@ describe 'Vanagon::Platform::RPM' do
 
       let(:derived_dist) { subject.os_name.tr('-', '_') + subject.os_version }
       let(:dist) { platform[:dist] || derived_dist }
-      let(:defined_dist) { "--define 'dist .#{dist}'" }
+      let(:defined_dist) { "--define \"dist .#{dist}\"" }
 
       describe '#rpm_defines' do
         it "includes the expected 'dist' defines" do

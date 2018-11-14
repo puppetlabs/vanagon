@@ -10,17 +10,21 @@ class Vanagon
         target_source_output_dir = project.repo ? source_output_dir(project.repo) : source_output_dir
         if project.source_artifacts
           rpmbuild = "#{@rpmbuild} -ba"
-          artifact_copy = "mkdir -p output/#{target_source_output_dir}; cp $(tempdir)/rpmbuild/RPMS/**/*.rpm ./output/#{target_dir}; cp $(tempdir)/rpmbuild/SRPMS/*.rpm ./output/#{target_source_output_dir}"
+          artifact_copy = "mkdir -p output/#{target_source_output_dir}; cp ${tempdir}/rpmbuild/RPMS/**/*.rpm ./output/#{target_dir}; cp ${tempdir}/rpmbuild/SRPMS/*.rpm ./output/#{target_source_output_dir}"
         else
           rpmbuild = "#{@rpmbuild} -bb"
-          artifact_copy = "cp $(tempdir)/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"
+          artifact_copy = "cp ${tempdir}/rpmbuild/*RPMS/**/*.rpm ./output/#{target_dir}"
         end
 
-        ["bash -c 'mkdir -p $(tempdir)/rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS}'",
-        "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/rpmbuild/SOURCES",
-        "cp file-list-for-rpm $(tempdir)/rpmbuild/SOURCES",
-        "cp #{project.name}.spec $(tempdir)/rpmbuild/SPECS",
-        "PATH=/opt/freeware/bin:$$PATH #{rpmbuild} --target #{@architecture} #{rpm_defines} $(tempdir)/rpmbuild/SPECS/#{project.name}.spec",
+        make_rpm_dirs = ["SOURCES", "SPECS", "BUILD", "RPMS", "SRPMS"].map do |dir|
+          "mkdir -p ${tempdir}/rpmbuild/#{dir}"
+        end
+
+        [*make_rpm_dirs,
+        "cp #{project.name}-#{project.version}.tar.gz ${tempdir}/rpmbuild/SOURCES",
+        "cp file-list-for-rpm ${tempdir}/rpmbuild/SOURCES",
+        "cp #{project.name}.spec ${tempdir}/rpmbuild/SPECS",
+        "PATH=/opt/freeware/bin:$PATH #{rpmbuild} --target #{@architecture} #{rpm_defines} ${tempdir}/rpmbuild/SPECS/#{project.name}.spec",
         "mkdir -p output/#{target_dir}",
         artifact_copy]
       end
@@ -55,10 +59,10 @@ class Vanagon
       end
 
       def rpm_defines
-        defines =  %(--define '_topdir $(tempdir)/rpmbuild' )
+        defines =  %(--define "_topdir ${tempdir}/rpmbuild" )
         # RPM doesn't allow dashes in the os_name. This was added to
         # convert cisco-wrlinux to cisco_wrlinux
-        defines << %(--define 'dist .#{dist}')
+        defines << %(--define "dist .#{dist}")
       end
 
       def add_repository(definition) # rubocop:disable Metrics/AbcSize
