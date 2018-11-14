@@ -124,23 +124,51 @@ class Vanagon
       end
 
       # Check if the user has Docker installed on their machine.
-      # Vanagon::Docker.docker_cmd will raise an error for us if
+      # Vanagon::Docker.docker will raise an error for us if
       # they don't.
       #
       # TODO: We should probably add a has_docker? method to Vanagon::Docker,
       # but only when we refactor Vanagon::Utilities.find_program_on_path to
       # _not_ fail (i.e. throw a RuntimeError), but have it raise a Vanagon::Error
       # instead.
-      Vanagon::Docker.docker_cmd
+      Vanagon::Docker.docker("--version")
+
+      remote_workdir = @remote_workdir || "/build"
+      docker_output_dir = "/output"
+
+      packaging_workdir = File.join(workdir, "package_build_files")
+      FileUtils.mkdir_p(packaging_workdir)
 
       @project.fetch_sources(workdir, retry_count, timeout, true)
-      @project.make_dockerfile(workdir, @remote_workdir || "/build")
+      @project.make_bill_of_materials(packaging_workdir)
+      @project.generate_packaging_artifacts(packaging_workdir) unless @project.no_packaging
+      @project.make_docker_build_package_script(packaging_workdir, docker_output_dir)
+      @project.make_dockerfile(workdir, remote_workdir)
 
       # TODO: We should add the version_from_git helper to the project class
       # instead. For now, just create a Project::DSL object and call that.
       project_version = Vanagon::Project::DSL.new(@project.name, @platform).version_from_git
-      image_tag = "#{project.name}-#{project_version}:latest"
+      docker_name_prefix = "#{@project.name}-#{project_version}-#{@platform.name}"
+      image_tag = "#{docker_name_prefix}:latest"
+
       Vanagon::Docker.build(workdir, tag: image_tag)
+
+      output_path = File.absolute_path(File.join(VANAGON_ROOT, "output/"))
+      FileUtils.mkdir_p(output_path)
+
+      container_name = "#{docker_name_prefix}_container"
+      volumes = {
+        output_path => docker_output_dir
+      }
+      Vanagon::Docker.in_container(
+        container_name,
+        image_tag,
+        volumes: volumes
+      ) do |container|
+        container.exec("./docker_build_package.sh")
+      end
+
+      @project.publish_yaml_settings(@platform)
     end
 
     def build_with_make # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity

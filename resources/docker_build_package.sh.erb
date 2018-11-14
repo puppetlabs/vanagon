@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# This script is used with the Docker build option. It builds the project
+# packages in a container created from the built project's image.
+
+set -x
+set -e
+
+export tempdir=$(<%= @platform.mktemp %>)
+
+# Get the files that will be TAR'd up
+(<%= @platform.find %> -H "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list
+cat file-list | <%= @platform.sed %> -e 's/\(^.*[[:space:]].*$\)/"\1"/g' > file-list-for-rpm
+
+# Generate the TAR ball
+<%= pack_tarball_command %>
+
+# Build the package
+<%= generate_package.join("\n") %>
+
+# Fetch the artifacts
+<%= fetch_packaging_artifacts_cmd %>

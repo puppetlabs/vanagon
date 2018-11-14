@@ -650,6 +650,34 @@ class Vanagon
       dockerfile_path
     end
 
+    # Evaluates the docker_build_package.sh template and writes the contents to the
+    # workdir.
+    #
+    # @param workdir [String] full path to the workdir to send the evaluated template
+    # @param docker_output_dir [String] full path to the (mounted) output/ directory
+    #   on the Docker container that the built packages will be copied over to.
+    # @return [String] full path to the generated Dockerfile
+    def make_docker_build_package_script(workdir, docker_output_dir)
+      packaging_artifacts_to_fetch = artifacts_to_fetch
+      unless no_packaging
+        packaging_artifacts_to_fetch << "output/*"
+      end
+      fetch_packaging_artifacts_cmd = packaging_artifacts_to_fetch.map do |path|
+        "cp -rf #{path} #{docker_output_dir}"
+      end.join("\n")
+
+      script_path = erb_file(
+        File.join(VANAGON_ROOT, "resources/docker_build_package.sh.erb"),
+        File.join(workdir, "docker_build_package.sh"),
+        false,
+        binding: binding
+      )
+
+      FileUtils.chmod(0755, script_path)
+
+      script_path
+    end
+
     # Generates a bill-of-materials and writes the contents to the workdir for use in
     # building the project
     #

@@ -36,5 +36,15 @@ WORKDIR ${workdir}
 <%= comp.dockerfile(self, @platform) %>
 <%- end -%>
 
+# Copy-over packaging-specific stuff. We will
+# need this later when we're building the package
+# in the container.
+
+COPY package_build_files ${workdir}
+
+<%- if @version_file -%>
+RUN echo <%= @version %> > '<%= @version_file.path %>'
+<%- end -%>
+
 # Mark Bash as the entrypoint
 ENTRYPOINT ["/bin/bash"]

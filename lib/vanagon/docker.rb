@@ -1,3 +1,5 @@
+require 'vanagon/docker/container'
+require 'vanagon/utilities'
 require 'vanagon/utilities/shell_utilities'
 
 class Vanagon
@@ -7,17 +9,29 @@ class Vanagon
   module Docker
     extend self
 
-    def docker_cmd
-      Vanagon::Utilities.find_program_on_path('docker')
+    def docker(args, options = {})
+      docker_cmd = Vanagon::Utilities.find_program_on_path('docker')
+      Vanagon::Utilities.local_command("#{docker_cmd} #{args}", options)
     end
 
     def build(workdir, options = {})
-      docker_build_cmd = "#{docker_cmd} build"
+      build_args = "build"
       if tag = options[:tag]
-        docker_build_cmd += " -t #{tag}"
+        build_args += " -t #{tag}"
       end
+      build_args += " #{workdir}"
 
-      Vanagon::Utilities.local_command("#{docker_build_cmd} #{workdir}")
+      docker(build_args)
+    end
+
+    def in_container(name, image_tag, options, &block)
+      container = Vanagon::Docker::Container.new(name, image_tag, options)
+      begin
+        container.create
+        yield container
+      ensure
+        container.destroy
+      end
     end
   end
 end
