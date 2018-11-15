@@ -139,7 +139,7 @@ class Vanagon
       # TODO: We should add the version_from_git helper to the project class
       # instead. For now, just create a Project::DSL object and call that.
       project_version = Vanagon::Project::DSL.new(@project.name, @platform).version_from_git
-      image_tag = "#{project.name}-#{project_version}:latest"
+      image_tag = "#{project.name}:#{project.version}"
       Vanagon::Docker.build(workdir, tag: image_tag)
       @project.publish_yaml_settings(@platform)
     end
