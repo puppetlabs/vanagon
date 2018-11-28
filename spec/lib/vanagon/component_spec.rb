@@ -217,22 +217,27 @@ describe "Vanagon::Component" do
       plat._platform
     end
 
-    let(:component) { Vanagon::Component::DSL.new('patches-test', {}, platform) }
+    let(:dsl_1) { Vanagon::Component::DSL.new('patches-test-1', {}, platform) }
+    let(:dsl_2) { Vanagon::Component::DSL.new('patches-test-2', {}, platform) }
 
     context("when new patch file would overwrite existing patch file") do
-      let(:patch_file) { 'path/to/test.patch' }
+      let(:patch_file_1) { 'path/to/test.patch_1' }
+      let(:patch_file_2) { 'path/to/test.patch_2' }
 
       before :each do
         allow(FileUtils).to receive(:mkdir_p)
         allow(FileUtils).to receive(:cp)
-
-        expect(File).to receive(:exist?).with(File.join(@workdir, 'patches', File.basename(patch_file))).and_return(true)
-
-        component.apply_patch(patch_file)
       end
 
-      it "fails the build" do
-        expect { component._component.get_patches(@workdir) }.to raise_error(Vanagon::Error, /duplicate patch files/i)
+      it "fails the build with the same namespace" do
+        expect(File).to receive(:exist?).with(/.*\/.*test\.patch_1/).and_return(true)
+        dsl_1.apply_patch(patch_file_1)
+        expect { dsl_1._component.get_patches(@workdir) }.to raise_error(Vanagon::Error, /duplicate patch files/i)
+      end
+      it "works with different namespaces" do
+        expect(File).to receive(:exist?).with(/.*\/.*test\.patch_2/).and_return(false)
+        dsl_2.apply_patch(patch_file_2, namespace: 'foo')
+        expect { dsl_2._component.get_patches(@workdir) }.to_not raise_error
       end
     end
   end

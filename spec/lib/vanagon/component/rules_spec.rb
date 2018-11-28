@@ -66,17 +66,28 @@ describe Vanagon::Component::Rules do
       expect(rule.recipe.size).to eq 1
     end
 
+    it "rejects bad options" do
+      expect { Vanagon::Patch.new('/foo/patch0', component, REALLYBADARGUMENT: 'bad-value') }.to raise_error(Vanagon::Error, /Bad options in patch initialization/i)
+    end
+
     it "applies each listed patch in order when patches are set" do
       component.patches = [
-        Vanagon::Patch.new('/foo/patch0', '1', '0', 'unpack', '/foo/bar'),
-        Vanagon::Patch.new('/foo/patch1', '2', '1', 'unpack', '/foo/bar'),
-        Vanagon::Patch.new('/foo/postinstall/patch1', '2', '1', 'install', '/foo/bar')
+        Vanagon::Patch.new('/foo/patch0', component,
+                           namespace: component.name, strip: '1', fuzz: '0',
+                           after: 'unpack', destination: '/foo/bar'),
+        Vanagon::Patch.new('/foo/patch1', component,
+                           namespace: component.name, strip: '2', fuzz: '1',
+                           after: 'unpack', destination: '/foo/bar'),
+        Vanagon::Patch.new('/foo/postinstall/patch1', component,
+                           namespace: component.name,
+                           strip: '2', fuzz: '1', after: 'install',
+                           destination: '/foo/bar')
       ]
       expect(rule.recipe.first).to eq(
         [
           "cd /foo/bar",
-          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch0",
-          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch1"
+          "/usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/#{component.patches[0].assembly_path}",
+          "/usr/bin/patch --strip=2 --fuzz=1 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/#{component.patches[1].assembly_path}"
         ].join(" && \\\n")
       )
     end
@@ -116,7 +127,7 @@ describe Vanagon::Component::Rules do
       component.environment.merge({"PATH" => "/opt/pl-build-tools/bin:$(PATH)"})
       expect(rule.recipe[1]).to eq(
         [
-          'export PATH="/opt/pl-build-tools/bin:$(PATH)"', 
+          'export PATH="/opt/pl-build-tools/bin:$(PATH)"',
           "cd /foo/bar",
           "./configure",
           "cmake .."
@@ -241,13 +252,19 @@ describe Vanagon::Component::Rules do
     it "applies any after-install patches" do
       component.install = ["make install"]
       component.patches = [
-        Vanagon::Patch.new('/foo/patch0', 1, 0, 'unpack', '/foo/bar'),
-        Vanagon::Patch.new('/foo/postinstall/patch0', 3, 9, 'install', '/foo/baz'),
-        Vanagon::Patch.new('/foo/postinstall/patch1', 4, 10, 'install', '/foo/quux'),
+        Vanagon::Patch.new('/foo/patch0', component,
+                           namespace: component.name, strip: 1, fuzz: 0,
+                           after: 'unpack', destination: '/foo/bar'),
+        Vanagon::Patch.new('/foo/postinstall/patch0', component,
+                           namespace: component.name, strip: 3,
+                           fuzz: 9, after: 'install', destination: '/foo/baz'),
+        Vanagon::Patch.new('/foo/postinstall/patch1', component,
+                           namespace: component.name, strip: 4,
+                           fuzz: 10, after: 'install', destination: '/foo/quux'),
       ]
 
-      expect(rule.recipe[1]).to eq("cd /foo/baz && /usr/bin/patch --strip=3 --fuzz=9 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch0")
-      expect(rule.recipe[2]).to eq("cd /foo/quux && /usr/bin/patch --strip=4 --fuzz=10 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/patches/patch1")
+      expect(rule.recipe[1]).to eq("cd /foo/baz && /usr/bin/patch --strip=3 --fuzz=9 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/#{component.patches[1].assembly_path}")
+      expect(rule.recipe[2]).to eq("cd /foo/quux && /usr/bin/patch --strip=4 --fuzz=10 --ignore-whitespace --no-backup-if-mismatch < $(workdir)/#{component.patches[2].assembly_path}")
     end
 
     it_behaves_like "a rule that touches the target file"

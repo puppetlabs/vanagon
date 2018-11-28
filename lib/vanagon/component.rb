@@ -350,17 +350,17 @@ class Vanagon
 
     # Fetches patches if any are provided for the project.
     #
-    # @param workdir [String] working directory to put the patches into
-    def get_patches(workdir)
-      unless @patches.empty?
-        patchdir = File.join(workdir, "patches")
-        FileUtils.mkdir_p(patchdir)
-        @patches.each do |p|
-          target = File.join(patchdir, File.basename(p.path))
-          raise Vanagon::Error, "Duplicate patch files detected, '#{p.path}' would have overwritten '#{target}'! Please ensure patch file names are unique across all components." if File.exist?(target)
-
-          FileUtils.cp(p.path, patchdir)
+    # @param patch_root [String] working directory to put the patches into
+    def get_patches(patch_root)
+      return if @patches.empty?
+      @patches.each do |patch|
+        patch_assembly_path = File.join(patch_root, patch.assembly_path)
+        if File.exist?(patch_assembly_path)
+          raise Vanagon::Error, "Duplicate patch files detected, '#{patch.origin_path}' would have overwritten '#{patch.assembly_path}'. Ensure all patch file names within a component are unique."
         end
+        patch_target_directory = File.dirname(patch_assembly_path)
+        FileUtils.mkdir_p(patch_target_directory)
+        FileUtils.cp(patch.origin_path, patch_assembly_path)
       end
     end
 
