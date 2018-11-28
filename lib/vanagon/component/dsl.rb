@@ -85,19 +85,22 @@ class Vanagon
       # Add a patch to the list of patches to apply to the component's source after unpacking
       #
       # @param patch [String] Path to the patch that should be applied
-      # @param destination [String] Path to the location where the patch should be applied
-      # @param strip [String, Integer] directory levels to skip in applying patch
-      # @param fuzz [String, Integer] levels of context miss to ignore in applying patch
-      # @param after [String] the location in the makefile where the patch command should be run
-      def apply_patch(patch, destination: @component.dirname, strip: 1, fuzz: 0, after: 'unpack')
-        @component.patches << Vanagon::Patch.new(patch, strip, fuzz, after, destination)
+      # @param options [Hash] options controlling the patch
+      # @option namespace [String] Namespace for package patches
+      # @option destination [String] Path to the location where the patch should be applied
+      # @option strip [String, Integer] directory levels to skip in applying patch
+      # @option fuzz [String, Integer] levels of context miss to ignore in applying patch
+      # @option after [String] the location in the makefile where the patch command should be run
+      def apply_patch(patch, options = {})
+        @component.patches << Vanagon::Patch.new(patch, @component, options)
       end
 
       # Loads and parses json from a file. Will treat the keys in the
       # json as methods to invoke on the component in question
       #
       # @param file [String] Path to the json file
-      # @raise [RuntimeError] exceptions are raised if there is no file, if it refers to methods that don't exist, or if it does not contain a Hash
+      # @raise [RuntimeError] exceptions are raised if there is no file,
+      #   if it refers to methods that don't exist, or if it does not contain a Hash
       def load_from_json(file)
         if File.exists?(file)
           data = JSON.parse(File.read(file))

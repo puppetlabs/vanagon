@@ -220,80 +220,80 @@ end" }
 
   describe '#apply_patch' do
     it 'adds the patch to the list of patches' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1')
-      comp.apply_patch('patch_file2')
-      expect(comp._component.patches.count).to eq 2
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.last.path).to eq 'patch_file2'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1')
+      dsl.apply_patch('patch_file2')
+      expect(dsl._component.patches.count).to eq 2
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.last.origin_path).to eq 'patch_file2'
     end
 
     it 'can specify strip and fuzz' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
       # This patch must be amazing
-      comp.apply_patch('patch_file1', fuzz: 12, strip: 1000000)
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.fuzz).to eq 12
-      expect(comp._component.patches.first.strip).to eq 1000000
+      dsl.apply_patch('patch_file1', fuzz: 12, strip: 1000000)
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.fuzz).to eq 12
+      expect(dsl._component.patches.first.strip).to eq 1000000
     end
 
     it 'can specify a directory where the patch should be applied' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1', destination: 'random/install/directory')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.destination).to eq 'random/install/directory'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1', destination: 'random/install/directory')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.destination).to eq 'random/install/directory'
     end
 
     it 'can specify when to try to apply the patch' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1', after: 'install')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.after).to eq 'install'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1', after: 'install')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.after).to eq 'install'
     end
 
     it 'will default the patch timing to after the source is unpacked' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.after).to eq 'unpack'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.after).to eq 'unpack'
     end
 
     it 'will fail if the user wants to install the patch at an unsupported step' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      expect { comp.apply_patch('patch_file1', after: 'delivery') }.to raise_error(Vanagon::Error)
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      expect { dsl.apply_patch('patch_file1', after: 'delivery') }.to raise_error(Vanagon::Error)
     end
 
     it 'can specify a directory where the patch should be applied' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1', destination: 'random/install/directory')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.destination).to eq 'random/install/directory'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1', destination: 'random/install/directory')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.destination).to eq 'random/install/directory'
     end
 
     it 'can specify when to try to apply the patch' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1', after: 'install')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.after).to eq 'install'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1', after: 'install')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.after).to eq 'install'
     end
 
     it 'will default the patch timing to after the source is unpacked' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      comp.apply_patch('patch_file1')
-      expect(comp._component.patches.count).to eq 1
-      expect(comp._component.patches.first.path).to eq 'patch_file1'
-      expect(comp._component.patches.first.after).to eq 'unpack'
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      dsl.apply_patch('patch_file1')
+      expect(dsl._component.patches.count).to eq 1
+      expect(dsl._component.patches.first.origin_path).to eq 'patch_file1'
+      expect(dsl._component.patches.first.after).to eq 'unpack'
     end
 
     it 'will fail if the user wants to install the patch at an unsupported step' do
-      comp = Vanagon::Component::DSL.new('patch-test', {}, {})
-      expect { comp.apply_patch('patch_file1', after: 'delivery') }.to raise_error(Vanagon::Error)
+      dsl = Vanagon::Component::DSL.new('patch-test', {}, {})
+      expect { dsl.apply_patch('patch_file1', after: 'delivery') }.to raise_error(Vanagon::Error)
     end
   end
 
