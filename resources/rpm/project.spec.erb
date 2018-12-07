@@ -68,7 +68,12 @@ Requires:  <%= requires %>
 # did not specify a dependency on these.
 # In the future, we will supress pre/post scripts completely if there's nothing
 # specified by the project or the components.
-<%- unless @platform.is_aix? -%>
+<%- if @platform.is_fedora? && @platform.os_version.to_i >= 29 -%>
+Requires(pre): /usr/bin/mkdir
+Requires(pre): /usr/bin/touch
+Requires(post): /usr/bin/mkdir
+Requires(post): /usr/bin/touch
+<%- elsif !@platform.is_aix? -%>
 Requires(pre): /bin/mkdir
 Requires(pre): /bin/touch
 Requires(post): /bin/mkdir
