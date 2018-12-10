@@ -6,6 +6,17 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.18] - released on 2018-12-10
+### Added
+- (PA-2231) Add support for Fedora 29 by explicitly requiring /usr/bin/touch
+  and /usr/bin/mkdir when building for versions of Fedora >= 29, since core
+  Fedora packages no longer provide /bin versions of these commands.
+
+### Changed
+- (VANAGON-75) Add `namespace` to `Vanagon::Patch` class so that patch files
+  will not get overwritten if two different components have patch files with
+  the same name.
+
 ## [0.15.17] - released on 2018-11-13
 ### Added
 - (PA-1272) Add `Vanagon::Platform::OSX.install_build_dependencies` method to
@@ -709,7 +720,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.17...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.18...HEAD
+[0.15.18]: https://github.com/puppetlabs/vanagon/compare/0.15.17...0.15.18
 [0.15.17]: https://github.com/puppetlabs/vanagon/compare/0.15.16...0.15.17
 [0.15.16]: https://github.com/puppetlabs/vanagon/compare/0.15.15...0.15.16
 [0.15.15]: https://github.com/puppetlabs/vanagon/compare/0.15.14...0.15.15
