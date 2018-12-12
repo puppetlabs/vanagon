@@ -1,5 +1,6 @@
 require 'vanagon/component/dsl'
 require 'vanagon/common'
+require 'vanagon/platform'
 require 'json'
 
 describe 'Vanagon::Component::DSL' do
@@ -857,6 +858,15 @@ end" }
       comp.directory('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering')
       expect(comp._component.install).to include("install -d -m '0400' '/a/b/c'")
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering'))
+    end
+  end
+
+  describe '#add_rpm_ghost_file' do
+    let(:comp) { Vanagon::Component::DSL.new('ghost-test', {}, platform) }
+
+    it 'adds a ghost file as a Pathname object' do
+      comp.add_rpm_ghost_file('ghost')
+      expect(comp._component.rpm_ghost_files).to eq([Vanagon::Common::Pathname.file('ghost')])
     end
   end
 end

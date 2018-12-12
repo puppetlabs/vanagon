@@ -163,6 +163,7 @@ class Vanagon
       @check = []
       @patches = []
       @files = Set.new
+      @ghost_files = Set.new
       @directories = []
       @replaces = []
       @provides = []
@@ -188,6 +189,16 @@ class Vanagon
       @files.add file
     end
 
+    # Adds the given file to the list of %ghost files to be added to an
+    # rpm spec's %files.
+    #
+    # @param file [Vanagon::Common::Pathname] file to add to the ghost file set.
+    # @return [Set, nil] Returns @ghost_files if the file is successfully added
+    #   to @ghost_files or nil if the file already exists.
+    def add_rpm_ghost_file(file)
+      @ghost_files.add file
+    end
+
     # Deletes the given file from the list of files and returns @files.
     #
     # @param file [String] path of file to delete from a component's list of files
@@ -211,6 +222,14 @@ class Vanagon
     # @return [Set] all files explicitly marked as configuration files
     def configfiles
       @files.select(&:configfile?)
+    end
+
+    # Retrieve all the files intended as %ghost entries for an rpm spec
+    # %files section.
+    #
+    # @return [Array] of all the rpm %ghost files.
+    def rpm_ghost_files
+      @ghost_files.to_a
     end
 
     # @return [Set] a list of unique mirror URIs that should be used to
