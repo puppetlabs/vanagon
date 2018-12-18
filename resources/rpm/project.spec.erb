@@ -43,7 +43,7 @@ Name:           <%= @name %>
 Version:        <%= @version %>
 Release:        <%= @release %>%{?dist}
 Summary:        <%= @description.lines.first.chomp %>
-Vendor:         <%= @vendor.match(/^(.*) <.*>$/)[1] %>
+Vendor:         <%= vendor_name_only %>
 License:        <%= @license %>
 Group:          System Environment/Base
 URL:            <%= @homepage %>
