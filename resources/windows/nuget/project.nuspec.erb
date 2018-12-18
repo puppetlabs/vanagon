@@ -4,8 +4,8 @@
     <id><%= "#{@name}-#{@platform.architecture}" %></id>
     <version><%= @platform.nuget_package_version(@version, @release) %></version>
     <title><%= @name %></title>
-    <authors><%= @vendor.match(/^(.*) <.*>$/)[1] %></authors>
-    <owners><%= @vendor.match(/^(.*) <.*>$/)[1] %></owners>
+    <authors><%= vendor_name_only %></authors>
+    <owners><%= vendor_name_only %></owners>
     <projectUrl><%= @homepage %></projectUrl>
     <packageSourceUrl><%= @homepage %></packageSourceUrl>
     <projectSourceUrl><%= @homepage %></projectSourceUrl>
@@ -19,7 +19,7 @@
     </description>
     <summary><%= @description.lines.first.chomp %></summary>
     <releaseNotes><%= @homepage %></releaseNotes>
-    <copyright><%= @vendor.match(/^(.*) <.*>$/)[1] %></copyright>
+    <copyright><%= vendor_name_only %></copyright>
     <tags>puppet configuration management infrastructure automation facter hiera mco mcollective marionette collective</tags>
     <provides><%= get_replaces.map { |replace| "#{replace.replacement}" }.join(" ") %></provides>
     <replaces><%= get_replaces.map { |replace| "#{replace.replacement}" }.join(" ") %></replaces>
