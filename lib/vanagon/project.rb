@@ -6,6 +6,9 @@ require 'vanagon/utilities'
 require 'digest'
 require 'ostruct'
 
+# Used to parse the vendor field into name and email
+VENDOR_REGEX = /^(.*) <(.*)>$/
+
 class Vanagon
   class Project
     include Vanagon::Utilities
@@ -17,7 +20,7 @@ class Vanagon
     attr_accessor :release
     attr_accessor :license
     attr_accessor :homepage
-    attr_accessor :vendor
+    attr_reader :vendor
     attr_accessor :description
     attr_accessor :components
     attr_accessor :conflicts
@@ -175,6 +178,31 @@ class Vanagon
     #   @platform's Environment with the project's environment.
     def merged_environment
       environment.merge(@platform.environment)
+    end
+
+    # Setter for the vendor field.
+    #
+    # @param vend [String] name and email address of vendor
+    # @raise [Vanagon::Error] when `vend` does not include email address
+    def vendor=(vend)
+      raise Vanagon::Error, 'Project vendor field must include email address in angle brackets, e.g. "Puppet Inc. <release@puppet.com>"' unless vend.match(VENDOR_REGEX)
+      @vendor = vend
+    end
+
+    # Parses the vendor for the project by cutting off the email address
+    # field (e.g. `<email@example.com>`).
+    #
+    # @return [String] Vendor name without email address
+    def vendor_name_only
+      return @vendor.match(VENDOR_REGEX)[1]
+    end
+
+    # Parses the vendor for the project by taking only the email address field
+    # (e.g. `<email@example.com>`).
+    #
+    # @return [String] Vendor email address
+    def vendor_email_only
+      return @vendor.match(VENDOR_REGEX)[2]
     end
 
     # Collects all sources and patches into the provided workdir

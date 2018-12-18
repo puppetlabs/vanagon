@@ -6,7 +6,7 @@ CLASSES=none
 CATEGORY=application
 VENDOR=<%= @vendor %>
 PSTAMP=<%= Time.now.strftime('%Y-%m-%d.%H%M%S') %>
-EMAIL=<%= @vendor.match(/<([^>]*)>/)[1] %>
+EMAIL=<%= vendor_email_only %>
 ISTATES=S s 1 2 3
 RSTATES=S s 1 2 3
 BASEDIR=/

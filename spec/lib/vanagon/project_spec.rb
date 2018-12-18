@@ -55,6 +55,39 @@ describe 'Vanagon::Project' do
     plat._platform
   }
 
+  describe '#vendor=' do
+    dummy_platform = Vanagon::Platform.new('el-7-x86_64')
+    good_vendor = 'Puppet Inc. <release@puppet.com>'
+    bad_vendor = 'Puppet Inc.'
+
+    it 'fails if vendor field does not include email address' do
+      project = Vanagon::Project.new('vendor-test', dummy_platform)
+      expect { project.vendor = bad_vendor }.to raise_error(Vanagon::Error, /Project vendor field must include email address/)
+    end
+
+    it 'sets project vendor to the supplied value' do
+      project = Vanagon::Project.new('vendor-test', dummy_platform)
+      project.vendor = good_vendor
+      expect(project.vendor).to eq(good_vendor)
+    end
+  end
+
+  describe '#vendor_name_only' do
+    it 'returns just the name of the vendor' do
+      project = Vanagon::Project.new('vendor-test', Vanagon::Platform.new('el-7-x86_64'))
+      project.vendor = 'Puppet Inc. <release@puppet.com>'
+      expect(project.vendor_name_only).to eq('Puppet Inc.')
+    end
+  end
+
+  describe '#vendor_email_only' do
+    it 'returns just the email address of the vendor' do
+      project = Vanagon::Project.new('vendor-test', Vanagon::Platform.new('el-7-x86_64'))
+      project.vendor = 'Puppet Inc. <release@puppet.com>'
+      expect(project.vendor_email_only).to eq('release@puppet.com')
+    end
+  end
+
   describe '#get_root_directories' do
 
     before do
