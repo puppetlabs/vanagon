@@ -21,6 +21,11 @@
 %global __debug_package %{nil}
 # to resolve: "ERROR: No build ID note found"
 %undefine _missing_build_ids_terminate_build
+
+<% @package_overrides.each do |var| %>
+<%= var %>
+<% end -%>
+
 # To avoid files installed but not packaged errors
 %global __os_install_post %{__os_install_post} \
     rm -rf %{buildroot}/usr/lib/debug
@@ -33,10 +38,6 @@
 # cross-compiled static libs to end up with "no machine" as their
 # architure, breaking builds:
 %global __os_install_post %(echo '%{__os_install_post}' | <%= @platform.sed %> -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
-<% end -%>
-
-<% @package_overrides.each do |var| %>
-<%= var %>
 <% end -%>
 
 Name:           <%= @name %>
