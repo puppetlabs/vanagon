@@ -1,6 +1,7 @@
 require 'vanagon/project'
 require 'vanagon/driver'
 require 'vanagon/errors'
+require 'fakefs/spec_helpers'
 
 describe 'Vanagon::Project' do
   let(:component) { double(Vanagon::Component) }
@@ -412,6 +413,50 @@ describe 'Vanagon::Project' do
       @proj.build_manifest_json(true)
     end
   end
+
+  describe '#save_manifest_json' do
+    include FakeFS::SpecHelpers
+    let(:platform_name) { 'el-7-x86_64' }
+    let(:platform) { Vanagon::Platform.new(platform_name) }
+    before(:each) do
+      class Vanagon
+        class Project
+          BUILD_TIME = '2018-07-10T13:34:25-07:00'
+          VANAGON_VERSION = '0.0.0-rspec'
+        end
+      end
+
+      @proj = Vanagon::Project.new('test-project', platform)
+    end
+
+    it 'should generate a file with the expected build metadata' do
+      correct_sample_metadata = {
+        'packaging_type' => { 'vanagon' => '0.0.0-rspec' },
+        'version' => '123abcde',
+        'components' => { 'test-component-10' => { 'version' => '1.2.3' } },
+        'build_time' => '2018-07-10T13:34:25-07:00',
+      }
+      bad_sample_metadata = {
+        'BAD KEY' => 'BAD VALUE'
+      }
+      comp1 = Vanagon::Component.new('test-component-10', {}, {})
+      comp1.version = '1.2.3'
+      @proj.components << comp1
+      @proj.version = '123abcde'
+      FakeFS do
+        @proj.save_manifest_json(platform)
+
+        old_style_metadata = JSON.parse(File.read('ext/build_metadata.json'))
+        expect(old_style_metadata).to eq(correct_sample_metadata)
+
+        metadata_with_project_and_platform = JSON.parse(
+          File.read("ext/build_metadata.test-project.#{platform_name}.json"))
+        expect(metadata_with_project_and_platform).to eq(correct_sample_metadata)
+        expect(metadata_with_project_and_platform).not_to eq(bad_sample_metadata)
+      end
+    end
+  end
+
 
   describe '#publish_yaml_settings' do
     let(:platform_name) { 'aix-7.2-ppc' }
