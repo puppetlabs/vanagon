@@ -683,14 +683,22 @@ class Vanagon
       end
     end
 
-    # Writes a json file at `ext/build_metadata.json` containing information
+    # Writes a json file at `ext/build_metadata.<project>.<platform>.json` containing information
     # about what went into a built artifact
     #
     # @return [Hash] of build information
-    def save_manifest_json
+    def save_manifest_json(platform)
       manifest = build_manifest_json(true)
-      FileUtils.mkdir_p 'ext'
-      File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
+      ext_directory = 'ext'
+      FileUtils.mkdir_p ext_directory
+
+      metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
+      File.open(File.join(ext_directory, metadata_file_name), 'w') do |f|
+        f.write(manifest)
+      end
+
+      ## VANAGON-132 Backwards compatibility: make a 'build_metadata.json' file
+      File.open(File.join(ext_directory, 'build_metadata.json'), 'w') do |f|
         f.write(manifest)
       end
     end
