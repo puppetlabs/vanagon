@@ -281,6 +281,16 @@ class Vanagon
         @component.add_file Vanagon::Common::Pathname.file(target)
       end
 
+      # Add a %ghost entry to the rpm %files section.
+      # This indicates a file that is tracked in the rpm database (the package
+      # manages it), but not installed. Used, for example, when setting up
+      # alternative packages for use with update-alternatives.
+      #
+      # @param path [String] installed path of the file.
+      def add_rpm_ghost_file(path)
+        @component.add_rpm_ghost_file(Vanagon::Common::Pathname.file(path))
+      end
+
       # Sets the version for the component
       #
       # @param ver [String] version of the component

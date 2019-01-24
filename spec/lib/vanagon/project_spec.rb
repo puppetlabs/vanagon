@@ -543,4 +543,19 @@ describe 'Vanagon::Project' do
       expect(proj._project.generate_package).to eq([])
     end
   end
+
+  describe '#get_rpm_ghost_files' do
+    it 'returns an empty array when there are no ghost files' do
+      proj = Vanagon::Project.new('test-ghost', {})
+      expect(proj.get_rpm_ghost_files).to eq([])
+    end
+
+    it 'returns ghost files when some are set' do
+      proj = Vanagon::Project.new('test-ghosts', {})
+      comp = Vanagon::Component.new('ghosts', {}, {})
+      comp.add_rpm_ghost_file('ghost')
+      proj.components << comp
+      expect(proj.get_rpm_ghost_files).to eq(['ghost'])
+    end
+  end
 end

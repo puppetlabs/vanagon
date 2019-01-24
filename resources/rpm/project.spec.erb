@@ -366,6 +366,9 @@ fi
 <%- get_files.each do |file| -%>
 %attr(<%= file.mode || "-" %>, <%= file.owner || "-" %>, <%= file.group || "-" %>) <%= file.path %>
 <%- end -%>
+<%- get_rpm_ghost_files.each do |file| -%>
+%ghost <%= file.path %>
+<%- end -%>
 
 %changelog
 * <%= Time.now.strftime("%a %b %d %Y") %> <%= @vendor %> -  <%= @version %>-<%= @release %>

@@ -241,4 +241,27 @@ describe "Vanagon::Component" do
       end
     end
   end
+
+  describe 'rpm ghost files' do
+    let(:component) { Vanagon::Component.new('ghost-test', {}, {}) }
+
+    it 'initializes an empty set' do
+      expect(component.rpm_ghost_files).to eq([])
+    end
+
+    it 'adds a ghost file' do
+      expect(component.add_rpm_ghost_file('ghost')).to eq(Set.new(['ghost']))
+    end
+
+    it 'returns an array of ghost files' do
+      component.add_rpm_ghost_file('ghost')
+      expect(component.rpm_ghost_files).to eq(['ghost'])
+    end
+
+    it 'ignores duplicates' do
+      component.add_rpm_ghost_file('ghost')
+      component.add_rpm_ghost_file('ghost')
+      expect(component.rpm_ghost_files).to eq(['ghost'])
+    end
+  end
 end

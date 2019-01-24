@@ -236,6 +236,16 @@ class Vanagon
       files.flatten.uniq
     end
 
+    # Collects any rpm %ghost files supplied by components
+    #
+    # @return [Array] array of all files to be specified as %ghost entries
+    #   in an rpm %files section.
+    def get_rpm_ghost_files
+      files = []
+      files.push components.flat_map(&:rpm_ghost_files)
+      files.flatten.uniq
+    end
+
     # Returns a filtered out set of components only including those
     # components necessary to build a specific component. This is a
     # recursive function that will call itself until it gets to a
