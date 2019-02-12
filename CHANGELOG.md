@@ -6,6 +6,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.20] - released on 2019-02-12
+### Added
+- (PE-24814) Add support to handle ghostfile settings included in
+the `Component::DSL` which adds them to the final rpm spec.
+
+### Changed
+- (VANAGON-132) Create metadata files with `<project>.<platform>` in the file name.
+Previously `ext/build_metadata.json` now `ext/build_metadata.<project>.<platform>.json`.
+
 ## [0.15.19] - released on 2018-12-20
 ### Changed
 - Moved `package_overrides` higher up in the RPM spec file to support setting
@@ -729,7 +738,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.19...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.20...HEAD
+[0.15.20]: https://github.com/puppetlabs/vanagon/compare/0.15.19...0.15.20
 [0.15.19]: https://github.com/puppetlabs/vanagon/compare/0.15.18...0.15.19
 [0.15.18]: https://github.com/puppetlabs/vanagon/compare/0.15.17...0.15.18
 [0.15.17]: https://github.com/puppetlabs/vanagon/compare/0.15.16...0.15.17
