@@ -65,9 +65,14 @@ class Vanagon
           --resources $(tempdir)/osx/build/resources  \
           --plugins $(tempdir)/osx/build/plugins  \
           pkg/#{project.name}-#{project.version}-#{project.release}-installer.pkg)",
-         # Create a dmg and ship it to the output dir
-         "(cd $(tempdir)/osx/build/; #{@hdiutil} create -volname #{project.name}-#{project.version} \
-          -srcfolder pkg/ dmg/#{project.package_name})",
+         # Create a dmg and ship it to the output directory
+         "(cd $(tempdir)/osx/build; \
+           #{@hdiutil} create \
+            -volname #{project.name}-#{project.version} \
+            -fs JHFS+ \
+            -format UDBZ \
+            -srcfolder pkg \
+            dmg/#{project.package_name})",
          "mkdir -p output/#{target_dir}",
          "cp $(tempdir)/osx/build/dmg/#{project.package_name} ./output/#{target_dir}"].flatten.compact
       end
