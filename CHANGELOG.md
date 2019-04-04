@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.22] - released on 2019-04-04
+### Changed
+- (VANAGON-147) Disable shebang munging in rpm spec file.
+
 ## [0.15.21] - released on 2019-03-12
 ### Added
 - (RE-12096) Set filesystem type when creating OSX packages to prevent signing
@@ -743,7 +747,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.21...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.22...HEAD
+[0.15.22]: https://github.com/puppetlabs/vanagon/compare/0.15.21...0.15.22
 [0.15.21]: https://github.com/puppetlabs/vanagon/compare/0.15.20...0.15.21
 [0.15.20]: https://github.com/puppetlabs/vanagon/compare/0.15.19...0.15.20
 [0.15.19]: https://github.com/puppetlabs/vanagon/compare/0.15.18...0.15.19
