@@ -21,7 +21,10 @@ class Vanagon
       def build_host_name
         if @build_host_name.nil?
           validate_platform
-          @build_host_name = @platform.docker_image
+          # Docker requires container names to match: [a-zA-Z0-9][a-zA-Z0-9_.-]
+          # So, transform slashes and colons commonly used as separators in
+          # image names.
+          @build_host_name = @platform.docker_image.gsub(%r{[/:]}, '_')
         end
 
         @build_host_name
@@ -31,7 +34,7 @@ class Vanagon
       # a docker container.
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
-        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{build_host_name}")
+        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
         @target = 'localhost'
 
         # Wait for ssh to come up in the container
