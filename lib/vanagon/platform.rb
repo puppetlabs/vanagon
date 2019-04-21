@@ -114,6 +114,7 @@ class Vanagon
 
     # Docker engine specific
     attr_accessor :docker_image
+    attr_accessor :docker_run_args
 
     # AWS engine specific
     attr_accessor :aws_ami
