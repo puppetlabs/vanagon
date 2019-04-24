@@ -34,7 +34,9 @@ class Vanagon
       # a docker container.
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
-        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{@platform.docker_image}")
+        extra_args = @platform.docker_run_args.nil? ? [] : @platform.docker_run_args
+
+        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{extra_args.join(' ')} #{@platform.docker_image}")
         @target = 'localhost'
 
         # Wait for ssh to come up in the container
