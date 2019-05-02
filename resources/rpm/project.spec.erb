@@ -51,6 +51,10 @@
 # architure, breaking builds:
 %global __os_install_post %(echo '%{__os_install_post}' | <%= @platform.sed %> -e 's!/usr/lib[^[:space:]]*/brp-strip-static-archive[[:space:]].*$!!g')
 <% end -%>
+%global _enable_debug_package 0
+%global debug_package %{nil}
+%define  debug_package %{nil}
+%define __os_install_post %{nil}
 
 Name:           <%= @name %>
 Version:        <%= @version %>
