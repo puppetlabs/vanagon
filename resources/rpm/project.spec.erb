@@ -1,4 +1,9 @@
+%global _enable_debug_package 0
 %global debug_package %{nil}
+%define  debug_package %{nil}
+%define __os_install_post %{nil}
+
+
 
 <%- if @platform.is_cisco_wrlinux? -%>
 # Our cisco-5/7 build platforms are missing the definition of
