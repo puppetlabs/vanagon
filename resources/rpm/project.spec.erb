@@ -1,9 +1,8 @@
-%global _enable_debug_package 0
 %global debug_package %{nil}
-%define  debug_package %{nil}
-%define __os_install_post %{nil}
-
-
+%global __strip /bin/true
+%define debug_package %{nil}
+%define __strip /bin/true
+%global __spec_install_post /bin/true
 
 <%- if @platform.is_cisco_wrlinux? -%>
 # Our cisco-5/7 build platforms are missing the definition of
@@ -23,7 +22,7 @@
 # enable more stripping. This was failing on cisco wrlinux and AIX. We may want
 # to get this worked out eventually, but for now let's just skip these for
 # those platforms
-%global __debug_package %{nil}
+#%global __debug_package %{nil}
 # to resolve: "ERROR: No build ID note found"
 %undefine _missing_build_ids_terminate_build
 
@@ -39,8 +38,8 @@
 <% end -%>
 
 # To avoid files installed but not packaged errors
-%global __os_install_post %{__os_install_post} \
-    rm -rf %{buildroot}/usr/lib/debug
+#%global __os_install_post %{__os_install_post} \
+#    rm -rf %{buildroot}/usr/lib/debug
 <%- end -%>
 
 # Turn off the brp-python-bytecompile script
