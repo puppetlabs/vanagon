@@ -383,6 +383,23 @@ class Vanagon
       end
     end
 
+    # Force version determination for components
+    #
+    # If the component doesn't already have a version set (which normally happens for git sources),
+    # the source will be fetched into a temporary directory to attempt to figure out the version if the
+    # source type supports :version. This directory will be cleaned once the get_sources method returns
+    #
+    # @raise Vanagon::Error raises a vanagon error if we're unable to determine the version
+    def force_version
+      if @version.nil?
+        Dir.mktmpdir do |dir|
+          get_source(dir)
+        end
+      end
+      raise Vanagon::Error, "Unable to determine source version for component #{@name}!" if @version.nil?
+      @version
+    end
+
     # Prints the environment in a way suitable for use in a Makefile
     # or shell script. This is deprecated, because all Env. Vars. are
     # moving directly into the Makefile (and out of recipe subshells).

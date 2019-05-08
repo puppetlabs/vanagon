@@ -242,6 +242,49 @@ describe "Vanagon::Component" do
     end
   end
 
+  describe '#force_version' do
+    let(:source) {
+      allow(File).to receive(:realpath).and_return('/this/is/a/test')
+      Vanagon::Component::Source::Git.new('git://github.com/puppetlabs/facter', workdir: '/this/is/a/test')
+    }
+
+    let(:component) {
+      Vanagon::Component.new('force-version-test', {}, {}).tap do |comp|
+        comp.url = 'git://github.com/puppetlabs/facter'
+        comp.source = source
+      end
+    }
+
+    let(:versioned_component) {
+      Vanagon::Component.new('force-version-test', {}, {}).tap do |comp|
+        comp.version = '1.2.3'
+      end
+    }
+
+    it 'returns a version if it\'s already set' do
+      expect(versioned_component).not_to receive(:get_source)
+      expect(versioned_component.force_version).to eq('1.2.3')
+    end
+
+    it 'fetches sources if no version is set' do
+      clone = double(Git::Base)
+      allow(::Git).to receive(:clone).and_return(clone)
+      allow(clone).to receive(:describe).and_return('4.5.6')
+      allow(clone).to receive(:checkout).and_return(nil)
+      allow(clone).to receive(:update_submodules).and_return(nil)
+      expect(component.force_version).to eq('4.5.6')
+    end
+
+    it 'fails if it can\'t determine the version' do
+      clone = double(Git::Base)
+      allow(::Git).to receive(:clone).and_return(clone)
+      allow(clone).to receive(:describe).and_return(nil)
+      allow(clone).to receive(:checkout).and_return(nil)
+      allow(clone).to receive(:update_submodules).and_return(nil)
+      expect{ component.force_version }.to raise_error(Vanagon::Error, /unable to determine source version/i)
+    end
+  end
+
   describe 'rpm ghost files' do
     let(:component) { Vanagon::Component.new('ghost-test', {}, {}) }
 
