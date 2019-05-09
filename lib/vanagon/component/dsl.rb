@@ -512,6 +512,17 @@ class Vanagon
         @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
+      # Force version determination for components
+      #
+      # If the component doesn't already have a version set (which normally happens for git sources),
+      # the source will be fetched into a temporary directory to attempt to figure out the version if the
+      # source type supports :version. This directory will be cleaned once the get_sources method returns
+      #
+      # @raise Vanagon::Error raises a vanagon error if we're unable to determine the version
+      def get_version_forced
+        @component.force_version
+      end
+
       # Adds action to run during the postremoval phase of packaging
       #
       # @param pkg_state [Array] the state in which the scripts should execute. Can be
