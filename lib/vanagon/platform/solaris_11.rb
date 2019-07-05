@@ -116,6 +116,7 @@ class Vanagon
         @make = "/usr/bin/gmake"
         @tar = "/usr/bin/gtar"
         @patch = "/usr/bin/gpatch"
+        @sed = "/usr/gnu/bin/sed"
         @num_cores = "/usr/bin/kstat cpu_info | /usr/bin/ggrep -E '[[:space:]]+core_id[[:space:]]' | wc -l"
         super(name)
         if @architecture == "sparc"

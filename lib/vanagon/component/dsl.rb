@@ -186,6 +186,8 @@ class Vanagon
           target_mode = '0644'
           default_mode = '0644'
         when "smf"
+          # modify version in smf manifest so service gets restarted after package upgrade
+          @component.install << %{#{@component.platform.sed} -ri 's/(<service.*version=)(".*")/\\1"#{@component.settings[:puppet_runtime_version]}"/' #{service_file}}
           target_service_file = File.join(@component.platform.servicedir, service_type.to_s, "#{service_name}.xml")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
