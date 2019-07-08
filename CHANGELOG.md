@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.24] - released on 2019-07-08
+### Changed
+- (VANAGON-153) Update version in SMF manifest from the current version (which is always 1) to the puppet-runtime version since version is expected to be an integer value, per SMF documentation.
+- (VANAGON-153) Update the Solaris sed to `/usr/gnu/bin/sed` which is the GNU implementation.
+- (VANAGON-153) Use UNIX time for SMF version to ensure no two releases have the same version.
+
+### Fixed
+- (VANAGON-151) Update Docker engine with a 1 second sleep after each SSH failure to allow SSHD
+a chance to start up before Vanagon retries the command.
+
 ## [0.15.23] - released on 2019-05-14
 ### Added
 - (VANAGON-150) Allow platforms to specify `docker run` arguments.
@@ -756,7 +766,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.23...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.24...HEAD
+[0.15.24]: https://github.com/puppetlabs/vanagon/compare/0.15.23...0.15.24
 [0.15.23]: https://github.com/puppetlabs/vanagon/compare/0.15.22...0.15.23
 [0.15.22]: https://github.com/puppetlabs/vanagon/compare/0.15.21...0.15.22
 [0.15.21]: https://github.com/puppetlabs/vanagon/compare/0.15.20...0.15.21
