@@ -172,11 +172,15 @@ install -d %{buildroot}
 <%- end -%>
 
 # Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
-while read entry; do
-  if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
-    <%= @platform.sed %> -i "\|^$entry\$|s|^|%dir |" %{SOURCE1}
-  fi
-done < %{SOURCE1}
+if command -v perl; then
+  perl -i -lne 'if ((-d $_) && !(-l $_)) { print "%dir $_" } else { print }' %{SOURCE1}
+else
+  while read entry; do
+    if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
+      <%= @platform.sed %> -i "\|^$entry\$|s|^|%dir |" %{SOURCE1}
+    fi
+  done < %{SOURCE1}
+fi
 
 
 %pre
