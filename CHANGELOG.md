@@ -6,6 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.25] - released on 2019-07-24
+### Added
+- (RE-12605) Add CODEOWNERS file.
+
+### Changed
+- Rewrite `file-list-for-rpm` with perl to drastically speed up current process. If perl is not available rpmspec will fall back to using the sed loop.
+
+### Removed
+- Remove out-of-date MAINTAINERS file.
+
 ## [0.15.24] - released on 2019-07-08
 ### Changed
 - (VANAGON-153) Update version in SMF manifest from the current version (which is always 1) to the puppet-runtime version since version is expected to be an integer value, per SMF documentation.
@@ -766,7 +776,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.24...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.25...HEAD
+[0.15.25]: https://github.com/puppetlabs/vanagon/compare/0.15.24...0.15.25
 [0.15.24]: https://github.com/puppetlabs/vanagon/compare/0.15.23...0.15.24
 [0.15.23]: https://github.com/puppetlabs/vanagon/compare/0.15.22...0.15.23
 [0.15.22]: https://github.com/puppetlabs/vanagon/compare/0.15.21...0.15.22
