@@ -190,14 +190,14 @@ class Vanagon
         #   -dr             - Root DirectoryRef to point all components to
         #   -var            - Replace "SourceDir" in the @source attributes of all components with a preprocessor variable
         app_heat_flags = " -dr INSTALLDIR -v -ke -indent 2 -cg AppComponentGroup -gg -srd -t wix/filter.xslt -sreg -var var.AppSourcePath "
-        app_heat_flags += " -fips" if project.platform.name =~ /windows-2012r2fips/
+        app_heat_flags += " -fips" if project.platform.name =~ /windowsfips-2012r2/
 
         app_source_path = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}"
         # Candle.exe preprocessor vars are required due to the above double run of heat.exe, both runs of heat use
         # preprocessor variables
         candle_preprocessor = "-dAppSourcePath=\"#{app_source_path}\" "
         candle_flags = "-arch #{@architecture} #{wix_extensions}"
-        candle_flags += " -fips" if project.platform.name =~ /windows-2012r2fips/
+        candle_flags += " -fips" if project.platform.name =~ /windowsfips-2012r2/
 
         # Enable verbose mode for the moment (will be removed for production)
         # localisation flags to be added
