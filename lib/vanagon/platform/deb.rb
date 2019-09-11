@@ -99,7 +99,7 @@ class Vanagon
         # parse the definition and gpg_key if set to ensure they are both valid URIs
         definition = URI.parse(definition)
         gpg_key = URI.parse(gpg_key) if gpg_key
-        provisioning = ["apt-get -qq update && apt-get -qq install curl"]
+        provisioning = ["apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get -qq install curl"]
 
         if definition.scheme =~ /^(http|ftp)/
           provisioning << add_repo_target(definition)
