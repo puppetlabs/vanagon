@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.27] - released on 2019-09-11
+### Added
+- Add `DEBIAN_FRONTEND=noninteractive` to apt curl install.
+
 ## [0.15.26] - released on 2019-09-10
 ### Added
 - (PA-2838) Add support for windowsfips-2012r2.
@@ -781,7 +785,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.26...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.27...HEAD
+[0.15.27]: https://github.com/puppetlabs/vanagon/compare/0.15.26...0.15.27
 [0.15.26]: https://github.com/puppetlabs/vanagon/compare/0.15.25...0.15.26
 [0.15.25]: https://github.com/puppetlabs/vanagon/compare/0.15.24...0.15.25
 [0.15.24]: https://github.com/puppetlabs/vanagon/compare/0.15.23...0.15.24
