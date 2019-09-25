@@ -410,7 +410,7 @@ class Vanagon
     #
     # @return [true, false] true if it is a windows variety, false otherwise
     def is_windows?
-      return !!@name.match(/^windows-.*$/)
+      return !!@name.match(/^windows.*$/)
     end
 
     # Utility matcher to determine is the platform is a linux variety
