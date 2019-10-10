@@ -34,9 +34,9 @@ class Vanagon
 
     # If Digest::const_get fails, it'll raise a LoadError when it tries to
     # pull in the subclass `type`. We catch that error, and fail instead.
-     rescue LoadError
-       fail "Don't know how to produce a sum of type: '#{type}' for '#{file}'"
-     end
+    rescue LoadError
+      fail "Don't know how to produce a sum of type: '#{type}' for '#{file}'"
+    end
 
     # Simple wrapper around Net::HTTP. Will make a request of the given type to
     # the given url and return the body as parsed by JSON.
