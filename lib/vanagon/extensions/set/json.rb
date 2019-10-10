@@ -3,7 +3,7 @@ require 'json'
 
 module SetJson
   def to_json(*options)
-    to_a.to_json *options
+    to_a.to_json(*options)
   end
 end
 
