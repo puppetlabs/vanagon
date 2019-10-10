@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.email    = 'info@puppet.com'
   gem.homepage = 'http://github.com/puppetlabs/vanagon'
   gem.specification_version = 3
-  gem.required_ruby_version = '~> 2.1'
+  gem.required_ruby_version = '~> 2.4'
 
   # Handle git repos responsibly
   # - MIT licensed: https://rubygems.org/gems/git
