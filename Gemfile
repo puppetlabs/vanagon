@@ -27,7 +27,7 @@ group(:development, :test) do
   gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '~> 0.99')
   gem 'rake', require: false
   gem 'rspec', '~> 3.0', require: false
-  gem 'rubocop', "~> 0.52.1", require: false
+  gem 'rubocop', "~> 0.75", require: false
   gem 'simplecov', require: false
   gem 'yard', require: false
 end
