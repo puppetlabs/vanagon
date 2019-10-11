@@ -33,14 +33,20 @@ describe 'Vanagon::Platform::DSL' do
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/sources.list.d/#{hex_value}-pl-puppet-agent-0.2.1-wheezy.list' '#{apt_definition}'")
+      expect(plat._platform.provisioning[0]).to include('apt-get', 'install', 'curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl', '--silent', '--show-error', '--fail',
+        "-o '/etc/apt/sources.list.d/#{hex_value}-pl-puppet-agent-0.2.1-wheezy.list' '#{apt_definition}'")
     end
 
     it "installs a deb when given a deb" do
       plat = Vanagon::Platform::DSL.new('debian-test-fixture')
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition_deb)
-      expect(plat._platform.provisioning).to include("curl -o local.deb '#{apt_definition_deb}' && dpkg -i local.deb; rm -f local.deb")
+      expect(plat._platform.provisioning[0]).to include('apt-get', 'install', 'curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl', '--silent', '--show-error', '--fail',
+        "-o local.deb '#{apt_definition_deb}' && dpkg -i local.deb; rm -f local.deb")
     end
 
     it "installs a gpg key if given one" do
@@ -48,7 +54,9 @@ describe 'Vanagon::Platform::DSL' do
       expect(SecureRandom).to receive(:hex).and_return(hex_value).twice
       plat.instance_eval(deb_platform_block)
       plat.apt_repo(apt_definition, apt_definition_gpg)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/apt/trusted.gpg.d/#{hex_value}-keyring.gpg' '#{apt_definition_gpg}'")
+      expect(plat._platform.provisioning[0]).to include('apt-get', 'install', 'curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl', '--silent', '--show-error', '--fail', "-o '/etc/apt", hex_value)
     end
   end
 
@@ -58,7 +66,10 @@ describe 'Vanagon::Platform::DSL' do
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(el_5_platform_block)
       plat.yum_repo(el_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
+      expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl', '--silent', '--show-error', '--fail',
+        "-o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
     end
 
     it "works for specifically redhat platforms" do
@@ -66,7 +77,10 @@ describe 'Vanagon::Platform::DSL' do
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(redhat_7_platform_block)
       plat.yum_repo(el_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
+      expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl','--silent', '--show-error', '--fail',
+        "-o '/etc/yum.repos.d/#{hex_value}-pl-puppet-agent-0.2.1-el-7-x86_64.repo' '#{el_definition}'")
     end
 
     # This test currently covers wrlinux 5 and 7
@@ -75,7 +89,10 @@ describe 'Vanagon::Platform::DSL' do
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
       plat.instance_eval(cicso_wrlinux_platform_block)
       plat.yum_repo(cisco_wrlinux_definition)
-      expect(plat._platform.provisioning).to include("curl -o '/etc/yum/repos.d/#{hex_value}-pl-puppet-agent-0.2.1-cisco-wrlinux-5-x86_64.repo' '#{cisco_wrlinux_definition}'")
+      expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
+      expect(plat._platform.provisioning[1]).to include(
+        'curl','--silent', '--show-error', '--fail',
+         "-o '/etc/yum/repos.d/#{hex_value}-pl-puppet-agent-0.2.1-cisco-wrlinux-5-x86_64.repo' '#{cisco_wrlinux_definition}'")
     end
 
     describe "installs a rpm when given a rpm" do
@@ -83,8 +100,9 @@ describe 'Vanagon::Platform::DSL' do
         plat = Vanagon::Platform::DSL.new('el-5-fixture')
         plat.instance_eval(el_5_platform_block)
         plat.yum_repo(el_definition_rpm)
-        expect(plat._platform.provisioning).to include("rpm -q curl > /dev/null || yum -y install curl")
-        expect(plat._platform.provisioning).to include("curl -o local.rpm '#{el_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+        expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
+        expect(plat._platform.provisioning[1]).to include(
+          'curl', '--silent', '--show-error', '--fail', "-o local.rpm '#{el_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
       end
     end
   end
@@ -101,7 +119,9 @@ describe 'Vanagon::Platform::DSL' do
       plat = Vanagon::Platform::DSL.new('sles-test-fixture')
       plat.instance_eval(sles_platform_block)
       plat.zypper_repo(sles_definition_rpm)
-      expect(plat._platform.provisioning).to include("curl -o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
+      expect(plat._platform.provisioning[0]).to include(
+        'curl', '--silent', '--show-error', '--fail',
+        "-o local.rpm '#{sles_definition_rpm}'; rpm -Uvh local.rpm; rm -f local.rpm")
     end
   end
 

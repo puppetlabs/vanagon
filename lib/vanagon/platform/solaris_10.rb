@@ -156,7 +156,7 @@ class Vanagon
           if build_dependency =~ /^http.*\.gz/
             # Fetch, unpack, install...this assumes curl is present.
             package = build_dependency.sub(/^http.*\//, '')
-            http << "tmpdir=$(#{mktemp}); (cd ${tmpdir} && curl -O #{build_dependency} && gunzip -c #{package} | pkgadd -d /dev/stdin -a /var/tmp/noask all)"
+            http << "tmpdir=$(#{mktemp}); (cd ${tmpdir} && curl --silent --show-error --fail -O #{build_dependency} && gunzip -c #{package} | pkgadd -d /dev/stdin -a /var/tmp/noask all)"
           else
             # Opencsw dependencies. At this point we assume that pkgutil is installed.
             pkgutil << build_dependency
@@ -199,5 +199,3 @@ class Vanagon
     end
   end
 end
-
-

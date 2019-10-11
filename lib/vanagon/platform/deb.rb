@@ -72,11 +72,11 @@ class Vanagon
       def add_repo_target(definition)
         if File.extname(definition.path) == '.deb'
           # repo definition is an deb (like puppetlabs-release)
-          "curl -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
+          "#{@curl} -o local.deb '#{definition}' && dpkg -i local.deb; rm -f local.deb"
         else
           reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
           reponame = "#{reponame}.list" if File.extname(reponame) != '.list'
-          "curl -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
+          "#{@curl} -o '/etc/apt/sources.list.d/#{reponame}' '#{definition}'"
         end
       end
 
@@ -87,7 +87,7 @@ class Vanagon
       def add_gpg_key(gpg_key)
         gpgname = "#{SecureRandom.hex}-#{File.basename(gpg_key.path)}"
         gpgname = "#{gpgname}.gpg" if gpgname !~ /\.gpg$/
-        "curl -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
+        "#{@curl} -o '/etc/apt/trusted.gpg.d/#{gpgname}' '#{gpg_key}'"
       end
 
       # Returns the commands to add a given repo target and optionally a gpg key to the build system
@@ -140,6 +140,7 @@ class Vanagon
         @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/bin/nproc"
+        @curl = "curl --silent --show-error --fail"
         @valid_operators = ['<', '>', '<=', '>=', '=', '<<', '>>']
         super(name)
       end
