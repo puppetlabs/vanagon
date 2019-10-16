@@ -135,9 +135,9 @@ class Vanagon
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
     # extract those fields.
-    PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/
+    PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/.freeze
 
-    VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/
+    VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/.freeze
 
     # Loads a given platform from the configdir
     #

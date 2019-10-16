@@ -1,14 +1,11 @@
 ---
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   Exclude:
     - '**/*.erb'
     - 'spec/**/*'
     - 'vendor/**/*'
     - 'examples/**/*'
-
-Lint/ConditionPosition:
-  Enabled: true
 
 Lint/ElseLayout:
   Enabled: true
@@ -25,7 +22,7 @@ Lint/EnsureReturn:
 
 # MAYBE useful - errors when rescue {} happens.
 Lint/HandleExceptions:
-  Enabled: false
+  Enabled: true
 
 Lint/ShadowingOuterLocalVariable:
   Enabled: true
@@ -42,9 +39,8 @@ Layout/MultilineMethodCallIndentation:
 Style/RedundantReturn:
   Enabled: false
 
-# DISABLED since the instances do not seem to indicate any specific errors.
 Lint/AmbiguousOperator:
-  Enabled: false
+  Enabled: true
 
 # DISABLED since for all the checked, we are basically checking nil
 # TODO: Change the checking so that if the variable being assigned to has
@@ -81,19 +77,27 @@ Style/WhileUntilModifier:
 Lint/AmbiguousRegexpLiteral:
   Enabled: false
 
-# DISABLED
 Security/Eval:
-  Enabled: false
+  Enabled: true
+
 # DISABLED
-Lint/BlockAlignment:
+Layout/BlockAlignment:
   Enabled: false
 
 # DISABLED
-Lint/DefEndAlignment:
+Layout/DefEndAlignment:
   Enabled: false
 
 # DISABLED
-Lint/EndAlignment:
+Layout/EndAlignment:
+  Enabled: false
+
+# DISABLED
+Layout/ConditionPosition:
+  Enabled: false
+
+# DISABLED
+Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 # DISABLED
@@ -120,17 +124,14 @@ Lint/UnusedBlockArgument:
 Lint/UnusedMethodArgument:
   Enabled: false
 
-# DISABLED - TODO
 Lint/UselessAccessModifier:
-  Enabled: false
+  Enabled: true
 
-# DISABLED - TODO
 Lint/UselessAssignment:
-  Enabled: false
+  Enabled: true
 
-# DISABLED - TODO
 Lint/Void:
-  Enabled: false
+  Enabled: true
 
 Layout/AccessModifierIndentation:
   Enabled: false
@@ -139,6 +140,9 @@ Naming/AccessorMethodName:
   Enabled: false
 
 Style/Alias:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Layout/AlignArray:
@@ -171,6 +175,27 @@ Layout/CaseIndentation:
 Style/CharacterLiteral:
   Enabled: false
 
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+
+Style/UnneededCondition:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
 Naming/ClassAndModuleCamelCase:
   Enabled: false
 
@@ -197,6 +222,9 @@ Style/WordArray:
   Enabled: false
 
 Style/UnneededPercentQ:
+  Enabled: false
+
+Layout/AlignArguments:
   Enabled: false
 
 Layout/Tab:
@@ -290,10 +318,10 @@ Style/EachWithObject:
 Layout/EmptyLineBetweenDefs:
   Enabled: false
 
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   Enabled: false
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   Enabled: false
 
 Layout/IndentationConsistency:
@@ -327,9 +355,6 @@ Layout/TrailingWhitespace:
   Enabled: true
 
 Style/StringLiterals:
-  Enabled: false
-
-Style/TrailingCommaInLiteral:
   Enabled: false
 
 Style/TrailingCommaInArguments:
@@ -501,6 +526,4 @@ Style/NumericLiteralPrefix:
 
 Style/ConditionalAssignment:
   Enabled: false
-
-Performance/Casecmp:
-  Enabled: false
+  

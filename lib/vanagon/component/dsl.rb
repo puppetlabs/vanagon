@@ -411,7 +411,7 @@ class Vanagon
       # This environment is included in the configure, build and install steps.
       #
       # @param env [Hash] mapping of keys to values to add to the environment for the component
-      def environment(*env) # rubocop:disable Metrics/AbcSize
+      def environment(*env)
         if env.size == 1 && env.first.is_a?(Hash)
           warn <<-WARNING.undent
             the component DSL method signature #environment({Key => Value}) is deprecated

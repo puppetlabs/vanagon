@@ -120,7 +120,7 @@ class Vanagon
                 location = URI.parse(response.header['location'])
                 download(uri + location, target_file)
               when Net::HTTPSuccess
-                open(File.join(@workdir, target_file), 'w') do |io|
+                File.open(File.join(@workdir, target_file), 'w') do |io|
                   response.read_body { |chunk| io.write(chunk) }
                 end
               else

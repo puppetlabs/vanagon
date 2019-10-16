@@ -7,7 +7,7 @@ require 'digest'
 require 'ostruct'
 
 # Used to parse the vendor field into name and email
-VENDOR_REGEX = /^(.*) <(.*)>$/
+VENDOR_REGEX = /^(.*) <(.*)>$/.freeze
 
 class Vanagon
   class Project
