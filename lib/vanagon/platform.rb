@@ -344,6 +344,20 @@ class Vanagon
       return !!@name.match(/^fedora-.*$/)
     end
 
+    # Utility matcher to determine is the platform is a debian variety
+    #
+    # @return [true, false] true if it is a debian variety, false otherwise
+    def is_debian?
+      return !!@name.match(/^debian-.*$/)
+    end
+
+    # Utility matcher to determine is the platform is a ubuntu variety
+    #
+    # @return [true, false] true if it is a ubuntu variety, false otherwise
+    def is_ubuntu?
+      return !!@name.match(/^ubuntu-.*$/)
+    end
+
     # Utility matcher to determine is the platform is an aix variety
     #
     # @return [true, false] true if it is an aix variety, false otherwise

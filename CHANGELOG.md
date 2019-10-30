@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Changed
 - (VANAGON-157) Make curl calls fail on error
+- Add Debian and Ubuntu platform utility matchers.
 
 ## [0.15.29] - released on 2019-09-25
 ### Changed
