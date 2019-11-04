@@ -184,7 +184,7 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   Enabled: false
 
-Style/UnneededCondition:
+Style/RedundantCondition:
   Enabled: false
 
 Style/SafeNavigation:
@@ -221,7 +221,7 @@ Style/WhenThen:
 Style/WordArray:
   Enabled: false
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Enabled: false
 
 Layout/AlignArguments:
