@@ -7,7 +7,15 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Changed
 - (VANAGON-157) Make curl calls fail on error
+
+### Added
 - Add Debian and Ubuntu platform utility matchers.
+
+### Fixed
+- (VANAGON-159) Update `parse_and_rewrite` method. It will now do no processing
+  if there aren't any rewrite rules. If there are rewrite rules and you're
+  specifying your git source with `git:http[...]`, this method will sub out the
+  `git:` to get around some of the extra processing fustigit does to URIs.
 
 ## [0.15.29] - released on 2019-09-25
 ### Changed
