@@ -74,6 +74,16 @@ class Vanagon
           # @deprecated Please use the component DSL method #mirror(<URI>)
           #   instead. This method will be removed before Vanagon 1.0.0.
           def parse_and_rewrite(uri)
+            return uri if rewrite_rules.empty?
+            if uri.match?(/^git:http/)
+              warn <<-HERE.undent
+                `fustigit` parsing doesn't get along with how we specify the source
+                type by prefixing `git`. As `rewrite_rules` are deprecated, we'll
+                replace `git:http` with `http` in your uri. At some point this will
+                break.
+              HERE
+              uri.sub!(/^git:http/, 'http')
+            end
             url = URI.parse(uri)
             return url unless url.scheme
             rewrite(url.to_s, url.scheme)
