@@ -16,6 +16,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   if there aren't any rewrite rules. If there are rewrite rules and you're
   specifying your git source with `git:http[...]`, this method will sub out the
   `git:` to get around some of the extra processing fustigit does to URIs.
+- (VANAGON-35) Update `find_program_on_path` to support windows files with
+  extensions.
 
 ## [0.15.29] - released on 2019-09-25
 ### Changed

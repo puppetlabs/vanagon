@@ -112,9 +112,12 @@ class Vanagon
     # @return [String, false] Returns either the full path to the command or false if the command cannot be found
     # @raise [RuntimeError] If the command is required and cannot be found
     def find_program_on_path(command, required = true)
+      extensions = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
       ENV['PATH'].split(File::PATH_SEPARATOR).each do |path_elem|
-        location = File.join(path_elem, command)
-        return location if FileTest.executable?(location)
+        extensions.each do |ext|
+          location = File.join(path_elem, "#{command}#{ext}")
+          return location if FileTest.executable?(location)
+        end
       end
 
       if required
