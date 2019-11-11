@@ -31,6 +31,10 @@ describe "Vanagon::Platform::Windows" do
     },
   ]
 
+  let(:vanagon_platform) do
+    OpenStruct.new(:settings => {})
+  end
+
   platforms.each do |plat|
     context "on #{plat[:name]}" do
       let(:platform) { plat }
@@ -203,7 +207,7 @@ describe "Vanagon::Platform::Windows" do
         describe "generate_wix_dirs" do
 
           it "returns one directory with install_service defaults" do
-            proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -219,7 +223,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns one directory with non-default name" do
-            proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -235,7 +239,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns nested directory correctly with \\" do
-            proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -255,7 +259,7 @@ describe "Vanagon::Platform::Windows" do
 
 
           it "adds a second directory for the same input but different components" do
-            proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -274,7 +278,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns correctly formatted multiple nested directories" do
-            proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test-1', {}, cur_plat._platform)

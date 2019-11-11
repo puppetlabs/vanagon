@@ -14,7 +14,7 @@ end
 
 describe Vanagon::Component::Rules do
   let(:platform) do
-    OpenStruct.new(:patch => "/usr/bin/patch", :make => '/usr/bin/make')
+    OpenStruct.new(:patch => "/usr/bin/patch", :make => '/usr/bin/make', :settings => {})
   end
 
   let(:project) do

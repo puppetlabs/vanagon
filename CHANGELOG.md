@@ -10,6 +10,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Added
 - Add Debian and Ubuntu platform utility matchers.
+- (VANAGON-72) Give platform access to the shared `settings` hash used by the
+  projects and components.
 
 ### Fixed
 - (VANAGON-159) Update `parse_and_rewrite` method. It will now do no processing

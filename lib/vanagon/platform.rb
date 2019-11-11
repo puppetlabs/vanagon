@@ -220,6 +220,7 @@ class Vanagon
     # @return [Vanagon::Platform] the platform with the given name
     def initialize(name) # rubocop:disable Metrics/AbcSize
       @name = name
+      @settings = {}
       @os_name = os_name
       @os_version = os_version
       @architecture = architecture

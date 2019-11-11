@@ -139,7 +139,7 @@ class Vanagon
       @components = []
       @requires = []
       @directories = []
-      @settings = {}
+      @settings = platform.settings
       # Environments are like Hashes but with specific constraints
       # around their keys and values.
       @environment = Vanagon::Environment.new
@@ -756,7 +756,8 @@ class Vanagon
         # We don't want to load any of the upstream components, so we're going to
         # pass an array with an empty string as the component list for load_project
         no_components = ['']
-        upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), platform, no_components)
+        upstream_platform = Vanagon::Platform.load_platform(platform.name, File.join(working_directory, upstream_source.dirname, "configs", "platforms"))
+        upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), upstream_platform, no_components)
         @settings.merge!(upstream_project.settings)
         upstream_project.cleanup
       end

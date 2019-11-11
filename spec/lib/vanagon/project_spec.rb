@@ -6,6 +6,12 @@ require 'fakefs/spec_helpers'
 describe 'Vanagon::Project' do
   let(:component) { double(Vanagon::Component) }
   let(:configdir) { '/a/b/c' }
+  let(:platform) do
+    OpenStruct.new(:settings => {})
+  end
+  let(:upstream_platform) do
+    OpenStruct.new(:settings => {})
+  end
 
   let(:project_block) {
     "project 'test-fixture' do |proj|
@@ -46,15 +52,17 @@ describe 'Vanagon::Project' do
     end"
   }
 
-  let (:dummy_platform_sysv) {
+  let (:dummy_platform_settings) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
                        plat.servicetype 'sysv'
                        plat.servicedir '/etc/init.d'
                        plat.defaultdir '/etc/default'
+                       settings[:platform_test] = 'debian'
                     end")
     plat._platform
   }
+
 
   describe '#vendor=' do
     dummy_platform = Vanagon::Platform.new('el-7-x86_64')
@@ -113,7 +121,7 @@ describe 'Vanagon::Project' do
     it 'returns only the highest level directories' do
       test_sets.each do |set|
         expect(component).to receive(:directories).and_return([])
-        proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+        proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
         proj.instance_eval(project_block)
         set[:directories].each {|dir| proj.directory dir }
         expect(proj._project.get_root_directories.sort).to eq(set[:results].sort)
@@ -130,34 +138,47 @@ describe 'Vanagon::Project' do
       expect(git_source).to receive(:fetch).and_return(true)
 
       # stubs for the upstream project
-      upstream_proj = Vanagon::Project::DSL.new('upstream-test', {}, [])
+      upstream_proj = Vanagon::Project::DSL.new('upstream-test', upstream_platform, [])
       upstream_proj.instance_eval(upstream_project_block)
       expect(Vanagon::Project).to receive(:load_project).and_return(upstream_proj._project)
+      expect(Vanagon::Platform).to receive(:load_platform).and_return(upstream_platform)
     end
 
     it 'loads upstream settings' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
       inheriting_proj.instance_eval(inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
     end
 
     it 'overrides duplicate settings from before the load' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
       inheriting_proj.instance_eval(preset_inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
     end
 
     it 'lets you override settings after the load' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
       inheriting_proj.instance_eval(postset_inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('inheritance-test')
     end
 
     it 'merges settings' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', {}, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
       inheriting_proj.instance_eval(inheriting_project_block_with_settings)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
       expect(inheriting_proj._project.settings[:merged]).to eq('yup')
+    end
+  end
+
+  describe 'platform settings' do
+    before do
+      allow(Vanagon::Component).to receive(:load_component).with('some-component', any_args).and_return(component)
+    end
+
+    it 'loads settings set in platforms' do
+      settings_proj = Vanagon::Project::DSL.new('settings-test', dummy_platform_settings, [])
+      settings_proj.instance_eval(project_block)
+      expect(settings_proj._project.settings[:platform_test]).to eq('debian')
     end
   end
 
@@ -237,7 +258,7 @@ describe 'Vanagon::Project' do
     # All of the following tests should be run with one project level
     # component that isn't included in the build_deps of another component
     before(:each) do
-      @proj = Vanagon::Project.new('test-fixture-with-comps', {})
+      @proj = Vanagon::Project.new('test-fixture-with-comps', platform)
       @not_included_comp = Vanagon::Component.new('test-fixture-not-included', {}, {})
       @proj.components << @not_included_comp
     end
@@ -306,7 +327,7 @@ describe 'Vanagon::Project' do
 
   describe '#get_preinstall_actions' do
     it "Collects the preinstall actions for the specified package state" do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       proj.get_preinstall_actions('upgrade')
       proj.get_preinstall_actions('install')
       expect(proj.get_preinstall_actions('install')).to be_instance_of(String)
@@ -315,39 +336,39 @@ describe 'Vanagon::Project' do
 
   describe '#get_trigger_scripts' do
     it "Collects the install triggers for the project for the specified packing state" do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect(proj.get_trigger_scripts('install')).to eq({})
       expect(proj.get_trigger_scripts('upgrade')).to be_instance_of(Hash)
     end
     it 'fails with empty install trigger action' do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect { proj.get_trigger_scripts([]) }.to raise_error(Vanagon::Error)
     end
     it 'fails with incorrect install trigger action' do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect { proj.get_trigger_scripts('foo') }.to raise_error(Vanagon::Error)
     end
   end
 
   describe '#get_interest_triggers' do
     it "Collects the interest triggers for the project for the specified packaging state" do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect(proj.get_interest_triggers('install')).to eq([])
       expect(proj.get_interest_triggers('upgrade')).to be_instance_of(Array)
     end
     it 'fails with empty interest trigger action' do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect { proj.get_interest_triggers([]) }.to raise_error(Vanagon::Error)
     end
     it 'fails with incorrect interest trigger action' do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect { proj.get_interest_triggers('foo') }.to raise_error(Vanagon::Error)
     end
   end
 
   describe '#get_activate_triggers' do
     it "Collects the activate triggers for the project for the specified packaging state" do
-      proj = Vanagon::Project.new('action-test', {})
+      proj = Vanagon::Project.new('action-test', platform)
       expect(proj.get_activate_triggers()).to be_instance_of(Array)
       expect(proj.get_activate_triggers()).to be_instance_of(Array)
     end
@@ -355,7 +376,7 @@ describe 'Vanagon::Project' do
 
   describe '#generate_dependencies_info' do
     before(:each) do
-      @proj = Vanagon::Project.new('test-project', {})
+      @proj = Vanagon::Project.new('test-project', platform)
     end
 
     it "returns a hash of components and their versions" do
@@ -386,7 +407,7 @@ describe 'Vanagon::Project' do
         end
       end
 
-      @proj = Vanagon::Project.new('test-project', {})
+      @proj = Vanagon::Project.new('test-project', platform)
     end
 
     it 'should generate a hash with the expected build metadata' do
@@ -546,12 +567,12 @@ describe 'Vanagon::Project' do
 
   describe '#get_rpm_ghost_files' do
     it 'returns an empty array when there are no ghost files' do
-      proj = Vanagon::Project.new('test-ghost', {})
+      proj = Vanagon::Project.new('test-ghost', platform)
       expect(proj.get_rpm_ghost_files).to eq([])
     end
 
     it 'returns ghost files when some are set' do
-      proj = Vanagon::Project.new('test-ghosts', {})
+      proj = Vanagon::Project.new('test-ghosts', platform)
       comp = Vanagon::Component.new('ghosts', {}, {})
       comp.add_rpm_ghost_file('ghost')
       proj.components << comp
