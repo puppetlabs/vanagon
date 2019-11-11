@@ -8,11 +8,14 @@ describe 'Vanagon::Project::DSL' do
 "project 'test-fixture' do |proj|
 end" }
   let(:configdir) { '/a/b/c' }
+  let(:platform) do
+    OpenStruct.new(:settings => {})
+  end
 
   describe '#version_from_git' do
     it 'sets the version based on the git describe' do
       expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
 
       # Lying is bad. You shouldn't lie. But sometimes when you're
@@ -35,7 +38,7 @@ end" }
     end
     it 'sets the version based on the git describe with multiple dashes' do
       expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
 
       # See previous description of "indescribable cyclopean obelisk"
@@ -60,7 +63,7 @@ end" }
       log = double
       diff = double
       expect(Vanagon::Driver).to receive(:configdir).and_return(configdir)
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       repo = double("repo")
       expect(::Git)
@@ -91,7 +94,7 @@ end" }
       }
 
       expect(Vanagon::Driver).to receive(:configdir).exactly(branches.length).times.and_return(configdir)
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
 
       branches.each do |branch, version|
@@ -116,7 +119,7 @@ end" }
       ]
 
       expect(Vanagon::Driver).to receive(:configdir).exactly(branches.length).times.and_return(configdir)
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
 
       branches.each do |branch|
@@ -137,7 +140,7 @@ end" }
 
   describe '#directory' do
     it 'adds a directory to the list of directories' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.directory('/a/b/c/d', mode: '0755')
       expect(proj._project.directories).to include(Vanagon::Common::Pathname.new('/a/b/c/d', mode: '0755'))
@@ -146,7 +149,7 @@ end" }
 
   describe '#user' do
     it 'sets a user for the project' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.user('test-user')
       expect(proj._project.user).to eq(Vanagon::Common::User.new('test-user'))
@@ -155,7 +158,7 @@ end" }
 
   describe '#target_repo' do
     it 'sets the target_repo for the project' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.target_repo "pc1"
       expect(proj._project.repo).to eq("pc1")
@@ -164,7 +167,7 @@ end" }
 
   describe '#noarch' do
     it 'sets noarch on the project to true' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.noarch
       expect(proj._project.noarch).to eq(true)
@@ -173,20 +176,20 @@ end" }
 
   describe '#generate_source_artifacts' do
     it 'defaults to false' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       expect(proj._project.source_artifacts).to eq(false)
     end
 
     it 'sets source_artifacts to true' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.generate_source_artifacts true
       expect(proj._project.source_artifacts).to eq(true)
     end
 
     it 'sets source_artifacts to false' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.generate_source_artifacts false
       expect(proj._project.source_artifacts).to eq(false)
@@ -195,7 +198,7 @@ end" }
 
   describe '#identifier' do
     it 'sets the identifier for the project' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.identifier "com.example"
       expect(proj._project.identifier).to eq("com.example")
@@ -204,14 +207,14 @@ end" }
 
   describe '#cleanup_during_build' do
     it 'sets @cleanup to true' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.cleanup_during_build
       expect(proj._project.cleanup).to eq(true)
     end
 
     it 'defaults to nil' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       expect(proj._project.cleanup).to be_nil
     end
@@ -221,7 +224,7 @@ end" }
     let(:version_file) { '/opt/puppetlabs/puppet/VERSION' }
 
     it 'sets version_file for the project' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.write_version_file(version_file)
       expect(proj._project.version_file.path).to eq(version_file)
@@ -230,14 +233,14 @@ end" }
 
   describe "#release" do
     it 'sets the release for the project' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.release '12'
       expect(proj._project.release).to eq('12')
     end
 
     it 'defaults to 1' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       expect(proj._project.release).to eq('1')
     end
@@ -254,7 +257,7 @@ end" }
     end
 
     it 'adds the package provide to the list of provides' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.provides('thing1')
       proj.provides('thing2')
@@ -337,7 +340,7 @@ end" }
     end
 
     it 'adds the package replacement to the list of replacements' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.replaces('thing1')
       proj.replaces('thing2')
@@ -416,7 +419,7 @@ end" }
     end
 
     it 'adds the package conflict to the list of conflicts' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {})
+      proj = Vanagon::Project::DSL.new('test-fixture', platform)
       proj.instance_eval(project_block)
       proj.conflicts('thing1')
       proj.conflicts('thing2')
@@ -529,19 +532,19 @@ end"
     end
 
     it 'stores the component in the project if the included components set is empty' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(project_block)
       expect(proj._project.components).to include(component)
     end
 
     it 'stores the component in the project if the component name is listed in the included components set' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, ['some-component'])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, ['some-component'])
       proj.instance_eval(project_block)
       expect(proj._project.components).to include(component)
     end
 
     it 'does not store the component if the included components set is not empty and does not include the component name' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, ['some-different-component'])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, ['some-different-component'])
       proj.instance_eval(project_block)
       expect(proj._project.components).to_not include(component)
     end
@@ -565,19 +568,19 @@ end"
     }
 
     it 'has an empty project.fetch_artifact when fetch_artifact is not called' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(empty_project_block)
       expect(proj._project.artifacts_to_fetch).to eq([])
     end
 
     it 'Adds a path to project.fetch_artifact when fetch_artifact is called' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(project_block)
       expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file'])
     end
 
     it 'Adds multiple paths to project.fetch_artifact when fetch_artifact is called more than once' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(project_block_multiple)
       expect(proj._project.artifacts_to_fetch).to eq(['foo/bar/baz.file', 'foo/foobar/foobarbaz.file'])
     end
@@ -600,19 +603,19 @@ end"
     }
 
     it 'has no_packaging set to false by default' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(empty_project_block)
       expect(proj._project.no_packaging).to eq(false)
     end
 
     it 'sets no_packaging to true when proj.no_packaging true is called' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(project_block)
       expect(proj._project.no_packaging).to eq(true)
     end
 
     it 'sets no_packaging to false when proj.no_packaging false is called' do
-      proj = Vanagon::Project::DSL.new('test-fixture', {}, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
       proj.instance_eval(project_block_false)
       expect(proj._project.no_packaging).to eq(false)
     end

@@ -412,6 +412,14 @@ class Vanagon
       def add_build_repository(*args)
         @platform.add_build_repository(*args)
       end
+
+      def setting(name, value)
+        @platform.settings[name] = value
+      end
+
+      def settings
+        @platform.settings
+      end
     end
   end
 end
