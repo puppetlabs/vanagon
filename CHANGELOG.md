@@ -5,8 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.15.30] - released on 2019-11-12
 ### Changed
-- (VANAGON-157) Make curl calls fail on error
+- (VANAGON-157) Make curl calls fail on error.
 
 ### Added
 - Add Debian and Ubuntu platform utility matchers.
@@ -808,7 +810,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.29...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.30...HEAD
+[0.15.30]: https://github.com/puppetlabs/vanagon/compare/0.15.29...0.15.30
 [0.15.29]: https://github.com/puppetlabs/vanagon/compare/0.15.28...0.15.29
 [0.15.28]: https://github.com/puppetlabs/vanagon/compare/0.15.27...0.15.28
 [0.15.27]: https://github.com/puppetlabs/vanagon/compare/0.15.26...0.15.27
