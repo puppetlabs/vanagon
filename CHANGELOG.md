@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Don't use `match?` method that wasn't added until ruby 2.4.
 
 ## [0.15.30] - released on 2019-11-12
 ### Changed
