@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-155) Added `none` option to the `repo` binary so that repo can be
+  called without deb or rpm packages. This will be helpful in packaging pipelines
+  that do not always build deb or rpm packages.
 
 ## [0.15.31] - released on 2019-11-14
 ### Fixed
