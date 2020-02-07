@@ -21,7 +21,7 @@ Lint/EnsureReturn:
   Enabled: true
 
 # MAYBE useful - errors when rescue {} happens.
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: true
 
 Lint/ShadowingOuterLocalVariable:
@@ -115,7 +115,7 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/RescueException:
   Enabled: false
 
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Enabled: false
 
 Lint/UnusedBlockArgument:
@@ -145,13 +145,13 @@ Style/Alias:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Layout/AlignArray:
+Layout/ArrayAlignment:
   Enabled: false
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 
 Metrics/BlockNesting:
@@ -190,7 +190,7 @@ Style/RedundantCondition:
 Style/SafeNavigation:
   Enabled: false
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 
 Naming/RescuedExceptionsVariableName:
@@ -224,7 +224,7 @@ Style/WordArray:
 Style/RedundantPercentQ:
   Enabled: false
 
-Layout/AlignArguments:
+Layout/ArgumentAlignment:
   Enabled: false
 
 Layout/Tab:
@@ -233,7 +233,7 @@ Layout/Tab:
 Layout/SpaceBeforeSemicolon:
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
 
 Layout/SpaceInsideBlockBraces:
@@ -318,10 +318,10 @@ Style/EachWithObject:
 Layout/EmptyLineBetweenDefs:
   Enabled: false
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   Enabled: false
 
-Layout/IndentFirstHashElement:
+Layout/FirstHashElementIndentation:
   Enabled: false
 
 Layout/IndentationConsistency:
