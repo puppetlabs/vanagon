@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.15.32] - released on 2020-02-11
 ### Added
 - (VANAGON-155) Added `none` option to the `repo` binary so that repo can be
   called without deb or rpm packages. This will be helpful in packaging pipelines
@@ -818,7 +820,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.31...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.32...HEAD
+[0.15.32]: https://github.com/puppetlabs/vanagon/compare/0.15.31...0.15.32
 [0.15.31]: https://github.com/puppetlabs/vanagon/compare/0.15.30...0.15.31
 [0.15.30]: https://github.com/puppetlabs/vanagon/compare/0.15.29...0.15.30
 [0.15.29]: https://github.com/puppetlabs/vanagon/compare/0.15.28...0.15.29
