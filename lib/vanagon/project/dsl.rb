@@ -183,7 +183,7 @@ class Vanagon
         last_tag = repo_object.describe('HEAD', { :abbrev => 0 })
         release(repo_object.rev_list("#{last_tag}..HEAD", { :count => true }))
       rescue Git::GitExecuteError
-        warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        warn "Directory '#{File.expand_path('..', Vanagon::Driver.configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Sets the version for the project based on a git describe of the
@@ -194,7 +194,7 @@ class Vanagon
         git_version = Git.open(File.expand_path("..", Vanagon::Driver.configdir)).describe('HEAD', tags: true)
         version(git_version.split('-').reject(&:empty?).join('.'))
       rescue Git::GitExecuteError
-        warn "Directory '#{dirname}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        warn "Directory '#{File.expand_path('..', Vanagon::Driver.configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Get the version string from a git branch name. This will look for a '.'

@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (VANAGON-112) Fix undefined variable in warning message for version/release from git.
 
 ## [0.15.32] - released on 2020-02-11
 ### Added
