@@ -163,9 +163,6 @@ Style/AsciiComments:
 Style/Attr:
   Enabled: false
 
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 Style/CaseEquality:
   Enabled: false
 
@@ -339,7 +336,7 @@ Layout/EmptyLinesAroundAccessModifier:
 Style/EmptyLiteral:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Style/MethodCallWithoutArgsParentheses:
