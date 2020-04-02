@@ -19,6 +19,7 @@ WORKDIR = "#{WORK_BASE}/workdir"
 WIXTESTFILES = File.expand_path("./spec/fixtures/wix/resources/windows/wix")
 
 describe "Vanagon::Platform::Windows" do
+  let(:configdir) { '/a/b/c' }
   platforms =[
     {
       :name                   => "windows-2012r2-x64",
@@ -75,7 +76,7 @@ describe "Vanagon::Platform::Windows" do
         it "skips package generation for 'archive' package types" do
           cur_plat.instance_eval(plat[:block])
           cur_plat.package_type 'archive'
-          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj = Vanagon::Project::DSL.new('test-fixture', configdir, cur_plat._platform, [])
           proj.instance_eval(project_block)
           expect(cur_plat._platform.generate_package(proj._project)).to eq([])
         end
@@ -83,7 +84,7 @@ describe "Vanagon::Platform::Windows" do
         it "generates a package_name for 'archive' package types" do
           cur_plat.instance_eval(plat[:block])
           cur_plat.package_type 'archive'
-          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj = Vanagon::Project::DSL.new('test-fixture', configdir, cur_plat._platform, [])
           proj.instance_eval(project_block)
           expect(cur_plat._platform.package_name(proj._project)).to eq('test-fixture-0.0.0-archive')
         end
@@ -91,7 +92,7 @@ describe "Vanagon::Platform::Windows" do
         it "skips packaging artifact generation for 'archive' package types" do
           cur_plat.instance_eval(plat[:block])
           cur_plat.package_type 'archive'
-          proj = Vanagon::Project::DSL.new('test-fixture', cur_plat._platform, [])
+          proj = Vanagon::Project::DSL.new('test-fixture', configdir, cur_plat._platform, [])
           proj.instance_eval(project_block)
           expect(cur_plat._platform.generate_packaging_artifacts('',proj._project.name,'',proj._project)).to eq(nil)
         end
@@ -207,7 +208,7 @@ describe "Vanagon::Platform::Windows" do
         describe "generate_wix_dirs" do
 
           it "returns one directory with install_service defaults" do
-            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', configdir, vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -223,7 +224,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns one directory with non-default name" do
-            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', configdir, vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -239,7 +240,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns nested directory correctly with \\" do
-            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', configdir, vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -259,7 +260,7 @@ describe "Vanagon::Platform::Windows" do
 
 
           it "adds a second directory for the same input but different components" do
-            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', configdir, vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test', {}, cur_plat._platform)
@@ -278,7 +279,7 @@ describe "Vanagon::Platform::Windows" do
           end
 
           it "returns correctly formatted multiple nested directories" do
-            proj = Vanagon::Project::DSL.new('test-fixture', vanagon_platform, [])
+            proj = Vanagon::Project::DSL.new('test-fixture', configdir, vanagon_platform, [])
             proj.instance_eval(project_block)
             cur_plat.instance_eval(plat[:block])
             comp = Vanagon::Component::DSL.new('service-test-1', {}, cur_plat._platform)

@@ -118,7 +118,7 @@ class Vanagon
     # @raise if the instance_eval on Project fails, the exception is reraised
     def self.load_project(name, configdir, platform, include_components = [])
       projfile = File.join(configdir, "#{name}.rb")
-      dsl = Vanagon::Project::DSL.new(name, platform, include_components)
+      dsl = Vanagon::Project::DSL.new(name, File.dirname(configdir), platform, include_components)
       dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
     rescue StandardError => e
@@ -769,17 +769,18 @@ class Vanagon
     # @param upstream_project_name [String] The name of the vanagon project to load
     # @param upstream_git_url [URI] The URL to clone this vanagon project from
     # @param upstream_git_branch [String] The branch of the vanagon project to clone from
-    def load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
+    def load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch) # rubocop:disable Metrics/AbcSize
       Dir.mktmpdir do |working_directory|
         upstream_source = Vanagon::Component::Source::Git.new(upstream_git_url, workdir: working_directory, ref: upstream_git_branch)
         upstream_source.fetch
-        # We don't want to load any of the upstream components, so we're going to
-        # pass an array with an empty string as the component list for load_project
-        no_components = ['']
-        upstream_platform = Vanagon::Platform.load_platform(platform.name, File.join(working_directory, upstream_source.dirname, "configs", "platforms"))
-        upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), upstream_platform, no_components)
-        @settings.merge!(upstream_project.settings)
-        upstream_project.cleanup
+
+        Dir.chdir(File.join(working_directory, upstream_source.dirname)) do
+          upstream_platform = Vanagon::Platform.load_platform(platform.name, File.join(working_directory, upstream_source.dirname, "configs", "platforms"))
+          upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), upstream_platform)
+          @settings.merge!(upstream_project.settings)
+          @upstream_metadata = upstream_project.build_manifest_json
+          upstream_project.cleanup
+        end
       end
     end
 

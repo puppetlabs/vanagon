@@ -121,7 +121,7 @@ describe 'Vanagon::Project' do
     it 'returns only the highest level directories' do
       test_sets.each do |set|
         expect(component).to receive(:directories).and_return([])
-        proj = Vanagon::Project::DSL.new('test-fixture', platform, [])
+        proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform, [])
         proj.instance_eval(project_block)
         set[:directories].each {|dir| proj.directory dir }
         expect(proj._project.get_root_directories.sort).to eq(set[:results].sort)
@@ -138,32 +138,40 @@ describe 'Vanagon::Project' do
       expect(git_source).to receive(:fetch).and_return(true)
 
       # stubs for the upstream project
-      upstream_proj = Vanagon::Project::DSL.new('upstream-test', upstream_platform, [])
+      upstream_proj = Vanagon::Project::DSL.new('upstream-test', configdir, upstream_platform, [])
       upstream_proj.instance_eval(upstream_project_block)
       expect(Vanagon::Project).to receive(:load_project).and_return(upstream_proj._project)
       expect(Vanagon::Platform).to receive(:load_platform).and_return(upstream_platform)
+
+      class Vanagon
+        class Project
+          BUILD_TIME = '2017-07-10T13:34:25-07:00'
+          VANAGON_VERSION = '0.0.0-rspec'
+        end
+      end
+
     end
 
     it 'loads upstream settings' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', configdir, platform, [])
       inheriting_proj.instance_eval(inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
     end
 
     it 'overrides duplicate settings from before the load' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', configdir, platform, [])
       inheriting_proj.instance_eval(preset_inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
     end
 
     it 'lets you override settings after the load' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', configdir, platform, [])
       inheriting_proj.instance_eval(postset_inheriting_project_block)
       expect(inheriting_proj._project.settings[:test]).to eq('inheritance-test')
     end
 
     it 'merges settings' do
-      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', platform, [])
+      inheriting_proj = Vanagon::Project::DSL.new('inheritance-test', configdir, platform, [])
       inheriting_proj.instance_eval(inheriting_project_block_with_settings)
       expect(inheriting_proj._project.settings[:test]).to eq('upstream-test')
       expect(inheriting_proj._project.settings[:merged]).to eq('yup')
@@ -176,7 +184,7 @@ describe 'Vanagon::Project' do
     end
 
     it 'loads settings set in platforms' do
-      settings_proj = Vanagon::Project::DSL.new('settings-test', dummy_platform_settings, [])
+      settings_proj = Vanagon::Project::DSL.new('settings-test', configdir, dummy_platform_settings, [])
       settings_proj.instance_eval(project_block)
       expect(settings_proj._project.settings[:platform_test]).to eq('debian')
     end
@@ -531,7 +539,7 @@ describe 'Vanagon::Project' do
     it "builds packages by default" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
       platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
-      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
       expect(proj._project.generate_package).to eq(["# making a package"])
     end
@@ -539,7 +547,7 @@ describe 'Vanagon::Project' do
     it "builds packages and archives if configured for both" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
       platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
-      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_archives(true)
       expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
       expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
@@ -549,7 +557,7 @@ describe 'Vanagon::Project' do
     it "can build only archives" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
       platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
-      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_archives(true)
       proj.generate_packages(false)
       expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
@@ -559,7 +567,7 @@ describe 'Vanagon::Project' do
     it "builds nothing if that's what you really want" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
       platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
-      proj = Vanagon::Project::DSL.new('test-fixture', platform._platform, [])
+      proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_packages(false)
       expect(proj._project.generate_package).to eq([])
     end

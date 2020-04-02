@@ -12,13 +12,15 @@ class Vanagon
       # Constructor for the DSL object
       #
       # @param name [String] name of the project
+      # @param configdir [String] location for 'configs' directory for this project
       # @param platform [Vanagon::Platform] platform for the project to build against
       # @param include_components [List] optional list restricting the loaded components
       # @return [Vanagon::Project::DSL] A DSL object to describe the {Vanagon::Project}
-      def initialize(name, platform, include_components = [])
+      def initialize(name, configdir, platform, include_components = [])
         @name = name
         @project = Vanagon::Project.new(@name, platform)
         @include_components = include_components.to_set
+        @configdir = configdir
       end
 
       # Primary way of interacting with the DSL
@@ -179,11 +181,11 @@ class Vanagon
       # and reachable from the current commit in that repository.
       #
       def release_from_git
-        repo_object = Git.open(File.expand_path("..", Vanagon::Driver.configdir))
+        repo_object = Git.open(File.expand_path("..", @configdir))
         last_tag = repo_object.describe('HEAD', { :abbrev => 0 })
         release(repo_object.rev_list("#{last_tag}..HEAD", { :count => true }))
       rescue Git::GitExecuteError
-        warn "Directory '#{File.expand_path('..', Vanagon::Driver.configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        warn "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Sets the version for the project based on a git describe of the
@@ -191,10 +193,10 @@ class Vanagon
       # and reachable from the current commit in that repository.
       #
       def version_from_git
-        git_version = Git.open(File.expand_path("..", Vanagon::Driver.configdir)).describe('HEAD', tags: true)
+        git_version = Git.open(File.expand_path("..", @configdir)).describe('HEAD', tags: true)
         version(git_version.split('-').reject(&:empty?).join('.'))
       rescue Git::GitExecuteError
-        warn "Directory '#{File.expand_path('..', Vanagon::Driver.configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        warn "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Get the version string from a git branch name. This will look for a '.'
@@ -204,7 +206,7 @@ class Vanagon
       #
       # @return version string parsed from branch name, fails if unable to find version
       def version_from_branch
-        branch = Git.open(File.expand_path("..", Vanagon::Driver.configdir)).current_branch
+        branch = Git.open(File.expand_path("..", @configdir)).current_branch
         if branch =~ /(\d+(\.\d+)+)/
           return $1
         else
@@ -268,7 +270,7 @@ class Vanagon
       def component(name)
         warn "Loading #{name}" if @project.settings[:verbose]
         if @include_components.empty? or @include_components.include?(name)
-          component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
+          component = Vanagon::Component.load_component(name, File.join(@configdir, "components"), @project.settings, @project.platform)
           @project.components << component
         end
       end
