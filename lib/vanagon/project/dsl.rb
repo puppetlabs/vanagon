@@ -334,8 +334,9 @@ class Vanagon
       #
       # @param yaml_settings_uri [String] URI (file://... or http://...) to a file containing a yaml representation of vanagon settings
       # @param yaml_settings_sha1_uri [String] URI (file://... or http://...) to a file the sha1sum for the settings file
-      def inherit_yaml_settings(yaml_settings_uri, yaml_settings_sha1_uri = nil)
+      def inherit_yaml_settings(yaml_settings_uri, yaml_settings_sha1_uri = nil, metadata_uri: nil)
         @project.load_yaml_settings(yaml_settings_uri, yaml_settings_sha1_uri)
+        @project.load_upstream_metadata(metadata_uri) if metadata_uri
       end
 
       # Set a package override. Will call the platform-specific implementation

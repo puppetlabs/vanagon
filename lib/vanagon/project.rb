@@ -153,6 +153,7 @@ class Vanagon
       @compiled_archive = false
       @generate_packages = true
       @yaml_settings = false
+      @upstream_metadata = {}
       @no_packaging = false
       @artifacts_to_fetch = []
     end
@@ -693,23 +694,42 @@ class Vanagon
       end
     end
 
+    # Recursive merge of metadata hashes
+    # Input is not modified
+    # In case of duplicate keys, original value is kept
+    #
+    # @param original [Hash] Metadata hash from original project
+    # @param upstream [Hash] Metadata hash from upstream project
+    # @return [Hash]
+    def metadata_merge(original, upstream)
+      upstream.merge(original) do |key, upstream_value, original_value|
+        if original_value.is_a?(Hash)
+          metadata_merge(original_value, upstream_value)
+        else
+          original_value
+        end
+      end
+    end
+
     # Writes a json file at `ext/build_metadata.<project>.<platform>.json` containing information
     # about what went into a built artifact
     #
     # @return [Hash] of build information
     def save_manifest_json(platform)
-      manifest = build_manifest_json(true)
+      manifest = build_manifest_json
+      metadata = metadata_merge(manifest, @upstream_metadata)
+
       ext_directory = 'ext'
       FileUtils.mkdir_p ext_directory
 
       metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
       File.open(File.join(ext_directory, metadata_file_name), 'w') do |f|
-        f.write(manifest)
+        f.write(JSON.pretty_generate(metadata))
       end
 
       ## VANAGON-132 Backwards compatibility: make a 'build_metadata.json' file
       File.open(File.join(ext_directory, 'build_metadata.json'), 'w') do |f|
-        f.write(manifest)
+        f.write(JSON.pretty_generate(metadata))
       end
     end
 
@@ -797,6 +817,19 @@ class Vanagon
           yaml_path = File.join(working_directory, source.file)
         end
         @settings.merge!(YAML.safe_load(File.read(yaml_path), [Symbol]))
+      end
+    end
+
+    def load_upstream_metadata(metadata_uri)
+      puts "Loading metadata from #{metadata_uri}"
+      case metadata_uri
+      when /^http/
+        @upstream_metadata = JSON.parse(Net::HTTP.get(URI(metadata_uri)))
+      when /^file/
+        filename = metadata_uri.sub(/^file:\/\//, '')
+        @upstream_metadata = JSON.parse(File.read(filename))
+      else
+        raise Vanagon::Error, "Metadata URI must be 'file://' or 'http://', don't know how to parse #{metadata_uri}"
       end
     end
   end
