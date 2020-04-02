@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-144) Add ability to load `build_metadata` from another project. This
+  is useful when loading settings from another project. If you're loading settings
+  via `inherit_settings` the `build_metadata` will automatically be loaded. If
+  you're loading settings via `inherit_yaml_settings` you'll need to add the named
+  parameter `metadata_uri` and set that to the `file://` or `http://` location
+  of the upstream metadata json file.
+
 ### Fixed
 - (VANAGON-112) Fix undefined variable in warning message for version/release from git.
 
