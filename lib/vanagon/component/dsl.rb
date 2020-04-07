@@ -333,6 +333,15 @@ class Vanagon
         @component.options[:ref] = the_ref
       end
 
+      # Sets clone option for git repository
+      #
+      # @param option for cloning and value
+      def clone_option(option, value)
+        option_sym = option.to_sym
+        @component.options[:clone_options] ||= {}
+        @component.options[:clone_options][option_sym] = value
+      end
+
       # Set a build dir relative to the source directory.
       #
       # The build dir will be created before the configure block runs and configure/build/install commands will be run

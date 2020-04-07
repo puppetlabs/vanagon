@@ -35,7 +35,8 @@ class Vanagon
             return Vanagon::Component::Source::Git.new uri,
               sum: options[:sum],
               ref: options[:ref],
-              workdir: options[:workdir]
+              workdir: options[:workdir],
+              clone_options: options[:clone_options]
           end
 
           if source_type == :http

@@ -869,4 +869,15 @@ end" }
       expect(comp._component.rpm_ghost_files).to eq([Vanagon::Common::Pathname.file('ghost')])
     end
   end
+
+  describe "#clone option" do
+    it "sets a branch and depth options correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.clone_option 'depth', 10
+      comp.clone_option 'branch', 'foo'
+
+      expect(comp._component.options[:clone_options][:depth]).to eq(10)
+      expect(comp._component.options[:clone_options][:branch]).to eq('foo')
+    end
+  end
 end
