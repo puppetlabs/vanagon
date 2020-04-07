@@ -55,7 +55,7 @@ class Vanagon
           @url = URI.parse(url.to_s)
           @ref = opts[:ref]
           @workdir = File.realpath(workdir)
-          @clone_options = options[:clone_options] ||= {}
+          @clone_options = opts[:clone_options] ||= {}
 
           # We can test for Repo existence without cloning
           raise Vanagon::InvalidRepo, "#{url} not a valid Git repo" unless valid_remote?
