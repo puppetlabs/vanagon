@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.15.35] - released on 2020-04-29
 ### Fixed
 - (RE-13396) Fix debug_package handling in el-8
 
@@ -844,7 +846,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.34...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.35...HEAD
+[0.15.35]: https://github.com/puppetlabs/vanagon/compare/0.15.34...0.15.35
 [0.15.34]: https://github.com/puppetlabs/vanagon/compare/0.15.33...0.15.34
 [0.15.33]: https://github.com/puppetlabs/vanagon/compare/0.15.32...0.15.33
 [0.15.32]: https://github.com/puppetlabs/vanagon/compare/0.15.31...0.15.32
