@@ -1,14 +1,11 @@
 ---
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   Exclude:
     - '**/*.erb'
     - 'spec/**/*'
     - 'vendor/**/*'
     - 'examples/**/*'
-
-Lint/ConditionPosition:
-  Enabled: true
 
 Lint/ElseLayout:
   Enabled: true
@@ -24,8 +21,8 @@ Lint/EnsureReturn:
   Enabled: true
 
 # MAYBE useful - errors when rescue {} happens.
-Lint/HandleExceptions:
-  Enabled: false
+Lint/SuppressedException:
+  Enabled: true
 
 Lint/ShadowingOuterLocalVariable:
   Enabled: true
@@ -42,9 +39,8 @@ Layout/MultilineMethodCallIndentation:
 Style/RedundantReturn:
   Enabled: false
 
-# DISABLED since the instances do not seem to indicate any specific errors.
 Lint/AmbiguousOperator:
-  Enabled: false
+  Enabled: true
 
 # DISABLED since for all the checked, we are basically checking nil
 # TODO: Change the checking so that if the variable being assigned to has
@@ -81,19 +77,27 @@ Style/WhileUntilModifier:
 Lint/AmbiguousRegexpLiteral:
   Enabled: false
 
-# DISABLED
 Security/Eval:
-  Enabled: false
+  Enabled: true
+
 # DISABLED
-Lint/BlockAlignment:
+Layout/BlockAlignment:
   Enabled: false
 
 # DISABLED
-Lint/DefEndAlignment:
+Layout/DefEndAlignment:
   Enabled: false
 
 # DISABLED
-Lint/EndAlignment:
+Layout/EndAlignment:
+  Enabled: false
+
+# DISABLED
+Layout/ConditionPosition:
+  Enabled: false
+
+# DISABLED
+Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 # DISABLED
@@ -111,7 +115,7 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/RescueException:
   Enabled: false
 
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Enabled: false
 
 Lint/UnusedBlockArgument:
@@ -120,17 +124,14 @@ Lint/UnusedBlockArgument:
 Lint/UnusedMethodArgument:
   Enabled: false
 
-# DISABLED - TODO
 Lint/UselessAccessModifier:
-  Enabled: false
+  Enabled: true
 
-# DISABLED - TODO
 Lint/UselessAssignment:
-  Enabled: false
+  Enabled: true
 
-# DISABLED - TODO
 Lint/Void:
-  Enabled: false
+  Enabled: true
 
 Layout/AccessModifierIndentation:
   Enabled: false
@@ -141,13 +142,16 @@ Naming/AccessorMethodName:
 Style/Alias:
   Enabled: false
 
-Layout/AlignArray:
+Style/FrozenStringLiteralComment:
   Enabled: false
 
-Layout/AlignHash:
+Layout/ArrayAlignment:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/ParameterAlignment:
   Enabled: false
 
 Metrics/BlockNesting:
@@ -159,9 +163,6 @@ Style/AsciiComments:
 Style/Attr:
   Enabled: false
 
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 Style/CaseEquality:
   Enabled: false
 
@@ -169,6 +170,27 @@ Layout/CaseIndentation:
   Enabled: false
 
 Style/CharacterLiteral:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+
+Style/RedundantCondition:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
   Enabled: false
 
 Naming/ClassAndModuleCamelCase:
@@ -196,7 +218,10 @@ Style/WhenThen:
 Style/WordArray:
   Enabled: false
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
+  Enabled: false
+
+Layout/ArgumentAlignment:
   Enabled: false
 
 Layout/Tab:
@@ -205,7 +230,7 @@ Layout/Tab:
 Layout/SpaceBeforeSemicolon:
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
 
 Layout/SpaceInsideBlockBraces:
@@ -290,10 +315,10 @@ Style/EachWithObject:
 Layout/EmptyLineBetweenDefs:
   Enabled: false
 
-Layout/IndentArray:
+Layout/FirstArrayElementIndentation:
   Enabled: false
 
-Layout/IndentHash:
+Layout/FirstHashElementIndentation:
   Enabled: false
 
 Layout/IndentationConsistency:
@@ -311,7 +336,7 @@ Layout/EmptyLinesAroundAccessModifier:
 Style/EmptyLiteral:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Style/MethodCallWithoutArgsParentheses:
@@ -327,9 +352,6 @@ Layout/TrailingWhitespace:
   Enabled: true
 
 Style/StringLiterals:
-  Enabled: false
-
-Style/TrailingCommaInLiteral:
   Enabled: false
 
 Style/TrailingCommaInArguments:
@@ -501,6 +523,4 @@ Style/NumericLiteralPrefix:
 
 Style/ConditionalAssignment:
   Enabled: false
-
-Performance/Casecmp:
-  Enabled: false
+  

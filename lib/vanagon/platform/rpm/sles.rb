@@ -21,7 +21,7 @@ class Vanagon
           if definition.scheme =~ /^(http|ftp)/
             if File.extname(definition.path) == '.rpm'
               # repo definition is an rpm (like puppetlabs-release)
-              commands << "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+              commands << "curl --silent --show-error --fail -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
             else
               commands << "yes | zypper -n --no-gpg-checks #{flag} -t YUM --repo '#{definition}'"
             end

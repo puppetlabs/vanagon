@@ -44,7 +44,7 @@ class Vanagon
                       Vanagon::Platform::Solaris10.new(@name)
                     when /^solaris-11/
                       Vanagon::Platform::Solaris11.new(@name)
-                    when /^windows-/
+                    when /^windows/
                       Vanagon::Platform::Windows.new(@name)
                     else
                       fail "Platform not implemented for '#{@name}' yet. Please go do so..."
@@ -277,6 +277,13 @@ class Vanagon
         @platform.docker_image = image_name
       end
 
+      # Set additional `docker run` arguments to pass when creating containers
+      #
+      # @param args [Array<String>] array of CLI arguments for `docker run`
+      def docker_run_args(args)
+        @platform.docker_run_args = Array(args)
+      end
+
       # Set the ami for the platform to use
       #
       # @param ami [String] the ami id used.
@@ -404,6 +411,14 @@ class Vanagon
       # @raise [Vanagon::Error] an arror is raised if the current platform does not define add_repository
       def add_build_repository(*args)
         @platform.add_build_repository(*args)
+      end
+
+      def setting(name, value)
+        @platform.settings[name] = value
+      end
+
+      def settings
+        @platform.settings
       end
     end
   end

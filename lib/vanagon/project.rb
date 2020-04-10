@@ -7,7 +7,7 @@ require 'digest'
 require 'ostruct'
 
 # Used to parse the vendor field into name and email
-VENDOR_REGEX = /^(.*) <(.*)>$/
+VENDOR_REGEX = /^(.*) <(.*)>$/.freeze
 
 class Vanagon
   class Project
@@ -118,7 +118,7 @@ class Vanagon
     # @raise if the instance_eval on Project fails, the exception is reraised
     def self.load_project(name, configdir, platform, include_components = [])
       projfile = File.join(configdir, "#{name}.rb")
-      dsl = Vanagon::Project::DSL.new(name, platform, include_components)
+      dsl = Vanagon::Project::DSL.new(name, File.dirname(configdir), platform, include_components)
       dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
     rescue StandardError => e
@@ -139,7 +139,7 @@ class Vanagon
       @components = []
       @requires = []
       @directories = []
-      @settings = {}
+      @settings = platform.settings
       # Environments are like Hashes but with specific constraints
       # around their keys and values.
       @environment = Vanagon::Environment.new
@@ -153,6 +153,7 @@ class Vanagon
       @compiled_archive = false
       @generate_packages = true
       @yaml_settings = false
+      @upstream_metadata = {}
       @no_packaging = false
       @artifacts_to_fetch = []
     end
@@ -233,6 +234,16 @@ class Vanagon
       files = []
       files.push @version_file if @version_file
       files.push components.flat_map(&:files)
+      files.flatten.uniq
+    end
+
+    # Collects any rpm %ghost files supplied by components
+    #
+    # @return [Array] array of all files to be specified as %ghost entries
+    #   in an rpm %files section.
+    def get_rpm_ghost_files
+      files = []
+      files.push components.flat_map(&:rpm_ghost_files)
       files.flatten.uniq
     end
 
@@ -683,15 +694,42 @@ class Vanagon
       end
     end
 
-    # Writes a json file at `ext/build_metadata.json` containing information
+    # Recursive merge of metadata hashes
+    # Input is not modified
+    # In case of duplicate keys, original value is kept
+    #
+    # @param original [Hash] Metadata hash from original project
+    # @param upstream [Hash] Metadata hash from upstream project
+    # @return [Hash]
+    def metadata_merge(original, upstream)
+      upstream.merge(original) do |key, upstream_value, original_value|
+        if original_value.is_a?(Hash)
+          metadata_merge(original_value, upstream_value)
+        else
+          original_value
+        end
+      end
+    end
+
+    # Writes a json file at `ext/build_metadata.<project>.<platform>.json` containing information
     # about what went into a built artifact
     #
     # @return [Hash] of build information
-    def save_manifest_json
-      manifest = build_manifest_json(true)
-      FileUtils.mkdir_p 'ext'
-      File.open(File.join('ext', 'build_metadata.json'), 'w') do |f|
-        f.write(manifest)
+    def save_manifest_json(platform)
+      manifest = build_manifest_json
+      metadata = metadata_merge(manifest, @upstream_metadata)
+
+      ext_directory = 'ext'
+      FileUtils.mkdir_p ext_directory
+
+      metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
+      File.open(File.join(ext_directory, metadata_file_name), 'w') do |f|
+        f.write(JSON.pretty_generate(metadata))
+      end
+
+      ## VANAGON-132 Backwards compatibility: make a 'build_metadata.json' file
+      File.open(File.join(ext_directory, 'build_metadata.json'), 'w') do |f|
+        f.write(JSON.pretty_generate(metadata))
       end
     end
 
@@ -731,16 +769,18 @@ class Vanagon
     # @param upstream_project_name [String] The name of the vanagon project to load
     # @param upstream_git_url [URI] The URL to clone this vanagon project from
     # @param upstream_git_branch [String] The branch of the vanagon project to clone from
-    def load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch)
+    def load_upstream_settings(upstream_project_name, upstream_git_url, upstream_git_branch) # rubocop:disable Metrics/AbcSize
       Dir.mktmpdir do |working_directory|
         upstream_source = Vanagon::Component::Source::Git.new(upstream_git_url, workdir: working_directory, ref: upstream_git_branch)
         upstream_source.fetch
-        # We don't want to load any of the upstream components, so we're going to
-        # pass an array with an empty string as the component list for load_project
-        no_components = ['']
-        upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), platform, no_components)
-        @settings.merge!(upstream_project.settings)
-        upstream_project.cleanup
+
+        Dir.chdir(File.join(working_directory, upstream_source.dirname)) do
+          upstream_platform = Vanagon::Platform.load_platform(platform.name, File.join(working_directory, upstream_source.dirname, "configs", "platforms"))
+          upstream_project = Vanagon::Project.load_project(upstream_project_name, File.join(working_directory, upstream_source.dirname, "configs", "projects"), upstream_platform)
+          @settings.merge!(upstream_project.settings)
+          @upstream_metadata = upstream_project.build_manifest_json
+          upstream_project.cleanup
+        end
       end
     end
 
@@ -778,6 +818,19 @@ class Vanagon
           yaml_path = File.join(working_directory, source.file)
         end
         @settings.merge!(YAML.safe_load(File.read(yaml_path), [Symbol]))
+      end
+    end
+
+    def load_upstream_metadata(metadata_uri)
+      puts "Loading metadata from #{metadata_uri}"
+      case metadata_uri
+      when /^http/
+        @upstream_metadata = JSON.parse(Net::HTTP.get(URI(metadata_uri)))
+      when /^file/
+        filename = metadata_uri.sub(/^file:\/\//, '')
+        @upstream_metadata = JSON.parse(File.read(filename))
+      else
+        raise Vanagon::Error, "Metadata URI must be 'file://' or 'http://', don't know how to parse #{metadata_uri}"
       end
     end
   end

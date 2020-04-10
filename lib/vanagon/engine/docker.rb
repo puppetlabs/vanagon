@@ -21,7 +21,10 @@ class Vanagon
       def build_host_name
         if @build_host_name.nil?
           validate_platform
-          @build_host_name = @platform.docker_image
+          # Docker requires container names to match: [a-zA-Z0-9][a-zA-Z0-9_.-]
+          # So, transform slashes and colons commonly used as separators in
+          # image names.
+          @build_host_name = @platform.docker_image.gsub(%r{[/:]}, '_')
         end
 
         @build_host_name
@@ -30,13 +33,22 @@ class Vanagon
       # This method is used to obtain a vm to build upon using
       # a docker container.
       # @raise [Vanagon::Error] if a target cannot be obtained
-      def select_target
-        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{build_host_name}")
+      def select_target # rubocop:disable Metrics/AbcSize
+        extra_args = @platform.docker_run_args.nil? ? [] : @platform.docker_run_args
+
+        Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder -p #{@platform.ssh_port}:22 #{extra_args.join(' ')} #{@platform.docker_image}")
         @target = 'localhost'
 
-        # Wait for ssh to come up in the container
-        Vanagon::Utilities.retry_with_timeout do
-          Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @platform.ssh_port)
+        # Wait for ssh to come up in the container. Retry 5 times with a 1
+        # second sleep between errors to account for network resets while SSHD
+        # is starting. Allow a maximum of 5 seconds for SSHD to start.
+        Vanagon::Utilities.retry_with_timeout(5, 5) do
+          begin
+            Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @platform.ssh_port)
+          rescue StandardError => e
+            sleep(1) # Give SSHD some time to start.
+            raise e
+          end
         end
       rescue StandardError => e
         raise Vanagon::Error.wrap(e, "Something went wrong getting a target vm to build on using docker. Ssh was not up in the container after 5 seconds.")

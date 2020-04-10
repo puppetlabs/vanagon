@@ -114,6 +114,7 @@ class Vanagon
 
     # Docker engine specific
     attr_accessor :docker_image
+    attr_accessor :docker_run_args
 
     # AWS engine specific
     attr_accessor :aws_ami
@@ -134,9 +135,9 @@ class Vanagon
     # Platform names currently contain some information about the platform. Fields
     # within the name are delimited by the '-' character, and this regex can be used to
     # extract those fields.
-    PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/
+    PLATFORM_REGEX = /^(.*)-(.*)-(.*)$/.freeze
 
-    VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/
+    VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/.freeze
 
     # Loads a given platform from the configdir
     #
@@ -219,6 +220,7 @@ class Vanagon
     # @return [Vanagon::Platform] the platform with the given name
     def initialize(name) # rubocop:disable Metrics/AbcSize
       @name = name
+      @settings = {}
       @os_name = os_name
       @os_version = os_version
       @architecture = architecture
@@ -343,6 +345,20 @@ class Vanagon
       return !!@name.match(/^fedora-.*$/)
     end
 
+    # Utility matcher to determine is the platform is a debian variety
+    #
+    # @return [true, false] true if it is a debian variety, false otherwise
+    def is_debian?
+      return !!@name.match(/^debian-.*$/)
+    end
+
+    # Utility matcher to determine is the platform is a ubuntu variety
+    #
+    # @return [true, false] true if it is a ubuntu variety, false otherwise
+    def is_ubuntu?
+      return !!@name.match(/^ubuntu-.*$/)
+    end
+
     # Utility matcher to determine is the platform is an aix variety
     #
     # @return [true, false] true if it is an aix variety, false otherwise
@@ -409,7 +425,7 @@ class Vanagon
     #
     # @return [true, false] true if it is a windows variety, false otherwise
     def is_windows?
-      return !!@name.match(/^windows-.*$/)
+      return !!@name.match(/^windows.*$/)
     end
 
     # Utility matcher to determine is the platform is a linux variety

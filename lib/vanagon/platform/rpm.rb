@@ -68,14 +68,14 @@ class Vanagon
         if definition.scheme =~ /^(http|ftp)/
           if File.extname(definition.path) == '.rpm'
             # repo definition is an rpm (like puppetlabs-release)
-            commands << "curl -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
+            commands << "#{@curl} -o local.rpm '#{definition}'; rpm -Uvh local.rpm; rm -f local.rpm"
           else
             reponame = "#{SecureRandom.hex}-#{File.basename(definition.path)}"
             reponame = "#{reponame}.repo" if File.extname(reponame) != '.repo'
             if is_cisco_wrlinux?
-              commands << "curl -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
+              commands << "#{@curl} -o '/etc/yum/repos.d/#{reponame}' '#{definition}'"
             else
-              commands << "curl -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
+              commands << "#{@curl} -o '/etc/yum.repos.d/#{reponame}' '#{definition}'"
             end
           end
         end
@@ -103,6 +103,7 @@ class Vanagon
         @patch ||= "/usr/bin/patch"
         @num_cores ||= "/bin/grep -c 'processor' /proc/cpuinfo"
         @rpmbuild ||= "/usr/bin/rpmbuild"
+        @curl = "curl --silent --show-error --fail"
         super(name)
       end
     end

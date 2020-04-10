@@ -5,6 +5,107 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-144) Add ability to load `build_metadata` from another project. This
+  is useful when loading settings from another project. If you're loading settings
+  via `inherit_settings` the `build_metadata` will automatically be loaded. If
+  you're loading settings via `inherit_yaml_settings` you'll need to add the named
+  parameter `metadata_uri` and set that to the `file://` or `http://` location
+  of the upstream metadata json file.
+
+### Fixed
+- (VANAGON-112) Fix undefined variable in warning message for version/release from git.
+
+## [0.15.32] - released on 2020-02-11
+### Added
+- (VANAGON-155) Added `none` option to the `repo` binary so that repo can be
+  called without deb or rpm packages. This will be helpful in packaging pipelines
+  that do not always build deb or rpm packages.
+
+## [0.15.31] - released on 2019-11-14
+### Fixed
+- Don't use `match?` method that wasn't added until ruby 2.4.
+
+## [0.15.30] - released on 2019-11-12
+### Changed
+- (VANAGON-157) Make curl calls fail on error.
+
+### Added
+- Add Debian and Ubuntu platform utility matchers.
+- (VANAGON-72) Give platform access to the shared `settings` hash used by the
+  projects and components.
+
+### Fixed
+- (VANAGON-159) Update `parse_and_rewrite` method. It will now do no processing
+  if there aren't any rewrite rules. If there are rewrite rules and you're
+  specifying your git source with `git:http[...]`, this method will sub out the
+  `git:` to get around some of the extra processing fustigit does to URIs.
+- (VANAGON-35) Update `find_program_on_path` to support windows files with
+  extensions.
+
+## [0.15.29] - released on 2019-09-25
+### Changed
+- Loosen `is_windows?` to include windowsfips.
+
+## [0.15.28] - released on 2019-09-24
+### Changed
+- Loosen Windows platform definition to include windowsfips.
+
+## [0.15.27] - released on 2019-09-11
+### Added
+- Add `DEBIAN_FRONTEND=noninteractive` to apt curl install.
+
+## [0.15.26] - released on 2019-09-10
+### Added
+- (PA-2838) Add support for windowsfips-2012r2.
+- Add GitHub Action to publish gems on tag.
+
+## [0.15.25] - released on 2019-07-24
+### Added
+- (RE-12605) Add CODEOWNERS file.
+
+### Changed
+- Rewrite `file-list-for-rpm` with perl to drastically speed up current process. If perl is not available rpmspec will fall back to using the sed loop.
+
+### Removed
+- Remove out-of-date MAINTAINERS file.
+
+## [0.15.24] - released on 2019-07-08
+### Changed
+- (VANAGON-153) Update version in SMF manifest from the current version (which is always 1) to the puppet-runtime version since version is expected to be an integer value, per SMF documentation.
+- (VANAGON-153) Update the Solaris sed to `/usr/gnu/bin/sed` which is the GNU implementation.
+- (VANAGON-153) Use UNIX time for SMF version to ensure no two releases have the same version.
+
+### Fixed
+- (VANAGON-151) Update Docker engine with a 1 second sleep after each SSH failure to allow SSHD
+a chance to start up before Vanagon retries the command.
+
+## [0.15.23] - released on 2019-05-14
+### Added
+- (VANAGON-150) Allow platforms to specify `docker run` arguments.
+- (PA-2670) Add support for `get_version_forced` in the vanagon component which enables
+finding the version of git sources while the component is being processed.
+
+### Fixed
+- (VANAGON-101) Sanitize the docker container name so it won't contain invalid characters.
+
+## [0.15.22] - released on 2019-04-04
+### Changed
+- (VANAGON-147) Disable shebang munging in rpm spec file.
+
+## [0.15.21] - released on 2019-03-12
+### Added
+- (RE-12096) Set filesystem type when creating OSX packages to prevent signing
+failure of osx-10.14 packages.
+
+## [0.15.20] - released on 2019-02-12
+### Added
+- (PE-24814) Add support to handle ghostfile settings included in
+the `Component::DSL` which adds them to the final rpm spec.
+
+### Changed
+- (VANAGON-132) Create metadata files with `<project>.<platform>` in the file name.
+Previously `ext/build_metadata.json` now `ext/build_metadata.<project>.<platform>.json`.
 
 ## [0.15.19] - released on 2018-12-20
 ### Changed
@@ -729,7 +830,20 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.19...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.32...HEAD
+[0.15.32]: https://github.com/puppetlabs/vanagon/compare/0.15.31...0.15.32
+[0.15.31]: https://github.com/puppetlabs/vanagon/compare/0.15.30...0.15.31
+[0.15.30]: https://github.com/puppetlabs/vanagon/compare/0.15.29...0.15.30
+[0.15.29]: https://github.com/puppetlabs/vanagon/compare/0.15.28...0.15.29
+[0.15.28]: https://github.com/puppetlabs/vanagon/compare/0.15.27...0.15.28
+[0.15.27]: https://github.com/puppetlabs/vanagon/compare/0.15.26...0.15.27
+[0.15.26]: https://github.com/puppetlabs/vanagon/compare/0.15.25...0.15.26
+[0.15.25]: https://github.com/puppetlabs/vanagon/compare/0.15.24...0.15.25
+[0.15.24]: https://github.com/puppetlabs/vanagon/compare/0.15.23...0.15.24
+[0.15.23]: https://github.com/puppetlabs/vanagon/compare/0.15.22...0.15.23
+[0.15.22]: https://github.com/puppetlabs/vanagon/compare/0.15.21...0.15.22
+[0.15.21]: https://github.com/puppetlabs/vanagon/compare/0.15.20...0.15.21
+[0.15.20]: https://github.com/puppetlabs/vanagon/compare/0.15.19...0.15.20
 [0.15.19]: https://github.com/puppetlabs/vanagon/compare/0.15.18...0.15.19
 [0.15.18]: https://github.com/puppetlabs/vanagon/compare/0.15.17...0.15.18
 [0.15.17]: https://github.com/puppetlabs/vanagon/compare/0.15.16...0.15.17

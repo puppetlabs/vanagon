@@ -9,7 +9,6 @@ options = optparse.parse! ARGV
 
 project = ARGV[0]
 platforms = ARGV[1]
-targets = ARGV[2]
 
 if project.nil? or platforms.nil?
   warn "project and platform are both required arguments."

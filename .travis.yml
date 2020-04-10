@@ -7,8 +7,8 @@ script: "bundle exec ${CHECK}"
 notifications:
   email: false
 rvm:
-  - 2.1
-  - 2.2
+  - 2.4
+  - 2.6
 
 env:
   - "CHECK='rake test:spec'"
@@ -16,5 +16,5 @@ env:
 
 matrix:
   exclude:
-    - rvm: 2.1
+    - rvm: 2.4
       env: "CHECK='rake rubocop'"

@@ -163,6 +163,7 @@ class Vanagon
       @check = []
       @patches = []
       @files = Set.new
+      @ghost_files = Set.new
       @directories = []
       @replaces = []
       @provides = []
@@ -188,6 +189,16 @@ class Vanagon
       @files.add file
     end
 
+    # Adds the given file to the list of %ghost files to be added to an
+    # rpm spec's %files.
+    #
+    # @param file [Vanagon::Common::Pathname] file to add to the ghost file set.
+    # @return [Set, nil] Returns @ghost_files if the file is successfully added
+    #   to @ghost_files or nil if the file already exists.
+    def add_rpm_ghost_file(file)
+      @ghost_files.add file
+    end
+
     # Deletes the given file from the list of files and returns @files.
     #
     # @param file [String] path of file to delete from a component's list of files
@@ -211,6 +222,14 @@ class Vanagon
     # @return [Set] all files explicitly marked as configuration files
     def configfiles
       @files.select(&:configfile?)
+    end
+
+    # Retrieve all the files intended as %ghost entries for an rpm spec
+    # %files section.
+    #
+    # @return [Array] of all the rpm %ghost files.
+    def rpm_ghost_files
+      @ghost_files.to_a
     end
 
     # @return [Set] a list of unique mirror URIs that should be used to
@@ -362,6 +381,23 @@ class Vanagon
         FileUtils.mkdir_p(patch_target_directory)
         FileUtils.cp(patch.origin_path, patch_assembly_path)
       end
+    end
+
+    # Force version determination for components
+    #
+    # If the component doesn't already have a version set (which normally happens for git sources),
+    # the source will be fetched into a temporary directory to attempt to figure out the version if the
+    # source type supports :version. This directory will be cleaned once the get_sources method returns
+    #
+    # @raise Vanagon::Error raises a vanagon error if we're unable to determine the version
+    def force_version
+      if @version.nil?
+        Dir.mktmpdir do |dir|
+          get_source(dir)
+        end
+      end
+      raise Vanagon::Error, "Unable to determine source version for component #{@name}!" if @version.nil?
+      @version
     end
 
     # Prints the environment in a way suitable for use in a Makefile

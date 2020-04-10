@@ -38,6 +38,40 @@ describe "Vanagon::Component::Source::Git" do
       expect(git_source.workdir)
         .to eq('/tmp/bar')
     end
+
+    it "with no clone options should be empty" do
+      git_source = @klass.new(@local_url, ref: @ref_tag, workdir: "/tmp/foo")
+      expect(git_source.clone_options)
+          .to be {}
+    end
+
+    it "add clone options depth and branch" do
+      expected_clone_options = {:branch => "bar", :depth => 50 }
+      git_source = @klass.new(@local_url, ref: @ref_tag, workdir: "/tmp/foo", :clone_options => expected_clone_options)
+      expect(git_source.clone_options)
+          .to  be(expected_clone_options)
+    end
+  end
+
+  describe "#clone" do
+    before :each do
+      clone = double(Git::Base)
+      @file_path = "/tmp/foo"
+      allow(::Git).to receive(:clone).and_return(clone)
+      expect(File).to receive(:realpath).and_return(@file_path)
+    end
+    it "repository" do
+      git_source = @klass.new(@url, ref: @ref_tag, workdir: "/tmp/foo")
+      expect(::Git).to receive(:clone).with(git_source.url, git_source.dirname, path: @file_path)
+      git_source.clone
+    end
+
+    it "a particular branch with a depth" do
+      expected_clone_options = {:branch => "foo", :depth => 50 }
+      git_source = @klass.new(@url, ref: @ref_tag, workdir: "/tmp/foo", :clone_options => expected_clone_options)
+      expect(::Git).to receive(:clone).with(git_source.url, git_source.dirname, path: @file_path, **expected_clone_options)
+      git_source.clone
+    end
   end
 
   describe "#dirname" do

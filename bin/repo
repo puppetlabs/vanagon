@@ -20,6 +20,8 @@ when 'rpm'
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
 when 'deb'
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+when 'none'
+  $stdout.puts "Skipping repo generation since repo target is set to 'none'"
 else
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')

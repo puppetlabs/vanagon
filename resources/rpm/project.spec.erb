@@ -22,6 +22,13 @@
 # to resolve: "ERROR: No build ID note found"
 %undefine _missing_build_ids_terminate_build
 
+# Starting in Fedora 28 and RHEL 8, automatic shebang (#!) munging was added.
+# We don't want this in our software and it will interfere with third-party
+# dependencies that we don't control. See
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/2PD5RNJRKPN2DVTNGJSBHR5RUSVZSDZI/
+# for more info.
+%undefine __brp_mangle_shebangs
+
 <% @package_overrides.each do |var| %>
 <%= var %>
 <% end -%>
@@ -165,11 +172,15 @@ install -d %{buildroot}
 <%- end -%>
 
 # Here we turn all dirs in the file-list into %dir entries to avoid duplicate files
-while read entry; do
-  if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
-    <%= @platform.sed %> -i "\|^$entry\$|s|^|%dir |" %{SOURCE1}
-  fi
-done < %{SOURCE1}
+if command -v perl; then
+  perl -i -lne 'if ((-d $_) && !(-l $_)) { print "%dir $_" } else { print }' %{SOURCE1}
+else
+  while read entry; do
+    if [ -n "$entry" -a -d "$entry" -a ! -L "$entry" ]; then
+      <%= @platform.sed %> -i "\|^$entry\$|s|^|%dir |" %{SOURCE1}
+    fi
+  done < %{SOURCE1}
+fi
 
 
 %pre
@@ -365,6 +376,9 @@ fi
 <%- end -%>
 <%- get_files.each do |file| -%>
 %attr(<%= file.mode || "-" %>, <%= file.owner || "-" %>, <%= file.group || "-" %>) <%= file.path %>
+<%- end -%>
+<%- get_rpm_ghost_files.each do |file| -%>
+%ghost <%= file.path %>
 <%- end -%>
 
 %changelog

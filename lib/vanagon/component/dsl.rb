@@ -186,6 +186,8 @@ class Vanagon
           target_mode = '0644'
           default_mode = '0644'
         when "smf"
+          # modify version in smf manifest so service gets restarted after package upgrade
+          @component.install << %{#{@component.platform.sed} -ri 's/(<service.*version=)(".*")/\\1"#{Time.now.to_i}"/' #{service_file}}
           target_service_file = File.join(@component.platform.servicedir, service_type.to_s, "#{service_name}.xml")
           target_default_file = File.join(@component.platform.defaultdir, service_name)
           target_mode = '0644'
@@ -281,6 +283,16 @@ class Vanagon
         @component.add_file Vanagon::Common::Pathname.file(target)
       end
 
+      # Add a %ghost entry to the rpm %files section.
+      # This indicates a file that is tracked in the rpm database (the package
+      # manages it), but not installed. Used, for example, when setting up
+      # alternative packages for use with update-alternatives.
+      #
+      # @param path [String] installed path of the file.
+      def add_rpm_ghost_file(path)
+        @component.add_rpm_ghost_file(Vanagon::Common::Pathname.file(path))
+      end
+
       # Sets the version for the component
       #
       # @param ver [String] version of the component
@@ -319,6 +331,15 @@ class Vanagon
       # @param the_ref [String] ref, sha, branch or tag to checkout for a git source
       def ref(the_ref)
         @component.options[:ref] = the_ref
+      end
+
+      # Sets clone option for git repository
+      #
+      # @param option for cloning and value
+      def clone_option(option, value)
+        option_sym = option.to_sym
+        @component.options[:clone_options] ||= {}
+        @component.options[:clone_options][option_sym] = value
       end
 
       # Set a build dir relative to the source directory.
@@ -399,7 +420,7 @@ class Vanagon
       # This environment is included in the configure, build and install steps.
       #
       # @param env [Hash] mapping of keys to values to add to the environment for the component
-      def environment(*env) # rubocop:disable Metrics/AbcSize
+      def environment(*env)
         if env.size == 1 && env.first.is_a?(Hash)
           warn <<-WARNING.undent
             the component DSL method signature #environment({Key => Value}) is deprecated
@@ -500,6 +521,17 @@ class Vanagon
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['removal', 'upgrade']"
         end
         @component.preremove_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
+      end
+
+      # Force version determination for components
+      #
+      # If the component doesn't already have a version set (which normally happens for git sources),
+      # the source will be fetched into a temporary directory to attempt to figure out the version if the
+      # source type supports :version. This directory will be cleaned once the get_sources method returns
+      #
+      # @raise Vanagon::Error raises a vanagon error if we're unable to determine the version
+      def get_version_forced
+        @component.force_version
       end
 
       # Adds action to run during the postremoval phase of packaging

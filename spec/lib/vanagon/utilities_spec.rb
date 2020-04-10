@@ -44,6 +44,29 @@ describe "Vanagon::Utilities" do
 
       expect(Vanagon::Utilities.find_program_on_path(command, false)).to be(false)
     end
+
+    it 'finds commands with file extensions' do
+      # Set PATHEXT so we can test this outside of windows
+      orig_pathext = ENV['PATHEXT']
+      ENV['PATHEXT'] = '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL'
+      extensions = ENV['PATHEXT'].split(';')
+
+      # take a random element from path for testing
+      test_path = ENV['PATH'].split(File::PATH_SEPARATOR).sample
+      expect(FileTest).to receive(:executable?).with(File.join(test_path, "#{command}.VBS")).and_return(true)
+
+      # have an `allow` for the negative cases so rspec doesn't fail with unexpected
+      # function calls
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path_elem|
+        allow(FileTest).to receive(:executable?).with(File.join(path_elem, command))
+        extensions.each do |ext|
+          allow(FileTest).to receive(:executable?).with(File.join(path_elem, "#{command}#{ext}"))
+        end
+      end
+
+      expect(Vanagon::Utilities.find_program_on_path(command)).to eq(File.join(test_path, "#{command}.VBS"))
+      ENV['PATHEXT'] = orig_pathext
+    end
   end
 
   describe '#local_command' do
