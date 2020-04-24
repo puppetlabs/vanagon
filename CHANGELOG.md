@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.15.33] - released on 2020-04-14
 ### Added
 - (VANAGON-144) Add ability to load `build_metadata` from another project. This
   is useful when loading settings from another project. If you're loading settings
@@ -12,6 +14,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   you're loading settings via `inherit_yaml_settings` you'll need to add the named
   parameter `metadata_uri` and set that to the `file://` or `http://` location
   of the upstream metadata json file.
+- (VANAGON-161) Add support for setting clone options for components. This is
+  set with the `clone_option` component DSL method that takes in the option name
+  and value as parameters. This method can be called multiple times. This supports
+  the clone options from [ruby-git](https://github.com/ruby-git/ruby-git) which
+  include `bare`, `branch`, `depth`, `origin`, `path`, `remote` and `recursive`.
 
 ### Fixed
 - (VANAGON-112) Fix undefined variable in warning message for version/release from git.
@@ -830,7 +837,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.32...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.33...HEAD
+[0.15.33]: https://github.com/puppetlabs/vanagon/compare/0.15.32...0.15.33
 [0.15.32]: https://github.com/puppetlabs/vanagon/compare/0.15.31...0.15.32
 [0.15.31]: https://github.com/puppetlabs/vanagon/compare/0.15.30...0.15.31
 [0.15.30]: https://github.com/puppetlabs/vanagon/compare/0.15.29...0.15.30
