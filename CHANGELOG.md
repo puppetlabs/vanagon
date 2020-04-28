@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (RE-13396) Fix debug_package handling in el-8
 
 ## [0.15.34] - released on 2020-04-28
 ### Fixed
