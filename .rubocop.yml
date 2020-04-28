@@ -1,6 +1,6 @@
 ---
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Exclude:
     - '**/*.erb'
     - 'spec/**/*'
@@ -224,8 +224,8 @@ Style/RedundantPercentQ:
 Layout/ArgumentAlignment:
   Enabled: false
 
-Layout/Tab:
-  Enabled: false
+#Layout/Tab:
+#  Enabled: false
 
 Layout/SpaceBeforeSemicolon:
   Enabled: true
