@@ -822,7 +822,7 @@ class Vanagon
     end
 
     def load_upstream_metadata(metadata_uri)
-      puts "Loading metadata from #{metadata_uri}"
+      warn "Loading metadata from #{metadata_uri}"
       case metadata_uri
       when /^http/
         @upstream_metadata = JSON.parse(Net::HTTP.get(URI(metadata_uri)))

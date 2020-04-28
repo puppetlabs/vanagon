@@ -6,6 +6,11 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.15.34] - released on 2020-04-28
+### Fixed
+- (maint) Move informational output about loading inherited metadata to stderr
+  instead of stdout.
+
 ## [0.15.33] - released on 2020-04-14
 ### Added
 - (VANAGON-144) Add ability to load `build_metadata` from another project. This
@@ -837,7 +842,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.33...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.34...HEAD
+[0.15.34]: https://github.com/puppetlabs/vanagon/compare/0.15.33...0.15.34
 [0.15.33]: https://github.com/puppetlabs/vanagon/compare/0.15.32...0.15.33
 [0.15.32]: https://github.com/puppetlabs/vanagon/compare/0.15.31...0.15.32
 [0.15.31]: https://github.com/puppetlabs/vanagon/compare/0.15.30...0.15.31
