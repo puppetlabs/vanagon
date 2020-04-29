@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (maint) Another el-8 debug_package fix that we missed the first time.
 
 ## [0.15.35] - released on 2020-04-29
 ### Fixed
