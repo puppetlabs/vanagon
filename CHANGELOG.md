@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (maint) Fix for invalid build metadata JSON when generating compiled archives.
 
 ## [0.15.37] - released on 2020-05-06
 ### Changed

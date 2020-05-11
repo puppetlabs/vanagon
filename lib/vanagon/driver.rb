@@ -140,7 +140,7 @@ class Vanagon
       @project.make_bill_of_materials(workdir)
       # Don't generate packaging artifacts if no_packaging is set
       @project.generate_packaging_artifacts(workdir) unless @project.no_packaging
-      @project.save_manifest_json(@platform)
+      @project.save_manifest_json(@platform, workdir)
       @engine.ship_workdir(workdir)
       @engine.dispatch("(cd #{@engine.remote_workdir}; #{@platform.make} #{make_target})")
       @engine.retrieve_built_artifact(@project.artifacts_to_fetch, @project.no_packaging)

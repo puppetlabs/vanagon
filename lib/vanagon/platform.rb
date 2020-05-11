@@ -486,9 +486,9 @@ class Vanagon
     def generate_compiled_archive(project)
       name_and_version = "#{project.name}-#{project.version}"
       name_and_version_and_platform = "#{name_and_version}.#{name}"
+      name_and_platform = "#{project.name}.#{name}"
       final_archive = "output/#{name_and_version_and_platform}.tar.gz"
       archive_directory = "#{project.name}-archive"
-      metadata = project.build_manifest_json(true)
 
       # previously, we weren't properly handling the case of custom BOM paths.
       # If we have a custom BOM path, during Makefile execution, the top-level
@@ -503,7 +503,6 @@ class Vanagon
         bill_of_materials_command = "mv .#{project.bill_of_materials.path}/bill-of-materials ../.."
       end
 
-      metadata.gsub!(/\n/, '\n')
       [
         "mkdir output",
         "mkdir #{archive_directory}",
@@ -511,7 +510,7 @@ class Vanagon
         "rm #{name_and_version}.tar.gz",
         "cd #{archive_directory}/#{name_and_version}; #{bill_of_materials_command}; #{tar} cf ../../#{name_and_version_and_platform}.tar *",
         "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
-        "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
+        "cp build_metadata.#{name_and_platform}.json output/#{name_and_version_and_platform}.json",
         "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
         "cp #{name_and_version_and_platform}.tar.gz output",
         "#{shasum} #{final_archive} > #{final_archive}.sha1"

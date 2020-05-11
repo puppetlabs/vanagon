@@ -714,20 +714,27 @@ class Vanagon
     # Writes a json file at `ext/build_metadata.<project>.<platform>.json` containing information
     # about what went into a built artifact
     #
-    # @return [Hash] of build information
-    def save_manifest_json(platform)
+    # @param platform [String] platform we're writing metadata for
+    # @param additional_directories [String|Array[String]] additional
+    #        directories to write build_metadata.<project>.<platform>.json to
+    def save_manifest_json(platform, additional_directories = nil) # rubocop:disable Metrics/AbcSize
       manifest = build_manifest_json
       metadata = metadata_merge(manifest, @upstream_metadata)
 
       ext_directory = 'ext'
       FileUtils.mkdir_p ext_directory
 
+      directories = [ext_directory, additional_directories].compact
       metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
-      File.open(File.join(ext_directory, metadata_file_name), 'w') do |f|
-        f.write(JSON.pretty_generate(metadata))
+      directories.each do |directory|
+        File.open(File.join(directory, metadata_file_name), 'w') do |f|
+          f.write(JSON.pretty_generate(metadata))
+        end
       end
 
       ## VANAGON-132 Backwards compatibility: make a 'build_metadata.json' file
+      # No need to propagate this backwards compatibility to the new additional
+      # directories
       File.open(File.join(ext_directory, 'build_metadata.json'), 'w') do |f|
         f.write(JSON.pretty_generate(metadata))
       end
