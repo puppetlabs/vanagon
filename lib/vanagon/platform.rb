@@ -504,6 +504,7 @@ class Vanagon
       end
 
       metadata.gsub!(/\n/, '\n')
+      metadata.gsub!(/\"/, '\"')
       [
         "mkdir output",
         "mkdir #{archive_directory}",
