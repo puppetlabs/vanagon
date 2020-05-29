@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Fixed
 - (maint) Fix for invalid build metadata JSON when generating compiled archives.
+- (RE-13296) Follow redirects when installing rpm/deb repos.
 
 ## [0.15.37] - released on 2020-05-06
 ### Changed

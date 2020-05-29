@@ -103,7 +103,7 @@ class Vanagon
         @patch ||= "/usr/bin/patch"
         @num_cores ||= "/bin/grep -c 'processor' /proc/cpuinfo"
         @rpmbuild ||= "/usr/bin/rpmbuild"
-        @curl = "curl --silent --show-error --fail"
+        @curl = "curl --silent --show-error --fail --location"
         super(name)
       end
     end
