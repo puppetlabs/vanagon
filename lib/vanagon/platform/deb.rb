@@ -140,7 +140,7 @@ class Vanagon
         @tar = "tar"
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/bin/nproc"
-        @curl = "curl --silent --show-error --fail"
+        @curl = "curl --silent --show-error --fail --location"
         @valid_operators = ['<', '>', '<=', '>=', '=', '<<', '>>']
         super(name)
       end
