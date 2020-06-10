@@ -9,6 +9,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (maint) Fix for invalid build metadata JSON when generating compiled archives.
 - (RE-13296) Follow redirects when installing rpm/deb repos.
 
+### Added
+- (RE-13303) Add the ability to sign additional files on windows during the MSI
+build step.
+
 ## [0.15.37] - released on 2020-05-06
 ### Changed
 - (maint) Build el-8 packages without build-id files to prevent collision errors.

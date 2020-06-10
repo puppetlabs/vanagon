@@ -108,6 +108,14 @@ class Vanagon
     # you just want to perform installation and pull down a file.
     attr_accessor :no_packaging
 
+    # Extra files to sign
+    # Right now just supported on windows, useful for signing powershell scripts
+    # that need to be signed between build and MSI creation
+    attr_accessor :extra_files_to_sign
+    attr_accessor :signing_hostname
+    attr_accessor :signing_username
+    attr_accessor :signing_command
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -156,6 +164,10 @@ class Vanagon
       @upstream_metadata = {}
       @no_packaging = false
       @artifacts_to_fetch = []
+      @extra_files_to_sign = []
+      @signing_hostname = ''
+      @signing_username = ''
+      @signing_command = ''
     end
 
     # Magic getter to retrieve settings in the project

@@ -363,6 +363,39 @@ class Vanagon
       def no_packaging(var)
         @project.no_packaging = var
       end
+
+      # Set to sign additional files during buildtime. Only implemented for
+      # windows. Can be specified more than once
+      #
+      # @param [String] file to sign
+      def extra_file_to_sign(file)
+        @project.extra_files_to_sign << file
+      end
+
+      # The hostname to sign additional files on. Only does anything when there
+      # are extra files to sign
+      #
+      # @param [String] hostname of the machine to run the extra file signing on
+      def signing_hostname(hostname)
+        @project.signing_hostname = hostname
+      end
+
+      # The username to log in to the signing_hostname as. Only does anything
+      # when there are extra files to sign
+      #
+      # @param [String] the username to log in to `signing_hostname` as
+      def signing_username(username)
+        @project.signing_username = username
+      end
+
+      # The command to run to sign additional files. The command should assume
+      # it will have the file path appended to the end of the command, since
+      # files end up in a temp directory.
+      #
+      # @param [String] the command to sign additional files
+      def signing_command(command)
+        @project.signing_command = command
+      end
     end
   end
 end

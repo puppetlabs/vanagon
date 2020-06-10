@@ -205,11 +205,36 @@ class Vanagon
         # "Misc Dir for versions.txt, License file and Icon file"
         misc_dir = "SourceDir/#{project.settings[:base_dir]}/#{project.settings[:company_id]}/#{project.settings[:product_id]}/misc"
         # Actual array of commands to be written to the Makefile
-        [
+        make_commands = [
           "mkdir -p output/#{target_dir}",
           "mkdir -p $(tempdir)/{SourceDir,wix/wixobj}",
           "#{@copy} -r wix/* $(tempdir)/wix/",
-          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -",
+          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/SourceDir' --strip-components 1 -xf -"
+        ]
+
+        unless project.extra_files_to_sign.empty?
+          begin
+            tempdir = nil
+            # Skip signing extra files if logging into the signing_host fails
+            # This enables things like CI being able to sign the additional files,
+            # but locally triggered builds by developers who don't have access to
+            # the signing host just print a message and skip the signing.
+            Vanagon::Utilities.retry_with_timeout(3, 5) do
+              tempdir = Vanagon::Utilities::remote_ssh_command("#{project.signing_username}@#{project.signing_hostname}", "#{@mktemp} 2>/dev/null", return_command_output: true)
+            end
+            project.extra_files_to_sign.each do |file|
+              file_location = File.join(tempdir, File.basename(file))
+              make_commands << [
+                "rsync -e '#{Vanagon::Utilities.ssh_command}' -rHlv --no-perms --no-owner --no-group #{File.join('$(tempdir)', 'SourceDir', file)} #{project.signing_username}@#{project.signing_hostname}:#{tempdir}",
+                "#{Vanagon::Utilities.ssh_command} #{project.signing_username}@#{project.signing_hostname} #{project.signing_command} #{file_location}",
+                "rsync -e '#{Vanagon::Utilities.ssh_command}' -rHlv -O --no-perms --no-owner --no-group #{project.signing_username}@#{project.signing_hostname}:#{file_location} #{File.join('$(tempdir)', 'SourceDir', file)}"
+              ]
+            end
+          rescue RuntimeError
+            warn "Unable to connect to #{project.signing_username}@#{project.signing_hostname}, skipping signing extra files: #{project.extra_files_to_sign.join(',')}"
+          end
+        end
+        make_commands << [
           "mkdir -p $(tempdir)/#{misc_dir}",
           # Need to use awk here to convert to DOS format so that notepad can display file correctly.
           "awk 'sub(\"$$\", \"\\r\")' $(tempdir)/SourceDir/bill-of-materials > $(tempdir)/#{misc_dir}/versions.txt",
@@ -225,6 +250,8 @@ class Vanagon
           # -loc is required for the UI localization it points to the actual localization .wxl
           "cd $(tempdir)/wix/wixobj; \"$$WIX/bin/light.exe\" #{light_flags} -b $$(cygpath -aw $(tempdir)) -loc $$(cygpath -aw $(tempdir)/wix/localization/puppet_en-us.wxl) -out $$(cygpath -aw $(workdir)/output/#{target_dir}/#{msi_package_name(project)}) *.wixobj",
         ]
+
+        make_commands.flatten
       end
 
       # Method to derive the msi (Windows Installer) package name for the project.
