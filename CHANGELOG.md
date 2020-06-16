@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.15.38] - released on 2020-06-16
 ### Fixed
 - (maint) Fix for invalid build metadata JSON when generating compiled archives.
 - (RE-13296) Follow redirects when installing rpm/deb repos.
@@ -861,7 +863,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.37...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.38...HEAD
+[0.15.38]: https://github.com/puppetlabs/vanagon/compare/0.15.37...0.15.38
 [0.15.37]: https://github.com/puppetlabs/vanagon/compare/0.15.36...0.15.37
 [0.15.36]: https://github.com/puppetlabs/vanagon/compare/0.15.35...0.15.36
 [0.15.35]: https://github.com/puppetlabs/vanagon/compare/0.15.34...0.15.35
