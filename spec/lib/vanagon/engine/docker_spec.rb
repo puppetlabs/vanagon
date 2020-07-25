@@ -1,7 +1,7 @@
 require 'vanagon/engine/docker'
 require 'vanagon/platform'
 
-describe 'Vanagon::Engine::Docker' do
+describe Vanagon::Engine::Docker do
   let (:platform_with_docker_image) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
@@ -16,6 +16,17 @@ describe 'Vanagon::Engine::Docker' do
                     end")
     plat._platform
   }
+
+  let(:platform_with_docker_exec) do
+    plat = Vanagon::Platform::DSL.new('debian-10-amd64')
+    plat.instance_eval(<<~EOF)
+      platform 'debian-10-amd64' do |plat|
+        plat.docker_image 'debian:10-slim'
+        plat.use_docker_exec true
+      end
+    EOF
+    plat._platform
+  end
 
   describe '#initialize' do
     it 'fails without docker installed' do
@@ -42,5 +53,48 @@ describe 'Vanagon::Engine::Docker' do
   it 'returns "docker" name' do
     expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
     expect(Vanagon::Engine::Docker.new(platform_with_docker_image).name).to eq('docker')
+  end
+
+  describe '#dispatch' do
+    context 'when platform has use_docker_exec set' do
+      subject { described_class.new(platform_with_docker_exec) }
+
+      it 'uses docker exec' do
+        expect(Vanagon::Utilities).to receive(:remote_ssh_command).never
+        expect(subject).to receive(:docker_exec)
+
+        subject.dispatch('true', true)
+      end
+    end
+  end
+
+  describe '#ship_workdir' do
+    context 'when platform has use_docker_exec set' do
+      subject { described_class.new(platform_with_docker_exec) }
+
+      it 'uses docker cp' do
+        expect(Vanagon::Utilities).to receive(:rsync_to).never
+        expect(subject).to receive(:docker_cp_globs_to)
+
+        subject.ship_workdir('foo/')
+      end
+    end
+  end
+
+  describe '#retrieve_built_artifact' do
+    context 'when platform has use_docker_exec set' do
+      subject { described_class.new(platform_with_docker_exec) }
+
+      before(:each) do
+        allow(FileUtils).to receive(:mkdir_p)
+      end
+
+      it 'uses docker cp' do
+        expect(Vanagon::Utilities).to receive(:rsync_from).never
+        expect(subject).to receive(:docker_cp_globs_from)
+
+        subject.retrieve_built_artifact('output/*', false)
+      end
+    end
   end
 end

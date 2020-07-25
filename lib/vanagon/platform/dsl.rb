@@ -284,6 +284,17 @@ class Vanagon
         @platform.docker_run_args = Array(args)
       end
 
+      # Specify whether to use Docker exec instead of SSH to run commands
+      #
+      # This also causes Vanagon to use `docker cp` instead of `rsync` when
+      # copying files.
+      #
+      # @param bool [Boolean] a boolean value indicating whether to use
+      #   `docker exec` and `docker cp` over `ssh` and `rsync`.
+      def use_docker_exec(bool)
+        @platform.use_docker_exec = bool
+      end
+
       # Set the ami for the platform to use
       #
       # @param ami [String] the ami id used.

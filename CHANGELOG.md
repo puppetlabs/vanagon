@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+- (VANAGON-100) Allow `--engine docker` to use `docker exec` and `docker cp`
+  instead of `ssh` and `rsync` by setting `use_docker_exec true` in a
+  platform definition.
+
 ## [0.15.38] - released on 2020-06-16
 ### Fixed
 - (maint) Fix for invalid build metadata JSON when generating compiled archives.
