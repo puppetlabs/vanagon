@@ -115,6 +115,7 @@ class Vanagon
     # Docker engine specific
     attr_accessor :docker_image
     attr_accessor :docker_run_args
+    attr_accessor :use_docker_exec
 
     # AWS engine specific
     attr_accessor :aws_ami
@@ -237,6 +238,8 @@ class Vanagon
       @sort ||= "sort"
       @copy ||= "cp"
       @shasum ||= "sha1sum"
+
+      @use_docker_exec = false
 
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
