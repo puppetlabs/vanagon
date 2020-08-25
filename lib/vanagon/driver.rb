@@ -29,7 +29,6 @@ class Vanagon
       components = options[:components] || []
       only_build = options[:only_build]
       target = options[:target]
-      engine = options[:engine] || 'pooler'
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
@@ -40,7 +39,14 @@ class Vanagon
 
       @remote_workdir = options[:"remote-workdir"]
 
-      load_engine(engine, @platform, target)
+      if options[:engine]
+        # Use the explicitly configured engine.
+        load_engine_object(options[:engine], @platform, target)
+      else
+        # Use 'pooler' as a default, but also apply selection logic that may
+        # choose something different based on platform configuration.
+        load_engine('pooler', @platform, target)
+      end
     rescue LoadError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
     end
