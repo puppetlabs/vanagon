@@ -113,6 +113,14 @@ class Vanagon
       #   For example, `**` may not work.
       def docker_cp_globs_from(globs, host_path)
         Array(globs).each do |glob|
+          # Match the behavior of `rsync -r` when both paths are directories
+          # by copying the contents of the directory instead of the directory.
+          glob += '*' if glob.end_with?('/') && host_path.end_with?('/')
+
+          # TODO: This doesn't handle "interesting" paths. E.g. paths with
+          #   spaces or other special non-glob characters. This could be
+          #   fixed with a variant of `Shellwords.shellescape` that allows
+          #   glob characters to pass through.
           paths = docker_exec(%(for file in #{glob};do [ -e "$file" ] && printf '%s\\0' "${file}";done), true).split("\0")
 
           paths.each do |path|
