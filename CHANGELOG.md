@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+
+- (VANAGON-163) Vanagon now prioritizes the `--engine` CLI flag over logic
+  that picks the engine based on features used by the platform definition.
+
+### Added
 
 - (VANAGON-100) Allow `--engine docker` to use `docker exec` and `docker cp`
   instead of `ssh` and `rsync` by setting `use_docker_exec true` in a
