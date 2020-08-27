@@ -47,8 +47,6 @@ class Vanagon
         # choose something different based on platform configuration.
         load_engine('pooler', @platform, target)
       end
-    rescue LoadError => e
-      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine}'")
     end
 
     def filter_out_components(only_build)
@@ -79,8 +77,8 @@ class Vanagon
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
       @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, remote_workdir: remote_workdir)
-    rescue StandardError
-      fail "No such engine '#{camelize(engine_type)}'"
+    rescue StandardError, ScriptError => e
+      raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine_type}'")
     end
 
     def camelize(string)
