@@ -6,6 +6,9 @@ ENV["PROJECT_ROOT"] = Dir.pwd
 # This is not intended to function outside of Puppet Labs' infrastructure.
 # End of warning.
 
+warn "Warning: use of stand alone 'ship' command is deprecated and may be removed.
+     Use: 'vanagon ship' instead."
+
 artifactory_warning = <<-DOC
   Unable to ship packages to artifactory. Please make sure you are pointing to a
   recent version of packaging in your Gemfile. Please also make sure you include

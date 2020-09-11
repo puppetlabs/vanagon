@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
+
+vanagon = Vanagon::CLI.new
+
+vanagon.parse!(ARGV)
+vanagon.run
+

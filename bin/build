@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
+
+warn "Warning: use of stand alone 'build' command is deprecated and may be removed.
+     Use: 'vanagon build' instead."
+
 load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
 
 optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name>[,<platform-name>...] [<target>,<target>...] [options]",

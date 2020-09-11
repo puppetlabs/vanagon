@@ -6,6 +6,9 @@ ENV["PROJECT_ROOT"] = Dir.pwd
 # This is not intended to function outside of Puppet Labs' infrastructure.
 # End of warning.
 
+warn "Warning: use of stand alone 'sign' command is deprecated and may be removed.
+     Use: 'vanagon sign' instead."
+
 if Dir["output/**/*"].select { |entry| File.file?(entry) }.empty?
   fail "No packages to sign in the output directory. Maybe you want to build some first?"
 end
