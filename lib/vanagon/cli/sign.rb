@@ -14,7 +14,6 @@ class Vanagon
       def self.parse(argv)
         Docopt.docopt(DOCUMENTATION, {
                         argv: argv,
-                        version: VANAGON_VERSION,
                         options_first: true
                       })
       rescue Docopt::Exit => e

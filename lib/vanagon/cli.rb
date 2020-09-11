@@ -36,9 +36,6 @@ class Vanagon
         @options = Vanagon::CLI::Sign.parse(sub_argv)
       when 'ship'
         @options = Vanagon::CLI::Ship.parse(sub_argv)
-      when 'version'
-        puts "Vanagon version #{::VANAGON_VERSION}"
-        exit 0
       when 'help'
         puts DOCUMENTATION
         exit 0
@@ -140,7 +137,6 @@ class Vanagon
     def parse_options(argv)
       Docopt.docopt(DOCUMENTATION, {
                       argv: argv,
-                      version: ::VANAGON_VERSION,
                       options_first: true
                     })
     rescue Docopt::Exit => e
