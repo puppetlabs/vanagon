@@ -2,7 +2,7 @@ require 'docopt'
 
 class Vanagon
   class CLI
-    class Build
+    class Build < Vanagon::CLI
       DOCUMENTATION = <<~DOCOPT
         Usage:
         build [options] <project-name> <platforms> [<targets>]
@@ -21,7 +21,7 @@ class Vanagon
           -v, --verbose                    Only here for backwards compatibility. Does nothing.
       DOCOPT
 
-      def self.parse(argv)
+      def parse(argv)
         Docopt.docopt(DOCUMENTATION, {
                         argv: argv,
                         options_first: true
@@ -29,6 +29,49 @@ class Vanagon
       rescue Docopt::Exit => e
         puts e.message
         exit 1
+      end
+
+      def run(options)
+        project = options[:project_name]
+        platform_list = options[:platforms].split(',')
+        target_list = []
+        unless options[:targets].nil? || options[:targets].empty?
+          target_list = options[:targets].split(',')
+        end
+
+        platform_list.zip(target_list).each do |pair|
+          platform, target = pair
+          artifact = Vanagon::Driver.new(platform, project, options.merge({ 'target' => target }))
+          artifact.run
+        end
+      end
+
+      def options_translate(docopt_options)
+        translations = {
+          '--verbose' => :verbose,
+          '--workdir' => :workdir,
+          '--remote-workdir' => :"remote-workdir",
+          '--configdir' => :configdir,
+          '--engine' => :engine,
+          '--skipcheck' => :skipcheck,
+          '--preserve' => :preserve,
+          '--only-build' => :only_build,
+          '<project-name>' => :project_name,
+          '<platforms>' => :platforms,
+          '<targets>' => :targets
+        }
+        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+      end
+
+      def options_validate(options)
+        # Handle --preserve option checking
+        valid_preserves = %w[always never on-failure]
+        unless valid_preserves.include? options[:preserve]
+          raise InvalidArgument, "--preserve option can only be one of: " +
+                                 valid_preserves.join(', ')
+        end
+        options[:preserve] = options[:preserve].to_sym
+        return options
       end
     end
   end
