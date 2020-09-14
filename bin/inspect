@@ -1,25 +1,8 @@
 #!/usr/bin/env ruby
-require 'json'
-require 'vanagon/extensions/ostruct/json'
-require 'vanagon/extensions/set/json'
-require 'vanagon/extensions/hashable'
 
-load File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "vanagon.rb"))
+script = File.basename($0)
 
-optparse = Vanagon::OptParse.new("#{File.basename(__FILE__)} <project-name> <platform-name> [options]", %i[workdir configdir engine])
-options = optparse.parse! ARGV
+warn "#{script}: Warning: use of stand alone '#{script}' command is deprecated and may be removed.
+     Use: 'vanagon #{script}' instead."
 
-project = ARGV[0]
-platforms = ARGV[1]
-
-unless project or platforms
-  warn "project and platform are both required arguments."
-  warn optparse
-  exit 1
-end
-
-platforms.split(',').each do |platform|
-  driver = Vanagon::Driver.new(platform, project, options)
-  components = driver.project.components.map(&:to_hash)
-  $stdout.puts JSON.pretty_generate(components)
-end
+exec "vanagon", script, *ARGV

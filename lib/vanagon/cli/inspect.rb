@@ -1,22 +1,20 @@
 require 'docopt'
+require 'json'
 
 class Vanagon
   class CLI
-    class Build < Vanagon::CLI
+    class Inspect < Vanagon::CLI
       DOCUMENTATION = <<~DOCOPT
         Usage:
-        build [options] <project-name> <platforms> [<targets>]
+        inspect [options] <project-name> <platforms>
 
         Options:
           -h, --help                       Display help
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
           -e, --engine ENGINE              Custom engine to use [base, local, docker, pooler] [default: pooler]
-          -o, --only-build COMPONENT,COMPONENT,...
-                                           Only build listed COMPONENTs
+
           -p, --preserve [RULE]            Rule for VM preservation: never, on-failure, always
-                                             [Default: always]
-          -r, --remote-workdir DIRECTORY   Working directory on the remote host
-          -s, --skipcheck                  Skip the "check" stage when building components
+                                             [Default: on-failure]
           -w, --workdir DIRECTORY          Working directory on the local host
           -v, --verbose                    Only here for backwards compatibility. Does nothing.
       DOCOPT
@@ -29,17 +27,13 @@ class Vanagon
       end
 
       def run(options)
+        platforms = options[:platforms].split(',')
         project = options[:project_name]
-        platform_list = options[:platforms].split(',')
-        target_list = []
-        unless options[:targets].nil? || options[:targets].empty?
-          target_list = options[:targets].split(',')
-        end
 
-        platform_list.zip(target_list).each do |pair|
-          platform, target = pair
-          artifact = Vanagon::Driver.new(platform, project, options.merge({ 'target' => target }))
-          artifact.run
+        platforms.each do |platform|
+          driver = Vanagon::Driver.new(platform, project, options)
+          components = driver.project.components.map(&:to_hash)
+          $stdout.puts JSON.pretty_generate(components)
         end
       end
 
@@ -47,15 +41,11 @@ class Vanagon
         translations = {
           '--verbose' => :verbose,
           '--workdir' => :workdir,
-          '--remote-workdir' => :"remote-workdir",
           '--configdir' => :configdir,
           '--engine' => :engine,
-          '--skipcheck' => :skipcheck,
           '--preserve' => :preserve,
-          '--only-build' => :only_build,
           '<project-name>' => :project_name,
-          '<platforms>' => :platforms,
-          '<targets>' => :targets
+          '<platforms>' => :platforms
         }
         return docopt_options.map { |k,v| [translations[k], v] }.to_h
       end

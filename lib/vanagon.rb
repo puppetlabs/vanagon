@@ -9,7 +9,6 @@ $:.unshift(LIBDIR) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(LIBDIR)
 
 require 'vanagon/cli'
-require 'vanagon/optparse'
 require 'vanagon/driver'
 
 # The main entry point is {Vanagon::Driver}.

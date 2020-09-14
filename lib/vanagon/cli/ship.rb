@@ -12,10 +12,7 @@ class Vanagon
       DOCOPT
 
       def self.parse(argv)
-        Docopt.docopt(DOCUMENTATION, {
-                        argv: argv,
-                        options_first: true
-                      })
+        Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
         puts e.message
         exit 1
