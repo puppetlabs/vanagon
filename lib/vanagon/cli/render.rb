@@ -4,7 +4,7 @@ require 'json'
 class Vanagon
   class CLI
     class Render < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         render [options] <project-name> <platforms>
 
@@ -44,7 +44,7 @@ class Vanagon
           '<project-name>' => :project_name,
           '<platforms>' => :platforms,
         }
-        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+        return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
     end
   end

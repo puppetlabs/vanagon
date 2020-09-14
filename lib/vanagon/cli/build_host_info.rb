@@ -3,7 +3,7 @@ require 'docopt'
 class Vanagon
   class CLI
     class BuildHostInfo < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         build_host_info [options] <project-name> <platforms>
 
@@ -42,7 +42,7 @@ class Vanagon
           '<platforms>' => :platforms,
           '<targets>' => :targets
         }
-        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+        return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
     end
   end

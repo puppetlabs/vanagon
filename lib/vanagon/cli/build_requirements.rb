@@ -4,7 +4,7 @@ require 'json'
 class Vanagon
   class CLI
     class BuildRequirements < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         build_requirements [options] <project-name> <platform>
 
@@ -23,7 +23,7 @@ class Vanagon
         exit 1
       end
 
-      def run(options)
+      def run(options) # rubocop:disable Metrics/AbcSize
         platform = options[:platform]
         project = options[:project_name]
         driver = Vanagon::Driver.new(platform, project)
@@ -53,7 +53,7 @@ class Vanagon
           '<project-name>' => :project_name,
           '<platform>' => :platform,
         }
-        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+        return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
     end
   end

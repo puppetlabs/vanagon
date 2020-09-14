@@ -4,7 +4,7 @@ require 'json'
 class Vanagon
   class CLI
     class Inspect < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         inspect [options] <project-name> <platforms>
 
@@ -47,7 +47,7 @@ class Vanagon
           '<project-name>' => :project_name,
           '<platforms>' => :platforms
         }
-        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+        return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
 
       def options_validate(options)

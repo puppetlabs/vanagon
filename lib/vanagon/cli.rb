@@ -19,7 +19,7 @@ class Vanagon
   end
 
   class CLI
-    DOCUMENTATION = <<~DOCOPT
+    DOCUMENTATION = <<~DOCOPT.freeze
       Usage:
           vanagon <command> [<args>]...
 
@@ -34,7 +34,7 @@ class Vanagon
           help                print this help
     DOCOPT
 
-    def parse(argv)
+    def parse(argv) # rubocop:disable Metrics/AbcSize
       parsed_options = parse_options(argv)
       sub_command = parsed_options['<command>']
       sub_argv = parsed_options['<args>']

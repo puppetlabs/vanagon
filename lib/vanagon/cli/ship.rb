@@ -3,7 +3,7 @@ require 'docopt'
 class Vanagon
   class CLI
     class Ship < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
           ship [--help]
 

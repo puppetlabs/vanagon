@@ -3,7 +3,7 @@ require 'docopt'
 class Vanagon
   class CLI
     class Sign < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
           sign [--help]
 

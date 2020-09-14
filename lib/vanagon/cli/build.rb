@@ -3,7 +3,7 @@ require 'docopt'
 class Vanagon
   class CLI
     class Build < Vanagon::CLI
-      DOCUMENTATION = <<~DOCOPT
+      DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         build [options] <project-name> <platforms> [<targets>]
 
@@ -28,7 +28,7 @@ class Vanagon
         exit 1
       end
 
-      def run(options)
+      def run(options) # rubocop:disable Metrics/AbcSize
         project = options[:project_name]
         platform_list = options[:platforms].split(',')
         target_list = []
@@ -57,7 +57,7 @@ class Vanagon
           '<platforms>' => :platforms,
           '<targets>' => :targets
         }
-        return docopt_options.map { |k,v| [translations[k], v] }.to_h
+        return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
 
       def options_validate(options)
