@@ -5,11 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-### Fixed
 
-- (VANAGON-163) Vanagon now prioritizes the `--engine` CLI flag over logic
-  that picks the engine based on features used by the platform definition.
-
+## [0.16.0] - released on 2020-09-17
 ### Added
 - (RE-13660) Rewrote the command line parser around `docopt`. Introduced
   `vanagon <subcommand>` replacement for the existing standalone commands.
@@ -17,10 +14,13 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   temporary backwards compatibility. Integrated the standalone
   executables into a call into the new Vanagon::CLI object instead of internal
   logic.
-
 - (VANAGON-100) Allow `--engine docker` to use `docker exec` and `docker cp`
   instead of `ssh` and `rsync` by setting `use_docker_exec true` in a
   platform definition.
+
+### Fixed
+- (VANAGON-163) Vanagon now prioritizes the `--engine` CLI flag over logic
+  that picks the engine based on features used by the platform definition.
 
 ## [0.15.38] - released on 2020-06-16
 ### Fixed
@@ -879,7 +879,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.15.38...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.16.0...HEAD
+[0.16.0]: https://github.com/puppetlabs/vanagon/compare/0.15.38...0.16.0
 [0.15.38]: https://github.com/puppetlabs/vanagon/compare/0.15.37...0.15.38
 [0.15.37]: https://github.com/puppetlabs/vanagon/compare/0.15.36...0.15.37
 [0.15.36]: https://github.com/puppetlabs/vanagon/compare/0.15.35...0.15.36
