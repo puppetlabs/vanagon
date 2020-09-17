@@ -8,7 +8,7 @@ VANAGON_VERSION = Gem.loaded_specs["vanagon"].version.to_s
 $:.unshift(LIBDIR) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(LIBDIR)
 
-require 'vanagon/optparse'
+require 'vanagon/cli'
 require 'vanagon/driver'
 
 # The main entry point is {Vanagon::Driver}.

@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.specification_version = 3
   gem.required_ruby_version = '~> 2.3'
 
+  gem.add_runtime_dependency('docopt')
   # Handle git repos responsibly
   # - MIT licensed: https://rubygems.org/gems/git
   gem.add_runtime_dependency('git', '~> 1.3.0')
@@ -29,9 +30,11 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('packaging')
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
-  gem.executables  = %w[build inspect ship render repo sign build_host_info build_requirements]
+  gem.executables  = %w[vanagon build inspect ship render repo sign
+                          build_host_info build_requirements]
 
   # Ensure the gem is built out of versioned files
-  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] & %x(git ls-files -z).split("\0")
+  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] &
+              %x(git ls-files -z).split("\0")
   gem.test_files = Dir['spec/**/*_spec.rb']
 end

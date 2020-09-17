@@ -1,15 +1,8 @@
 #!/usr/bin/env ruby
 
-ENV["PROJECT_ROOT"] = Dir.pwd
+script = File.basename($0)
 
-# Begin warning: This sign script is an internal tool.
-# This is not intended to function outside of Puppet Labs' infrastructure.
-# End of warning.
+warn "#{script}: Warning: use of stand alone '#{script}' command is deprecated and may be removed.
+     Use: 'vanagon #{script}' instead."
 
-if Dir["output/**/*"].select { |entry| File.file?(entry) }.empty?
-  fail "No packages to sign in the output directory. Maybe you want to build some first?"
-end
-
-require 'packaging'
-Pkg::Util::RakeUtils.load_packaging_tasks
-Pkg::Util::RakeUtils.invoke_task('pl:jenkins:sign_all', 'output')
+exec "vanagon", script, *ARGV

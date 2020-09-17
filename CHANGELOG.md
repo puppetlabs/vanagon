@@ -11,6 +11,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   that picks the engine based on features used by the platform definition.
 
 ### Added
+- (RE-13660) Rewrote the command line parser around `docopt`. Introduced
+  `vanagon <subcommand>` replacement for the existing standalone commands.
+  Added deprecation warnings to the existing commands but updated them for
+  temporary backwards compatibility. Integrated the standalone
+  executables into a call into the new Vanagon::CLI object instead of internal
+  logic.
 
 - (VANAGON-100) Allow `--engine docker` to use `docker exec` and `docker cp`
   instead of `ssh` and `rsync` by setting `use_docker_exec true` in a
