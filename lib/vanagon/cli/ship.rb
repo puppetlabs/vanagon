@@ -11,7 +11,7 @@ class Vanagon
           -h, --help                       Display help
       DOCOPT
 
-      def self.parse(argv)
+      def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
         puts e.message
