@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.16.1] - released 2020-09-18
+### Fixed
+- Fixed issue where the 'ship' command was failing to execute.
+
 ## [0.16.0] - released on 2020-09-17
 ### Added
 - (RE-13660) Rewrote the command line parser around `docopt`. Introduced
@@ -879,7 +883,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.16.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.16.1...HEAD
+[0.16.1]: https://github.com/puppetlabs/vanagon/compare/0.16.0...0.16.1
 [0.16.0]: https://github.com/puppetlabs/vanagon/compare/0.15.38...0.16.0
 [0.15.38]: https://github.com/puppetlabs/vanagon/compare/0.15.37...0.15.38
 [0.15.37]: https://github.com/puppetlabs/vanagon/compare/0.15.36...0.15.37
