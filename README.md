@@ -45,9 +45,10 @@ Also, Vanagon ships with a number of engines which may include additional option
 
 ### Local Host:
 
-- [Ruby](https://www.ruby-lang.org/en/) (Ruby 2.1.x is the miniumum supported version)
+- [Ruby](https://www.ruby-lang.org/en/) (Ruby 2.3.x is the miniumum supported version)
 - [fustigit](https://github.com/mckern/fustigit)
 - [ruby-git](https://github.com/schacon/ruby-git)
+- [docopt](https://github.com/docopt/docopt.rb)
 - The command line tool `ssh` ([homepage](https://www.openssh.com/)) available on the local `${PATH}` (any modern version should suffice)
 - The command line tool `rsync` ([homepage](https://rsync.samba.org/)) available on the local `${PATH}` (At least rsync 2.6.x)
 - The command line tool `git` ([homepage](https://git-scm.com/)) available on the local `${PATH}` (Vanagon is tested against Git version 1.8.x but should work with any newer version)
@@ -84,10 +85,28 @@ wheezy and build my project against it.
 For more detailed examples of the DSLs available, please see the
 [examples](examples) directory and the YARD documentation for Vanagon.
 
-### `build` usage
+### CLI changes and deprecations (from version 0.16.0)
+
+Prior to 0.16.0, the vanagon command line contained these commands
+
+* `build`
+* `build_host_info`
+* `build_requirements`
+* `inspect`
+* `render`
+* `repo`
+* `ship`
+* `sign`
+
+With the exception of `repo`, which calls `packaging` methods, the remaining commands
+have been moved to a git-like pattern of `vanagon <subcommand>`. `vangon build` replaced `build`, `vanagon ship` replaced `ship` and so forth.
+
+The older calling usage is deprecated.
+
+### `vanagon build` usage
 The build command has positional arguments and position independent flags.
 
-#### Arguments (position dependent)
+#### Positional arguments
 
 ##### project name
 The name of the project to build; a file named `<project_name>.rb` must be
@@ -114,7 +133,8 @@ Build machines should be cleaned between builds.
 
 #### Flagged arguments
 
-**Note:** command flags can be used anywhere in the command.
+**Note:** command flags currently can be used anywhere in the command. Recommended usages
+is to use flagged arguments before the positional arguments.
 
 ##### -w DIR, --workdir DIR
 Specifies a directory on the local host where the sources should be placed and builds performed.
@@ -146,9 +166,6 @@ Currently supported engines are:
 Indicates that the host used for building the project should be left intact
 after the build instead of destroyed. The host is usually destroyed after a
 successful build, or left after a failed build.
-
-##### -v, --verbose
-(Reserved for future implementation) Will increase the verbosity of output, when implemented.
 
 ##### -h, --help
 Display command-line help.
@@ -195,16 +212,16 @@ integer value these components to fail after the `VANAGON_TIMEOUT` count is reac
 Note that this value is expected to be in seconds.
 
 #### Example usage
-`build --preserve puppet-agent el-6-i386` will build the puppet-agent project
+`vanagon build --preserve puppet-agent el-6-i386` will build the puppet-agent project
 on the el-6-i386 platform and leave the host intact afterward.
 
-`build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
+`vanagon build --engine=docker puppet-agent el-6-i386` will build the puppet-agent
 project on the el-6-i386 platform using the docker engine (the platform must
 have a docker\_image defined in its config).
 
 ---
 
-### `inspect` usage
+### `vanagon inspect` usage
 
 The `inspect` command has positional arguments and position independent flags. It
 mirrors the `build` command, but exits with success after loading and interpolating
@@ -212,7 +229,7 @@ all of the components in the given project. No attempt is made to actually build
 the given project; instead, a JSON formatted array of hashes is returned and printed
 to `stdout`. This JSON array can be further processed by external tooling, such as `jq`.
 
-#### Arguments (position dependent)
+#### Positional arguments
 
 ##### project name
 The name of the project to build, and a file named \<project\_name\>.rb must be
@@ -227,7 +244,8 @@ Platform can also be a comma separated list of platforms such as platform1,platf
 
 #### Flagged arguments
 
-**Note:** command flags can be used anywhere in the command.
+**Note:** command flags currently can be used anywhere in the command. Recommended usages
+is to use flagged arguments before the positional arguments.
 
 ##### -w DIR, --workdir DIR
 Specifies a directory where the sources should be placed and builds performed.
@@ -239,16 +257,11 @@ Specifies where project configuration is found. Defaults to $pwd/configs.
 ##### -e ENGINE, --engine ENGINE
 Choose a different virtualization engine to use to select the build target.
 Engines are respected, but only insofar as components and projects are
-rendered -- the `inspect` command performs no compilation.
+rendered -- the `vanagon inspect` command performs no compilation.
 
-Supported engines are the same as the `build` command.
+Supported engines are the same as the `vanagon build` command.
 
 #### Flags
-
-**Note:** command flags can be used anywhere in the command.
-
-##### -v, --verbose (not yet implemented)
-Increase verbosity of output.
 
 ##### -h, --help
 Display command-line help.
@@ -256,12 +269,12 @@ Display command-line help.
 #### Environment variables
 
 Environment variables are respected, but only insofar as components and projects are
-rendered -- the `inspect` command has no behavior to alter.
+rendered -- the `vanagon inspect` command has no behavior to alter.
 
-Supported environment variables are the same as the `build` command.
+Supported environment variables are the same as the `vanagon build` command.
 
 #### Example usage
-`inspect puppet-agent el-6-i386` will load the puppet-agent project
+`vanagon inspect puppet-agent el-6-i386` will load the puppet-agent project
 on the el-6-i386 platform and print the resulting list of dependencies,
 build-time configuration, environment variables, and expected artifacts.
 
@@ -310,3 +323,4 @@ See [LICENSE](LICENSE) file.
 
 ## Maintainers
 See [MAINTAINERS](MAINTAINERS) file.
+
