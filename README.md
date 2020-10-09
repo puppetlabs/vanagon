@@ -154,9 +154,10 @@ Currently supported engines are:
 * `base` - Pure ssh backend; no teardown currently defined
 * `local` - Build on the local machine; platform name must match the local machine
 * `docker` - Builds in a docker container
-* `pooler` - Selects a vm from Puppet Labs' vm pooler to build on
+* `pooler` - Selects a vm from Puppet's internal vmpooler to build on
 * `hardware` - Build on a specific taget and lock it in redis
 * `ec2` - Build on a specific AWS instance.
+* `ABS` - Selects a vm from Puppet's internal Always-be-scheduling service to build on
 
 #### Flags
 
@@ -310,6 +311,16 @@ platform "el-7-x86_64" do |plat|
 end
 ```
 
+### ABS (internal)
+When using the ABS engine, there is a variety of ways you can specify your token: 
+- the environment variable ABS_TOKEN
+- or vanagon token file ~/.vanagon-token (note this is the same file read by the pooler engine)
+- or [vmfloaty](https://github.com/puppetlabs/vmfloaty)'s config file ~/.vmfloaty.yml
+
+In order to modify or track the VM via floaty or bit-bar you can optionally add the vmpooler token (different from the ABS token) via
+- VMPOOLER_TOKEN
+- or as a second line to the file ~/.vanagon-token
+- or by using the existing mechanism in floaty using a vmpooler_fallback
 
 Contributing
 ---

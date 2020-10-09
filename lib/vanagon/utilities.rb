@@ -39,17 +39,16 @@ class Vanagon
     end
 
     # Simple wrapper around Net::HTTP. Will make a request of the given type to
-    # the given url and return the body as parsed by JSON.
+    # the given url and return the response object
     #
     # @param url [String] The url to make the request against (needs to be parsable by URI
     # @param type [String] One of the supported request types (currently 'get', 'post', 'delete')
     # @param payload [String] The request body data payload used for POST and PUT
     # @param header [Hash] Send additional information in the HTTP request header
-    # @return [Hash] The response body is parsed by JSON and returned
+    # @return [Net::HTTPAccepted] The response object
     # @raise [RuntimeError, Vanagon::Error] an exception is raised if the
-    # action is not supported, or if there is a problem with the http request,
-    # or if the response is not JSON
-    def http_request(url, type, payload = {}.to_json, header = nil) # rubocop:disable Metrics/AbcSize
+    # action is not supported, or if there is a problem with the http request
+    def http_request_generic(url, type, payload = {}.to_json, header = nil) # rubocop:disable Metrics/AbcSize
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
@@ -77,14 +76,37 @@ class Vanagon
       end
 
       response = http.request(request)
-
-      JSON.parse(response.body)
+      response
     rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
       EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
       Net::ProtocolError => e
       raise Vanagon::Error.wrap(e, "Problem reaching #{url}. Is #{uri.host} down?")
+    end
+
+    # uses http_request_generic and returns the body as parsed by JSON.
+    # @param url [String] The url to make the request against (needs to be parsable by URI
+    # @param type [String] One of the supported request types (currently 'get', 'post', 'delete')
+    # @param payload [String] The request body data payload used for POST and PUT
+    # @param header [Hash] Send additional information in the HTTP request header
+    # @return [Hash] The response in JSON format
+    # @raise [RuntimeError, Vanagon::Error] an exception is raised if the response
+    # body cannot be parsed as JSON
+    def http_request(url, type, payload = {}.to_json, header = nil)
+      response = http_request_generic(url, type, payload, header)
+      JSON.parse(response.body)
     rescue JSON::ParserError => e
-      raise Vanagon::Error.wrap(e, "#{uri.host} handed us a response that doesn't look like JSON.")
+      raise Vanagon::Error.wrap(e, "#{url} handed us a response that doesn't look like JSON.")
+    end
+
+    # uses http_request_generic and returns the response code.
+    # @param url [String] The url to make the request against (needs to be parsable by URI
+    # @param type [String] One of the supported request types (currently 'get', 'post', 'delete')
+    # @param payload [String] The request body data payload used for POST and PUT
+    # @param header [Hash] Send additional information in the HTTP request header
+    # @return [String] The response code eg 202, 200 etc
+    def http_request_code(url, type, payload = {}.to_json, header = nil)
+      response = http_request_generic(url, type, payload, header)
+      response.code
     end
 
     # Similar to rake's sh, the passed command will be executed and an
