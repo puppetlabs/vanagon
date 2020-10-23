@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
 - (DIO-1066) Update vanagon to go through ABS for VMs. Before this change,
   the ABS engine was partially implemented.
   This engine is a level of abstraction that supports any downstream

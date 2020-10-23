@@ -143,10 +143,7 @@ class Vanagon
 
         warn "Reading ABS token from: #{path}"
         contents = File.read(absolute_path).chomp
-        lines = []
-        contents.each_line do |l|
-          lines << l.chomp
-        end
+        lines = contents.each_line.map(&:chomp)
 
         abs = lines.shift
         @token_vmpooler = lines.shift
@@ -221,7 +218,7 @@ class Vanagon
           end
         end
         warn message
-        abs_token
+        return abs_token
       end
       private :read_vmfloaty_token
 
@@ -235,15 +232,15 @@ class Vanagon
       end
 
       # Attempt to provision a host from a specific pooler.
-      def select_target_from(pooler) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-        req_obj = build_request_object
+      def select_target_from(pooler) # rubocop:disable Metrics/AbcSize
+        request_object = build_request_object
 
         warn "Requesting VMs with job_id: #{@saved_job_id}.  Will poll for up to an hour."
         #the initial request is always replied with "come back again"
         response = Vanagon::Utilities.http_request_generic(
           "#{pooler}/request",
           'POST',
-          req_obj.to_json,
+          request_object.to_json,
           { 'X-AUTH-TOKEN' => @token }
         )
 
@@ -255,12 +252,29 @@ class Vanagon
           end
           return ''
         end
+        response_body = check_queue(pooler, request_object)
 
+        return '' unless response_body["ok"]
+        @target = response_body[build_host_name]['hostname']
+        Vanagon::Driver.logger.info "Reserving #{@target} (#{build_host_name}) [#{@token ? 'token used' : 'no token used'}]"
+        return pooler
+      end
+
+      # main loop where the status of the request is checked, to see if the request
+      # has been allocated
+      def check_queue(pooler, request_object)
         retries = 360 # ~ one hour
+        response_body = nil
         begin
           (1..retries).each do |i|
-            response = check_queue(pooler, req_obj)
-            break if response
+            response = Vanagon::Utilities.http_request_generic(
+              "#{pooler}/request",
+              'POST',
+              request_object.to_json,
+              { 'X-AUTH-TOKEN' => @token }
+            )
+            response_body = validate_queue_status_response(response.code, response.body)
+            break if response_body
 
             sleep_seconds = 10 if i >= 10
             sleep_seconds = i if i < 10
@@ -272,26 +286,8 @@ class Vanagon
           warn "\nVanagon interrupted during mains ABS polling. Make sure you delete the requested job_id #{@saved_job_id}"
           raise
         end
-
-        res_body = translated(response, @saved_job_id)
-        if res_body["ok"]
-          @target = res_body[build_host_name]['hostname']
-          Vanagon::Driver.logger.info "Reserving #{@target} (#{build_host_name}) [#{@token ? 'token used' : 'no token used'}]"
-        else
-          pooler = ''
-        end
-        pooler
-      end
-
-      def check_queue(pooler, req_obj)
-        response = Vanagon::Utilities.http_request_generic(
-          "#{pooler}/request",
-          'POST',
-          req_obj.to_json,
-          { 'X-AUTH-TOKEN' => @token }
-        )
-        res_body = validate_queue_status_response(response.code, response.body)
-        res_body
+        response_body = translated(response_body, @saved_job_id)
+        response_body
       end
 
       def validate_queue_status_response(status_code, body)
@@ -313,14 +309,14 @@ class Vanagon
       # otherwise the resources will eventually get allocated asynchronously
       # and will keep running until the end of their lifetime.
       def teardown # rubocop:disable Metrics/AbcSize
-        req_obj = {
+        request_object = {
             'job_id' => @saved_job_id,
         }
 
         response = Vanagon::Utilities.http_request_generic(
           "#{@available_abs_endpoint}/return",
           "POST",
-          req_obj.to_json,
+          request_object.to_json,
           { 'X-AUTH-TOKEN' => @token }
         )
         if response && response.body == 'OK'
@@ -337,10 +333,10 @@ class Vanagon
 
       private
 
-      def translated(res_body, job_id)
+      def translated(response_body, job_id)
         vmpooler_formatted_body = { 'job_id' => job_id }
 
-        res_body.each do |host| # in this context there should be only one host
+        response_body.each do |host| # in this context there should be only one host
           vmpooler_formatted_body[host['type']] = { 'hostname' => host['hostname'] }
         end
         vmpooler_formatted_body['ok'] = true
@@ -352,7 +348,7 @@ class Vanagon
         user = ENV['USER'] || ENV['USERNAME'] || 'unknown'
 
         @saved_job_id = user + "-" + DateTime.now.strftime('%Q')
-        req_obj       = {
+        request_object = {
             :resources => { build_host_name => 1 },
             :job       => {
                 :id   => @saved_job_id,
@@ -366,9 +362,9 @@ class Vanagon
             :priority => 1, # DO NOT use priority 1 in automated CI runs
         }
         unless @token_vmpooler.nil?
-          req_obj[:vm_token] = @token_vmpooler
+          request_object[:vm_token] = @token_vmpooler
         end
-        req_obj
+        request_object
       end
 
       def valid_json?(json)
