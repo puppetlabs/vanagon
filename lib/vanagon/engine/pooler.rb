@@ -1,6 +1,10 @@
 require 'vanagon/engine/base'
 require 'yaml'
 
+### Note this class is deprecated in favor of using the ABS Engine. The pooler has changed it's API with regards to
+# getting VMs for ondemand provisioning and would need to be updated here.
+# See DIO-1066
+
 class Vanagon
   class Engine
     class Pooler < Base
@@ -10,7 +14,7 @@ class Vanagon
       def initialize(platform, target = nil, **opts)
         super
 
-        @available_poolers = ["http://vmpooler.delivery.puppetlabs.net", "https://nspooler-service-prod-1.delivery.puppetlabs.net"]
+        @available_poolers = ["https://vmpooler.delivery.puppetlabs.net", "https://nspooler-service-prod-1.delivery.puppetlabs.net"]
         @token = load_token
         @required_attributes << "vmpooler_template"
       end
@@ -63,7 +67,7 @@ class Vanagon
 
       # Read a vmpooler token from the yaml formatted vmfloaty config,
       # as outlined by the vmfloaty project:
-      # https://github.com/briancain/vmfloaty
+      # https://github.com/puppetlabs/vmfloaty
       #
       # @return [String, nil] the vmfloaty vmpooler token value
       def read_vmfloaty_token(path = "~/.vmfloaty.yml")
@@ -75,7 +79,7 @@ class Vanagon
       end
       private :read_vmfloaty_token
 
-      # This method is used to obtain a vm to build upon using the Puppet Labs'
+      # This method is used to obtain a vm to build upon using Puppet's internal
       # vmpooler (https://github.com/puppetlabs/vmpooler) or other pooler technologies
       # leveraging the same API
       # @raise [Vanagon::Error] if a target cannot be obtained

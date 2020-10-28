@@ -19,6 +19,7 @@ end
 
 require 'tmpdir'
 require 'vanagon'
+require 'webmock/rspec'
 
 RSpec.configure do |c|
   c.before do

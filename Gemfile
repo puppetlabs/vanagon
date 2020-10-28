@@ -29,5 +29,6 @@ group(:development, :test) do
   gem 'rspec', '~> 3.0', require: false
   gem 'rubocop', "~> 0.81.0", require: false
   gem 'simplecov', require: false
+  gem 'webmock', '3.9.3'
   gem 'yard', require: false
 end

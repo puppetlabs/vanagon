@@ -6,7 +6,7 @@ describe 'Vanagon::Engine::Pooler' do
   let (:platform_with_vcloud_name) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
-                      plat.vcloud_name 'debian-6-i386'
+                      plat.vmpooler_template 'debian-6-i386'
                     end")
     plat._platform
   }
