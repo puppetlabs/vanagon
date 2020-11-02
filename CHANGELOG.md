@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.17.0] - released 2020-11-02
 ### Added
 - (DIO-1066) Update vanagon to go through ABS for VMs. Before this change,
   the ABS engine was partially implemented.
@@ -889,7 +891,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.16.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.17.0...HEAD
+[0.17.0]: https://github.com/puppetlabs/vanagon/compare/0.16.1...0.17.0
 [0.16.1]: https://github.com/puppetlabs/vanagon/compare/0.16.0...0.16.1
 [0.16.0]: https://github.com/puppetlabs/vanagon/compare/0.15.38...0.16.0
 [0.15.38]: https://github.com/puppetlabs/vanagon/compare/0.15.37...0.15.38
