@@ -5,7 +5,7 @@
 <%- get_configfiles.each do |config|
 dest_file = config.path.gsub(/\.pristine$/, '') -%>
 
-if [ -f "<%= dest_file %>" ]; then
+if [ -f "<%= dest_file %>" ] && ! diff "<%= config.path %>" "<%= dest_file %>" > /dev/null; then
   echo "Detected file at '<%= dest_file %>'; updated file at '<%= config.path %>'."
 else
   mv '<%= config.path %>' '<%= dest_file %>'

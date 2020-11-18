@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (maint) Pristine config files are no longer kept if there are no differences
+  between the pristine and the target config file (OS X and Solaris 10).
 
 ## [0.17.0] - released 2020-11-02
 ### Added
