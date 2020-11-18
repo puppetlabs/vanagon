@@ -21,7 +21,7 @@ class Vanagon
   class CLI
     DOCUMENTATION = <<~DOCOPT.freeze
       Usage:
-          vanagon <command> [<args>]...
+          vanagon <command> [<args>]... TEST2
 
       Commands are:
           build               build a package given a project and platform
