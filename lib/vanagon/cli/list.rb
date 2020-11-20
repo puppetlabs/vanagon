@@ -9,8 +9,9 @@ class Vanagon
 
         Options:
           -h, --help                       Display help
-          -r, --projects                   Display a list of projects
+          -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
           -l, --platforms                  Display a list of platforms
+          -r, --projects                   Display a list of projects
           -s, --space                      Displays the list as space separated
       DOCOPT
 
@@ -20,44 +21,43 @@ class Vanagon
         puts e.message
         exit 1
       end
+      
+      def output(list, space)
+        if space
+          return list.join(' ')
+        end
+        return list
+      end 
 
       def run(options)
 
-        platform_list = Dir.children('configs/platforms').map do |platform|
+        path = options[:configdir] || File.join(Dir.pwd, "configs")
+
+        platform_list = Dir.children(path + '/platforms').map do |platform|
           File.basename(platform, File.extname(platform))
         end
 
-        project_list = Dir.children('configs/projects').map do |project|
+        project_list = Dir.children(path + '/projects').map do |project|
           File.basename(project, File.extname(project))
         end
 
-        output = ->(list) do 
-          if options[:space]
-            puts list.join(' ')
-          else
-            puts list
-          end
-        end
-        
         if options[:projects] == options[:platforms]
-          puts "- Projects"
-          puts output.call(project_list)
-          puts "\n", "- Platforms"
-          puts output.call(platform_list), "\n"
+          puts "- Projects", output(project_list, options[:space]), "\n", "- Platforms", output(platform_list, options[:space])
         elsif options[:projects]
           puts "- Projects"
-          puts output.call(project_list)
+          puts output(project_list, options[:space])
         elsif options[:platforms]
           puts "- Platforms"
-          puts output.call(platform_list)
+          puts output(platform_list, options[:space])
         end
 
       end
 
       def options_translate(docopt_options)
         translations = {
-          '--projects' => :projects,
+          '--configdir' => :configdir,
           '--platforms' => :platforms,
+          '--projects' => :projects,
           '--space' => :space,
         }
         return docopt_options.map { |k, v| [translations[k], v] }.to_h
