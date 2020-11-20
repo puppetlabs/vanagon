@@ -22,6 +22,7 @@ class Vanagon
       end
 
       def run(options)
+
         platform_list = Dir.children('configs/platforms').map do |platform|
           File.basename(platform, File.extname(platform))
         end
@@ -29,15 +30,28 @@ class Vanagon
         project_list = Dir.children('configs/projects').map do |project|
           File.basename(project, File.extname(project))
         end
-        
-        if options[:projects] == options[:platforms]
-          puts "- Projects", project_list, "\n", "- Platforms", platform_list, "\n"
-        elsif options[:projects]
-          puts "- Projects", project_list
-        elsif options[:platforms]
-          puts "- Platforms", platform_list
+
+        output = ->(list) do 
+          if options[:space]
+            puts list.join(' ')
+          else
+            puts list
+          end
         end
         
+        if options[:projects] == options[:platforms]
+          puts "- Projects"
+          puts output.call(project_list)
+          puts "\n", "- Platforms"
+          puts output.call(platform_list), "\n"
+        elsif options[:projects]
+          puts "- Projects"
+          puts output.call(project_list)
+        elsif options[:platforms]
+          puts "- Platforms"
+          puts output.call(platform_list)
+        end
+
       end
 
       def options_translate(docopt_options)
