@@ -21,16 +21,15 @@ class Vanagon
         puts e.message
         exit 1
       end
-      
+
       def output(list, space)
         if space
           return list.join(' ')
         end
         return list
-      end 
+      end
 
-      def run(options)
-
+      def run(options) # rubocop:disable Metrics/AbcSize
         path = options[:configdir] || File.join(Dir.pwd, "configs")
 
         platform_list = Dir.children(path + '/platforms').map do |platform|
@@ -50,7 +49,6 @@ class Vanagon
           puts "- Platforms"
           puts output(platform_list, options[:space])
         end
-
       end
 
       def options_translate(docopt_options)

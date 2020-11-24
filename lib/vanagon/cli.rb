@@ -21,7 +21,6 @@ class Vanagon
 
   class CLI
     DOCUMENTATION = <<~DOCOPT.freeze
-      *******TEST VERSION******
       Usage:
           vanagon <command> [<args>]...
 
