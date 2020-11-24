@@ -13,6 +13,8 @@ class Vanagon
           copy_extensions = '*.deb'
         end
         pkg_arch_opt = project.noarch ? "" : "-a#{@architecture}"
+        pkg_arch_opt = '-aarm64' if pkg_arch_opt == '-aaarch64'
+
         ["mkdir -p output/#{target_dir}",
         "mkdir -p $(tempdir)/#{project.name}-#{project.version}",
         "cp #{project.name}-#{project.version}.tar.gz $(tempdir)/#{project.name}_#{project.version}.orig.tar.gz",
