@@ -12,7 +12,7 @@ class Vanagon
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
           -l, --platforms                  Display a list of platforms
           -r, --projects                   Display a list of projects
-          -s, --space                      Displays the list as space separated
+          -s, --use-spaces                 Displays the list as space separated
       DOCOPT
 
       def parse(argv)
@@ -22,32 +22,35 @@ class Vanagon
         exit 1
       end
 
-      def output(list, space)
-        if space
-          return list.join(' ')
-        end
+      def output(list, use_spaces)
+        return list.join(' ') if use_spaces
         return list
       end
 
       def run(options) # rubocop:disable Metrics/AbcSize
-        path = options[:configdir] || File.join(Dir.pwd, "configs")
-
-        platform_list = Dir.children(path + '/platforms').map do |platform|
+        platform_list = Dir.children(File.join(options[:configdir], '/platforms')).map do |platform|
           File.basename(platform, File.extname(platform))
         end
 
-        project_list = Dir.children(path + '/projects').map do |project|
+        project_list = Dir.children(File.join(options[:configdir], '/projects')).map do |project|
           File.basename(project, File.extname(project))
         end
 
         if options[:projects] == options[:platforms]
-          puts "- Projects", output(project_list, options[:space]), "\n", "- Platforms", output(platform_list, options[:space])
-        elsif options[:projects]
+          puts "- Projects", output(project_list, options[:use_spaces]), "\n", "- Platforms", output(platform_list, options[:use_spaces])
+          return
+        end
+        
+        if options[:projects]
           puts "- Projects"
-          puts output(project_list, options[:space])
-        elsif options[:platforms]
+          puts output(project_list, options[:use_spaces])
+          return
+        end
+        
+        if options[:platforms]
           puts "- Platforms"
-          puts output(platform_list, options[:space])
+          puts output(platform_list, options[:use_spaces])
+          return
         end
       end
 
@@ -56,7 +59,7 @@ class Vanagon
           '--configdir' => :configdir,
           '--platforms' => :platforms,
           '--projects' => :projects,
-          '--space' => :space,
+          '--use-spaces' => :use_spaces,
         }
         return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end

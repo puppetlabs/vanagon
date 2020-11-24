@@ -118,31 +118,31 @@ baz
       end
       let(:options_empty) { {
         nil=>false, 
-        :configdir=>false, 
+        :configdir=>"#{Dir.pwd}/configs", 
         :platforms=>false, 
         :projects=>false, 
-        :space=>false
+        :use_spaces=>false
       } }
       let(:options_platforms_only) { {
         nil=>false, 
-        :configdir=>false, 
+        :configdir=>"#{Dir.pwd}/configs", 
         :platforms=>true, 
         :projects=>false, 
-        :space=>false
+        :use_spaces=>false
       } }
       let(:options_projects_only) { {
         nil=>false, 
-        :configdir=>false, 
+        :configdir=>"#{Dir.pwd}/configs", 
         :platforms=>false, 
         :projects=>true, 
-        :space=>false
+        :use_spaces=>false
       } }
       let(:options_space_only) { {
         nil=>false, 
-        :configdir=>false, 
+        :configdir=>"#{Dir.pwd}/configs", 
         :platforms=>false, 
         :projects=>false, 
-        :space=>true
+        :use_spaces=>true
       } }
 
       it "outputs projects and platforms with no options passed" do 
@@ -198,7 +198,7 @@ baz
         :configdir=> '/configs', 
         :platforms=>false, 
         :projects=>false, 
-        :space=>false} }
+        :use_spaces=>false} }
       it "it successfully takes the configs directory" do 
         expect(Dir).to receive(:children).with('/configs' + '/projects')
           .and_return(projects)
