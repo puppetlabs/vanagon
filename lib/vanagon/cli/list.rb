@@ -28,11 +28,11 @@ class Vanagon
       end
 
       def run(options) # rubocop:disable Metrics/AbcSize
-        platform_list = Dir.children(File.join(options[:configdir], '/platforms')).map do |platform|
+        platform_list = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
           File.basename(platform, File.extname(platform))
         end
 
-        project_list = Dir.children(File.join(options[:configdir], '/projects')).map do |project|
+        project_list = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
           File.basename(project, File.extname(project))
         end
 
@@ -40,13 +40,13 @@ class Vanagon
           puts "- Projects", output(project_list, options[:use_spaces]), "\n", "- Platforms", output(platform_list, options[:use_spaces])
           return
         end
-        
+
         if options[:projects]
           puts "- Projects"
           puts output(project_list, options[:use_spaces])
           return
         end
-        
+
         if options[:platforms]
           puts "- Platforms"
           puts output(platform_list, options[:use_spaces])
