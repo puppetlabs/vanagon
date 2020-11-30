@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (maint) Added `vanagon list` subcommand with options to list `--projects`, 
+  and / or `--platforms`. By default, the list is spaced with new-line 
+  characters. The list can be space-separated instad by specifying `--use-spaces`. 
+  It is possible to use `--configdir` to select a specific config directory from 
+  which to list the projects and or platforms. 
+
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
   between the pristine and the target config file (OS X and Solaris 10).

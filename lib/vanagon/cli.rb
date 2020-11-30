@@ -9,6 +9,7 @@ require 'vanagon/cli/build'
 require 'vanagon/cli/build_host_info'
 require 'vanagon/cli/build_requirements'
 require 'vanagon/cli/inspect'
+require 'vanagon/cli/list'
 require 'vanagon/cli/render'
 require 'vanagon/cli/ship'
 require 'vanagon/cli/sign'
@@ -28,6 +29,7 @@ class Vanagon
           build_host_info     print information about build hosts
           build_requirements  print external packages required to build project
           inspect             a build dry-run, printing lots of information about the build
+          list                Shows a list of available projects and platforms
           render              create local versions of packaging artifacts for project
           sign                sign a package
           ship                upload a package to a distribution server
@@ -50,6 +52,8 @@ class Vanagon
         @sub_parser = Vanagon::CLI::Inspect.new
       when 'render'
         @sub_parser = Vanagon::CLI::Render.new
+      when 'list'
+        @sub_parser = Vanagon::CLI::List.new
       when 'sign'
         @sub_parser = Vanagon::CLI::Sign.new
       when 'ship'
