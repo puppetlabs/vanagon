@@ -38,7 +38,7 @@ class Vanagon
 
         platform_list.zip(target_list).each do |pair|
           platform, target = pair
-          artifact = Vanagon::Driver.new(platform, project, options.merge({ 'target' => target }))
+          artifact = Vanagon::Driver.new(platform, project, options.merge({ :target => target }))
           artifact.run
         end
       end

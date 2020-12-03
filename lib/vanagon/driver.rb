@@ -20,7 +20,7 @@ class Vanagon
       @retry_count ||= @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
     end
 
-    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize
+    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       @verbose = options[:verbose]
       @preserve = options[:preserve]
       @workdir = options[:workdir] || Dir.mktmpdir
@@ -28,7 +28,6 @@ class Vanagon
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
       components = options[:components] || []
       only_build = options[:only_build]
-      target = options[:target]
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
       @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
@@ -39,8 +38,9 @@ class Vanagon
 
       @remote_workdir = options[:"remote-workdir"]
 
-      if options[:engine]
-        # Use the explicitly configured engine.
+      target = options[:target]
+      if options[:engine] && !target
+        # Use the explicitly configured engine if no target was provided.
         load_engine_object(options[:engine], @platform, target)
       else
         # Use 'pooler' as a default, but also apply selection logic that may
