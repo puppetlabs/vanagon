@@ -34,7 +34,7 @@ Gem::Specification.new do |gem|
                           build_host_info build_requirements]
 
   # Ensure the gem is built out of versioned files
-  gem.files = Dir['{bin,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] &
+  gem.files = Dir['{bin,extras,lib,spec,resources}/**/*', 'README*', 'LICENSE*'] &
               %x(git ls-files -z).split("\0")
   gem.test_files = Dir['spec/**/*_spec.rb']
 end

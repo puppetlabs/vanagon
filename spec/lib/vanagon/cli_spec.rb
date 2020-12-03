@@ -109,6 +109,12 @@ baz
 }
     context "specs with standard config path" do
       before(:each) do
+        expect(Dir).to receive(:exist?)
+          .with("#{File.join(Dir.pwd, 'configs', 'platforms')}")
+          .and_return(true)
+        expect(Dir).to receive(:exist?)
+          .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
+          .and_return(true)
         expect(Dir).to receive(:children)
           .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
           .and_return(projects)
@@ -200,6 +206,10 @@ baz
         :projects=>false, 
         :use_spaces=>false} }
       it "it successfully takes the configs directory" do 
+        expect(Dir).to receive(:exist?).with('/configs' + '/platforms')
+          .and_return(true)
+        expect(Dir).to receive(:exist?).with('/configs' + '/projects')
+          .and_return(true)
         expect(Dir).to receive(:children).with('/configs' + '/projects')
           .and_return(projects)
         expect(Dir).to receive(:children).with('/configs' + '/platforms')

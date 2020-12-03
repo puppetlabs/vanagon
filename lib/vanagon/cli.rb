@@ -8,6 +8,7 @@ require 'vanagon/extensions/hashable'
 require 'vanagon/cli/build'
 require 'vanagon/cli/build_host_info'
 require 'vanagon/cli/build_requirements'
+require 'vanagon/cli/completion'
 require 'vanagon/cli/inspect'
 require 'vanagon/cli/list'
 require 'vanagon/cli/render'
@@ -28,8 +29,9 @@ class Vanagon
           build               build a package given a project and platform
           build_host_info     print information about build hosts
           build_requirements  print external packages required to build project
+          completion          outputs path to tab completion script
           inspect             a build dry-run, printing lots of information about the build
-          list                Shows a list of available projects and platforms
+          list                shows a list of available projects and platforms
           render              create local versions of packaging artifacts for project
           sign                sign a package
           ship                upload a package to a distribution server
@@ -48,6 +50,8 @@ class Vanagon
         @sub_parser = Vanagon::CLI::BuildHostInfo.new
       when 'build_requirements'
         @sub_parser = Vanagon::CLI::BuildRequirements.new
+      when 'completion'
+        @sub_parser = Vanagon::CLI::Completion.new
       when 'inspect'
         @sub_parser = Vanagon::CLI::Inspect.new
       when 'render'
