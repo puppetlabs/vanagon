@@ -28,6 +28,13 @@ class Vanagon
       end
 
       def run(options) # rubocop:disable Metrics/AbcSize
+        if Dir.exist?(File.join(options[:configdir], 'platforms')) == false ||
+           Dir.exist?(File.join(options[:configdir], 'projects')) == false
+
+          warn "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
+          exit 1
+        end
+
         platform_list = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
           File.basename(platform, File.extname(platform))
         end

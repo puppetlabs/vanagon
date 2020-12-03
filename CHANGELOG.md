@@ -11,6 +11,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   characters. The list can be space-separated instad by specifying `--use-spaces`. 
   It is possible to use `--configdir` to select a specific config directory from 
   which to list the projects and or platforms. 
+- (maint) Added tab completion scripts for bash and zsh, located under 
+  /extras/completions. Also added `vanagon completion` command, which echos the 
+  path to the completion script. To get the path to the script, use 
+  `vanagon completion --shell SHELL`.Source the script to enable tab completion.
 
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
