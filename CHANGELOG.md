@@ -15,6 +15,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   /extras/completions. Also added `vanagon completion` command, which echos the 
   path to the completion script. To get the path to the script, use 
   `vanagon completion --shell SHELL`.Source the script to enable tab completion.
+- (PA-3497) Build arm64 debian packages for aarch64
 
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
