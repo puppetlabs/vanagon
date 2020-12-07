@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -14,14 +15,14 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
       def run(_)
         ENV['PROJECT_ROOT'] = Dir.pwd
         if Dir['output/**/*'].select { |entry| File.file?(entry) }.empty?
-          warn 'sign: Error: No packages to sign in the "output" directory. Maybe build some first?'
+          VanagonLogger.error 'sign: Error: No packages to sign in the "output" directory. Maybe build some first?'
           exit 1
         end
 

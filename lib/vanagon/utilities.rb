@@ -9,6 +9,7 @@ require 'timeout'
 # but it provides a wealth of useful constants
 require 'English'
 require 'vanagon/extensions/string'
+require 'vanagon/logger'
 
 class Vanagon
   module Utilities
@@ -165,7 +166,7 @@ class Vanagon
             yield
             return true
           rescue StandardError => e
-            warn 'An error was encountered evaluating block. Retrying..'
+            VanagonLogger.error 'An error was encountered evaluating block. Retrying..'
             error = e
           end
         end
@@ -238,7 +239,7 @@ class Vanagon
     #                        output of the command if return_command_output is true
     # @raise [RuntimeError] If there is no target given or the command fails an exception is raised
     def remote_ssh_command(target, command, port = 22, return_command_output: false)
-      warn "Executing '#{command}' on '#{target}'"
+      VanagonLogger.info "Executing '#{command}' on '#{target}'"
       if return_command_output
         ret = %x(#{ssh_command(port)} -T #{target} '#{command.gsub("'", "'\\\\''")}').chomp
         if $CHILD_STATUS.success?
@@ -261,7 +262,7 @@ class Vanagon
     # @raise [RuntimeError] If the command fails an exception is raised
     def local_command(command, return_command_output: false)
       clean_environment do
-        warn "Executing '#{command}' locally"
+        VanagonLogger.info "Executing '#{command}' locally"
         if return_command_output
           ret = %x(#{command}).chomp
           if $CHILD_STATUS.success?
@@ -305,7 +306,7 @@ class Vanagon
       outfile ||= File.join(Dir.mktmpdir, File.basename(erbfile).sub(File.extname(erbfile), ""))
       output = erb_string(erbfile, opts[:binding])
       File.open(outfile, 'w') { |f| f.write output }
-      warn "Generated: #{outfile}"
+      VanagonLogger.info "Generated: #{outfile}"
       FileUtils.rm_rf erbfile if remove_orig
       outfile
     end

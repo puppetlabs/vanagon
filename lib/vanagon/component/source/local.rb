@@ -1,4 +1,5 @@
 require 'vanagon/utilities'
+require 'vanagon/logger'
 
 class Vanagon
   class Component
@@ -57,7 +58,7 @@ class Vanagon
         #
         # @raise [RuntimeError, Vanagon::Error] an exception is raised if the URI scheme cannot be handled
         def copy
-          warn "Copying file '#{url.basename}' to workdir"
+          VanagonLogger.info "Copying file '#{url.basename}' to workdir"
 
           FileUtils.cp_r(url, file)
         end

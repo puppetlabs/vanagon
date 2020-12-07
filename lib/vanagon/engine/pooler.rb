@@ -1,4 +1,5 @@
 require 'vanagon/engine/base'
+require 'vanagon/logger'
 require 'yaml'
 
 ### Note this class is deprecated in favor of using the ABS Engine. The pooler has changed it's API with regards to
@@ -60,7 +61,7 @@ class Vanagon
         absolute_path = File.expand_path(path)
         return nil unless File.exist?(absolute_path)
 
-        warn "Reading vmpooler token from: #{path}"
+        VanagonLogger.info "Reading vmpooler token from: #{path}"
         File.read(absolute_path).chomp
       end
       private :read_vanagon_token
@@ -74,7 +75,7 @@ class Vanagon
         absolute_path = File.expand_path(path)
         return nil unless File.exist?(absolute_path)
 
-        warn "Reading vmpooler token from: #{path}"
+        VanagonLogger.info "Reading vmpooler token from: #{path}"
         YAML.load_file(absolute_path)['token']
       end
       private :read_vmfloaty_token
@@ -145,14 +146,14 @@ class Vanagon
         )
         if response and response["ok"]
           Vanagon::Driver.logger.info "#{@target} has been destroyed"
-          warn "#{@target} has been destroyed"
+          VanagonLogger.info "#{@target} has been destroyed"
         else
           Vanagon::Driver.logger.info "#{@target} could not be destroyed"
-          warn "#{@target} could not be destroyed"
+          VanagonLogger.info "#{@target} could not be destroyed"
         end
       rescue Vanagon::Error => e
         Vanagon::Driver.logger.info "#{@target} could not be destroyed (#{e.message})"
-        warn "#{@target} could not be destroyed (#{e.message})"
+        VanagonLogger.error "#{@target} could not be destroyed (#{e.message})"
       end
     end
   end

@@ -15,6 +15,8 @@ require 'vanagon/cli/render'
 require 'vanagon/cli/ship'
 require 'vanagon/cli/sign'
 
+require 'vanagon/logger'
+
 
 class Vanagon
   class InvalidArgument < StandardError
@@ -66,7 +68,7 @@ class Vanagon
         puts DOCUMENTATION
         exit 0
       else
-        warn "vanagon: Error: unknown command: \"#{sub_command}\"\n\n#{DOCUMENTATION}"
+        VanagonLogger.error "vanagon: Error: unknown command: \"#{sub_command}\"\n\n#{DOCUMENTATION}"
         exit 1
       end
 
@@ -95,7 +97,7 @@ class Vanagon
     def parse_options(argv)
       Docopt.docopt(DOCUMENTATION, { argv: argv, options_first: true })
     rescue Docopt::Exit => e
-      puts e.message
+      VanagonLogger.error e.message
       exit 1
     end
   end

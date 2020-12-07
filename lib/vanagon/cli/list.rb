@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -18,7 +19,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
@@ -31,7 +32,7 @@ class Vanagon
         if Dir.exist?(File.join(options[:configdir], 'platforms')) == false ||
            Dir.exist?(File.join(options[:configdir], 'projects')) == false
 
-          warn "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
+          VanagonLogger.error "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
           exit 1
         end
 
@@ -49,14 +50,12 @@ class Vanagon
         end
 
         if options[:projects]
-          puts "- Projects"
-          puts output(project_list, options[:use_spaces])
+          puts "- Projects", output(project_list, options[:use_spaces])
           return
         end
 
         if options[:platforms]
-          puts "- Platforms"
-          puts output(platform_list, options[:use_spaces])
+          puts "- Platforms", output(platform_list, options[:use_spaces])
           return
         end
       end

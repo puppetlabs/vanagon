@@ -1,4 +1,5 @@
 require 'vanagon/engine/base'
+require 'vanagon/logger'
 
 class Vanagon
   class Engine
@@ -52,7 +53,7 @@ class Vanagon
         Vanagon::Utilities.ex("#{@docker_cmd} stop #{build_host_name}-builder")
         Vanagon::Utilities.ex("#{@docker_cmd} rm #{build_host_name}-builder")
       rescue Vanagon::Error => e
-        warn "There was a problem tearing down the docker container #{build_host_name}-builder (#{e.message})."
+        VanagonLogger.error "There was a problem tearing down the docker container #{build_host_name}-builder (#{e.message})."
       end
 
       def dispatch(command, return_output = false)
