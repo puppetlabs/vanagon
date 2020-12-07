@@ -20,6 +20,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
   between the pristine and the target config file (OS X and Solaris 10).
+- (RE-13776) When target argument is specified, do not load the engine
 
 ## [0.17.0] - released 2020-11-02
 ### Added
