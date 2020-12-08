@@ -20,9 +20,10 @@ class Vanagon
       @retry_count ||= @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
     end
 
-    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-      @verbose = options[:verbose]
-      @preserve = options[:preserve]
+    def initialize(platform, project, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      @options = options
+      @verbose = options[:verbose] || false
+      @preserve = options[:preserve] || false
       @workdir = options[:workdir] || Dir.mktmpdir
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
@@ -30,9 +31,11 @@ class Vanagon
       only_build = options[:only_build]
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
-      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @project = Vanagon::Project.load_project(
+        project, File.join(@@configdir, "projects"), @platform, components
+      )
       @project.settings[:verbose] = options[:verbose]
-      @project.settings[:skipcheck] = options[:skipcheck]
+      @project.settings[:skipcheck] = options[:skipcheck] || false
       filter_out_components(only_build) if only_build
       loginit('vanagon_hosts.log')
 
@@ -72,7 +75,8 @@ class Vanagon
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, remote_workdir: remote_workdir)
+      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}")
+        .new(platform, target, remote_workdir: remote_workdir)
     rescue StandardError, ScriptError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine_type}'")
     end
@@ -99,7 +103,9 @@ class Vanagon
       { "name" => @engine.build_host_name, "engine" => @engine.name }
     end
 
-    # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
+    # Returns the set difference between the build_requires and the
+    # components to get a list of external dependencies that need to
+    # be installed.
     def list_build_dependencies
       @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)
     end
