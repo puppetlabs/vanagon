@@ -10,7 +10,7 @@ class Vanagon
         Options:
           -h, --help                       Display help
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
-          -e, --engine ENGINE              Custom engine to use [base, local, docker, pooler] [default: pooler]
+          -e, --engine ENGINE              Custom engine to use [default: always_be_scheduling]
           -o, --only-build COMPONENT,COMPONENT,...
                                            Only build listed COMPONENTs
           -p, --preserve [RULE]            Rule for VM preservation: never, on-failure, always
@@ -19,6 +19,14 @@ class Vanagon
           -s, --skipcheck                  Skip the "check" stage when building components
           -w, --workdir DIRECTORY          Working directory on the local host
           -v, --verbose                    Only here for backwards compatibility. Does nothing.
+
+        Engines:
+          always_be_scheduling: default engine using Puppet's ABS infrastructure
+          docker: a docker container on the local host
+          ec2: an Amazon EC2 instance
+          hardware: a dedicated hardware device
+          local: the local machine, cannot be used with a target
+          pooler: [deprecated] Puppet's vmpooler
       DOCOPT
 
       def parse(argv)

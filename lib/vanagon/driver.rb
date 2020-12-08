@@ -20,9 +20,10 @@ class Vanagon
       @retry_count ||= @project.retry_count || ENV["VANAGON_RETRY_COUNT"] || 1
     end
 
-    def initialize(platform, project, options = { workdir: nil, configdir: nil, target: nil, engine: nil, components: nil, skipcheck: false, verbose: false, preserve: false, only_build: nil, remote_workdir: nil }) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-      @verbose = options[:verbose]
-      @preserve = options[:preserve]
+    def initialize(platform, project, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      @options = options
+      @verbose = options[:verbose] || false
+      @preserve = options[:preserve] || false
       @workdir = options[:workdir] || Dir.mktmpdir
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")
@@ -30,23 +31,18 @@ class Vanagon
       only_build = options[:only_build]
 
       @platform = Vanagon::Platform.load_platform(platform, File.join(@@configdir, "platforms"))
-      @project = Vanagon::Project.load_project(project, File.join(@@configdir, "projects"), @platform, components)
+      @project = Vanagon::Project.load_project(
+        project, File.join(@@configdir, "projects"), @platform, components
+      )
       @project.settings[:verbose] = options[:verbose]
-      @project.settings[:skipcheck] = options[:skipcheck]
+      @project.settings[:skipcheck] = options[:skipcheck] || false
       filter_out_components(only_build) if only_build
       loginit('vanagon_hosts.log')
 
       @remote_workdir = options[:"remote-workdir"]
 
-      target = options[:target]
-      if options[:engine] && !target
-        # Use the explicitly configured engine if no target was provided.
-        load_engine_object(options[:engine], @platform, target)
-      else
-        # Use 'pooler' as a default, but also apply selection logic that may
-        # choose something different based on platform configuration.
-        load_engine('pooler', @platform, target)
-      end
+      engine = pick_engine(options)
+      load_engine_object(engine, @platform, options[:target])
     end
 
     def filter_out_components(only_build)
@@ -59,24 +55,28 @@ class Vanagon
       end
     end
 
-    def load_engine(engine_type, platform, target)
-      if engine_type != 'always_be_scheduling'
-        if platform.build_hosts
-          engine_type = 'hardware'
-        elsif platform.aws_ami
-          engine_type = 'ec2'
-        elsif platform.docker_image
-          engine_type = 'docker'
-        elsif target
-          engine_type = 'base'
-        end
-      end
-      load_engine_object(engine_type, platform, target)
+    def pick_engine(options) # rubocop:disable Metrics/PerceivedComplexity
+      default_engine = 'always_be_scheduling'
+
+      # Use the explicitly configured engine if no target was provided.
+      return options[:engine] if options[:engine] && !options[:target]
+
+      # If the configured engine matches the default engine, use it
+      return options[:engine] if options[:engine] == default_engine
+
+      # Make some guesses about which engine to use
+      return 'hardware' if @platform.build_hosts
+      return 'ec2' if @platform.aws_ami
+      return 'docker' if @platform.docker_image
+      return 'base' if @options[:target]
+
+      return default_engine
     end
 
     def load_engine_object(engine_type, platform, target)
       require "vanagon/engine/#{engine_type}"
-      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}").new(platform, target, remote_workdir: remote_workdir)
+      @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}")
+        .new(platform, target, remote_workdir: remote_workdir)
     rescue StandardError, ScriptError => e
       raise Vanagon::Error.wrap(e, "Could not load the desired engine '#{engine_type}'")
     end
@@ -103,7 +103,9 @@ class Vanagon
       { "name" => @engine.build_host_name, "engine" => @engine.name }
     end
 
-    # Returns the set difference between the build_requires and the components to get a list of external dependencies that need to be installed.
+    # Returns the set difference between the build_requires and the
+    # components to get a list of external dependencies that need to
+    # be installed.
     def list_build_dependencies
       @project.components.map(&:build_requires).flatten.uniq - @project.components.map(&:name)
     end

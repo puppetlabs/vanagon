@@ -6,14 +6,14 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
-- (maint) Added `vanagon list` subcommand with options to list `--projects`, 
-  and / or `--platforms`. By default, the list is spaced with new-line 
-  characters. The list can be space-separated instad by specifying `--use-spaces`. 
-  It is possible to use `--configdir` to select a specific config directory from 
-  which to list the projects and or platforms. 
-- (maint) Added tab completion scripts for bash and zsh, located under 
-  /extras/completions. Also added `vanagon completion` command, which echos the 
-  path to the completion script. To get the path to the script, use 
+- (maint) Added `vanagon list` subcommand with options to list `--projects`,
+  and / or `--platforms`. By default, the list is spaced with new-line
+  characters. The list can be space-separated instad by specifying `--use-spaces`.
+  It is possible to use `--configdir` to select a specific config directory from
+  which to list the projects and or platforms.
+- (maint) Added tab completion scripts for bash and zsh, located under
+  /extras/completions. Also added `vanagon completion` command, which echos the
+  path to the completion script. To get the path to the script, use
   `vanagon completion --shell SHELL`.Source the script to enable tab completion.
 - (PA-3497) Build arm64 debian packages for aarch64
 
@@ -21,6 +21,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (maint) Pristine config files are no longer kept if there are no differences
   between the pristine and the target config file (OS X and Solaris 10).
 - (RE-13776) When target argument is specified, do not load the engine
+
+### Changed
+- (maint) Made 'always_be_scheduling' the default engine.
 
 ## [0.17.0] - released 2020-11-02
 ### Added
