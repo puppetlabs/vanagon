@@ -50,7 +50,7 @@ describe 'Vanagon::Driver' do
       info = create_driver(redhat).build_host_info
 
       expect(info).to match({ 'name'   => 'centos-7-x86_64',
-                              'engine' => 'pooler' })
+                              'engine' => 'always_be_scheduling' })
     end
 
     it 'returns the vmpooler template with an explicit engine' do
