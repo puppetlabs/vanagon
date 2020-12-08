@@ -38,15 +38,8 @@ class Vanagon
 
       @remote_workdir = options[:"remote-workdir"]
 
-      target = options[:target]
-      if options[:engine] && !target
-        # Use the explicitly configured engine if no target was provided.
-        load_engine_object(options[:engine], @platform, target)
-      else
-        # Use 'pooler' as a default, but also apply selection logic that may
-        # choose something different based on platform configuration.
-        load_engine('pooler', @platform, target)
-      end
+      engine = pick_engine(options)
+      load_engine_object(engine, @platform, options[:target])
     end
 
     def filter_out_components(only_build)
@@ -59,19 +52,22 @@ class Vanagon
       end
     end
 
-    def load_engine(engine_type, platform, target)
-      if engine_type != 'always_be_scheduling'
-        if platform.build_hosts
-          engine_type = 'hardware'
-        elsif platform.aws_ami
-          engine_type = 'ec2'
-        elsif platform.docker_image
-          engine_type = 'docker'
-        elsif target
-          engine_type = 'base'
-        end
-      end
-      load_engine_object(engine_type, platform, target)
+    def pick_engine(options) # rubocop:disable Metrics/PerceivedComplexity
+      default_engine = 'always_be_scheduling'
+
+      # Use the explicitly configured engine if no target was provided.
+      return options[:engine] if options[:engine] && !options[:target]
+
+      # If the configured engine matches the default engine, use it
+      return options[:engine] if options[:engine] == default_engine
+
+      # Make some guesses about which engine to use
+      return 'hardware' if @platform.build_hosts
+      return 'ec2' if @platform.aws_ami
+      return 'docker' if @platform.docker_image
+      return 'base' if @options[:target]
+
+      return default_engine
     end
 
     def load_engine_object(engine_type, platform, target)
