@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.18.0] - released 2020-12-08
 ### Added
 - (maint) Added `vanagon list` subcommand with options to list `--projects`,
   and / or `--platforms`. By default, the list is spaced with new-line
@@ -910,7 +912,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.18.0...HEAD
+[0.18.0]: https://github.com/puppetlabs/vanagon/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/puppetlabs/vanagon/compare/0.16.1...0.17.0
 [0.16.1]: https://github.com/puppetlabs/vanagon/compare/0.16.0...0.16.1
 [0.16.0]: https://github.com/puppetlabs/vanagon/compare/0.15.38...0.16.0
