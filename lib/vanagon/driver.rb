@@ -56,26 +56,22 @@ class Vanagon
     end
 
     def pick_engine(options) # rubocop:disable Metrics/PerceivedComplexity
-      default_engine = 'always_be_scheduling'
-
-      # Use the explicitly configured engine if no target was provided.
-      return options[:engine] if options[:engine] && !options[:target]
-
-      # If the configured engine matches the default engine, use it
-      return options[:engine] if options[:engine] == default_engine
-
-      # Make some guesses about which engine to use
-      return 'hardware' if @platform.build_hosts
-      return 'ec2' if @platform.aws_ami
-      return 'docker' if @platform.docker_image
-      return 'base' if @options[:target]
-
-      return default_engine
+      if options[:engine] && !options[:target]
+        options[:engine]
+      elsif @platform.build_hosts
+        'hardware'
+      elsif @platform.aws_ami
+        'ec2'
+      elsif @platform.docker_image
+        'docker'
+      elsif options[:target]
+        'base'
+      else
+        'always_be_scheduling'
+      end
     end
 
     def load_engine_object(engine_type, platform, target)
-      engine_type = 'base' if target
-
       require "vanagon/engine/#{engine_type}"
       @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}")
         .new(platform, target, remote_workdir: remote_workdir)
