@@ -5,7 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-- (maint) When target argument is specified, do not load the engine
+
+## [0.18.1] - released 2020-12-09
+### Fixed
+- (maint) Patch bug in engine-selection method where target argument is getting ignored
+  ABS engine is loaded.
 
 ## [0.18.0] - released 2020-12-08
 ### Added
@@ -913,7 +917,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.18.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.18.1...HEAD
+[0.18.1]: https://github.com/puppetlabs/vanagon/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/puppetlabs/vanagon/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/puppetlabs/vanagon/compare/0.16.1...0.17.0
 [0.16.1]: https://github.com/puppetlabs/vanagon/compare/0.16.0...0.16.1
