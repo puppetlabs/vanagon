@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (maint) Fix bugs in pick_engine
 
 ## [0.18.1] - released 2020-12-09
 ### Fixed
