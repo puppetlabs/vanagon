@@ -74,6 +74,8 @@ class Vanagon
     end
 
     def load_engine_object(engine_type, platform, target)
+      engine_type = 'base' if target
+
       require "vanagon/engine/#{engine_type}"
       @engine = Object::const_get("Vanagon::Engine::#{camelize(engine_type)}")
         .new(platform, target, remote_workdir: remote_workdir)
