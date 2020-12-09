@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+- (maint) When target argument is specified, do not load the engine
 
 ## [0.18.0] - released 2020-12-08
 ### Added
