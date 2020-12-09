@@ -9,7 +9,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [0.18.1] - released 2020-12-09
 ### Fixed
 - (maint) Patch bug in engine-selection method where target argument is getting ignored
-  ABS engine is loaded.
+  when ABS engine is loaded.
 
 ## [0.18.0] - released 2020-12-08
 ### Added
