@@ -4,6 +4,7 @@ require 'vanagon/component'
 require 'vanagon/utilities'
 require 'vanagon/common'
 require 'vanagon/errors'
+require 'vanagon/logger'
 require 'tmpdir'
 require 'logger'
 
@@ -50,8 +51,8 @@ class Vanagon
       # flatten all the results in to one array and set project.components to that.
       @project.components = only_build.flat_map { |comp| @project.filter_component(comp) }.uniq
       if @verbose
-        warn "Only building:"
-        @project.components.each { |comp| warn comp.name }
+        VanagonLogger.info "Only building:"
+        @project.components.each { |comp| VanagonLogger.info comp.name }
       end
     end
 
@@ -138,7 +139,7 @@ class Vanagon
       end
 
       @engine.startup(workdir)
-      warn "Target is #{@engine.target}"
+      VanagonLogger.info "Target is #{@engine.target}"
       Vanagon::Utilities.retry_with_timeout(retry_count, timeout) do
         install_build_dependencies
       end
@@ -163,8 +164,8 @@ class Vanagon
         @engine.teardown
         cleanup_workdir
       end
-      warn e
-      warn e.backtrace.join("\n")
+      VanagonLogger.error(e)
+      VanagonLogger.error e.backtrace.join("\n")
       raise e
     ensure
       if ["hardware", "ec2"].include?(@engine.name)
@@ -178,7 +179,7 @@ class Vanagon
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
-      warn "rendering Makefile"
+      VanagonLogger.info "rendering Makefile"
       @project.fetch_sources(workdir, retry_count, timeout)
       @project.make_bill_of_materials(workdir)
       @project.generate_packaging_artifacts(workdir)

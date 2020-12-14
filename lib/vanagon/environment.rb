@@ -1,5 +1,6 @@
 require 'forwardable'
 require 'vanagon/extensions/string'
+require 'vanagon/logger'
 
 class Vanagon
   # Environment is a validating wrapper around a delegated Hash,
@@ -147,7 +148,7 @@ class Vanagon
         update your project's parameters.
       WARNING
 
-      warn warning.join("\n")
+      VanagonLogger.info warning.join("\n")
       str.gsub(pattern, '$(shell \1)')
     end
     private :sanitize_subshells
@@ -165,7 +166,7 @@ class Vanagon
         update your project's parameters.
       WARNING
 
-      warn warning.join("\n")
+      VanagonLogger.info warning.join("\n")
       str.gsub(pattern, '$(\1)')
     end
     private :sanitize_variables

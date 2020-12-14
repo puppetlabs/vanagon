@@ -1,4 +1,5 @@
 require 'fustigit'
+require 'vanagon/logger'
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'
 require 'vanagon/component/source/local'
@@ -66,7 +67,7 @@ class Vanagon
           timeout = 5
           if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
             if uri =~ /^http/
-              warn "Passing git URLs as http(s) addresses is deprecated! Please prefix your source URL with `git:`"
+              VanagonLogger.info "Passing git URLs as http(s) addresses is deprecated! Please prefix your source URL with `git:`"
             end
             return :git
           end

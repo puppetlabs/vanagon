@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -14,7 +15,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
@@ -32,7 +33,7 @@ class Vanagon
         DOC
 
         if Dir['output/**/*'].select { |entry| File.file?(entry) }.empty?
-          warn 'vanagon: Error: No packages to ship in the "output" directory. Maybe build some first?'
+          VanagonLogger.error 'vanagon: Error: No packages to ship in the "output" directory. Maybe build some first?'
           exit 1
         end
 
@@ -42,9 +43,9 @@ class Vanagon
         begin
           Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship_to_artifactory', 'output')
         rescue LoadError
-          warn artifactory_warning
+          VanagonLogger.error artifactory_warning
         rescue StandardError
-          warn artifactory_warning
+          VanagonLogger.error artifactory_warning
         end
       end
     end

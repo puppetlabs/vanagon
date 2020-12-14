@@ -8,6 +8,7 @@ require 'vanagon/platform/osx'
 require 'vanagon/platform/solaris_10'
 require 'vanagon/platform/solaris_11'
 require 'vanagon/platform/windows'
+require 'vanagon/logger'
 require 'securerandom'
 require 'uri'
 
@@ -259,7 +260,7 @@ class Vanagon
       # @param name [String] name that the pooler uses for this platform
       # @deprecated Please use vmpooler_template instead, this will be removed in a future vanagon release.
       def vcloud_name(cloud_name)
-        warn "vcloud_name is a deprecated platform DSL method, and will be removed in a future vanagon release. Please use vmpooler_template instead."
+        VanagonLogger.info "vcloud_name is a deprecated platform DSL method, and will be removed in a future vanagon release. Please use vmpooler_template instead."
         self.vmpooler_template(cloud_name)
       end
 
@@ -394,7 +395,7 @@ class Vanagon
       # @param gpg_key [String] optional gpg key to be fetched via curl and installed
       # @deprecated Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release.
       def apt_repo(definition, gpg_key = nil)
-        warn "Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release."
+        VanagonLogger.info "Please use the add_build_repository DSL method instead. apt_repo will be removed in a future vanagon release."
         self.add_build_repository(definition, gpg_key)
       end
 
@@ -403,7 +404,7 @@ class Vanagon
       # @param definition [String] the repo setup URI or RPM file
       # @deprecated Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release.
       def yum_repo(definition)
-        warn "Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release."
+        VanagonLogger.info "Please use the add_build_repository DSL method instead. yum_repo will be removed in a future vanagon release."
         self.add_build_repository(definition)
       end
 
@@ -412,7 +413,7 @@ class Vanagon
       # @param definition [String] the repo setup URI or RPM file
       # @deprecated Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release.
       def zypper_repo(definition)
-        warn "Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release."
+        VanagonLogger.info "Please use the add_build_repository DSL method instead. zypper_repo will be removed in a future vanagon release."
         self.add_build_repository(definition)
       end
 

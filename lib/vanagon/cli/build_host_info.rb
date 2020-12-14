@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -26,7 +27,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
@@ -36,7 +37,7 @@ class Vanagon
 
         platforms.each do |platform|
           driver = Vanagon::Driver.new(platform, project, options)
-          $stdout.puts JSON.generate(driver.build_host_info)
+          VanagonLogger.warn JSON.generate(driver.build_host_info)
         end
       end
 

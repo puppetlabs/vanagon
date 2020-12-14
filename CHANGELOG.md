@@ -24,6 +24,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   `vanagon completion --shell SHELL`.Source the script to enable tab completion.
 - (PA-3497) Build arm64 debian packages for aarch64
 
+### Changed
+- (VANAGON-79) Use VanagonLogger class for  output instead of puts, warn, and 
+  and stderr. 
+
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
   between the pristine and the target config file (OS X and Solaris 10).

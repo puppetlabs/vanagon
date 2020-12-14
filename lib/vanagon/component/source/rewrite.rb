@@ -1,4 +1,5 @@
 require 'vanagon/component/source'
+require 'vanagon/logger'
 
 class Vanagon
   class Component
@@ -16,7 +17,7 @@ class Vanagon
           # @deprecated Please use the component DSL method #mirror(<URI>)
           #   instead. This method will be removed before Vanagon 1.0.0.
           def register_rewrite_rule(protocol, rule)
-            warn <<-HERE.undent
+            VanagonLogger.info <<-HERE.undent
               rewrite rule support is deprecated and will be removed before Vanagon 1.0.0.
               Rewritten URLs will be automatically converted into mirror URLs for now but
               please use the component DSL method '#mirror url' to define new mirror URL
@@ -76,7 +77,7 @@ class Vanagon
           def parse_and_rewrite(uri)
             return uri if rewrite_rules.empty?
             if !!uri.match(/^git:http/)
-              warn <<-HERE.undent
+              VanagonLogger.info <<-HERE.undent
                 `fustigit` parsing doesn't get along with how we specify the source
                 type by prefixing `git`. As `rewrite_rules` are deprecated, we'll
                 replace `git:http` with `http` in your uri. At some point this will

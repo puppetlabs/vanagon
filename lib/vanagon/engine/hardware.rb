@@ -1,4 +1,5 @@
 require 'vanagon/engine/base'
+require 'vanagon/logger'
 require 'json'
 require 'lock_manager'
 
@@ -23,7 +24,7 @@ class Vanagon
         Vanagon::Driver.logger.info "Polling for a lock on #{host}."
         @lockman.polling_lock(host, VANAGON_LOCK_USER, "Vanagon automated lock")
         Vanagon::Driver.logger.info "Lock acquired on #{host}."
-        warn "Lock acquired on #{host} for #{VANAGON_LOCK_USER}."
+        VanagonLogger.info "Lock acquired on #{host} for #{VANAGON_LOCK_USER}."
         host
       end
 
@@ -33,7 +34,7 @@ class Vanagon
           Vanagon::Driver.logger.info "Attempting  to lock #{h}."
           if @lockman.lock(h, VANAGON_LOCK_USER, "Vanagon automated lock")
             Vanagon::Driver.logger.info "Lock acquired on #{h}."
-            warn "Lock acquired on #{h} for #{VANAGON_LOCK_USER}."
+            VanagonLogger.info "Lock acquired on #{h} for #{VANAGON_LOCK_USER}."
             return h
           end
         end
@@ -45,7 +46,7 @@ class Vanagon
       # complete. In this case, we'll attempt to unlock the hardware
       def teardown
         Vanagon::Driver.logger.info "Removing lock on #{@target}."
-        warn "Removing lock on #{@target}."
+        VanagonLogger.info "Removing lock on #{@target}."
         @lockman.unlock(@target, VANAGON_LOCK_USER)
       end
 

@@ -1,5 +1,6 @@
 require 'vanagon/component'
 require 'vanagon/environment'
+require 'vanagon/logger'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
 require 'vanagon/utilities'
@@ -130,9 +131,9 @@ class Vanagon
       dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
     rescue StandardError => e
-      warn "Error loading project '#{name}' using '#{projfile}':"
-      warn e
-      warn e.backtrace.join("\n")
+      VanagonLogger.error "Error loading project '#{name}' using '#{projfile}':"
+      VanagonLogger.error(e)
+      VanagonLogger.error e.backtrace.join("\n")
       raise e
     end
 
@@ -841,7 +842,7 @@ class Vanagon
     end
 
     def load_upstream_metadata(metadata_uri)
-      warn "Loading metadata from #{metadata_uri}"
+      VanagonLogger.info "Loading metadata from #{metadata_uri}"
       case metadata_uri
       when /^http/
         @upstream_metadata = JSON.parse(Net::HTTP.get(URI(metadata_uri)))
