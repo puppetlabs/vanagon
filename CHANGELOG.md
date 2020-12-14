@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-129) Added support for passing a version to `requires` in components
+  and projects. Updated `get_requires` to handle the versions, and pass them to 
+  the rpm and deb packages. 
 
 ## [0.18.1] - released 2020-12-09
 ### Fixed

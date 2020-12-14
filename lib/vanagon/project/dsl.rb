@@ -110,8 +110,8 @@ class Vanagon
       # Sets the run time requirements for the project. Mainly for use in packaging.
       #
       # @param req [String] of requirements of the project
-      def requires(req)
-        @project.requires << req
+      def requires(requirement, version = nil)
+        @project.requires << OpenStruct.new(:requirement => requirement, :version => version)
       end
 
       # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.

@@ -77,7 +77,7 @@ Source1:        file-list-for-rpm
 Autoprov: 0
 Autoreq: 0
 <%- get_requires.each do |requires| -%>
-Requires:  <%= requires %>
+Requires:  <%= requires.requirement %><%= requires.version ? " #{requires.version}" : "" %>
 <%- end -%>
 
 # All rpm packages built by vanagon have the pre-/post-install script
