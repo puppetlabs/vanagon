@@ -18,7 +18,7 @@ Breaks: <%= get_replaces.map { |replace| "#{replace.replacement} #{replace.versi
 Conflicts: <%= get_conflicts.map { |conflict| "#{conflict.pkgname} #{conflict.version ? "(#{conflict.version})" : ""}" }.join(", ") %>
 <%- end -%>
 <%- unless get_requires.empty? -%>
-Depends: <%= get_requires.join(", ") %>
+Depends: <%= get_requires.map { |req| "#{req.requirement} #{req.version ? "(#{req.version})" : ""}" }.join(", ") %>
 <%- end -%>
 <%- unless get_provides.empty? -%>
 Provides: <%= get_provides.map { |prov| prov.provide }.join(", ") %>

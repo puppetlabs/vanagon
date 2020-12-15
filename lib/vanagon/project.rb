@@ -297,10 +297,14 @@ class Vanagon
     #
     # @return [Array] array of runtime requirements for the project
     def get_requires
-      req = []
-      req << components.flat_map(&:requires)
-      req << @requires
-      req.flatten.uniq
+      requires = []
+      requires << @requires.flatten
+      requires << components.flat_map(&:requires)
+      requires.flatten!
+      requires.each do |requirement|
+        requirement.version = @platform.version_munger(requirement.version, default: '<') if requirement.version
+      end
+      requires.uniq
     end
 
     # Collects all of the replacements for the project and its components
@@ -308,8 +312,8 @@ class Vanagon
     # @return [Array] array of package level replacements for the project
     def get_replaces
       replaces = []
-      replaces.push @replaces.flatten
-      replaces.push components.flat_map(&:replaces)
+      replaces << @replaces.flatten
+      replaces << components.flat_map(&:replaces)
       replaces.flatten!
       replaces.each do |replace|
         # TODO: Make this a more reasonable default before 1.0.0
@@ -325,8 +329,9 @@ class Vanagon
 
     # Collects all of the conflicts for the project and its components
     def get_conflicts
-      conflicts = components.flat_map(&:conflicts) + @conflicts
-      # Mash the whole thing down into a flat Array
+      conflicts = []
+      conflicts << @conflicts.flatten
+      conflicts << components.flat_map(&:conflicts)
       conflicts.flatten!
       conflicts.each do |conflict|
         # TODO: Make this a more reasonable default before 1.0.0
@@ -361,8 +366,8 @@ class Vanagon
     # @return [Array] array of package level provides for the project
     def get_provides
       provides = []
-      provides.push @provides.flatten
-      provides.push components.flat_map(&:provides)
+      provides << @provides.flatten
+      provides << components.flat_map(&:provides)
       provides.flatten!
       provides.each do |provide|
         # TODO: Make this a more reasonable default before 1.0.0

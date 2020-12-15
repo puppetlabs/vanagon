@@ -132,8 +132,8 @@ class Vanagon
       # component
       #
       # @param requirement [String] a package that is required at runtime for this component
-      def requires(requirement)
-        @component.requires << requirement
+      def requires(requirement, version = nil)
+        @component.requires << OpenStruct.new(:requirement => requirement, :version => version)
       end
 
       # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
