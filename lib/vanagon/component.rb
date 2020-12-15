@@ -3,6 +3,8 @@ require 'vanagon/component/rules'
 require 'vanagon/component/source'
 require 'vanagon/component/source/rewrite'
 
+require 'vanagon/logger'
+
 class Vanagon
   class Component
     include Vanagon::Utilities
@@ -138,9 +140,9 @@ class Vanagon
       dsl.instance_eval(File.read(compfile), compfile, 1)
       dsl._component
     rescue StandardError => e
-      warn "Error loading project '#{name}' using '#{compfile}':"
-      warn e
-      warn e.backtrace.join("\n")
+      VanagonLogger.error "Error loading project '#{name}' using '#{compfile}':"
+      VanagonLogger(e)
+      VanagonLogger.error e.backtrace.join("\n")
       raise e
     end
 
@@ -254,18 +256,18 @@ class Vanagon
     def fetch_mirrors(options)
       mirrors.to_a.shuffle.each do |mirror|
         begin
-          warn %(Attempting to fetch from mirror URL "#{mirror}")
+          VanagonLogger.info %(Attempting to fetch from mirror URL "#{mirror}")
           @source = Vanagon::Component::Source.source(mirror, options)
           return true if source.fetch
         rescue SocketError
           # SocketError means that there was no DNS/name resolution
           # for whatever remote protocol the mirror tried to use.
-          warn %(Unable to resolve mirror URL "#{mirror}")
+          VanagonLogger.error %(Unable to resolve mirror URL "#{mirror}")
         rescue RuntimeError
           # Source retrieval does not consistently return a meaningful
           # namespaced error message, which means we're brute-force rescuing
           # RuntimeError. Not a good look, and we should fix this.
-          warn %(Unable to retrieve mirror URL "#{mirror}")
+          VanagonLogger.error %(Unable to retrieve mirror URL "#{mirror}")
         end
       end
       false
@@ -277,7 +279,7 @@ class Vanagon
     # @return [Boolean] return True if the source can be retrieved,
     #   or False otherwise
     def fetch_url(options)
-      warn %(Attempting to fetch from canonical URL "#{url}")
+      VanagonLogger.info %(Attempting to fetch from canonical URL "#{url}")
       @source = Vanagon::Component::Source.source(url, options)
       # Explicitly coerce the return value of #source.fetch,
       # because each subclass of Vanagon::Component::Source returns
@@ -319,7 +321,7 @@ class Vanagon
           @version ||= source.version
         end
       else
-        warn "No source given for component '#{@name}'"
+        VanagonLogger.info "No source given for component '#{@name}'"
 
         # If there is no source, we don't want to try to change directories, so we just change to the current directory.
         @dirname = './'
@@ -407,7 +409,7 @@ class Vanagon
     # @return [String] environment suitable for inclusion in a Makefile
     # @deprecated
     def get_environment
-      warn <<-WARNING.undent
+      VanagonLogger.info <<-WARNING.undent
         #get_environment is deprecated; environment variables have been moved
         into the Makefile, and should not be used within a Makefile's recipe.
         The #get_environment method will be removed by Vanagon 1.0.0.

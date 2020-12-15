@@ -5,8 +5,9 @@ describe "Vanagon::Component" do
   describe "#get_environment" do
     subject { Vanagon::Component.new('env-test', {}, {}) }
 
-    it "prints a deprecation warning to STDERR" do
-      expect { subject.get_environment }.to output(/deprecated/).to_stderr
+    it "logs a deprecation warning with VanagonLogger.info" do
+      expect(VanagonLogger).to receive(:info).with(/deprecated/)
+      subject.get_environment
     end
 
     it "returns a makefile compatible environment" do

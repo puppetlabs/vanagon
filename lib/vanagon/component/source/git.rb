@@ -1,5 +1,6 @@
 require 'vanagon/utilities'
 require 'vanagon/errors'
+require 'vanagon/logger'
 # This stupid library requires a capital 'E' in its name
 # but it provides a wealth of useful constants
 require 'English'
@@ -81,7 +82,7 @@ class Vanagon
         # There is no md5 to manually verify here, so this is a noop.
         def verify
           # nothing to do here, so just tell users that and return
-          warn "Nothing to verify for '#{dirname}' (using Git reference '#{ref}')"
+          VanagonLogger.info "Nothing to verify for '#{dirname}' (using Git reference '#{ref}')"
         end
 
         # The dirname to reference when building from the repo
@@ -131,8 +132,8 @@ class Vanagon
         # Clone a remote repo, make noise about it, and fail entirely
         # if we're unable to retrieve the remote repo
         def clone!
-          warn "Cloning Git repo '#{url}'"
-          warn "Successfully cloned '#{dirname}'" if clone
+          VanagonLogger.info "Cloning Git repo '#{url}'"
+          VanagonLogger.info "Successfully cloned '#{dirname}'" if clone
         rescue ::Git::GitExecuteError
           raise Vanagon::InvalidRepo, "Unable to clone from '#{url}'"
         end
@@ -141,7 +142,7 @@ class Vanagon
         # Checkout desired ref/sha, make noise about it, and fail
         # entirely if we're unable to checkout that given ref/sha
         def checkout!
-          warn "Checking out '#{ref}' from Git repo '#{dirname}'"
+          VanagonLogger.info "Checking out '#{ref}' from Git repo '#{dirname}'"
           clone.checkout(ref)
         rescue ::Git::GitExecuteError
           raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{url}'"
@@ -151,7 +152,7 @@ class Vanagon
         # Attempt to update submodules, and do not panic
         # if there are no submodules to initialize
         def update_submodules
-          warn "Attempting to update submodules for repo '#{dirname}'"
+          VanagonLogger.info "Attempting to update submodules for repo '#{dirname}'"
           clone.update_submodules(init: true)
         end
         private :update_submodules
@@ -163,7 +164,7 @@ class Vanagon
         def describe
           clone.describe(ref, tags: true)
         rescue ::Git::GitExecuteError
-          warn "Directory '#{dirname}' cannot be versioned by Git. Maybe it hasn't been tagged yet?"
+          VanagonLogger.info "Directory '#{dirname}' cannot be versioned by Git. Maybe it hasn't been tagged yet?"
         end
         private :describe
       end

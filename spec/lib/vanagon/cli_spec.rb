@@ -164,7 +164,7 @@ foo bar baz
 - Platforms
 1 2 3
 "
-  }
+}
       it "outputs projects and platforms space separated" do 
         expect do
           cli.run(options_space_only)
@@ -221,6 +221,3 @@ baz
     end
   end
 end
-
-      
-

@@ -1,5 +1,6 @@
 require 'docopt'
 require 'json'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -27,7 +28,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
@@ -47,9 +48,8 @@ class Vanagon
           end
         end
 
-        $stdout.puts
-        $stdout.puts "**** External packages required to build #{project} on #{platform}: ***"
-        $stdout.puts JSON.pretty_generate(build_requirements.flatten.uniq.sort)
+        VanagonLogger.warn "**** External packages required to build #{project} on #{platform}: ***"
+        VanagonLogger.warn JSON.pretty_generate(build_requirements.flatten.uniq.sort)
       end
 
       def options_translate(docopt_options)

@@ -1,5 +1,6 @@
 require 'vanagon/component'
 require 'vanagon/environment'
+require 'vanagon/logger'
 require 'vanagon/platform'
 require 'vanagon/project/dsl'
 require 'vanagon/utilities'
@@ -130,9 +131,9 @@ class Vanagon
       dsl.instance_eval(File.read(projfile), projfile, 1)
       dsl._project
     rescue StandardError => e
-      warn "Error loading project '#{name}' using '#{projfile}':"
-      warn e
-      warn e.backtrace.join("\n")
+      VanagonLogger.error "Error loading project '#{name}' using '#{projfile}':"
+      VanagonLogger.error(e)
+      VanagonLogger.error e.backtrace.join("\n")
       raise e
     end
 
@@ -296,10 +297,14 @@ class Vanagon
     #
     # @return [Array] array of runtime requirements for the project
     def get_requires
-      req = []
-      req << components.flat_map(&:requires)
-      req << @requires
-      req.flatten.uniq
+      requires = []
+      requires << @requires.flatten
+      requires << components.flat_map(&:requires)
+      requires.flatten!
+      requires.each do |requirement|
+        requirement.version = @platform.version_munger(requirement.version, default: '<') if requirement.version
+      end
+      requires.uniq
     end
 
     # Collects all of the replacements for the project and its components
@@ -307,8 +312,8 @@ class Vanagon
     # @return [Array] array of package level replacements for the project
     def get_replaces
       replaces = []
-      replaces.push @replaces.flatten
-      replaces.push components.flat_map(&:replaces)
+      replaces << @replaces.flatten
+      replaces << components.flat_map(&:replaces)
       replaces.flatten!
       replaces.each do |replace|
         # TODO: Make this a more reasonable default before 1.0.0
@@ -324,8 +329,9 @@ class Vanagon
 
     # Collects all of the conflicts for the project and its components
     def get_conflicts
-      conflicts = components.flat_map(&:conflicts) + @conflicts
-      # Mash the whole thing down into a flat Array
+      conflicts = []
+      conflicts << @conflicts.flatten
+      conflicts << components.flat_map(&:conflicts)
       conflicts.flatten!
       conflicts.each do |conflict|
         # TODO: Make this a more reasonable default before 1.0.0
@@ -360,8 +366,8 @@ class Vanagon
     # @return [Array] array of package level provides for the project
     def get_provides
       provides = []
-      provides.push @provides.flatten
-      provides.push components.flat_map(&:provides)
+      provides << @provides.flatten
+      provides << components.flat_map(&:provides)
       provides.flatten!
       provides.each do |provide|
         # TODO: Make this a more reasonable default before 1.0.0
@@ -841,7 +847,7 @@ class Vanagon
     end
 
     def load_upstream_metadata(metadata_uri)
-      warn "Loading metadata from #{metadata_uri}"
+      VanagonLogger.info "Loading metadata from #{metadata_uri}"
       case metadata_uri
       when /^http/
         @upstream_metadata = JSON.parse(Net::HTTP.get(URI(metadata_uri)))

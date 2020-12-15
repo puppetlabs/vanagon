@@ -1,6 +1,7 @@
 require 'vanagon/environment'
 require 'vanagon/platform/dsl'
 require 'vanagon/utilities'
+require 'vanagon/logger'
 
 class Vanagon
   class Platform
@@ -152,9 +153,9 @@ class Vanagon
       dsl.instance_eval(File.read(platfile), platfile, 1)
       dsl._platform
     rescue StandardError => e
-      warn "Error loading platform '#{name}' using '#{platfile}':"
-      warn e
-      warn e.backtrace.join("\n")
+      VanagonLogger.error "Error loading platform '#{name}' using '#{platfile}':"
+      VanagonLogger.error(e)
+      VanagonLogger.error e.backtrace.join("\n")
       raise e
     end
 
@@ -401,7 +402,7 @@ class Vanagon
     # @deprecated Please use is_macos? instead
     # @return [true, false] true if it is an osx variety, false otherwise
     def is_osx?
-      warn "is_osx? is a deprecated method, please use #is_macos? instead."
+      VanagonLogger.info "is_osx? is a deprecated method, please use #is_macos? instead."
       is_macos?
     end
 
@@ -539,7 +540,7 @@ class Vanagon
       match = version_string.match(VERSION_REGEX)
 
       if match.nil?
-        warn "Passing a version without an operator is deprecated!"
+        VanagonLogger.info "Passing a version without an operator is deprecated!"
         operator = default
         version = version_string
       end

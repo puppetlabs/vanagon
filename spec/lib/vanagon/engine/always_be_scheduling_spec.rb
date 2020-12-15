@@ -174,8 +174,8 @@ describe 'Vanagon::Engine::AlwaysBeScheduling' do
       hostname = 'fainter-whirlwind.puppet.com'
       stub_request(:post, "https://foobar/request").
           to_return({status: 404, body: "", headers: {}},{status: 200, body: '[{"hostname":"'+hostname+'","type":"aix-6.1-ppc","engine":"nspooler"}]', headers: {}})
-      allow_any_instance_of(Object).to receive(:warn)
-      expect_any_instance_of(Object).to receive(:warn).with("failed to request ABS with code 404")
+      allow_any_instance_of(VanagonLogger).to receive(:info)
+      expect_any_instance_of(VanagonLogger).to receive(:info).with("failed to request ABS with code 404")
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       pooler = abs_service.select_target_from("https://foobar")
       expect(pooler).to eq('')
@@ -186,8 +186,8 @@ describe 'Vanagon::Engine::AlwaysBeScheduling' do
           to_return({status: 202, body: "", headers: {}},
                     {status: 503, body: "", headers: {}},
                     {status: 200, body: '[{"hostname":"'+hostname+'","type":"aix-6.1-ppc","engine":"nspooler"}]', headers: {}})
-      allow_any_instance_of(Object).to receive(:warn)
-      expect_any_instance_of(Object).to receive(:warn).with(/Waiting 1 seconds to check if ABS request has been filled/)
+      allow_any_instance_of(VanagonLogger).to receive(:info)
+      expect_any_instance_of(VanagonLogger).to receive(:info).with(/Waiting 1 seconds to check if ABS request has been filled/)
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       abs_service.select_target_from("https://foobar")
       expect(abs_service.target).to eq(hostname)

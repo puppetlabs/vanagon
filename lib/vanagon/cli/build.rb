@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -32,7 +33,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 

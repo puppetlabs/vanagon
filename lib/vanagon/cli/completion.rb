@@ -1,4 +1,5 @@
 require 'docopt'
+require 'vanagon/logger'
 
 class Vanagon
   class CLI
@@ -15,7 +16,7 @@ class Vanagon
       def parse(argv)
         Docopt.docopt(DOCUMENTATION, { argv: argv })
       rescue Docopt::Exit => e
-        puts e.message
+        VanagonLogger.error e.message
         exit 1
       end
 
@@ -24,10 +25,10 @@ class Vanagon
         completion_file = File.expand_path(File.join('..', '..', '..', '..', 'extras', 'completions', "vanagon.#{shell}"), __FILE__)
 
         if File.exist?(completion_file)
-          puts completion_file
+          VanagonLogger.warn completion_file
           exit 0
         else
-          puts "Could not find completion file for '#{shell}': No such file #{completion_file}"
+          VanagonLogger.error "Could not find completion file for '#{shell}': No such file #{completion_file}"
           exit 1
         end
       end

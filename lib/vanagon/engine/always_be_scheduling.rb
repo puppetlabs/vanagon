@@ -1,5 +1,6 @@
 require 'json'
 require 'vanagon/engine/base'
+require 'vanagon/logger'
 require 'yaml'
 
 class Vanagon
@@ -141,14 +142,14 @@ class Vanagon
         absolute_path = File.expand_path(path)
         return nil unless File.exist?(absolute_path)
 
-        warn "Reading ABS token from: #{path}"
+        VanagonLogger.info "Reading ABS token from: #{path}"
         contents = File.read(absolute_path).chomp
         lines = contents.each_line.map(&:chomp)
 
         abs = lines.shift
         @token_vmpooler = lines.shift
 
-        warn "Please add a second line with the vmpooler token to be able to modify or see the VM in floaty/bit-bar" if @token_vmpooler.nil?
+        VanagonLogger.info "Please add a second line with the vmpooler token to be able to modify or see the VM in floaty/bit-bar" if @token_vmpooler.nil?
         return abs
       end
       private :read_vanagon_token
@@ -217,7 +218,7 @@ class Vanagon
             message.concat(" with a vmpooler_fallback token")
           end
         end
-        warn message
+        VanagonLogger.info message
         return abs_token
       end
       private :read_vmfloaty_token
@@ -235,7 +236,7 @@ class Vanagon
       def select_target_from(pooler) # rubocop:disable Metrics/AbcSize
         request_object = build_request_object
 
-        warn "Requesting VMs with job_id: #{@saved_job_id}.  Will poll for up to an hour."
+        VanagonLogger.info "Requesting VMs with job_id: #{@saved_job_id}.  Will poll for up to an hour."
         #the initial request is always replied with "come back again"
         response = Vanagon::Utilities.http_request_generic(
           "#{pooler}/request",
@@ -245,10 +246,10 @@ class Vanagon
         )
 
         unless response.code == "202"
-          warn "failed to request ABS with code #{response.code}"
+          VanagonLogger.info "failed to request ABS with code #{response.code}"
           if valid_json?(response.body)
             response_json = JSON.parse(response.body)
-            warn "reason: #{response_json['reason']}"
+            VanagonLogger.info "reason: #{response_json['reason']}"
           end
           return ''
         end
@@ -278,12 +279,12 @@ class Vanagon
 
             sleep_seconds = 10 if i >= 10
             sleep_seconds = i if i < 10
-            warn "Waiting #{sleep_seconds} seconds to check if ABS request has been filled. (x#{i})"
+            VanagonLogger.info "Waiting #{sleep_seconds} seconds to check if ABS request has been filled. (x#{i})"
 
             sleep(sleep_seconds)
           end
         rescue SystemExit, Interrupt
-          warn "\nVanagon interrupted during mains ABS polling. Make sure you delete the requested job_id #{@saved_job_id}"
+          VanagonLogger.error "\nVanagon interrupted during mains ABS polling. Make sure you delete the requested job_id #{@saved_job_id}"
           raise
         end
         response_body = translated(response_body, @saved_job_id)
@@ -321,14 +322,14 @@ class Vanagon
         )
         if response && response.body == 'OK'
           Vanagon::Driver.logger.info "#{@saved_job_id} has been scheduled for removal"
-          warn "#{@saved_job_id} has been scheduled for removal"
+          VanagonLogger.info "#{@saved_job_id} has been scheduled for removal"
         else
           Vanagon::Driver.logger.info "#{@saved_job_id} could not be scheduled for removal: #{response.body}"
-          warn "#{@saved_job_id} could not be scheduled for removal"
+          VanagonLogger.info "#{@saved_job_id} could not be scheduled for removal"
         end
       rescue Vanagon::Error => e
         Vanagon::Driver.logger.info "#{@saved_job_id} could not be scheduled for removal (#{e.message})"
-        warn "#{@saved_job_id} could not be scheduled for removal (#{e.message})"
+        VanagonLogger.info "#{@saved_job_id} could not be scheduled for removal (#{e.message})"
       end
 
       private

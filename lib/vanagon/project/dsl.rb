@@ -1,4 +1,5 @@
 require 'vanagon/errors'
+require 'vanagon/logger'
 require 'vanagon/project'
 require 'vanagon/utilities'
 require 'vanagon/component/source'
@@ -109,8 +110,8 @@ class Vanagon
       # Sets the run time requirements for the project. Mainly for use in packaging.
       #
       # @param req [String] of requirements of the project
-      def requires(req)
-        @project.requires << req
+      def requires(requirement, version = nil)
+        @project.requires << OpenStruct.new(:requirement => requirement, :version => version)
       end
 
       # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
@@ -185,7 +186,7 @@ class Vanagon
         last_tag = repo_object.describe('HEAD', { :abbrev => 0 })
         release(repo_object.rev_list("#{last_tag}..HEAD", { :count => true }))
       rescue Git::GitExecuteError
-        warn "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        VanagonLogger.error "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Sets the version for the project based on a git describe of the
@@ -196,7 +197,7 @@ class Vanagon
         git_version = Git.open(File.expand_path("..", @configdir)).describe('HEAD', tags: true)
         version(git_version.split('-').reject(&:empty?).join('.'))
       rescue Git::GitExecuteError
-        warn "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
+        VanagonLogger.error "Directory '#{File.expand_path('..', @configdir)}' cannot be versioned by git. Maybe it hasn't been tagged yet?"
       end
 
       # Get the version string from a git branch name. This will look for a '.'
@@ -268,7 +269,7 @@ class Vanagon
       #
       # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently
       def component(name)
-        warn "Loading #{name}" if @project.settings[:verbose]
+        VanagonLogger.info "Loading #{name}" if @project.settings[:verbose]
         if @include_components.empty? or @include_components.include?(name)
           component = Vanagon::Component.load_component(name, File.join(@configdir, "components"), @project.settings, @project.platform)
           @project.components << component

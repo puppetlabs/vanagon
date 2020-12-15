@@ -2,6 +2,7 @@ require 'aws-sdk'
 require 'erb'
 require 'base64'
 require 'vanagon/engine/base'
+require 'vanagon/logger'
 
 class Vanagon
   class Engine
@@ -57,17 +58,17 @@ class Vanagon
       end
 
       def select_target
-        warn "Instance created id: #{instance.id}"
-        warn "Created instance waiting for status ok"
+        VanagonLogger.info "Instance created id: #{instance.id}"
+        VanagonLogger.info "Created instance waiting for status ok"
         @ec2.wait_until(:instance_status_ok, instance_ids: [instance.id])
-        warn "Instance running"
+        VanagonLogger.info "Instance running"
         @target = instance.private_ip_address
       rescue ::Aws::Waiters::Errors::WaiterFailed => error
         fail "Failed to wait for ec2 instance to start got error #{error}"
       end
 
       def teardown
-        warn "Destroying instance on AWS id: #{instance.id}"
+        VanagonLogger.info "Destroying instance on AWS id: #{instance.id}"
         instances.batch_terminate!
       end
     end

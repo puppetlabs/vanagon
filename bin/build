@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 
+require 'vanagon/logger'
+
 script = File.basename($0)
 
-warn "#{script}: Warning: use of stand alone '#{script}' command is deprecated and may be removed.
+VanagonLogger.info "#{script}: Warning: use of stand alone '#{script}' command is deprecated and may be removed.
      Use: 'vanagon #{script}' instead."
 
 exec "vanagon", script, *ARGV

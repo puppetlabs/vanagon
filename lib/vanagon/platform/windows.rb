@@ -1,3 +1,5 @@
+require 'vanagon/logger'
+
 class Vanagon
   class Platform
     class Windows < Vanagon::Platform
@@ -231,7 +233,7 @@ class Vanagon
               ]
             end
           rescue RuntimeError
-            warn "Unable to connect to #{project.signing_username}@#{project.signing_hostname}, skipping signing extra files: #{project.extra_files_to_sign.join(',')}"
+            VanagonLogger.error "Unable to connect to #{project.signing_username}@#{project.signing_hostname}, skipping signing extra files: #{project.extra_files_to_sign.join(',')}"
           end
         end
         make_commands << [

@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/logger'
 require 'vanagon/patch'
 require 'ostruct'
 require 'json'
@@ -131,8 +132,8 @@ class Vanagon
       # component
       #
       # @param requirement [String] a package that is required at runtime for this component
-      def requires(requirement)
-        @component.requires << requirement
+      def requires(requirement, version = nil)
+        @component.requires << OpenStruct.new(:requirement => requirement, :version => version)
       end
 
       # Indicates that this component replaces a system level package. Replaces can be collected and used by the project and package.
@@ -237,7 +238,7 @@ class Vanagon
 
         if @component.platform.is_windows?
           unless mode.nil? && owner.nil? && group.nil?
-            warn "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
+            VanagonLogger.info "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
           end
         else
           mode ||= '0644'
@@ -407,7 +408,7 @@ class Vanagon
         install_flags = ['-d']
         if @component.platform.is_windows?
           unless mode.nil? && owner.nil? && group.nil?
-            warn "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
+            VanagonLogger.info "You're trying to set the mode, owner, or group for windows. I don't know how to do that, ignoring!"
           end
         else
           install_flags << "-m '#{mode}'" unless mode.nil?
@@ -422,7 +423,7 @@ class Vanagon
       # @param env [Hash] mapping of keys to values to add to the environment for the component
       def environment(*env)
         if env.size == 1 && env.first.is_a?(Hash)
-          warn <<-WARNING.undent
+          VanagonLogger.info <<-WARNING.undent
             the component DSL method signature #environment({Key => Value}) is deprecated
             and will be removed by Vanagon 1.0.0.
 

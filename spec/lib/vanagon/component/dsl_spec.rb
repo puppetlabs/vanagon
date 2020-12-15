@@ -313,10 +313,17 @@ end" }
       comp = Vanagon::Component::DSL.new('requires-test', {}, {})
       comp.requires('library1')
       comp.requires('library2')
-      expect(comp._component.requires).to include('library1')
-      expect(comp._component.requires).to include('library2')
+      expect(comp._component.requires.first.requirement).to include('library1')
+      expect(comp._component.requires.last.requirement).to include('library2')
     end
   end
+
+    it 'supports versioned requires' do
+      comp = Vanagon::Component::DSL.new('requires-test', {}, {})
+      comp.requires('library1', '1.2.3')
+      expect(comp._component.requires.first.requirement).to eq('library1')
+      expect(comp._component.requires.first.version).to eq('1.2.3')
+    end
 
   describe '#provides' do
     it 'adds the package provide to the list of provides' do
