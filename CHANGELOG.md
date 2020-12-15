@@ -7,8 +7,12 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - (VANAGON-129) Added support for passing a version to `requires` in components
-  and projects. Updated `get_requires` to handle the versions, and pass them to 
-  the rpm and deb packages. 
+  and projects. Updated `get_requires` to handle the versions, and pass them to
+  the rpm and deb packages.
+
+### Fixed
+- (maint) Fix bugs in pick_engine
+
 
 ## [0.18.1] - released 2020-12-09
 ### Fixed
@@ -29,8 +33,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (PA-3497) Build arm64 debian packages for aarch64
 
 ### Changed
-- (VANAGON-79) Use VanagonLogger class for  output instead of puts, warn, and 
-  and stderr. 
+- (VANAGON-79) Use VanagonLogger class for  output instead of puts, warn, and
+  and stderr.
 
 ### Fixed
 - (maint) Pristine config files are no longer kept if there are no differences
