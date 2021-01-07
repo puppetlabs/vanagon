@@ -12,6 +12,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Fixed
 - (maint) Fix bugs in pick_engine
+- (maint) Fix pristine config files clobbering (Solaris 10)
 
 
 ## [0.18.1] - released 2020-12-09
