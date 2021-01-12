@@ -17,8 +17,8 @@ set name=variant.opensolaris.zone value=global value=nonglobal
 %>
 
 # Add any needed dependencies
-<%- get_requires.each do |requirement| -%>
-depend fmri=pkg:/<%= requirement %> type=require
+<%- get_requires.each do |requires| -%>
+depend fmri=pkg:/<%= requires.requirement %> type=require
 <%- end -%>
 
 # Always drop /etc, /usr, and /var, it will cause conflicts with other system packages

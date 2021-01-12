@@ -11,6 +11,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   the rpm and deb packages.
 
 ### Fixed
+- (VANAGON-164) Fix bugs for Solaris templates - process the OpenStruct returned 
+  by `get_requires` 
 - (maint) Fix bugs in pick_engine
 - (maint) Fix pristine config files clobbering (Solaris 10)
 
