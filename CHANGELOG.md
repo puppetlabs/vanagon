@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.19.0] - released 2021-1-12
 ### Added
 - (VANAGON-129) Added support for passing a version to `requires` in components
   and projects. Updated `get_requires` to handle the versions, and pass them to
@@ -15,7 +17,6 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   by `get_requires` 
 - (maint) Fix bugs in pick_engine
 - (maint) Fix pristine config files clobbering (Solaris 10)
-
 
 ## [0.18.1] - released 2020-12-09
 ### Fixed
@@ -932,7 +933,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.18.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.19.0...HEAD
+[0.19.0]: https://github.com/puppetlabs/vanagon/compare/0.18.1...0.19.0
 [0.18.1]: https://github.com/puppetlabs/vanagon/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/puppetlabs/vanagon/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/puppetlabs/vanagon/compare/0.16.1...0.17.0
