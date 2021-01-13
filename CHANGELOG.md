@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.19.1] - released 2021-1-13
 ### Fixed
 - (maint) Fixed an issue invoking VanagonLogger in the error handling for the
   `Vanagon::Component.load_component` method
@@ -936,7 +938,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.19.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.19.1...HEAD
+[0.19.1]: https://github.com/puppetlabs/vanagon/compare/0.19.0...0.19.1
 [0.19.0]: https://github.com/puppetlabs/vanagon/compare/0.18.1...0.19.0
 [0.18.1]: https://github.com/puppetlabs/vanagon/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/puppetlabs/vanagon/compare/0.17.0...0.18.0
