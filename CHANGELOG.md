@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (maint) Fixed an issue invoking VanagonLogger in the error handling for the
+  `Vanagon::Component.load_component` method
 
 ## [0.19.0] - released 2021-1-12
 ### Added
