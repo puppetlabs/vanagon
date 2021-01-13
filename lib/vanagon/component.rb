@@ -141,7 +141,7 @@ class Vanagon
       dsl._component
     rescue StandardError => e
       VanagonLogger.error "Error loading project '#{name}' using '#{compfile}':"
-      VanagonLogger(e)
+      VanagonLogger.error e
       VanagonLogger.error e.backtrace.join("\n")
       raise e
     end
