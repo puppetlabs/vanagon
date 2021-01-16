@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (RE-13837) Workaround a parsing bug in ruby git where Git.ls-remote was mis-parsing
+  unexpected output from ssh.
 
 ## [0.19.1] - released 2021-1-13
 ### Fixed
@@ -18,8 +21,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
   the rpm and deb packages.
 
 ### Fixed
-- (VANAGON-164) Fix bugs for Solaris templates - process the OpenStruct returned 
-  by `get_requires` 
+- (VANAGON-164) Fix bugs for Solaris templates - process the OpenStruct returned
+  by `get_requires`
 - (maint) Fix bugs in pick_engine
 - (maint) Fix pristine config files clobbering (Solaris 10)
 

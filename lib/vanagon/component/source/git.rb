@@ -26,14 +26,38 @@ class Vanagon
           #        git command has failed. Useful in instances where a URL
           #        prompts for credentials despite not being a git remote
           # @return [Boolean] whether #url is a valid Git repo or not
+
+          # [RE-13837] This ought to be the way to do this. Unfortunately,
+          # there's a bug in Git.ls_remote that when ssh prints something like
+          #  Warning: Permanently added 'github.com,192.30.255.113' (RSA)
+          # Git.ls_remote attempts to parse it as actual git output and fails
+          # with: NoMethodError: undefined method `split' for nil:NilClass
+          #
+          # We'll work around that case by calling 'git ls-remote' directly ourselves.
+          #
+          # I'm leaving in the broken version here for a time when the ruby-git library
+          # is fixed.
+
+          #def valid_remote?(url, timeout = 0)
+          #  Timeout.timeout(timeout) do
+          #    !!::Git.ls_remote(url)
+          #  end
+          #rescue ::Git::GitExecuteError
+          #  false
+          #rescue Timeout::Error
+          #  false
+          #end
+
           def valid_remote?(url, timeout = 0)
             Timeout.timeout(timeout) do
-              !!::Git.ls_remote(url)
+              Vanagon::Utilities.local_command("git ls-remote #{url} > /dev/null 2>&1")
+              return false unless $?.exitstatus.zero?
+              return true
             end
-          rescue ::Git::GitExecuteError
-            false
+          rescue RuntimeError
+            return false
           rescue Timeout::Error
-            false
+            return false
           end
         end
 
