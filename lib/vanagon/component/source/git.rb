@@ -54,10 +54,9 @@ class Vanagon
               return false unless $?.exitstatus.zero?
               return true
             end
-          rescue RuntimeError # rubocop:disable Lint/ShadowedException
-            ## rubocop is right by flagging this but I think we need it in this case.
-            return false
           rescue Timeout::Error
+            return false
+          rescue RuntimeError
             return false
           end
         end
