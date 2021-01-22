@@ -14,8 +14,8 @@ describe "Vanagon::Component::Source::Git" do
 
   # before(:each) blocks are run before each example
   before :each do
-    allow(Git)
-      .to receive(:ls_remote)
+    allow(Vanagon::Component::Source::Git)
+      .to receive(:valid_remote?)
             .and_return(true)
 
     allow(File).to receive(:realpath).and_return(@workdir)
@@ -24,8 +24,8 @@ describe "Vanagon::Component::Source::Git" do
   describe "#initialize" do
     it "raises error on initialization with an invalid repo" do
       # Ensure initializing a repo fails without calling over the network
-      allow(Git)
-        .to receive(:ls_remote)
+      allow(Vanagon::Component::Source::Git)
+        .to receive(:valid_remote?)
               .and_return(false)
 
       expect { @klass.new(@url, ref: @ref_tag, workdir: @workdir) }
