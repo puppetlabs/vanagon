@@ -167,8 +167,8 @@ class Vanagon
       #
       # @param service_file [String] path to the service file relative to the source
       # @param default_file [String] path to the default file relative to the source
+      # @param service_name [String] name of the service
       # @param options optional extra parameters
-      #        service_name [String] name of the service
       #        service_type [String] type of the service (network, application, system, etc)
       #        init_system [String] the init system on which to install service (sysv, systemd)
       #        link_target [String] executable service file should be linked to

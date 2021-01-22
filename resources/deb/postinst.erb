@@ -3,21 +3,27 @@
   # switch based on systemd vs systemv
   #
   <%- if service.init_system.nil? || service.init_system.eq?('systemd') -%>
-if [ -d '/run/systemd/system' ] ; then
-  if [ -z "$2" ]; then
-    systemctl enable <%= service.name %>.service >/dev/null || :
-  else
-    systemctl try-restart <%= service.name %>.service >/dev/null || :
+if [ -f '/proc/1/comm' ]; then
+  init_comm=`cat /proc/1/comm`
+  if [ "$init_comm" = "systemd" ]; then
+    if [ -z "$2" ]; then
+      systemctl enable <%= service.name %>.service >/dev/null || :
+    else
+      systemctl try-restart <%= service.name %>.service >/dev/null || :
+    fi
   fi
 fi
   <%- end -%>
   <%- if service.init_system.nil? || service.init_system.eq?('sysv') -%>
-if [ ! -d '/run/systemd/system' ] ; then
-  if [ -x "<%= service.service_file %>" ]; then
-    update-rc.d <%= service.name %> defaults > /dev/null
+if [ -f '/proc/1/comm' ]; then
+  init_comm=`cat /proc/1/comm`
+  if [ "$init_comm" = "init" ]; then
+    if [ -x "<%= service.service_file %>" ]; then
+      update-rc.d <%= service.name %> defaults > /dev/null
 
-    if [ -n "$2" ]; then
-      invoke-rc.d <%= service.name %> condrestart || true
+      if [ -n "$2" ]; then
+        invoke-rc.d <%= service.name %> condrestart || true
+      fi
     fi
   fi
 fi
