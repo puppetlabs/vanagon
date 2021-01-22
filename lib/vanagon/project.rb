@@ -351,10 +351,14 @@ class Vanagon
     # will return nil
     #
     # @param [string] name of service to grab
-    # @return [@component.service obj] specific service
+    # @return [@component.service obj] specific service, or array of services
+    #         if there's more than one
     def get_service(name)
       components.each do |component|
         if component.name == name
+          if component.service.size == 1
+            return component.service.first
+          end
           return component.service
         end
       end

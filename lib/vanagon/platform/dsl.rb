@@ -10,6 +10,7 @@ require 'vanagon/platform/solaris_11'
 require 'vanagon/platform/windows'
 require 'vanagon/logger'
 require 'securerandom'
+require 'ostruct'
 require 'uri'
 
 class Vanagon
@@ -219,6 +220,11 @@ class Vanagon
       # @param dir [String] Directory where service files live on the platform
       def servicedir(dir)
         @platform.servicedir = dir
+
+        # Add to the servicetypes array if we haven't already
+        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.select { |s| s.servicetype == @platform.servicetype }.empty?
+          @platform.servicetypes << OpenStruct.new(:servicetype => @platform.servicetype, :servicedir => @platform.servicedir)
+        end
       end
 
       # Set the directory where default or sysconfig files live for the platform
@@ -231,8 +237,18 @@ class Vanagon
       # Set the servicetype for the platform so that services can be installed correctly.
       #
       # @param type [String] service type for the platform ('sysv' for example)
-      def servicetype(type)
-        @platform.servicetype = type
+      # @param servicedir [String] service dir for this platform and service type ('/etc/init.d' for example). Optional.
+      def servicetype(type, servicedir: nil) # rubocop:disable Metrics/AbcSize
+        if servicedir
+          @platform.servicetypes << OpenStruct.new(:servicetype => type, :servicedir => servicedir)
+        else
+          @platform.servicetype = type
+        end
+
+        # Add to the servicetypes array if we haven't already
+        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.select { |s| s.servicetype == @platform.servicetype }.empty?
+          @platform.servicetypes << OpenStruct.new(:servicetype => @platform.servicetype, :servicedir => @platform.servicedir)
+        end
       end
 
       # Set the list of possible host to perform a build on (when not using

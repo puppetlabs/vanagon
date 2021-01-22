@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-123) Re-add support for multiple service types for a single platform.
+  This is intended primarily for Debian packages supporting both systemd and
+  sysv init systems. The systemd/init check was updated.
+
 ### Fixed
 - (RE-13837) Workaround a parsing bug in ruby git where Git.ls-remote was mis-parsing
   unexpected output from ssh.
