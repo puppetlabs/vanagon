@@ -13,11 +13,14 @@ fi
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
-  <%- if @platform.servicetype == "systemd" -%>
-systemctl daemon-reload >/dev/null 2>&1 || :
-  <%- elsif @platform.servicetype == "sysv" -%>
-if [ "$1" = "purge" ] ; then
-  update-rc.d <%= service.name %> remove > /dev/null
+if [ -f '/proc/1/comm' ]; then
+  init_comm=`cat /proc/1/comm`
+  if [ "$init_comm" = "systemd" ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  else
+    if [ "$1" = "purge" ] ; then
+      update-rc.d <%= service.name %> remove > /dev/null
+    fi
+  fi
 fi
-  <%- end -%>
 <%- end -%>

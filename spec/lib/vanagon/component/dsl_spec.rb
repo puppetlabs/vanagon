@@ -34,6 +34,16 @@ end" }
     plat._platform
   }
 
+  let (:dummy_platform_sysv_or_systemd) {
+    plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+    plat.instance_eval("platform 'debian-8-x86_64' do |plat|
+                       plat.servicetype 'sysv', servicedir: '/etc/init.d'
+                       plat.servicetype 'systemd', servicedir: '/usr/lib/systemd/system'
+                       plat.defaultdir '/etc/default'
+                       end")
+    plat._platform
+  }
+
   let (:dummy_platform_smf) {
     plat = Vanagon::Platform::DSL.new('debian-11-i386')
     plat.instance_eval("platform 'debian-11-i386' do |plat|
@@ -575,15 +585,15 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/etc/init.d/service-test', mode: '0755'))
 
       # The component should now have a service registered
-      expect(comp._component.service.name).to eq('service-test')
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
     end
 
     it 'reads from a file when the OS is AIX for services' do
       comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_aix)
       comp.install_service('spec/fixtures/component/mcollective.service', nil, 'mcollective')
-      expect(comp._component.service.name).to eq('mcollective')
-      expect(comp._component.service.service_command).to include('/opt/puppetlabs/puppet/bin/ruby')
-      expect(comp._component.service.service_command).not_to include("\n")
+      expect(comp._component.service.flat_map(&:name).compact).to include('mcollective')
+      expect(comp._component.service.flat_map(&:service_command).compact.first).to include('/opt/puppetlabs/puppet/bin/ruby')
+      expect(comp._component.service.flat_map(&:service_command).compact.first).not_to include("\n")
     end
 
     it 'adds the correct command to the install for the component for systemd platforms' do
@@ -602,7 +612,34 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/usr/lib/systemd/system/service-test.service', mode: '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service.name).to eq('service-test')
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
+    end
+
+    it 'adds the correct command when installing both systemd and sysv' do
+      comp = Vanagon::Component::DSL.new('service-test', {}, dummy_platform_sysv_or_systemd)
+      comp.install_service('component-client.init', 'component-client.sysconfig', init_system: 'sysv')
+      comp.install_service('component-client.service', 'component-client.sysconfig', init_system: 'systemd')
+      # Look for servicedir creation and copy - sysv
+      expect(comp._component.install).to include("install -d '/etc/init.d'")
+      expect(comp._component.install).to include("cp -p 'component-client.init' '/etc/init.d/service-test'")
+
+      # Look for servicedir creation and copy - systemd
+      expect(comp._component.install).to include("install -d '/usr/lib/systemd/system'")
+      expect(comp._component.install).to include("cp -p 'component-client.service' '/usr/lib/systemd/system/service-test.service'")
+
+      # Look for defaultdir creation and copy
+      expect(comp._component.install).to include("install -d '/etc/default'")
+      expect(comp._component.install).to include("cp -p 'component-client.sysconfig' '/etc/default/service-test'")
+
+      # Look for files and configfiles - sysv
+      expect(comp._component.configfiles).to include(Vanagon::Common::Pathname.configfile('/etc/default/service-test'))
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/etc/init.d/service-test', mode: '0755'))
+
+      # Look for files and configfiles - systemd
+      expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/usr/lib/systemd/system/service-test.service', mode: '0644'))
+
+      # The component should now have a service registered
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
     end
 
     it 'adds the correct command to the install for smf services using a service_type' do
@@ -621,7 +658,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/var/svc/manifest/network/service-test.xml', mode: '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service.name).to eq('service-test')
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
     end
 
     it 'adds the correct command to the install for smf services' do
@@ -640,7 +677,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/var/svc/manifest/service-test.xml', mode: '0644'))
 
       # The component should now have a service registered
-      expect(comp._component.service.name).to eq('service-test')
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
     end
 
     it 'installs the file as a link when link_target is specified' do
@@ -661,7 +698,7 @@ end" }
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('/etc/init.d/service-test'))
 
       # The component should now have a service registered
-      expect(comp._component.service.name).to eq('service-test')
+      expect(comp._component.service.flat_map(&:name).compact).to include('service-test')
     end
   end
 

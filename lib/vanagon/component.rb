@@ -180,6 +180,7 @@ class Vanagon
       @preremove_actions = []
       @postremove_actions = []
       @install_only = false
+      @service = []
     end
 
     # Adds the given file to the list of files and returns @files.

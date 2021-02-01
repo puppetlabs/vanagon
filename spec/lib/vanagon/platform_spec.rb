@@ -1,6 +1,33 @@
 require 'vanagon/platform'
 
 describe "Vanagon::Platform" do
+  let(:deb_platform_just_servicedir) { "platform 'debian-test-fixture' do |plat|
+                                       plat.servicedir '/etc/init.d'
+                                       end
+                                       "}
+  let(:deb_platform_just_servicetype) { "platform 'debian-test-fixture' do |plat|
+                                       plat.servicetype 'sysv'
+                                       end
+                                       "}
+  let(:deb_platform_multi_servicetypes) { "platform 'debian-test-fixture' do |plat|
+                                       plat.servicetype 'sysv', servicedir: '/etc/init.d'
+                                       plat.servicetype 'systemd', servicedir: '/lib/systemd/system'
+                                       end
+                                       "}
+  let(:deb_platform_no_service) { "platform 'debian-test-fixture' do |plat|
+                                       end
+                                       "}
+  let(:deb_platform_servicetype) { "platform 'debian-test-fixture' do |plat|
+                                       plat.servicetype 'sysv'
+                                       plat.servicedir '/etc/init.d'
+                                       end
+                                       "}
+  let(:deb_platform_bad_servicedir_block) { "platform 'debian-test-fixture' do |plat|
+                                            plat.servicetype 'sysv', servicedir: '/etc/init.d'
+                                            plat.servicetype 'sysv', servicedir: '/etc/rc.d'
+                                            end
+                                            "}
+
   let(:platforms) do
     [
       {
@@ -170,6 +197,59 @@ describe "Vanagon::Platform" do
         cur_plat = Vanagon::Platform.new(plat[:name])
         expect(cur_plat.is_el?).to eq(plat[:is_el])
       end
+    end
+  end
+
+  describe "#get_service_type" do
+    it "returns plat.servicetype if that's the only thing set" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_just_servicetype)
+      expect(plat._platform.get_service_types).to include('sysv')
+    end
+
+    it "returns from servicetypes if that's set" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_servicetype)
+      expect(plat._platform.get_service_types).to include('sysv')
+    end
+
+    it "returns multiples if there's more than one" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_multi_servicetypes)
+      expect(plat._platform.get_service_types).to include('sysv')
+      expect(plat._platform.get_service_types).to include('systemd')
+    end
+
+    it "returns an empty array if nothing is set" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_no_service)
+      expect(plat._platform.get_service_types.size).to eq(0)
+    end
+  end
+
+  describe "#get_service_dir" do
+    it "returns plat.servicedir if that's the only thing set" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_just_servicedir)
+      expect(plat._platform.get_service_dir).to eq('/etc/init.d')
+    end
+
+    it "returns servicedirs set via servicetype" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_servicetype)
+      expect(plat._platform.get_service_dir).to eq('/etc/init.d')
+    end
+
+    it "returns the servicedir based on servicetype" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_multi_servicetypes)
+      expect(plat._platform.get_service_dir('systemd')).to eq('/lib/systemd/system')
+    end
+
+    it "fails if there are >1 servicedir for a service type" do
+      plat = Vanagon::Platform::DSL.new('debian-8-x86_64')
+      plat.instance_eval(deb_platform_bad_servicedir_block)
+      expect { plat._platform.get_service_dir('sysv') }.to raise_error(Vanagon::Error)
     end
   end
 end

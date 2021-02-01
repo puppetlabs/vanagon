@@ -2,18 +2,29 @@
 <%- get_services.each do |service| -%>
   # switch based on systemd vs systemv
   #
-  <%- if @platform.servicetype == "systemd" -%>
-if [ -z "$2" ]; then
-  systemctl enable <%= service.name %>.service >/dev/null || :
-else
-  systemctl try-restart <%= service.name %>.service >/dev/null || :
+  <%- if service.init_system.nil? || service.init_system.eq?('systemd') -%>
+if [ -f '/proc/1/comm' ]; then
+  init_comm=`cat /proc/1/comm`
+  if [ "$init_comm" = "systemd" ]; then
+    if [ -z "$2" ]; then
+      systemctl enable <%= service.name %>.service >/dev/null || :
+    else
+      systemctl try-restart <%= service.name %>.service >/dev/null || :
+    fi
+  fi
 fi
-  <%- elsif @platform.servicetype == "sysv" -%>
-if [ -x "<%= service.service_file %>" ]; then
-  update-rc.d <%= service.name %> defaults > /dev/null
+  <%- end -%>
+  <%- if service.init_system.nil? || service.init_system.eq?('sysv') -%>
+if [ -f '/proc/1/comm' ]; then
+  init_comm=`cat /proc/1/comm`
+  if [ "$init_comm" = "init" ]; then
+    if [ -x "<%= service.service_file %>" ]; then
+      update-rc.d <%= service.name %> defaults > /dev/null
 
-  if [ -n "$2" ]; then
-    invoke-rc.d <%= service.name %> condrestart || true
+      if [ -n "$2" ]; then
+        invoke-rc.d <%= service.name %> condrestart || true
+      fi
+    fi
   fi
 fi
   <%- end -%>
@@ -27,17 +38,17 @@ fi
 
 # Set up any specific permissions needed...
 <%- (get_directories + get_configfiles + get_files).select { |pathname| pathname.has_overrides? }.uniq.each do |file_or_directory| -%>
-  <%= "chmod '#{file_or_directory.mode}' '#{file_or_directory.path}'" if file_or_directory.mode %>
+  <%= "chmod '#{file_or_directory.mode}' '#{file_or_directory.path}' &>/dev/null ||:" if file_or_directory.mode %>
   <%- if file_or_directory.owner -%>
     if getent passwd '<%= file_or_directory.owner %>' &> /dev/null; then
-      chown '<%= file_or_directory.owner %>' '<%= file_or_directory.path %>'
+      chown '<%= file_or_directory.owner %>' '<%= file_or_directory.path %>' &>/dev/null ||:
     else
       echo "Error updating '<%= file_or_directory.path %>': user '<%= file_or_directory.owner %>' does not exist."
     fi
   <%- end -%>
   <%- if file_or_directory.group -%>
     if getent group '<%= file_or_directory.group %>' &> /dev/null; then
-      chgrp '<%= file_or_directory.group %>' '<%= file_or_directory.path %>'
+      chgrp '<%= file_or_directory.group %>' '<%= file_or_directory.path %>' &>/dev/null ||:
     else
       echo "Error updating '<%= file_or_directory.path %>': group '<%= file_or_directory.group %>' does not exist."
     fi
