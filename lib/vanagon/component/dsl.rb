@@ -228,7 +228,8 @@ class Vanagon
         end
 
         # Register the service for use in packaging
-        @component.service << OpenStruct.new(:name => service_name, :service_file => target_service_file, :type => options[:service_type])
+        @component.service << OpenStruct.new(:name => service_name, :service_file => target_service_file,
+                                             :type => options[:service_type], :init_system => init_system)
       end
 
       # Copies a file from source to target during the install phase of the component
