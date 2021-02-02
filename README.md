@@ -197,8 +197,8 @@ Port of the system where redis is running. Defaults to *6379*.
 ##### `VANAGON_USE_MIRRORS`
 Controls whether component sources are downloaded directly from upstream URLs
 or from configured mirrors. Most Puppet projects using Vanagon default to
-fetching components from internal mirrors. Set this variable to `n` when
-building outside of the Puppet private network to download directly from
+fetching components from internal mirrors. Set this variable to `n` or `false`
+when building outside of the Puppet private network to download directly from
 upstream sources.
 
 ##### `VANAGON_RETRY_COUNT`

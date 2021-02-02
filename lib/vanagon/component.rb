@@ -306,7 +306,7 @@ class Vanagon
     def get_source(workdir) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       opts = options.merge({ workdir: workdir })
       if url || !mirrors.empty?
-        if ENV['VANAGON_USE_MIRRORS'] == 'n'
+        if ENV['VANAGON_USE_MIRRORS'] == 'n' or ENV['VANAGON_USE_MIRRORS'] == 'false'
           fetch_url(opts)
         else
           fetch_mirrors(opts) || fetch_url(opts)
