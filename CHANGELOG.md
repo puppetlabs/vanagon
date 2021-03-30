@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-85) Moved platform defintions into core vanagon. Created default 
+platform definitions which projects can inherit. Added the `inherit_from_default` 
+method to the platform DSL. Added a `--defaults` option to `vanagon list`. This 
+shows all the default platforms that are available in core vanagon. 
 
 ## [0.20.1] - released 2021-03-15
 ### Changed
