@@ -304,7 +304,7 @@ class Vanagon
     #
     # @param workdir [String] working directory to put the source into
     def get_source(workdir) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-      opts = options.merge({ workdir: workdir })
+      opts = options.merge({ workdir: workdir, dirname: dirname })
       if url || !mirrors.empty?
         if ENV['VANAGON_USE_MIRRORS'] == 'n' or ENV['VANAGON_USE_MIRRORS'] == 'false'
           fetch_url(opts)
