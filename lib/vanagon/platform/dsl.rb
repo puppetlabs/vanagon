@@ -86,7 +86,7 @@ class Vanagon
       end
 
       def inherit_from_default(name = @name)
-        default_file = File.join(__dir__, "/defaults/#{name}.rb")
+        default_file = File.join(__dir__, 'defaults', "#{name}.rb")
         default_object = Vanagon::Platform::DSL.new(name)
 
         @platform = default_object.instance_eval(File.read(default_file), default_file, 1)

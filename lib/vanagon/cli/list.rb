@@ -11,6 +11,7 @@ class Vanagon
         Options:
           -h, --help                       Display help
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
+          -d, --defaults                   Display the list of default platforms
           -l, --platforms                  Display a list of platforms
           -r, --projects                   Display a list of projects
           -s, --use-spaces                 Displays the list as space separated
@@ -36,12 +37,21 @@ class Vanagon
           exit 1
         end
 
+        default_list = Dir.children(File.join(File.dirname(__FILE__), '..', 'platform', 'defaults')).map do |platform|
+          File.basename(platform, File.extname(platform))
+        end
+
         platform_list = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
           File.basename(platform, File.extname(platform))
         end
 
         project_list = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
           File.basename(project, File.extname(project))
+        end
+
+        if options[:defaults]
+          puts "- Defaults", output(default_list, options[:use_spaces])
+          return
         end
 
         if options[:projects] == options[:platforms]
@@ -63,6 +73,7 @@ class Vanagon
       def options_translate(docopt_options)
         translations = {
           '--configdir' => :configdir,
+          '--defaults' => :defaults,
           '--platforms' => :platforms,
           '--projects' => :projects,
           '--use-spaces' => :use_spaces,

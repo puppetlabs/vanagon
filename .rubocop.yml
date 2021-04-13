@@ -6,6 +6,7 @@ AllCops:
     - 'spec/**/*'
     - 'vendor/**/*'
     - 'examples/**/*'
+    - 'lib/vanagon/platform/defaults/*'
 
 Lint/ElseLayout:
   Enabled: true
@@ -523,4 +524,3 @@ Style/NumericLiteralPrefix:
 
 Style/ConditionalAssignment:
   Enabled: false
-  
