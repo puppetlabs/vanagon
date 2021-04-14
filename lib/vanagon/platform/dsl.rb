@@ -85,6 +85,13 @@ class Vanagon
         method_name.to_s.start_with?('get_') || super
       end
 
+      def inherit_from_default(name = @name)
+        default_file = File.join(__dir__, 'defaults', "#{name}.rb")
+        default_object = Vanagon::Platform::DSL.new(name)
+
+        @platform = default_object.instance_eval(File.read(default_file), default_file, 1)
+      end
+
       # Adds an arbitrary environment variable to a Platform, which will be
       # merged with any environment variables defined by the Project into the
       # rendered Makefile

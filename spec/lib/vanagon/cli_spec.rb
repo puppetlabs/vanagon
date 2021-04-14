@@ -93,6 +93,7 @@ describe Vanagon::CLI::List do
   end
 
   describe "#run" do 
+    let(:defaults){ ['def1', 'def2', 'def3'] }
     let(:projects){ ['foo', 'bar', 'baz'] }
     let(:platforms){ ['1', '2', '3'] }
     let(:output_both){
@@ -116,6 +117,9 @@ baz
           .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
           .and_return(true)
         expect(Dir).to receive(:children)
+          .with("#{File.join(Dir.pwd, 'lib', 'vanagon' ,'cli', '..', 'platform', 'defaults')}")
+          .and_return(defaults)
+        expect(Dir).to receive(:children)
           .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
           .and_return(projects)
         expect(Dir).to receive(:children)
@@ -124,28 +128,32 @@ baz
       end
       let(:options_empty) { {
         nil=>false, 
-        :configdir=>"#{Dir.pwd}/configs", 
+        :configdir=>"#{Dir.pwd}/configs",
+        :defaults=>false, 
         :platforms=>false, 
         :projects=>false, 
         :use_spaces=>false
       } }
       let(:options_platforms_only) { {
         nil=>false, 
-        :configdir=>"#{Dir.pwd}/configs", 
+        :configdir=>"#{Dir.pwd}/configs",
+        :defaults=>false, 
         :platforms=>true, 
         :projects=>false, 
         :use_spaces=>false
       } }
       let(:options_projects_only) { {
         nil=>false, 
-        :configdir=>"#{Dir.pwd}/configs", 
+        :configdir=>"#{Dir.pwd}/configs",
+        :defaults=>false, 
         :platforms=>false, 
         :projects=>true, 
         :use_spaces=>false
       } }
       let(:options_space_only) { {
         nil=>false, 
-        :configdir=>"#{Dir.pwd}/configs", 
+        :configdir=>"#{Dir.pwd}/configs",
+        :defaults=>false, 
         :platforms=>false, 
         :projects=>false, 
         :use_spaces=>true
@@ -202,14 +210,19 @@ baz
       let(:options_configdir) { {
         nil=>false, 
         :configdir=> '/configs', 
+        :defaults=>false,
         :platforms=>false, 
         :projects=>false, 
-        :use_spaces=>false} }
+        :use_spaces=>false
+      } }
       it "it successfully takes the configs directory" do 
         expect(Dir).to receive(:exist?).with('/configs' + '/platforms')
           .and_return(true)
         expect(Dir).to receive(:exist?).with('/configs' + '/projects')
           .and_return(true)
+        expect(Dir).to receive(:children)
+          .with("#{File.join(Dir.pwd, 'lib', 'vanagon' ,'cli', '..', 'platform', 'defaults')}")
+          .and_return(defaults)
         expect(Dir).to receive(:children).with('/configs' + '/projects')
           .and_return(projects)
         expect(Dir).to receive(:children).with('/configs' + '/platforms')
@@ -217,6 +230,44 @@ baz
         expect do
           cli.run(options_configdir)
         end.to output(output_both).to_stdout
+      end
+    end
+
+    context "spec to determine vanagon defaults" do
+      let(:options_default_platforms) { {
+        nil=>false, 
+        :configdir=>"#{Dir.pwd}/configs",
+        :defaults=>true,
+        :platforms=>false, 
+        :projects=>false, 
+        :use_spaces=>false
+      } }
+      let(:output_defaults){
+"- Defaults
+def1
+def2
+def3
+"
+}
+      it "lists the vanagon defaults" do
+        expect(Dir).to receive(:exist?)
+          .with("#{File.join(Dir.pwd, 'configs', 'platforms')}")
+          .and_return(true)
+        expect(Dir).to receive(:exist?)
+          .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
+          .and_return(true)
+        expect(Dir).to receive(:children)
+          .with("#{File.join(Dir.pwd, 'lib', 'vanagon' ,'cli', '..', 'platform', 'defaults')}")
+          .and_return(defaults)
+        expect(Dir).to receive(:children)
+          .with("#{File.join(Dir.pwd, 'configs', 'projects')}")
+          .and_return(projects)
+        expect(Dir).to receive(:children)
+          .with("#{File.join(Dir.pwd, 'configs', 'platforms')}")
+          .and_return(platforms)
+        expect do
+          cli.run(options_default_platforms)
+        end.to output(output_defaults).to_stdout
       end
     end
   end
