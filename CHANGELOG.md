@@ -5,8 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.21.0] - released 2021-04-15
 ### Added
-- (VANAGON-85) Moved platform defintions into core vanagon. Created default 
+- (VANAGON-85) Moved platform definitions into core vanagon. Created default 
 platform definitions which projects can inherit. Added the `inherit_from_default` 
 method to the platform DSL. Added a `--defaults` option to `vanagon list`. This 
 shows all the default platforms that are available in core vanagon. 
@@ -958,7 +960,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.20.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.21.0...HEAD
+[0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.20.1...0.21.0
 [0.20.1]: https://github.com/puppetlabs/vanagon/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/puppetlabs/vanagon/compare/0.19.1...0.20.0
 [0.19.1]: https://github.com/puppetlabs/vanagon/compare/0.19.0...0.19.1
