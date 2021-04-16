@@ -214,6 +214,11 @@ class Vanagon
         @platform.provision_with(command)
       end
 
+      # Clears the provisioning commands array
+      def clear_provisioning
+        @platform.provisioning.clear
+      end
+
       # Set the command to install any needed build dependencies for the target machine
       #
       # @param command [String] Command to install build dependencies for the target machine
