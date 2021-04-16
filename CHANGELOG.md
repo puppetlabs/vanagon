@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-
+(PA-3613) Added vanagon support for MacOS 11 Big Sur
 ## [0.21.0] - released 2021-04-15
 ### Added
 - (VANAGON-85) Moved platform definitions into core vanagon. Created default 
