@@ -18,5 +18,4 @@ platform "osx-10.14-x86_64" do |plat|
   plat.provision_with %Q(su test -c 'echo | /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
   plat.provision_with "sudo chown -R test:admin /Users/test/"
   plat.vmpooler_template "osx-1014-x86_64"
-  plat.output_dir File.join("apple", "10.14", "puppet6", "x86_64")
 end
