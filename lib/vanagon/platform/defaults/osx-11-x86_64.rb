@@ -1,8 +1,7 @@
-platform "osx-10.14-x86_64" do |plat|
+platform "osx-11-x86_64" do |plat|
   plat.servicetype "launchd"
   plat.servicedir "/Library/LaunchDaemons"
-  plat.codename "mojave"
-
+  plat.codename "bigsur"
   plat.provision_with "export HOMEBREW_NO_EMOJI=true"
   plat.provision_with "export HOMEBREW_VERBOSE=true"
   plat.provision_with "sudo dscl . -create /Users/test"
@@ -15,7 +14,7 @@ platform "osx-10.14-x86_64" do |plat|
   plat.provision_with "echo 'test ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/username"
   plat.provision_with "mkdir -p /etc/homebrew"
   plat.provision_with "cd /etc/homebrew"
-  plat.provision_with %Q(su test -c 'echo | /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+  plat.provision_with %Q(su test -c 'echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
   plat.provision_with "sudo chown -R test:admin /Users/test/"
-  plat.vmpooler_template "osx-1014-x86_64"
+  plat.vmpooler_template "macos-112-x86_64"
 end

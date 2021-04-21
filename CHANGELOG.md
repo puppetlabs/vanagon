@@ -5,7 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-### Added
+- (PA-3613) Added vanagon support for MacOS 11 Big Sur
+
 - (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear 
 the provisioning command array. 
 
