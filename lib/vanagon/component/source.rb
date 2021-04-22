@@ -37,6 +37,7 @@ class Vanagon
               sum: options[:sum],
               ref: options[:ref],
               workdir: options[:workdir],
+              dirname: options[:dirname],
               clone_options: options[:clone_options]
           end
 

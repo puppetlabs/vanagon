@@ -9,6 +9,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 - (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear 
 the provisioning command array. 
+- (PA-3570) add the posibility to clone into a custom dirname
+
 
 ## [0.21.0] - released 2021-04-15
 ### Added

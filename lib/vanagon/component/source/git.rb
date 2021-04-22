@@ -79,6 +79,7 @@ class Vanagon
           # Ensure that #url returns a URI object
           @url = URI.parse(url.to_s)
           @ref = opts[:ref]
+          @dirname = opts[:dirname]
           @workdir = File.realpath(workdir)
           @clone_options = opts[:clone_options] ||= {}
 
@@ -113,7 +114,7 @@ class Vanagon
         #
         # @return [String] the directory where the repo was cloned
         def dirname
-          File.basename(url.path, ".git")
+          @dirname || File.basename(url.path, ".git")
         end
 
         # Use `git describe` to lazy-load a version for this component

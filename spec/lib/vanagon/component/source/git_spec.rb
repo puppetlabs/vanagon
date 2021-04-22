@@ -60,6 +60,7 @@ describe "Vanagon::Component::Source::Git" do
       allow(::Git).to receive(:clone).and_return(clone)
       expect(File).to receive(:realpath).and_return(@file_path)
     end
+
     it "repository" do
       git_source = @klass.new(@url, ref: @ref_tag, workdir: "/tmp/foo")
       expect(::Git).to receive(:clone).with(git_source.url, git_source.dirname, path: @file_path)
@@ -70,6 +71,12 @@ describe "Vanagon::Component::Source::Git" do
       expected_clone_options = {:branch => "foo", :depth => 50 }
       git_source = @klass.new(@url, ref: @ref_tag, workdir: "/tmp/foo", :clone_options => expected_clone_options)
       expect(::Git).to receive(:clone).with(git_source.url, git_source.dirname, path: @file_path, **expected_clone_options)
+      git_source.clone
+    end
+
+    it 'uses a custom dirname' do
+      git_source = @klass.new(@url, ref: @ref_tag, workdir: "/tmp/foo", dirname: 'facter-ng')
+      expect(::Git).to receive(:clone).with(git_source.url, 'facter-ng', path: @file_path)
       git_source.clone
     end
   end
@@ -85,6 +92,12 @@ describe "Vanagon::Component::Source::Git" do
       git_source = @klass.new(@url, ref: @ref_tag, workdir: @workdir)
       expect(git_source.dirname)
         .to eq('facter')
+    end
+
+    it "returns @dirname if is set" do
+      git_source = @klass.new(@url, ref: @ref_tag, workdir: @workdir, dirname: 'facter-ng')
+      expect(git_source.dirname)
+          .to eq('facter-ng')
     end
   end
 
