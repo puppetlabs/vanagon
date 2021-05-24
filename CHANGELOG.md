@@ -5,8 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+- (maint) `vanagon list` now returns results in alphabetical order.
+- (maint) Added the current vanagon commands to the README.md
 - (PA-3613) Added vanagon support for MacOS 11 Big Sur
-
 - (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear 
 the provisioning command array. 
 - (PA-3570) add the posibility to clone into a custom dirname

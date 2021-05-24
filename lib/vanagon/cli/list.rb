@@ -39,15 +39,15 @@ class Vanagon
 
         default_list = Dir.children(File.join(File.dirname(__FILE__), '..', 'platform', 'defaults')).map do |platform|
           File.basename(platform, File.extname(platform))
-        end
+        end.sort
 
         platform_list = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
           File.basename(platform, File.extname(platform))
-        end
+        end.sort
 
         project_list = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
           File.basename(project, File.extname(project))
-        end
+        end.sort
 
         if options[:defaults]
           puts "- Defaults", output(default_list, options[:use_spaces])

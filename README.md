@@ -85,6 +85,24 @@ wheezy and build my project against it.
 For more detailed examples of the DSLs available, please see the
 [examples](examples) directory and the YARD documentation for Vanagon.
 
+### CLI commands
+
+The vanagon command line tool contains these commands: 
+
+* `build`               build a package given a project and platform
+* `build_host_info`     print information about build hosts
+* `build_requirements`  print external packages required to build project
+* `completion`          outputs path to tab completion script
+* `inspect`             a build dry-run, printing lots of information about the build
+* `list`                shows a list of available projects and platforms
+* `render`              create local versions of packaging artifacts for project
+* `sign`                sign a package
+* `ship`                upload a package to a distribution server
+* `help`                print this help
+
+Commands are called with a git-like pattern of `vanagon <subcommand>`. 
+For example: `vanagon list`
+
 ### CLI changes and deprecations (from version 0.16.0)
 
 Prior to 0.16.0, the vanagon command line contained these commands

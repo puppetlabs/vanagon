@@ -98,9 +98,9 @@ describe Vanagon::CLI::List do
     let(:platforms){ ['1', '2', '3'] }
     let(:output_both){
 "- Projects
-foo
 bar
 baz
+foo
 
 - Platforms
 1
@@ -167,7 +167,7 @@ baz
       
       let(:output_both_space){
 "- Projects
-foo bar baz
+bar baz foo
 
 - Platforms
 1 2 3
@@ -194,9 +194,9 @@ foo bar baz
 
       let(:output_projects){
 "- Projects
-foo
 bar
 baz
+foo
 "
 }
       it "outputs only projects when projects is passed" do 
