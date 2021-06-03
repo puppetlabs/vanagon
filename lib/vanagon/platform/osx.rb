@@ -35,6 +35,11 @@ class Vanagon
           bom_install = []
         end
 
+        if project.extra_files_to_sign.any?
+          sign_commands = Vanagon::Utilities::ExtraFilesSigner.commands(project, @mktemp, "/osx/build/root/#{project.name}-#{project.version}")
+        else
+          sign_commands = []
+        end
 
          # Setup build directories
         ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload,plugins}'",
@@ -50,6 +55,9 @@ class Vanagon
          "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/osx/build/root/#{project.name}-#{project.version}' --strip-components 1 -xf -",
 
          bom_install,
+
+         # Sign extra files
+         sign_commands,
 
          # Package the project
          "(cd $(tempdir)/osx/build/; #{@pkgbuild} --root root/#{project.name}-#{project.version} \
