@@ -10,6 +10,7 @@ require 'timeout'
 require 'English'
 require 'vanagon/extensions/string'
 require 'vanagon/logger'
+require 'vanagon/utilities/extra_files_signer'
 
 class Vanagon
   module Utilities

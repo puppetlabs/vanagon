@@ -13,7 +13,7 @@ the provisioning command array.
 - (PA-3570) add the posibility to clone into a custom dirname
 - (PA-3604) add Fedora 34 support
 - (maint) install `libarchive` on el-8
-
+- (PA-3755) Add support for mac OS code signing
 
 ## [0.21.0] - released 2021-04-15
 ### Added
