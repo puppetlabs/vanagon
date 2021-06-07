@@ -5,15 +5,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-- (maint) `vanagon list` now returns results in alphabetical order.
-- (maint) Added the current vanagon commands to the README.md
+
+## [0.21.1] - released 2021-06-07
+### Added
+- (PA-3755) Add support for mac OS code signing
 - (PA-3613) Added vanagon support for MacOS 11 Big Sur
 - (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear 
-the provisioning command array. 
+  the provisioning command array. 
+- (maint) Added the current vanagon commands to the README.md
 - (PA-3570) add the posibility to clone into a custom dirname
 - (PA-3604) add Fedora 34 support
 - (maint) install `libarchive` on el-8
-- (PA-3755) Add support for mac OS code signing
+
+### Changed
+- (maint) `vanagon list` now returns results in alphabetical order.
 
 ## [0.21.0] - released 2021-04-15
 ### Added
@@ -969,7 +974,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.21.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.21.1...HEAD
+[0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.21.0...0.21.1
 [0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.20.1...0.21.0
 [0.20.1]: https://github.com/puppetlabs/vanagon/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/puppetlabs/vanagon/compare/0.19.1...0.20.0
