@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - (PA-3709) Add Debian 11 64-bit support
+- (PA-3755) add `--extended-attributes` on mac OS
 
 ## [0.21.1] - released 2021-06-07
 ### Added
