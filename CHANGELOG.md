@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (PA-3709) Add Debian 11 64-bit support
 
 ## [0.21.1] - released 2021-06-07
 ### Added
