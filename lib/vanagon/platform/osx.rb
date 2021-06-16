@@ -64,6 +64,7 @@ class Vanagon
           --scripts $(tempdir)/osx/build/scripts \
           --identifier #{project.identifier}.#{project.name} \
           --version #{project.version} \
+          --preserve-xattr \
           --install-location / \
           payload/#{project.name}-#{project.version}-#{project.release}.pkg)",
          # Create a custom installer using the pkg above
