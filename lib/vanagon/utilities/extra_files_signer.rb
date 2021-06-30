@@ -33,6 +33,7 @@ class Vanagon
         rescue RuntimeError
           require 'vanagon/logger'
           VanagonLogger.error "Unable to connect to #{project.signing_username}@#{project.signing_hostname}, skipping signing extra files: #{project.extra_files_to_sign.join(',')}"
+          raise if ENV['VANAGON_FORCE_SIGNING']
           []
         end
       end

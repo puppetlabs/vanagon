@@ -230,6 +230,13 @@ time. The default value is *7200* seconds(120 minutes) but setting to any
 integer value these components to fail after the `VANAGON_TIMEOUT` count is reached.
 Note that this value is expected to be in seconds.
 
+##### `VANAGON_FORCE_SIGNING`
+By default, Vanagon does not fail if extra files signing fails, it just logs an
+error and continues building the package. This is unwanted behavior in
+environments where we expect a hard failure when signing cannot proceed. To
+force Vanagon to fail if extra files signing fails, ensure this variable is set
+before starting a build.
+
 #### Example usage
 `vanagon build --preserve puppet-agent el-6-i386` will build the puppet-agent project
 on the el-6-i386 platform and leave the host intact afterward.
