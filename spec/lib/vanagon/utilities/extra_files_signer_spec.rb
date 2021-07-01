@@ -68,6 +68,13 @@ describe Vanagon::Utilities::ExtraFilesSigner do
           Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
           expect(VanagonLogger).to have_received(:error).with(/Unable to connect to test@abc/)
         end
+
+        it 'fails the build if VANAGON_FORCE_SIGNING is set' do
+          allow(ENV).to receive(:[]).with('VANAGON_FORCE_SIGNING').and_return('true')
+          expect {
+            Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
+          }.to raise_error(RuntimeError)
+        end
       end
 
       context 'when success' do
