@@ -15,7 +15,10 @@ class Vanagon
       def initialize(platform, target = nil, **opts)
         super
 
-        @available_poolers = ["https://vmpooler.delivery.puppetlabs.net", "https://nspooler-service-prod-1.delivery.puppetlabs.net"]
+        @available_poolers = %w[
+          https://vmpooler.delivery.puppetlabs.net
+          https://nspooler-prod.k8s.infracore.puppet.net
+        ]
         @token = load_token
         @required_attributes << "vmpooler_template"
       end

@@ -10,12 +10,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (PA-3755) add `--extended-attributes` on mac OS
 - (RE-14154) Exit if `VANAGON_FORCE_SIGNING` is set
 
+### Changed
+- (maint) Update nspooler URL to reflect changed location.
+
+
 ## [0.21.1] - released 2021-06-07
 ### Added
 - (PA-3755) Add support for mac OS code signing
 - (PA-3613) Added vanagon support for MacOS 11 Big Sur
-- (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear 
-  the provisioning command array. 
+- (VANAGON-85) Added the `clear_provisioning` method to the platform dsl to clear
+  the provisioning command array.
 - (maint) Added the current vanagon commands to the README.md
 - (PA-3570) add the posibility to clone into a custom dirname
 - (PA-3604) add Fedora 34 support
@@ -26,10 +30,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [0.21.0] - released 2021-04-15
 ### Added
-- (VANAGON-85) Moved platform definitions into core vanagon. Created default 
-platform definitions which projects can inherit. Added the `inherit_from_default` 
-method to the platform DSL. Added a `--defaults` option to `vanagon list`. This 
-shows all the default platforms that are available in core vanagon. 
+- (VANAGON-85) Moved platform definitions into core vanagon. Created default
+platform definitions which projects can inherit. Added the `inherit_from_default`
+method to the platform DSL. Added a `--defaults` option to `vanagon list`. This
+shows all the default platforms that are available in core vanagon.
 
 ## [0.20.1] - released 2021-03-15
 ### Changed
