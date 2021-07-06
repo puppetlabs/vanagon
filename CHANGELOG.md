@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.22.0] - released 2021-07-06
 ### Added
 - (PA-3709) Add Debian 11 64-bit support
 - (PA-3755) add `--extended-attributes` on mac OS
@@ -982,8 +984,9 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.21.1...HEAD
-[0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.21.0...0.21.1
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.22.0...HEAD
+[0.22.0]: https://github.com/puppetlabs/vanagon/compare/0.21.1...0.22.0
+[0.21.1]: https://github.com/puppetlabs/vanagon/compare/0.21.0...0.21.1
 [0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.20.1...0.21.0
 [0.20.1]: https://github.com/puppetlabs/vanagon/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/puppetlabs/vanagon/compare/0.19.1...0.20.0
