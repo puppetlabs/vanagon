@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-
+- (VANAGON-167) Update tests to remove redhat 5 
 ## [0.22.0] - released 2021-07-06
 ### Added
 - (PA-3709) Add Debian 11 64-bit support
