@@ -151,8 +151,8 @@ describe "Vanagon::Component" do
       # Initialize a new instance of Vanagon::Component and define a
       # new secondary source that's *compressed*. We can now reason about
       # this instance and test behavior for retrieving secondary sources.
-      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @platform = plat._platform
 
       comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
@@ -173,8 +173,8 @@ describe "Vanagon::Component" do
       # Initialize a new instance of Vanagon::Component and define a
       # new secondary source that's *compressed*. We can now reason about
       # this instance and test behavior for retrieving secondary sources.
-      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @platform = plat._platform
 
       comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
@@ -190,8 +190,8 @@ describe "Vanagon::Component" do
       # Initialize a new instance of Vanagon::Component and define a
       # new secondary source that's *compressed*. We can now reason about
       # this instance and test behavior for retrieving secondary sources.
-      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @platform = plat._platform
 
       comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
@@ -206,8 +206,8 @@ describe "Vanagon::Component" do
       # Initialize a new instance of Vanagon::Component and define a
       # new secondary source that's *compressed*. We can now reason about
       # this instance and test behavior for retrieving secondary sources.
-      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @platform = plat._platform
 
       comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
@@ -225,8 +225,8 @@ describe "Vanagon::Component" do
     end
 
     let(:platform) do
-      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       plat._platform
     end
 

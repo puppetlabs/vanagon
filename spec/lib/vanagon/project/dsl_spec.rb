@@ -244,8 +244,8 @@ end" }
   describe "#provides" do
     before do
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
-      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
       @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
     end
@@ -326,8 +326,8 @@ end" }
   describe "#replaces" do
     before do
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
-      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
       @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
     end
@@ -404,8 +404,8 @@ end" }
   describe "#conflicts" do
     before do
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
-      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
       @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
     end
@@ -488,8 +488,8 @@ end"
 
     before do
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
-      @el_plat = Vanagon::Platform::DSL.new('el-5-x86_64')
-      @el_plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
+      @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
       @osx_plat = Vanagon::Platform::DSL.new('osx-10.10-x86_64')
       @osx_plat.instance_eval("platform 'osx-10.10-x86_64' do |plat| end")
 

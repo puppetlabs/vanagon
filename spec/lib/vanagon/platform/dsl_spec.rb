@@ -2,7 +2,6 @@ require 'vanagon/platform/dsl'
 
 describe 'Vanagon::Platform::DSL' do
   let (:deb_platform_block)    { "platform 'debian-test-fixture' do |plat| end" }
-  let (:el_5_platform_block)   { "platform 'el-5-fixture'        do |plat| end" }
   let (:el_6_platform_block)   { "platform 'el-6-fixture'        do |plat| end" }
   let (:redhat_7_platform_block) { "platform 'redhat-7-fixture' do |plat| end" }
   let (:sles_platform_block)   { "platform 'sles-test-fixture'   do |plat| end" }
@@ -62,9 +61,9 @@ describe 'Vanagon::Platform::DSL' do
 
   describe '#yum_repo' do
     it "grabs the file and adds .repo to it" do
-      plat = Vanagon::Platform::DSL.new('el-5-fixture')
+      plat = Vanagon::Platform::DSL.new('el-6-fixture')
       expect(SecureRandom).to receive(:hex).and_return(hex_value)
-      plat.instance_eval(el_5_platform_block)
+      plat.instance_eval(el_6_platform_block)
       plat.yum_repo(el_definition)
       expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
       expect(plat._platform.provisioning[1]).to include(
@@ -97,8 +96,8 @@ describe 'Vanagon::Platform::DSL' do
 
     describe "installs a rpm when given a rpm" do
       it 'uses rpm everywhere' do
-        plat = Vanagon::Platform::DSL.new('el-5-fixture')
-        plat.instance_eval(el_5_platform_block)
+        plat = Vanagon::Platform::DSL.new('el-6-fixture')
+        plat.instance_eval(el_6_platform_block)
         plat.yum_repo(el_definition_rpm)
         expect(plat._platform.provisioning[0]).to include('rpm -q curl', 'yum -y install curl')
         expect(plat._platform.provisioning[1]).to include(

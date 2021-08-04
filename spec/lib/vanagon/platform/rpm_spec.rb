@@ -2,7 +2,7 @@ require 'vanagon/platform'
 
 describe 'Vanagon::Platform::RPM' do
   platforms = [
-    { name: 'el-5-i386' },
+    { name: 'el-6-i386' },
     { name: 'fedora-21-x86_64', dist: 'f21' },
     { name: 'cisco-wrlinux-7-x86_64' }
   ]
