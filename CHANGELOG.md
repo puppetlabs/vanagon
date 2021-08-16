@@ -6,6 +6,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 - (VANAGON-167) Update tests to remove redhat 5 
+- (VANAGON-171) Add Ubuntu 18.04 aarch64 defaults
+
 ## [0.22.0] - released 2021-07-06
 ### Added
 - (PA-3709) Add Debian 11 64-bit support
