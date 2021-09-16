@@ -8,6 +8,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (VANAGON-167) Update tests to remove redhat 5 
 - (VANAGON-171) Add Ubuntu 18.04 aarch64 defaults
 - (VANAGON-166) Add RedHat 8 FIPS defaults
+- (VANAGON-166) Do not undefine `__debug_package` on EL 8 FIPS
 
 ## [0.22.0] - released 2021-07-06
 ### Added

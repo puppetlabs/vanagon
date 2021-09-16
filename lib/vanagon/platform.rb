@@ -339,8 +339,18 @@ class Vanagon
       return !!@name.match(/^(el|redhat|redhatfips)-.*$/)
     end
 
+    # Utility matcher to determine if the platform is of an EL 8 variety
+    #
+    # @return [true, false] true if it is an EL 8 variety, false otherwise
     def is_el8?
       return !!@name.match(/^(el|redhat|redhatfips)-8.*$/)
+    end
+
+    # Utility matcher to determine if the platform is a FIPS platform
+    #
+    # @return [true, false] true if it is a FIPS platform, false otherwise
+    def is_fips?
+      return @name.include?('fips')
     end
 
     # Utility matcher to determine is the platform is a sles variety
