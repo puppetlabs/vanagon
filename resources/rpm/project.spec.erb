@@ -35,7 +35,9 @@
 
 # This breaks on el8. This is a hack to unblock development.
 <%- if @platform.is_el8? %>
+<%- if !@platform.is_fips? %>
 %undefine __debug_package
+<%- end -%>
 
 # Build el-8 packages without build-id files to prevent collision
 %define _build_id_links none
