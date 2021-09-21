@@ -16,7 +16,7 @@ class Vanagon
         super
 
         @available_poolers = %w[
-          https://vmpooler.delivery.puppetlabs.net
+          https://vmpooler-prod.k8s.infracore.puppet.net
           https://nspooler-prod.k8s.infracore.puppet.net
         ]
         @token = load_token
