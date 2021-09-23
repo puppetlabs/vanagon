@@ -10,6 +10,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (VANAGON-166) Add RedHat 8 FIPS defaults
 - (VANAGON-166) Do not undefine `__debug_package` on EL 8 FIPS
 - (VANAGON-177) Remove `__debug_package` workaround for EL 8
+- (maint) Update vmpooler URL
 
 ## [0.22.0] - released 2021-07-06
 ### Added
