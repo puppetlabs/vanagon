@@ -5,7 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-- (VANAGON-167) Update tests to remove redhat 5 
+
+## [0.23.0] - release 2021-09-23
+- (VANAGON-167) Update tests to remove redhat 5
 - (VANAGON-171) Add Ubuntu 18.04 aarch64 defaults
 - (VANAGON-166) Add RedHat 8 FIPS defaults
 - (VANAGON-166) Do not undefine `__debug_package` on EL 8 FIPS
@@ -989,7 +991,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.22.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.23.0...HEAD
+[0.23.0]: https://github.com/puppetlabs/vanagon/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/puppetlabs/vanagon/compare/0.21.1...0.22.0
 [0.21.1]: https://github.com/puppetlabs/vanagon/compare/0.21.0...0.21.1
 [0.21.0]: https://github.com/puppetlabs/vanagon/compare/0.20.1...0.21.0
