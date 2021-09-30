@@ -182,6 +182,19 @@ class Vanagon
       @project.make_makefile(workdir)
     end
 
+    def lock # rubocop:disable Metrics/AbcSize
+      # Simple sanity check for the project
+      if @project.version.nil? or @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+
+      VanagonLogger.info "creating Gemfile.lock"
+      @project.fetch_sources(workdir, retry_count, timeout)
+      @project.make_bill_of_materials(workdir)
+      @project.generate_packaging_artifacts(workdir)
+      @project.save_manifest_json(@platform, workdir)
+    end
+
     # Initialize the logging instance
     def loginit(logfile)
       @@logger = Logger.new(logfile)

@@ -14,6 +14,7 @@ require 'vanagon/cli/list'
 require 'vanagon/cli/render'
 require 'vanagon/cli/ship'
 require 'vanagon/cli/sign'
+require 'vanagon/cli/lock'
 
 require 'vanagon/logger'
 
@@ -37,6 +38,7 @@ class Vanagon
           render              create local versions of packaging artifacts for project
           sign                sign a package
           ship                upload a package to a distribution server
+          lock                create a package gemlock file for a given project and platform
           help                print this help
     DOCOPT
 
@@ -64,6 +66,8 @@ class Vanagon
         @sub_parser = Vanagon::CLI::Sign.new
       when 'ship'
         @sub_parser = Vanagon::CLI::Ship.new
+      when 'lock'
+        @sub_parser = Vanagon::CLI::Lock.new
       when 'help'
         puts DOCUMENTATION
         exit 0
