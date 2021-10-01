@@ -190,9 +190,7 @@ class Vanagon
 
       VanagonLogger.info "creating Gemfile.lock"
       @project.fetch_sources(workdir, retry_count, timeout)
-      @project.make_bill_of_materials(workdir)
-      @project.generate_packaging_artifacts(workdir)
-      @project.save_manifest_json(@platform, workdir)
+      @project.cli_save_manifest_json(@platform)
     end
 
     # Initialize the logging instance
