@@ -33,14 +33,32 @@ class Vanagon
       end
 
       def run(options)
-        platforms = options[:platforms].split(',')
-        project = options[:project_name]
-        target_list = []
+        if Dir.exist?(File.join(options[:configdir], 'platforms')) == false ||
+           Dir.exist?(File.join(options[:configdir], 'projects')) == false
 
-        platforms.zip(target_list).each do |pair|
-          platform, target = pair
-          artifact = Vanagon::Driver.new(platform, project, options.merge({ :target => target }))
-          artifact.lock
+          VanagonLogger.error "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
+          exit 1
+        end
+
+        projects = [options[:project_name]]
+        if options[:project_name] == 'all'
+          projects = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
+            File.basename(project, File.extname(project))
+          end
+        end
+
+        platforms = options[:platforms].split(',')
+        if options[:platforms] == 'all'
+          platforms = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
+            File.basename(platform, File.extname(platform))
+          end
+        end
+
+        projects.each do |project|
+          platforms.each do |platform|
+            artifact = Vanagon::Driver.new(platform, project, options)
+            artifact.lock
+          end
         end
       end
 
