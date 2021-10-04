@@ -762,10 +762,11 @@ class Vanagon
       end
     end
 
-    # Writes a json file at `/tmp/*/build_metadata.<project>.<platform>.json` containing information
+    # Writes a json file at `temp_dir/build_metadata.<project>.<platform>.json` containing information
     # about what will go into an artifact
     #
     # @param platform [String] platform we're writing metadata for
+    # @param temp_dir [String] directory metadata is written to
     def cli_save_manifest_json(platform, temp_dir) # rubocop:disable Metrics/AbcSize
       manifest = build_manifest_json
       metadata = metadata_merge(manifest, @upstream_metadata)
