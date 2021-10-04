@@ -31,49 +31,50 @@ class Vanagon
       end
 
       def run(options)
-        if Dir.exist?(File.join(options[:configdir], 'platforms')) == false ||
-           Dir.exist?(File.join(options[:configdir], 'projects')) == false
+        platforms_directory = File.join(options[:configdir], 'platforms')
+        projects_directory = File.join(options[:configdir], 'projects')
 
+        unless Dir.exist?(projects_directory) && Dir.exist?(platforms_directory)
           VanagonLogger.error "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
           exit 1
         end
 
         projects = [options[:project_name]]
-        if options[:project_name] == 'all'
+        if projects.include?('all')
           projects = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
             File.basename(project, File.extname(project))
           end
         end
 
         platforms = options[:platforms].split(',')
-        if options[:platforms] == 'all'
+        if platforms.include?('all')
           platforms = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
             File.basename(platform, File.extname(platform))
           end
         end
 
-        temp_dir = Dir.mktmpdir
+        temporary_directory = Dir.mktmpdir
         failures = []
 
         projects.each do |project|
           platforms.each do |platform|
             begin
               artifact = Vanagon::Driver.new(platform, project, options)
-              artifact.dependencies(temp_dir)
+              artifact.dependencies(temporary_directory)
             rescue => e
               failures.push("#{project}, #{platform}: #{e}")
             end
           end
         end
 
-        if !failures.empty?
+        unless failures.empty?
           VanagonLogger.info "Failed to generate dependencies for the following:"
           failures.each do |failure|
             VanagonLogger.info failure
           end
         end
 
-        VanagonLogger.info "Dependency files located at: #{temp_dir}"
+        VanagonLogger.info "Dependency files located at: #{temporary_directory}"
       end
 
       def options_translate(docopt_options)
