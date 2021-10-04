@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+- (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 
 ## [0.23.0] - released 2021-09-23
 ### Added
