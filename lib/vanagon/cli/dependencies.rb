@@ -12,17 +12,15 @@ class Vanagon
         Options:
           -h, --help                       Display help
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
-          -e, --engine ENGINE              Custom engine to use [default: always_be_scheduling]
           -w, --workdir DIRECTORY          Working directory on the local host
           -v, --verbose                    Only here for backwards compatibility. Does nothing.
 
-        Engines:
-          always_be_scheduling: default engine using Puppet's ABS infrastructure
-          docker: a docker container on the local host
-          ec2: an Amazon EC2 instance
-          hardware: a dedicated hardware device
-          local: the local machine, cannot be used with a target
-          pooler: [deprecated] Puppet's vmpooler
+        Project-Name:
+          May be a project name of a project from the configs/projects directory or 'all' to generate dependencies for all projects.
+
+        Platforms:
+          May be a platform name of a platform from the configs/platforms directory or 'all' to generate dependencies for all platforms.
+
       DOCOPT
 
       def parse(argv)
@@ -83,9 +81,8 @@ class Vanagon
           '--verbose' => :verbose,
           '--workdir' => :workdir,
           '--configdir' => :configdir,
-          '--engine' => :engine,
           '<project-name>' => :project_name,
-          '<platforms>' => :platforms,
+          '<platforms>' => :platforms
         }
         return docopt_options.map { |k, v| [translations[k], v] }.to_h
       end
