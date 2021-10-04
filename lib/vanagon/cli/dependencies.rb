@@ -4,10 +4,10 @@ require 'vanagon/logger'
 
 class Vanagon
   class CLI
-    class Lock < Vanagon::CLI
+    class Dependencies < Vanagon::CLI
       DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
-        lock [options] <project-name> <platforms>
+        dependencies [options] <project-name> <platforms>
 
         Options:
           -h, --help                       Display help
@@ -54,12 +54,28 @@ class Vanagon
           end
         end
 
+        temp_dir = Dir.mktmpdir
+        failures = []
+
         projects.each do |project|
           platforms.each do |platform|
-            artifact = Vanagon::Driver.new(platform, project, options)
-            artifact.lock
+            begin
+              artifact = Vanagon::Driver.new(platform, project, options)
+              artifact.dependencies(temp_dir)
+            rescue => e
+              failures.push("#{project}, #{platform}: #{e}")
+            end
           end
         end
+
+        if !failures.empty?
+          VanagonLogger.info "Failed to generate dependencies for the following:"
+          failures.each do |failure|
+            VanagonLogger.info failure
+          end
+        end
+
+        VanagonLogger.info "Dependency files located at: #{temp_dir}"
       end
 
       def options_translate(docopt_options)

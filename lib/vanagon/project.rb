@@ -766,12 +766,12 @@ class Vanagon
     # about what will go into an artifact
     #
     # @param platform [String] platform we're writing metadata for
-    def cli_save_manifest_json(platform) # rubocop:disable Metrics/AbcSize
+    def cli_save_manifest_json(platform, temp_dir) # rubocop:disable Metrics/AbcSize
       manifest = build_manifest_json
       metadata = metadata_merge(manifest, @upstream_metadata)
 
       metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
-      outfile = File.join(Dir.mktmpdir, metadata_file_name)
+      outfile = File.join(temp_dir, metadata_file_name)
       File.open(outfile, 'w') { |f| f.write(JSON.pretty_generate(metadata)) }
 
       VanagonLogger.info "Generated: #{outfile}"
