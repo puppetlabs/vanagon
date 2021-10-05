@@ -8,11 +8,13 @@ class Vanagon
       DOCUMENTATION = <<~DOCOPT.freeze
         Usage:
         dependencies [options] <project-name> <platforms>
+
         Options:
           -h, --help                       Display help
           -c, --configdir DIRECTORY        Configuration directory [default: #{Dir.pwd}/configs]
           -w, --workdir DIRECTORY          Working directory on the local host
           -v, --verbose                    Only here for backwards compatibility. Does nothing.
+
         Project-Name:
           May be a project name of a project from the configs/projects directory or 'all' to generate dependencies for all projects.
         Platforms:
@@ -26,25 +28,25 @@ class Vanagon
         exit 1
       end
 
-      def run(options)
+      def run(options) # rubocop:disable Metrics/AbcSize
         platforms_directory = File.join(options[:configdir], 'platforms')
         projects_directory = File.join(options[:configdir], 'projects')
 
         unless Dir.exist?(projects_directory) && Dir.exist?(platforms_directory)
-          VanagonLogger.error "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
+          VanagonLogger.error "Path to #{platforms_directory} or #{projects_directory} not found."
           exit 1
         end
 
         projects = [options[:project_name]]
         if projects.include?('all')
-          projects = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
+          projects = Dir.children(projects_directory).map do |project|
             File.basename(project, File.extname(project))
           end
         end
 
         platforms = options[:platforms].split(',')
         if platforms.include?('all')
-          platforms = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
+          platforms = Dir.children(platforms_directory).map do |platform|
             File.basename(platform, File.extname(platform))
           end
         end
@@ -57,7 +59,7 @@ class Vanagon
             begin
               artifact = Vanagon::Driver.new(platform, project, options)
               artifact.dependencies(temporary_directory)
-            rescue => e
+            rescue RuntimeError => e
               failures.push("#{project}, #{platform}: #{e}")
             end
           end

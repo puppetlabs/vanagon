@@ -767,7 +767,7 @@ class Vanagon
     #
     # @param platform [String] platform we're writing metadata for
     # @param temporary_directory [String] directory metadata is written to
-    def cli_save_manifest_json(platform, temporary_directory) # rubocop:disable Metrics/AbcSize
+    def cli_save_manifest_json(platform, temporary_directory)
       manifest = build_manifest_json
       metadata = metadata_merge(manifest, @upstream_metadata)
 

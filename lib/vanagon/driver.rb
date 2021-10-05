@@ -182,7 +182,7 @@ class Vanagon
       @project.make_makefile(workdir)
     end
 
-    def dependencies(temporary_directory) # rubocop:disable Metrics/AbcSize
+    def dependencies(temporary_directory)
       # Simple sanity check for the project
       if @project.version.nil? || @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
