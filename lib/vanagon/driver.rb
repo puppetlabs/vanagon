@@ -171,7 +171,7 @@ class Vanagon
 
     def render # rubocop:disable Metrics/AbcSize
       # Simple sanity check for the project
-      if @project.version.nil? or @project.version.empty?
+      if @project.version.nil? || @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
       end
 
@@ -180,6 +180,17 @@ class Vanagon
       @project.make_bill_of_materials(workdir)
       @project.generate_packaging_artifacts(workdir)
       @project.make_makefile(workdir)
+    end
+
+    def dependencies(temporary_directory)
+      # Simple sanity check for the project
+      if @project.version.nil? || @project.version.empty?
+        raise Vanagon::Error, "Project requires a version set, all is lost."
+      end
+
+      VanagonLogger.info "creating dependencies list"
+      @project.fetch_sources(workdir, retry_count, timeout)
+      @project.cli_save_manifest_json(@platform, temporary_directory)
     end
 
     # Initialize the logging instance

@@ -762,6 +762,22 @@ class Vanagon
       end
     end
 
+    # Writes a json file at `temp_dir/build_metadata.<project>.<platform>.json` containing information
+    # about what will go into an artifact
+    #
+    # @param platform [String] platform we're writing metadata for
+    # @param temporary_directory [String] directory metadata is written to
+    def cli_save_manifest_json(platform, temporary_directory)
+      manifest = build_manifest_json
+      metadata = metadata_merge(manifest, @upstream_metadata)
+
+      metadata_file_name = "build_metadata.#{name}.#{platform.name}.json"
+      outfile = File.join(temporary_directory, metadata_file_name)
+      File.open(outfile, 'w') { |f| f.write(JSON.pretty_generate(metadata)) }
+
+      VanagonLogger.info "Generated: #{outfile}"
+    end
+
     # Writes a yaml file at `output/<name>-<version>.<platform>.settings.yaml`
     # containing settings used to build the current project on the platform
     # provided (and a corresponding sha1sum file) if `yaml_settings` has been
