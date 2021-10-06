@@ -75,11 +75,10 @@ class Vanagon
         # @param workdir [String] working directory to clone into
         def initialize(url, workdir:, **options)
           opts = default_options.merge(options.reject { |k, v| v.nil? })
-          url = url.to_s
 
           # Ensure that #url returns a URI object
-          @url = URI.parse(url)
-          @log_url = url.slice(url.index("github.com")..-1)
+          @url = URI.parse(url.to_s)
+          @log_url = @url.host + @url.path
           @ref = opts[:ref]
           @dirname = opts[:dirname]
           @workdir = File.realpath(workdir)
