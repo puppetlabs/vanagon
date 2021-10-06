@@ -13,7 +13,7 @@ class Vanagon
   class Component
     class Source
       class Git
-        attr_accessor :url, :ref, :workdir, :clone_options
+        attr_accessor :url, :log_url, :ref, :workdir, :clone_options
         attr_reader :version, :default_options, :repo
 
         class << self
@@ -75,16 +75,18 @@ class Vanagon
         # @param workdir [String] working directory to clone into
         def initialize(url, workdir:, **options)
           opts = default_options.merge(options.reject { |k, v| v.nil? })
+          url = url.to_s
 
           # Ensure that #url returns a URI object
-          @url = URI.parse(url.to_s)
+          @url = URI.parse(url)
+          @log_url = url.slice(url.index("github.com")..-1)
           @ref = opts[:ref]
           @dirname = opts[:dirname]
           @workdir = File.realpath(workdir)
           @clone_options = opts[:clone_options] ||= {}
 
           # We can test for Repo existence without cloning
-          raise Vanagon::InvalidRepo, "#{url} not a valid Git repo" unless valid_remote?
+          raise Vanagon::InvalidRepo, "#{log_url} not a valid Git repo" unless valid_remote?
         end
 
         # Fetch the source. In this case, clone the repository into the workdir
@@ -157,10 +159,10 @@ class Vanagon
         # Clone a remote repo, make noise about it, and fail entirely
         # if we're unable to retrieve the remote repo
         def clone!
-          VanagonLogger.info "Cloning Git repo '#{url}'"
+          VanagonLogger.info "Cloning Git repo '#{log_url}'"
           VanagonLogger.info "Successfully cloned '#{dirname}'" if clone
         rescue ::Git::GitExecuteError
-          raise Vanagon::InvalidRepo, "Unable to clone from '#{url}'"
+          raise Vanagon::InvalidRepo, "Unable to clone from '#{log_url}'"
         end
         private :clone!
 
@@ -170,7 +172,7 @@ class Vanagon
           VanagonLogger.info "Checking out '#{ref}' from Git repo '#{dirname}'"
           clone.checkout(ref)
         rescue ::Git::GitExecuteError
-          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{url}'"
+          raise Vanagon::CheckoutFailed, "unable to checkout #{ref} from '#{log_url}'"
         end
         private :checkout!
 
