@@ -78,14 +78,14 @@ class Vanagon
 
           # Ensure that #url returns a URI object
           @url = URI.parse(url.to_s)
-          @log_url = @url.host + @url.path
+          @log_url = @url.host + @url.path unless @url.host.nil? || @url.path.nil?
           @ref = opts[:ref]
           @dirname = opts[:dirname]
           @workdir = File.realpath(workdir)
           @clone_options = opts[:clone_options] ||= {}
 
           # We can test for Repo existence without cloning
-          raise Vanagon::InvalidRepo, "#{log_url} not a valid Git repo" unless valid_remote?
+          raise Vanagon::InvalidRepo, "url is not a valid Git repo" unless valid_remote?
         end
 
         # Fetch the source. In this case, clone the repository into the workdir
