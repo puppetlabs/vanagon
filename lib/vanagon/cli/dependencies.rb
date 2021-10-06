@@ -51,14 +51,13 @@ class Vanagon
           end
         end
 
-        temporary_directory = Dir.mktmpdir
         failures = []
 
         projects.each do |project|
           platforms.each do |platform|
             begin
               artifact = Vanagon::Driver.new(platform, project, options)
-              artifact.dependencies(temporary_directory)
+              artifact.dependencies
             rescue RuntimeError => e
               failures.push("#{project}, #{platform}: #{e}")
             end
@@ -72,7 +71,7 @@ class Vanagon
           end
         end
 
-        VanagonLogger.info "Dependency files located at: #{temporary_directory}"
+        VanagonLogger.info "Finished generating dependencies"
       end
 
       def options_translate(docopt_options)
