@@ -6,6 +6,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
+- (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
 
 ## [0.23.0] - released 2021-09-23
 ### Added
