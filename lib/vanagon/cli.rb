@@ -38,7 +38,7 @@ class Vanagon
           render              create local versions of packaging artifacts for project
           sign                sign a package
           ship                upload a package to a distribution server
-          dependencies        create a json file that shows all required gems for a given project and platform
+          dependencies        write json file to STDOUT that shows all required gems for a given project and platform
           help                print this help
     DOCOPT
 

@@ -182,7 +182,7 @@ class Vanagon
       @project.make_makefile(workdir)
     end
 
-    def dependencies(temporary_directory)
+    def dependencies
       # Simple sanity check for the project
       if @project.version.nil? || @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
@@ -190,7 +190,7 @@ class Vanagon
 
       VanagonLogger.info "creating dependencies list"
       @project.fetch_sources(workdir, retry_count, timeout)
-      @project.cli_save_manifest_json(@platform, temporary_directory)
+      @project.cli_manifest_json(@platform)
     end
 
     # Initialize the logging instance
