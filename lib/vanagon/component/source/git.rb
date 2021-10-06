@@ -73,7 +73,7 @@ class Vanagon
         # @param url [String] url of git repo to use as source
         # @param ref [String] ref to checkout from git repo
         # @param workdir [String] working directory to clone into
-        def initialize(url, workdir:, **options)
+        def initialize(url, workdir:, **options) # rubocop:disable Metrics/AbcSize
           opts = default_options.merge(options.reject { |k, v| v.nil? })
 
           # Ensure that #url returns a URI object
