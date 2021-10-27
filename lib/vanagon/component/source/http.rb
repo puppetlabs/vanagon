@@ -109,7 +109,7 @@ class Vanagon
           target_file ||= File.basename(uri.path)
 
           # Add X-RPROXY-PASS to request header if the environment variable exists
-          headers.store('X-RPROXY-PASS', ENV['X-RPROXY-PASS']) if ENV['X-RPROXY-PASS']
+          headers['X-RPROXY-PASS'] = ENV['X-RPROXY-PASS'] if ENV['X-RPROXY-PASS']
 
           VanagonLogger.info "Downloading file '#{target_file}' from url '#{target_url}'"
 
