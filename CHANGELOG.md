@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 - (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
+- (maint) Check environment for the X-RPROXY-PASS variable and add it to the http request header in the download method if it exists
 
 ## [0.23.0] - released 2021-09-23
 ### Added
