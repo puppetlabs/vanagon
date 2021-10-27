@@ -108,6 +108,9 @@ class Vanagon
           uri = URI.parse(target_url.to_s)
           target_file ||= File.basename(uri.path)
 
+          # Add X-RPROXY-PASS to request header if the environment variable exists
+          headers['X-RPROXY-PASS'] = ENV['X-RPROXY-PASS'] if ENV['X-RPROXY-PASS']
+
           VanagonLogger.info "Downloading file '#{target_file}' from url '#{target_url}'"
 
           Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
