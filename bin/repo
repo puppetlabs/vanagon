@@ -19,12 +19,12 @@ require 'packaging'
 Pkg::Util::RakeUtils.load_packaging_tasks
 case repo_target
 when 'rpm'
-  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
+  Pkg::Util::Repo.rpm_repos
 when 'deb'
-  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+  Pkg::Util::Repo.deb_repos
 when 'none'
   VanagonLogger.warn "Skipping repo generation since repo target is set to 'none'"
 else
-  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
-  Pkg::Util::RakeUtils.invoke_task('pl:jenkins:deb_repos')
+  Pkg::Util::Repo.rpm_repos
+  Pkg::Util::Repo.deb_repos
 end
