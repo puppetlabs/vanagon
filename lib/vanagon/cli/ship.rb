@@ -30,6 +30,7 @@ class Vanagon
         require 'packaging'
         Pkg::Util::RakeUtils.load_packaging_tasks
         Pkg::Util::Ship.ship
+        Pkg::Util::Ship.ship_to_artifactory
       end
     end
   end
