@@ -28,9 +28,8 @@ class Vanagon
         end
 
         require 'packaging'
-        Pkg::Util::RakeUtils.load_packaging_tasks
-        Pkg::Util::Ship.ship
-        Pkg::Util::Ship.ship_to_artifactory
+        Pkg::Util::Ship.ship('artifacts', 'output')
+        Pkg::Util::Ship.ship_to_artifactory('output')
       end
     end
   end
