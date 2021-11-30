@@ -5,9 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 - (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
+
+### Fixed
 - (maint) Check environment for the X-RPROXY-PASS variable and add it to the http request header in the download method if it exists
+
+### Removed
+- Removed default platform definitions for Debian 8, Fedora 30, Fedora 31, and OSX 10.14
 
 ## [0.23.0] - released 2021-09-23
 ### Added
