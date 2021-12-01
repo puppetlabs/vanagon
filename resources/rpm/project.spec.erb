@@ -81,7 +81,7 @@ Requires:  <%= requires.requirement %><%= requires.version ? " #{requires.versio
 # did not specify a dependency on these.
 # In the future, we will supress pre/post scripts completely if there's nothing
 # specified by the project or the components.
-<%- if @platform.is_fedora? && @platform.os_version.to_i >= 29 -%>
+<%- if @platform.is_fedora? || (@platform.is_el? && @platform.os_version.to_i >= 9) -%>
 Requires(pre): /usr/bin/mkdir
 Requires(pre): /usr/bin/touch
 Requires(post): /usr/bin/mkdir
