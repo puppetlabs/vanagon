@@ -36,7 +36,7 @@ module BasicSubmodules
   # @option options [Boolean] :recursive recurse into nested submodules
   # @return options [String] any output produced by `git` when submodules are initialized
   def update_submodules(**options)
-    self.lib.update_submodules(options)
+    self.lib.update_submodules(**options)
   end
 end
 
