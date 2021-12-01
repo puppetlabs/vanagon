@@ -9,6 +9,7 @@ notifications:
 rvm:
   - 2.4
   - 2.6
+  - 3.0
 
 env:
   - "CHECK='rake test:spec'"
