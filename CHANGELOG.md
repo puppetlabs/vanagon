@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+- (VANAGON-169) Remove Fedora 31 x86_64
 - (VANAGON-170) Remove OSX 10.14 x86_64
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 - (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
