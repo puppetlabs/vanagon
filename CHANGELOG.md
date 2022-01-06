@@ -8,6 +8,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (VANAGON-168) Remove Fedora 30 x86_64
 - (VANAGON-169) Remove Fedora 31 x86_64
 - (VANAGON-170) Remove OSX 10.14 x86_64
+- (VANAGON-174) Addition 'el-9' platform
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 - (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
 - (maint) Check environment for the X-RPROXY-PASS variable and add it to the http request header in the download method if it exists
