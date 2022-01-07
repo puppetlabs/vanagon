@@ -27,7 +27,6 @@ class Vanagon
         end
 
         require 'packaging'
-        Pkg::Util::RakeUtils.load_packaging_tasks
         Pkg::Util::Sign.sign_all('output')
       end
     end
