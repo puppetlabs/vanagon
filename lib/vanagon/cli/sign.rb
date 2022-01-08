@@ -28,7 +28,7 @@ class Vanagon
 
         require 'packaging'
         Pkg::Util::RakeUtils.load_packaging_tasks
-        Pkg::Util::Sign.sign_all('output')
+        Pkg::Util::RakeUtils.invoke_task('pl:jenkins:sign_all', 'output')
       end
     end
   end

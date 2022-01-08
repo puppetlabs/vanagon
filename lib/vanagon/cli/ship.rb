@@ -28,8 +28,9 @@ class Vanagon
         end
 
         require 'packaging'
-        Pkg::Util::Ship.ship('artifacts', 'output')
-        Pkg::Util::Ship.ship_to_artifactory('output')
+        Pkg::Util::RakeUtils.load_packaging_tasks
+        Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship', 'artifacts', 'output')
+        Pkg::Util::RakeUtils.invoke_task('pl:jenkins:ship_to_artifactory', 'output')
       end
     end
   end
