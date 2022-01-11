@@ -5,13 +5,23 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-- (VANAGON-168) Remove Fedora 30 x86_64
-- (VANAGON-169) Remove Fedora 31 x86_64
-- (VANAGON-170) Remove OSX 10.14 x86_64
+### Added
+
+### Changed
+
+### Removed
+
+## [0.24.0] - released 2022-01-14
+### Added
 - (VANAGON-174) Addition 'el-9' platform
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
 - (VANAGON-162) Added new instance variable 'log_url' to use in logs rather than the full git url
 - (maint) Check environment for the X-RPROXY-PASS variable and add it to the http request header in the download method if it exists
+
+### Removed
+- (VANAGON-168) Remove Fedora 30 x86_64
+- (VANAGON-169) Remove Fedora 31 x86_64
+- (VANAGON-170) Remove OSX 10.14 x86_64
 
 ## [0.23.0] - released 2021-09-23
 ### Added
@@ -1004,7 +1014,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.23.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.24.0...HEAD
+[0.24.0]: https://github.com/puppetlabs/vanagon/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/puppetlabs/vanagon/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/puppetlabs/vanagon/compare/0.21.1...0.22.0
 [0.21.1]: https://github.com/puppetlabs/vanagon/compare/0.21.0...0.21.1
