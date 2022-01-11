@@ -60,12 +60,12 @@ class Vanagon
         end
 
         if options[:projects]
-          puts "- Projects", output(project_list, options[:use_spaces])
+          puts output(project_list, options[:use_spaces])
           return
         end
 
         if options[:platforms]
-          puts "- Platforms", output(platform_list, options[:use_spaces])
+          puts output(platform_list, options[:use_spaces])
           return
         end
       end

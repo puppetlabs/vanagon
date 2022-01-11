@@ -180,8 +180,7 @@ bar baz foo
       end
 
       let(:output_platforms){
-"- Platforms
-1
+"1
 2
 3
 "
@@ -193,8 +192,7 @@ bar baz foo
       end
 
       let(:output_projects){
-"- Projects
-bar
+"bar
 baz
 foo
 "
