@@ -5,7 +5,7 @@ describe "Vanagon::Component::Source::Git" do
   before :all do
     @klass = Vanagon::Component::Source::Git
     # This repo will not be cloned over the network
-    @url = 'git://github.com/puppetlabs/facter.git'
+    @url = 'git@github.com:puppetlabs/facter.git'
     # This path will not be created on disk
     @local_url = "file://#{Dir.tmpdir}/puppet-agent"
     @ref_tag = 'refs/tags/2.2.0'
