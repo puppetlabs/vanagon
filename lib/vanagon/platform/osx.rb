@@ -41,6 +41,8 @@ class Vanagon
           sign_commands = []
         end
 
+        signing_host = "jenkins@osx-signer-prod-2.delivery.puppetlabs.net"
+
          # Setup build directories
         ["bash -c 'mkdir -p $(tempdir)/osx/build/{dmg,pkg,scripts,resources,root,payload,plugins}'",
          "mkdir -p $(tempdir)/osx/build/root/#{project.name}-#{project.version}",
@@ -56,8 +58,26 @@ class Vanagon
 
          bom_install,
 
+         #  The signing commands below should not cause `vanagon build` to fail. Many devs need to run `vanagon build`
+         #  locally and do not necessarily need signed packages. The `|| :` will rescue failures by evaluating as successful.
+         #  /Users/binaries will be a list of all binaries that need to be signed
+         "touch /Users/binaries || :",
+         #  Find all of the executables (Mach-O files), and put the in /Users/binaries
+         "for item in `find $(tempdir)/osx/build/ -perm -0100 -type f` ; do file $$item | grep 'Mach-O' ; done | awk '{print $$1}' | sed 's/\:$$//' > /Users/binaries || :",
+         #  A tmpdir is created on the signing_host, all of the executables will be rsyncd there to be signed
+         "#{Vanagon::Utilities.ssh_command}  #{signing_host} mkdir -p /tmp/$(binaries_dir) || :",
+         "rsync -e '#{Vanagon::Utilities.ssh_command}' --no-perms --no-owner --no-group --files-from=/Users/binaries / #{signing_host}:/tmp/$(binaries_dir) || :",
+         "rsync -e '#{Vanagon::Utilities.ssh_command}' --no-perms --no-owner --no-group /Users/binaries #{signing_host}:/tmp/$(binaries_dir)/binaries_list || :",
+         #  The binaries are signed, and then rsynced back
+         "#{Vanagon::Utilities.ssh_command}  #{signing_host} /usr/local/bin/sign.sh $(binaries_dir) || :",
+         "rsync -e '#{Vanagon::Utilities.ssh_command}' --no-perms --no-owner --no-group -r #{signing_host}:/tmp/$(binaries_dir)/var/ /var || :",
+
          # Sign extra files
          sign_commands,
+         # Some extra files are created during the signing process that are not needed, so we delete them! Otherwise
+         # notarization gets confused by these extra files.
+          "for item in `find $(tempdir)/osx/build -type d -name Resources` ; do rm -rf $$item ; done || :",
+
 
          # Package the project
          "(cd $(tempdir)/osx/build/; #{@pkgbuild} --root root/#{project.name}-#{project.version} \
