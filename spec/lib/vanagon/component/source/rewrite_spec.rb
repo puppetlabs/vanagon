@@ -31,8 +31,7 @@ describe "Vanagon::Component::Source::Rewrite" do
 
     it 'applies the rule to the url if a proc is given as the rule' do
       klass.register_rewrite_rule('git', complex_rule)
-
-      expect(klass.rewrite('git://github.com/puppetlabs/facter', 'git'))
+      expect(klass.rewrite('git@github.com/puppetlabs/facter', 'git'))
         .to eq('git://github.delivery.puppetlabs.net/puppetlabs-facter')
     end
   end

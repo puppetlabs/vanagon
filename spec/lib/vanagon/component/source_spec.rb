@@ -8,7 +8,7 @@ describe "Vanagon::Component::Source" do
     let(:unrecognized_scheme) { "abcd" }
     let(:invalid_scheme) { "abcd|things" }
 
-    let(:public_git) { "git://github.com/abcd/things" }
+    let(:public_git) { "git@github.com:abcd/things" }
     let(:private_git) { "git@github.com:abcd/things" }
     let(:http_git) { "http://github.com/abcd/things" }
     let(:https_git) { "https://github.com/abcd/things" }

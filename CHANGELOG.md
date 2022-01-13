@@ -18,6 +18,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (maint) Update vmpooler URL
 - (VANAGON-167) Update tests to remove redhat 5
 - (maint) When using `vanagon list` with the --platforms or --projects flags, no longer print the "-Platforms" or "-Projects" header. 
+- (maint) Updated deprecated git://github.com urls to https://github.com
 
 ### Removed
 - (VANAGON-166) Do not undefine `__debug_package` on EL 8 FIPS
