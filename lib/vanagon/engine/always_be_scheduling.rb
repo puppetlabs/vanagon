@@ -346,7 +346,7 @@ class Vanagon
       end
 
       def build_request_object
-        user = ENV['USER'] || ENV['USERNAME'] || 'unknown'
+        user = ENV['USER'] || ENV['USERNAME'] || 'vanagon'
 
         @saved_job_id = user + "-" + DateTime.now.strftime('%Q')
         request_object = {
@@ -360,7 +360,7 @@ class Vanagon
                     :user              => user
                 },
             },
-            :priority => 1, # DO NOT use priority 1 in automated CI runs
+            :priority => 3, # DO NOT use priority 1 in automated CI runs
         }
         unless @token_vmpooler.nil?
           request_object[:vm_token] = @token_vmpooler
