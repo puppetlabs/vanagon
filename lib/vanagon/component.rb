@@ -258,7 +258,7 @@ class Vanagon
       mirrors.to_a.shuffle.each do |mirror|
         begin
           VanagonLogger.info %(Attempting to fetch from mirror URL "#{mirror}")
-          @source = Vanagon::Component::Source.source(mirror, options)
+          @source = Vanagon::Component::Source.source(mirror, **options)
           return true if source.fetch
         rescue SocketError
           # SocketError means that there was no DNS/name resolution
@@ -281,7 +281,7 @@ class Vanagon
     #   or False otherwise
     def fetch_url(options)
       VanagonLogger.info %(Attempting to fetch from canonical URL "#{url}")
-      @source = Vanagon::Component::Source.source(url, options)
+      @source = Vanagon::Component::Source.source(url, **options)
       # Explicitly coerce the return value of #source.fetch,
       # because each subclass of Vanagon::Component::Source returns
       # an inconsistent value if #fetch is successful.

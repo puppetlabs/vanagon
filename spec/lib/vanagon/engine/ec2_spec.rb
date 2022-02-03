@@ -1,5 +1,4 @@
-begin
-  require 'aws-sdk'
+begin require 'aws-sdk'
 rescue LoadError
   $stderr.puts "Unable to load AWS SDK; skipping optional EC2 engine spec tests"
 end
@@ -28,7 +27,10 @@ if defined? ::Aws
 
     it 'returns "ec2" name' do
       stub_request(:get, "http://169.254.169.254/latest/meta-data/iam/security-credentials/").
+        to_return(status: 200, body: "", headers: {})
+      stub_request(:put, "http://169.254.169.254/latest/api/token").
           to_return(status: 200, body: "", headers: {})
+
       expect(Vanagon::Engine::Ec2.new(platform_ec2).name).to eq('ec2')
     end
   end

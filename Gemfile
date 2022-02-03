@@ -15,7 +15,7 @@ gemspec
 
 # Confine EC2 engine dependencies
 group "ec2-engine" do
-  gem "aws-sdk", "~> 2.2.0", require: false
+  gem "aws-sdk", "~> 3.1.0", require: false
 end
 
 # "lock_manager" is specified in development dependencies, to allow

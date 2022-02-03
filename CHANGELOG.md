@@ -6,6 +6,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- (VANAGON-179) Addition of ruby 3 support for vanagon
 
 ### Changed
 
