@@ -144,22 +144,34 @@ class Vanagon
 
     VERSION_REGEX = /^([=<>]+)\s*([^<>=]*)$/.freeze
 
-    # Loads a given platform from the configdir
+    # Loads a platform from the config/platforms directory
     #
-    # @param name [String] the name of the platform
-    # @param configdir [String] the path to the platform config file
+    # @param platform_name [String] the name of the platform
+    # @param config_directory [String] the path to the platform config file
     # @return [Vanagon::Platform] the platform as specified in the platform config
     # @raise if the instance_eval on Platform fails, the exception is reraised
-    def self.load_platform(name, configdir)
-      platfile = File.join(configdir, "#{name}.rb")
-      dsl = Vanagon::Platform::DSL.new(name)
-      dsl.instance_eval(File.read(platfile), platfile, 1)
-      dsl._platform
-    rescue StandardError => e
-      VanagonLogger.error "Error loading platform '#{name}' using '#{platfile}':"
-      VanagonLogger.error(e)
-      VanagonLogger.error e.backtrace.join("\n")
-      raise e
+    def self.load_platform(platform_name, config_directory) # rubocop:disable Metrics/AbcSize
+      platform_name = File.basename(platform_name, '.rb')
+      platform_file_name = "#{platform_name}.rb"
+      platform_path = File.join(config_directory, platform_file_name)
+
+      begin
+        platform_definition = File.read(platform_path)
+      rescue Errno::ENOENT, Errno::EACCES => e
+        VanagonLogger.error "Error loading '#{platform_name}': #{e}"
+        exit 1
+      end
+
+      dsl = Vanagon::Platform::DSL.new(platform_name)
+      begin
+        dsl.instance_eval(platform_definition, platform_path, 1)
+        dsl._platform
+      rescue StandardError => e
+        VanagonLogger.error "Error loading platform '#{platform_name}' using '#{platform_path}':"
+        VanagonLogger.error(e)
+        VanagonLogger.error e.backtrace.join("\n")
+        raise e
+      end
     end
 
     # Generate the scripts required to add a group to the package generated.
