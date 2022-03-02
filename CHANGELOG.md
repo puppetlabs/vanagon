@@ -12,6 +12,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Removed
 
+## [0.25.0] - released 2022-01-24
+### Changed
+- (maint) Use priority 3 for ABS and user 'vanagon' if none is given 
+
 ## [0.24.0] - released 2022-01-14
 ### Added
 - (VANAGON-174) Addition 'el-9' platform
@@ -1016,7 +1020,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.24.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.25.0...HEAD
+[0.25.0]: https://github.com/puppetlabs/vanagon/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/puppetlabs/vanagon/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/puppetlabs/vanagon/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/puppetlabs/vanagon/compare/0.21.1...0.22.0
