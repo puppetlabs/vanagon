@@ -50,7 +50,7 @@ class Vanagon
 
           def valid_remote?(url, timeout = 0)
             Timeout.timeout(timeout) do
-              Vanagon::Utilities.local_command("git ls-remote #{url} > /dev/null 2>&1")
+              Vanagon::Utilities.local_command("git ls-remote --heads #{url} > /dev/null 2>&1")
               return false unless $?.exitstatus.zero?
               return true
             end
