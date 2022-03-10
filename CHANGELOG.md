@@ -9,6 +9,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (VANAGON-179) Addition of ruby 3 support for vanagon
 
 ### Changed
+- (VANAGON-187) Change valid remote repository check to use 'git ls-remote --heads' rather than 'git ls-remote'
 
 ### Removed
 
