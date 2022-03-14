@@ -9,10 +9,6 @@ workdir := $(PWD)
 
 all: file-list-before-build <%= package_name %>
 
-<%- if @platform.is_macos? -%>
-binaries_dir := $(shell <%= @platform.mktemp %> 2>/dev/null)
-<%- end -%>
-
 <%= package_name %>: <%= @name %>-<%= @version %>.tar.gz
 	<%= generate_package.join("\n\t") %>
 
