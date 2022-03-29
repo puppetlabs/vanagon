@@ -6,10 +6,16 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.26.1] - released 2022-03-29
+### Added
+- (VANAGON-181) Add macOS 12 Monterey x86-64 support
+
+### Changed
+- Reverted work to support Apple Notarization while we work through more issues
+
 ## [0.26.0] - released 2022-03-10
 ### Added
 - (VANAGON-179) Addition of ruby 3 support for vanagon
-- (VANAGON-181) Add macOS 12 Monterey x86-64 support
 
 ### Changed
 - (VANAGON-187) Change valid remote repository check to use 'git ls-remote --heads' rather than 'git ls-remote'
@@ -1021,7 +1027,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.1...HEAD
+[0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/puppetlabs/vanagon/compare/0.25.0...0.26.0
 [0.25.0]: https://github.com/puppetlabs/vanagon/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/puppetlabs/vanagon/compare/0.23.0...0.24.0
