@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- (VANAGON-182) Add Ubuntu 22.04
 
 ## [0.26.1] - released 2022-03-29
 ### Added
