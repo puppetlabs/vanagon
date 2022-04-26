@@ -8,7 +8,6 @@ describe "Vanagon::Component::Source" do
     let(:unrecognized_scheme) { "abcd" }
     let(:invalid_scheme) { "abcd|things" }
 
-    let(:public_git) { "git://github.com/abcd/things" }
     let(:private_git) { "git@github.com:abcd/things" }
     let(:http_git) { "http://github.com/abcd/things" }
     let(:https_git) { "https://github.com/abcd/things" }
@@ -51,12 +50,6 @@ describe "Vanagon::Component::Source" do
       it "returns a Git object for git@ triplet repositories" do
         expect(klass.source(private_git, ref: ref, workdir: workdir).class)
           .to eq Vanagon::Component::Source::Git
-      end
-
-      it "returns a Git object for git:// repositories" do
-        component_source = klass.source(public_git, ref: ref, workdir: workdir)
-        expect(component_source.url.to_s).to eq public_git
-        expect(component_source.class).to eq Vanagon::Component::Source::Git
       end
 
       it "returns a Git object for http:// repositories" do

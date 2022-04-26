@@ -258,12 +258,12 @@ describe "Vanagon::Component" do
   describe '#force_version' do
     let(:source) {
       allow(File).to receive(:realpath).and_return('/this/is/a/test')
-      Vanagon::Component::Source::Git.new('git://github.com/puppetlabs/facter', workdir: '/this/is/a/test')
+      Vanagon::Component::Source::Git.new('https://github.com/puppetlabs/facter', workdir: '/this/is/a/test')
     }
 
     let(:component) {
       Vanagon::Component.new('force-version-test', {}, {}).tap do |comp|
-        comp.url = 'git://github.com/puppetlabs/facter'
+        comp.url = 'https://github.com/puppetlabs/facter'
         comp.source = source
       end
     }
