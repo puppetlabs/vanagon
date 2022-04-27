@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.26.2] - released 2022-04-27
 ### Changed
 - (maint) Add the focal-updates.list file creation and gpg key add to the provisioning step in the defaults for ubuntu-20.04-amd64
 
@@ -1029,7 +1031,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.2...HEAD
+[0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.1...0.26.2
 [0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/puppetlabs/vanagon/compare/0.25.0...0.26.0
 [0.25.0]: https://github.com/puppetlabs/vanagon/compare/0.24.0...0.25.0
