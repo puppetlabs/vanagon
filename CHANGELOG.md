@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- (maint) Add the focal-updates.list file creation and gpg key add to the provisioning step in the defaults for ubuntu-20.04-amd64
 
 ## [0.26.1] - released 2022-03-29
 ### Added
