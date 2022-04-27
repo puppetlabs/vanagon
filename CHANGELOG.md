@@ -1032,7 +1032,7 @@ on Debian < 8 and needs more work and testing.
 ## Versions <= 0.3.9 do not have a change log entry
 
 [Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.2...HEAD
-[0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.1...0.26.2
+[0.26.2]: https://github.com/puppetlabs/vanagon/compare/0.26.1...0.26.2
 [0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/puppetlabs/vanagon/compare/0.25.0...0.26.0
 [0.25.0]: https://github.com/puppetlabs/vanagon/compare/0.24.0...0.25.0
