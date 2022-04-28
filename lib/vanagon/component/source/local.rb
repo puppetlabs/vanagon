@@ -97,14 +97,12 @@ class Vanagon
             %(gunzip "#{file}")
           when "rar"
             %(unrar x "#{file}")
-          when "tar"
+          when "tar", "txz"
             %(#{tar} xf "#{file}")
           when "tbz2"
             %(bunzip2 -c "#{file}" | #{tar} xf -)
           when "tgz"
             %(gunzip -c "#{file}" | #{tar} xf -)
-          when "txz"
-            %(unxz -d "#{file}" | #{tar} xvf -)
           when "xz"
             %(unxz "#{file}")
           when "zip"
