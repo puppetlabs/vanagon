@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('docopt')
   # Handle git repos responsibly
   # - MIT licensed: https://rubygems.org/gems/git
-  gem.add_runtime_dependency('git', '~> 1.8.0')
+  gem.add_runtime_dependency('git', '~> 1.11.0')
   # Parse scp-style triplets like URIs; used for Git source handling.
   # - MIT licensed: https://rubygems.org/gems/fustigit
   gem.add_runtime_dependency('fustigit', '~> 0.1.3')
