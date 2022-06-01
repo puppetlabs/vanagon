@@ -46,7 +46,7 @@ class Vanagon
         end
 
         # These could be templates, but their content is static, so that seems weird.
-        File.open(File.join(deb_dir, "compat"), "w") { |f| f.puts("7") }
+        File.open(File.join(deb_dir, 'compat'), 'w') { |f| f.puts('10') }
         FileUtils.mkdir_p(File.join(deb_dir, "source"))
         File.open(File.join(deb_dir, "source", "format"), "w") { |f| f.puts("3.0 (quilt)") }
       end

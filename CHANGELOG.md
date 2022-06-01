@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- (maint) set the Debian compat level from 7 (which is unsupported) to 10
 
 ## [0.27.0] - released 2022-06-06
 ### Added
