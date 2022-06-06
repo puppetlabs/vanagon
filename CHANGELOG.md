@@ -5,11 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.27.0] - released 2022-06-06
 ### Added
 - (VANAGON-182) Add Ubuntu 22.04
 
 ### Changed
-- (maint) Force dh_builddeb to use -Zgzip for compatibility with reprepro
+- (maint) Force dh_builddeb to use -Zgzip for compatibility with reprepro. This keeps existing gzip usage and thwarts Ubuntu 22.04's desire to switch to zstd.
 
 ## [0.26.3] - released 2022-05-11
 ### Changed
@@ -36,7 +38,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [0.25.0] - released 2022-01-24
 ### Changed
-- (maint) Use priority 3 for ABS and user 'vanagon' if none is given 
+- (maint) Use priority 3 for ABS and user 'vanagon' if none is given
 
 ## [0.24.0] - released 2022-01-14
 ### Added
@@ -1041,8 +1043,9 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.26.3...HEAD
-[0.26.2]: https://github.com/puppetlabs/vanagon/compare/0.26.2...0.26.3
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.27.0...HEAD
+[0.27.0]: https://github.com/puppetlabs/vanagon/compare/0.26.3...0.27.0
+[0.26.3]: https://github.com/puppetlabs/vanagon/compare/0.26.2...0.26.3
 [0.26.2]: https://github.com/puppetlabs/vanagon/compare/0.26.1...0.26.2
 [0.26.1]: https://github.com/puppetlabs/vanagon/compare/0.26.0...0.26.1
 [0.26.0]: https://github.com/puppetlabs/vanagon/compare/0.25.0...0.26.0
