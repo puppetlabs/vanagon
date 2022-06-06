@@ -27,5 +27,10 @@ override_dh_shlibdeps:
 
 override_dh_usrlocal:
 
+override_dh_builddeb:
+	# Force builddeb to use gzip for its internal compression. reprepro can get
+	# confused if something newer is used.
+	dh_builddeb -- -Zgzip
+
 %:
 	dh $@

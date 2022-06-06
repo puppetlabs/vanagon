@@ -8,6 +8,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ### Added
 - (VANAGON-182) Add Ubuntu 22.04
 
+### Changed
+- (maint) Force dh_builddeb to use -Zgzip for compatibility with reprepro
+
 ## [0.26.3] - released 2022-05-11
 ### Changed
 - (RE-14660) Update git gem dependency
