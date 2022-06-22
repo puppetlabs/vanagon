@@ -7,6 +7,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ## [Unreleased]
 ### Changed
 - (maint) set the Debian compat level from 7 (which is unsupported) to 10
+- (maint) Fail more gently when a platform file isn't found. Also relax requirement that
+  the platform name not end with the '.rb' extension.
 
 ## [0.27.0] - released 2022-06-06
 ### Added
