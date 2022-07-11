@@ -9,6 +9,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (maint) set the Debian compat level from 7 (which is unsupported) to 10
 - (maint) Fail more gently when a platform file isn't found. Also relax requirement that
   the platform name not end with the '.rb' extension.
+- (maint) Update the macos hostArchitectures option to 'x86_64,arm64' in order to support the install of packages on macos M1 hardware
 
 ## [0.27.0] - released 2022-06-06
 ### Added
