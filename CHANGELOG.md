@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
 
+### Added
+- (maint) Adds `brew` attribute to specify the path of Homebrew on macOS on different architectures.
+
 ## [0.37.1] - release 2023-06-21
 ### Changed
 - (maint) Add TLS 1.2 to the platform add command for Windows
