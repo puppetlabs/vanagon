@@ -5,7 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+### Added
+
+- (VANAGON-193) Adds support for Fedora 36 (x86-64)
+
 ### Changed
+
 - (maint) set the Debian compat level from 7 (which is unsupported) to 10
 - (maint) Fail more gently when a platform file isn't found. Also relax requirement that
   the platform name not end with the '.rb' extension.
