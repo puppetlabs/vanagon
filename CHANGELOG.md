@@ -5,13 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-
 ### Added
-
-- (VANAGON-193) Adds support for Fedora 36 (x86-64)
 
 ### Changed
 
+## [0.28.0] - release 2022-07-27
+### Added
+- (VANAGON-193) Adds support for Fedora 36 (x86-64)
+
+### Changed
 - (maint) set the Debian compat level from 7 (which is unsupported) to 10
 - (maint) Fail more gently when a platform file isn't found. Also relax requirement that
   the platform name not end with the '.rb' extension.
@@ -1054,7 +1056,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.27.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.28.0...HEAD
+[0.28.0]: https://github.com/puppetlabs/vanagon/compare/0.27.0...0.28.0
 [0.27.0]: https://github.com/puppetlabs/vanagon/compare/0.26.3...0.27.0
 [0.26.3]: https://github.com/puppetlabs/vanagon/compare/0.26.2...0.26.3
 [0.26.2]: https://github.com/puppetlabs/vanagon/compare/0.26.1...0.26.2
