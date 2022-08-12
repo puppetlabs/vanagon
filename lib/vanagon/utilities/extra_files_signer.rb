@@ -31,6 +31,9 @@ class Vanagon
             ]
           end
 
+          puts "COMMANDSSSS"
+          puts commands
+
           commands
         rescue RuntimeError
           require 'vanagon/logger'
