@@ -13,19 +13,21 @@ class Vanagon
             tempdir = Vanagon::Utilities::remote_ssh_command("#{project.signing_username}@#{project.signing_hostname}", "#{mktemp} 2>/dev/null", return_command_output: true)
           end
 
+          remote_host = "#{project.signing_username}@#{project.signing_hostname}"
+          remote_destination_directory = "#{remote_host}:#{tempdir}"
+          remote_signing_script_path = File.join(tempdir, File.basename('sign_extra_file'))
+
           project.extra_files_to_sign.each do |file|
-            file_location = File.join(tempdir, File.basename(file))
+            remote_file_to_sign_path = File.join(tempdir, File.basename(file))
             local_source_path = File.join('$(tempdir)', source_dir, file)
-            remote_host = "#{project.signing_username}@#{project.signing_hostname}"
-            remote_destination_path = "#{remote_host}:#{tempdir}"
-            remote_file_location = "#{remote_host}:#{file_location}"
-            extra_flags = ''
-            extra_flags = '--extended-attributes' if project.platform.is_macos?
+            remote_source_path = "#{remote_host}:#{remote_file_to_sign_path}"
+            local_destination_path = local_source_path
 
             commands += [
-              "rsync -e '#{Vanagon::Utilities.ssh_command}' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group #{extra_flags} #{local_source_path} #{remote_destination_path}",
-              "#{Vanagon::Utilities.ssh_command} #{remote_host} #{project.signing_command} #{file_location}",
-              "rsync -e '#{Vanagon::Utilities.ssh_command}' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group #{extra_flags} #{remote_file_location} #{local_source_path}"
+              "#{Vanagon::Utilities.ssh_command} #{remote_host} \"echo '#{project.signing_command} #{remote_file_to_sign_path}' > #{remote_signing_script_path}\"",
+              "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{local_source_path} #{remote_destination_directory}",
+              "#{Vanagon::Utilities.ssh_command} #{remote_host} /bin/bash #{remote_signing_script_path}",
+              "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{remote_source_path} #{local_destination_path}"
             ]
           end
 

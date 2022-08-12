@@ -83,12 +83,14 @@ describe Vanagon::Utilities::ExtraFilesSigner do
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expect(commands).to match(
               [
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz",
-                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc codesign /tmp/xyz/a.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz",
-                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc codesign /tmp/xyz/b.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb"
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file\"",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file\"",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(tempdir)/dir/source_dir/test1/b.rb test@abc:/tmp/xyz",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/b.rb"
               ]
             )
           end
@@ -107,12 +109,14 @@ describe Vanagon::Utilities::ExtraFilesSigner do
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expect(commands).to match(
               [
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz",
-                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc codesign /tmp/xyz/a.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group  test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz",
-                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc codesign /tmp/xyz/b.rb",
-                "rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links  --no-perms --no-owner --no-group  test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb"
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file\"",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file\"",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(tempdir)/dir/source_dir/test1/b.rb test@abc:/tmp/xyz",
+                "/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file",
+                "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/b.rb"
               ]
             )
           end
