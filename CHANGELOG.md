@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Changed
+
+## [0.29.0] - release 2022-08-15
+### Changed
 - (maint) Update extra file signer to use scp and sign using a script rather than a direct ssh command.
 
 ## [0.28.0] - release 2022-07-27
@@ -1055,7 +1058,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.28.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.29.0...HEAD
+[0.29.0]: https://github.com/puppetlabs/vanagon/compare/0.28.0...0.29.0
 [0.28.0]: https://github.com/puppetlabs/vanagon/compare/0.27.0...0.28.0
 [0.27.0]: https://github.com/puppetlabs/vanagon/compare/0.26.3...0.27.0
 [0.26.3]: https://github.com/puppetlabs/vanagon/compare/0.26.2...0.26.3
