@@ -5,9 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
-### Added
-
 ### Changed
+- (maint) Update extra file signer to use scp and sign using a script rather than a direct ssh command.
 
 ## [0.28.0] - release 2022-07-27
 ### Added
