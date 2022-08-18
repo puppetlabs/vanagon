@@ -83,7 +83,7 @@ describe Vanagon::Utilities::ExtraFilesSigner do
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expect(commands).to match(
               [
-                %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file\"),
+                %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc \"echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
                 %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz),
                 %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
                 %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb),
