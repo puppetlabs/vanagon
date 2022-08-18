@@ -16,6 +16,8 @@ class Vanagon
           remote_host = "#{project.signing_username}@#{project.signing_hostname}"
           remote_destination_directory = "#{remote_host}:#{tempdir}"
           remote_signing_script_path = File.join(tempdir, File.basename('sign_extra_file'))
+          extra_flags = ''
+          extra_flags = '--extended-attributes' if project.platform.is_macos?
 
           project.extra_files_to_sign.each do |file|
             remote_file_to_sign_path = File.join(tempdir, File.basename(file))
@@ -25,11 +27,14 @@ class Vanagon
 
             commands += [
               "#{Vanagon::Utilities.ssh_command} #{remote_host} \"echo '#{project.signing_command} #{remote_file_to_sign_path}' > #{remote_signing_script_path}\"",
-              "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{local_source_path} #{remote_destination_directory}",
+              "rsync -e '#{Vanagon::Utilities.ssh_command}' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group #{extra_flags} #{local_source_path} #{remote_destination_directory}",
               "#{Vanagon::Utilities.ssh_command} #{remote_host} /bin/bash #{remote_signing_script_path}",
-              "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{remote_source_path} #{local_destination_path}"
+              "rsync -e '#{Vanagon::Utilities.ssh_command}' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group #{extra_flags} #{remote_source_path} #{local_destination_path}"
             ]
           end
+
+          VanagonLogger.info "COMMANDSSS"
+          VanagonLogger.info commands
 
           commands
         rescue RuntimeError
