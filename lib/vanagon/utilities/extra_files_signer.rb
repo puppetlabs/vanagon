@@ -33,9 +33,6 @@ class Vanagon
             ]
           end
 
-          VanagonLogger.info "COMMANDSSS"
-          VanagonLogger.info commands
-
           commands
         rescue RuntimeError
           require 'vanagon/logger'
