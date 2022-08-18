@@ -33,8 +33,8 @@ class Vanagon
             ]
           end
 
-          puts "COMMANDSSS"
-          puts commands
+          VanagonLogger.info "COMMANDSSS"
+          VanagonLogger.info commands
 
           commands
         rescue RuntimeError
