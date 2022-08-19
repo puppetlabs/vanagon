@@ -82,14 +82,14 @@ describe Vanagon::Utilities::ExtraFilesSigner do
           it 'generates signing commands for each file using --extended-attributes' do
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expected_commands = [
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file"),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb)
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file"),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group --extended-attributes test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb)
             ]
             expect(commands[0]).to match(expected_commands[0])
             expect(commands[1]).to match(expected_commands[1])
@@ -114,14 +114,14 @@ describe Vanagon::Utilities::ExtraFilesSigner do
           it 'generates signing commands for each file' do
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expected_commands = [
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file"),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz),
-              %q(/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
-              %q(rsync -e '/usr/bin/ssh -i /Users/isaac.hammes/.ssh/id_rsa-acceptance -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb)
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test1/a.rb test@abc:/tmp/xyz),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  test@abc:/tmp/xyz/a.rb $(tempdir)/dir/source_dir/test1/a.rb),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/b.rb' > /tmp/xyz/sign_extra_file"),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  $(tempdir)/dir/source_dir/test2/b.rb test@abc:/tmp/xyz),
+              %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc /bin/bash /tmp/xyz/sign_extra_file),
+              %q(rsync -e '/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' --verbose --recursive --hard-links --links --no-perms --no-owner --no-group  test@abc:/tmp/xyz/b.rb $(tempdir)/dir/source_dir/test2/b.rb)
             ]
             expect(commands[0]).to match(expected_commands[0])
             expect(commands[1]).to match(expected_commands[1])
