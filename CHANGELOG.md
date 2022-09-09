@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+- (VANAGON-184) Remove support for Fedora 32 (x86-64)
+
 ### Changed
 
 ## [0.30.0] - release 2022-08-18
