@@ -246,8 +246,8 @@ end" }
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
       @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
       @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
-      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
-      @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
+      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-18.04-amd64')
+      @deb_plat.instance_eval("platform 'ubuntu-18.04-amd64' do |plat| end")
     end
 
     it 'adds the package provide to the list of provides' do
@@ -328,8 +328,8 @@ end" }
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
       @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
       @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
-      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
-      @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
+      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-18.04-amd64')
+      @deb_plat.instance_eval("platform 'ubuntu-18.04-amd64' do |plat| end")
     end
 
     it 'adds the package replacement to the list of replacements' do
@@ -406,8 +406,8 @@ end" }
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
       @el_plat = Vanagon::Platform::DSL.new('el-6-x86_64')
       @el_plat.instance_eval("platform 'el-6-x86_64' do |plat| end")
-      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-16.04-amd64')
-      @deb_plat.instance_eval("platform 'ubuntu-16.04-amd64' do |plat| end")
+      @deb_plat = Vanagon::Platform::DSL.new('ubuntu-18.04-amd64')
+      @deb_plat.instance_eval("platform 'ubuntu-18.04-amd64' do |plat| end")
     end
 
     it 'adds the package conflict to the list of conflicts' do
