@@ -5,7 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+### Removed
 - (VANAGON-184) Remove support for Fedora 32 (x86-64)
+- (VANAGON-185) Remove support for Fedora 34 (x86-64)
 - (VANAGON-196) Remove support for Ubuntu 16.04 (x86 and x86-64)
 
 ### Changed
