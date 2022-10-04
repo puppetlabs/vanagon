@@ -13,6 +13,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (VANAGON-197) Remove support for Debian 9 (x86 and x86-64)
 
 ### Changed
+- (RE-14715) Update fustigit gem to version 0.2.0.
 - (maint) osx-10-15.x86-64 installs homebrew via bash rather then ruby
 
 ## [0.30.0] - release 2022-08-18
