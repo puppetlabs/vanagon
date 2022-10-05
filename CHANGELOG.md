@@ -6,6 +6,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.31.0] - release 2022-10-04
 ### Removed
 - (VANAGON-184) Remove support for Fedora 32 (x86-64)
 - (VANAGON-185) Remove support for Fedora 34 (x86-64)
@@ -1071,7 +1072,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.30.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.30.1...HEAD
+[0.31.0]: https://github.com/puppetlabs/vanagon/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/puppetlabs/vanagon/compare/0.29.0...0.30.0
 [0.29.0]: https://github.com/puppetlabs/vanagon/compare/0.28.0...0.29.0
 [0.28.0]: https://github.com/puppetlabs/vanagon/compare/0.27.0...0.28.0
