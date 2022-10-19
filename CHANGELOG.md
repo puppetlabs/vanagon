@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
+  rate-limiting from excessive traffic.
 
 ## [0.31.0] - release 2022-10-04
 ### Removed
