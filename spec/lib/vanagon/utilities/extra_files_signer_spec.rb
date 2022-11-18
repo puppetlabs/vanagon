@@ -80,6 +80,7 @@ describe Vanagon::Utilities::ExtraFilesSigner do
       context 'when success' do
         context 'when macos' do
           it 'generates signing commands for each file using --extended-attributes' do
+            stub_const('ENV', ENV.to_hash.merge('VANAGON_SSH_KEY' => nil))
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expected_commands = [
               %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),
@@ -112,6 +113,7 @@ describe Vanagon::Utilities::ExtraFilesSigner do
           let(:platform) { Vanagon::Platform::DSL.new('windows-2012r2-x86_64') }
 
           it 'generates signing commands for each file' do
+            stub_const('ENV', ENV.to_hash.merge('VANAGON_SSH_KEY' => nil))
             commands = Vanagon::Utilities::ExtraFilesSigner.commands(project._project, mktemp, source_dir)
             expected_commands = [
               %q(/usr/bin/ssh -p 22  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@abc "echo 'codesign /tmp/xyz/a.rb' > /tmp/xyz/sign_extra_file"),

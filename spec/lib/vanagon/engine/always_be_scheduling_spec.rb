@@ -125,12 +125,17 @@ describe 'Vanagon::Engine::AlwaysBeScheduling' do
       allow(File).to receive(:exist?)
                          .with(floaty_config)
                          .and_return(true)
+
     end
     token_value = 'decade'
     it %(reads a token from '~/.vmfloaty.yml at the top level') do
       allow(YAML).to receive(:load_file)
                          .with(floaty_config)
                          .and_return({'token' => token_value})
+      allow(ENV).to receive(:[])
+      allow(ENV).to receive(:[])
+                         .with('VMPOOLER_TOKEN')
+                         .and_return(nil)
 
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       expect(abs_service.token).to eq(token_value)
@@ -142,6 +147,10 @@ describe 'Vanagon::Engine::AlwaysBeScheduling' do
                          .and_return({'services' =>
                                           {'MYabs' => {'type'=>'abs', 'token'=>token_value, 'url'=>'foo'}}
                                      })
+      allow(ENV).to receive(:[])
+      allow(ENV).to receive(:[])
+                         .with('VMPOOLER_TOKEN')
+                         .and_return(nil)
 
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       expect(abs_service.token).to eq(token_value)

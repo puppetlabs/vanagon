@@ -9,6 +9,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 - (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
   rate-limiting from excessive traffic.
 
+### Fixed
+- `only-build` option is now converted to an array so it can be used.
+
 ## [0.31.0] - release 2022-10-04
 ### Removed
 - (VANAGON-184) Remove support for Fedora 32 (x86-64)
