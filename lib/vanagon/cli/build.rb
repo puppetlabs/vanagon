@@ -45,9 +45,14 @@ class Vanagon
           target_list = options[:targets].split(',')
         end
 
+        only_build = []
+        unless options[:only_build].nil? || options[:only_build].empty?
+          only_build = options[:only_build].split(',')
+        end
+
         platform_list.zip(target_list).each do |pair|
           platform, target = pair
-          artifact = Vanagon::Driver.new(platform, project, options.merge({ :target => target }))
+          artifact = Vanagon::Driver.new(platform, project, options.merge({ :target => target, :only_build => only_build }))
           artifact.run
         end
       end
