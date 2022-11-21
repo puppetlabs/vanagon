@@ -37,7 +37,9 @@ class Vanagon
       )
       @project.settings[:verbose] = options[:verbose]
       @project.settings[:skipcheck] = options[:skipcheck] || false
-      filter_out_components(only_build) if only_build
+      if only_build && !only_build.empty?
+        filter_out_components(only_build)
+      end
       loginit('vanagon_hosts.log')
 
       @remote_workdir = options[:"remote-workdir"]
