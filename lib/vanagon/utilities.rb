@@ -279,7 +279,7 @@ class Vanagon
     end
 
     def clean_environment(&block)
-      return Bundler.with_clean_env { yield } if defined?(Bundler)
+      return Bundler.with_unbundled_env { yield } if defined?(Bundler)
       yield
     end
     private :clean_environment

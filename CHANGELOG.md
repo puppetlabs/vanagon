@@ -8,6 +8,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 ### Changed
 - (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
   rate-limiting from excessive traffic.
+- (maint) use `Bundler.with_unbundled_env` instead of `with_clean_env`. The latter usage is
+  deprecated.
 
 ### Fixed
 - `only-build` option is now converted to an array so it can be used.
