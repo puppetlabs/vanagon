@@ -5,13 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.32.0] - release 2023-01-11
 ### Changed
 - (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
   rate-limiting from excessive traffic.
 - (RE-15095) Update git gem from 1.11.0 to 1.13.0.
 
 ### Fixed
-- `only-build` option is now converted to an array so it can be used.
+- (maint) `only-build` option is now converted to an array so it can be used.
 
 ## [0.31.0] - release 2022-10-04
 ### Removed
@@ -1079,7 +1081,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.30.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.32.0...HEAD
+[0.32.0]: https://github.com/puppetlabs/vanagon/compare/0.31.0...0.32.0
 [0.31.0]: https://github.com/puppetlabs/vanagon/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/puppetlabs/vanagon/compare/0.29.0...0.30.0
 [0.29.0]: https://github.com/puppetlabs/vanagon/compare/0.28.0...0.29.0
