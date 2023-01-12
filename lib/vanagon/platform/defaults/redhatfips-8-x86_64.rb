@@ -4,6 +4,8 @@ platform "redhatfips-8-x86_64" do |plat|
   plat.servicetype "systemd"
 
   packages = %w(
+    autoconf
+    automake
     cmake
     gcc-c++
     java-1.8.0-openjdk-devel
@@ -13,8 +15,8 @@ platform "redhatfips-8-x86_64" do |plat|
     openssl-devel
     pkgconfig
     readline-devel
-    rpm-build
     rpmdevtools
+    rpm-build
     rsync
     swig
     systemtap-sdt-devel
