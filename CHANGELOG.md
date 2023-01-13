@@ -6,6 +6,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.33.0] - release 2023-01-13
+
 ### Changed
 - (PA-4838) Update platform defaults for RHEL 8 ppc64le, RHEL 7 & 8 FIPS (x86-64)
 
@@ -1084,7 +1086,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.32.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.33.0...HEAD
+[0.33.0]: https://github.com/puppetlabs/vanagon/compare/0.32.0...0.33.0
 [0.32.0]: https://github.com/puppetlabs/vanagon/compare/0.31.0...0.32.0
 [0.31.0]: https://github.com/puppetlabs/vanagon/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/puppetlabs/vanagon/compare/0.29.0...0.30.0
