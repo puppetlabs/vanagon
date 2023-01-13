@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- (PA-4838) Update platform defaults for RHEL 8 ppc64le, RHEL 7 & 8 FIPS (x86-64)
+
 ## [0.32.0] - release 2023-01-11
 ### Changed
 - (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
