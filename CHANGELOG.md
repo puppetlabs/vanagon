@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- (PA-4841) Update platform default for Ubuntu 18.04 aarch64/ARM64
+
 ## [0.33.0] - release 2023-01-13
 
 ### Changed
