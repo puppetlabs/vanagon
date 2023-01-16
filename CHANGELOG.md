@@ -6,6 +6,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.34.0] - release 2023-01-16
+
 ### Changed
 
 - (PA-4841) Update platform default for Ubuntu 18.04 aarch64/ARM64
@@ -1090,7 +1092,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.33.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.34.0...HEAD
+[0.34.0]: https://github.com/puppetlabs/vanagon/compare/0.33.0...0.34.0
 [0.33.0]: https://github.com/puppetlabs/vanagon/compare/0.32.0...0.33.0
 [0.32.0]: https://github.com/puppetlabs/vanagon/compare/0.31.0...0.32.0
 [0.31.0]: https://github.com/puppetlabs/vanagon/compare/0.30.0...0.31.0
