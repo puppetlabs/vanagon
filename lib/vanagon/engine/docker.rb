@@ -36,11 +36,11 @@ class Vanagon
       # a docker container.
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
-        ssh_args = @platform.use_docker_exec ? '' : "-p #{@platform.ssh_port}:22"
+        ssh_args = @platform.use_docker_exec ? '' : "-p #{@target_port}:22"
         extra_args = @platform.docker_run_args.nil? ? [] : @platform.docker_run_args
 
         Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder #{ssh_args} #{extra_args.join(' ')} #{@platform.docker_image}")
-        @target = 'localhost'
+        @target = URI.new('localhost')
 
         wait_for_ssh unless @platform.use_docker_exec
       rescue StandardError => e
@@ -141,7 +141,7 @@ class Vanagon
       def wait_for_ssh
         Vanagon::Utilities.retry_with_timeout(5, 5) do
           begin
-            Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @platform.ssh_port)
+            Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @target_port)
           rescue StandardError => e
             sleep(1) # Give SSHD some time to start.
             raise e

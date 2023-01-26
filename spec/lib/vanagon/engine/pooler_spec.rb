@@ -2,7 +2,7 @@ require 'vanagon/engine/pooler'
 require 'vanagon/platform'
 
 describe 'Vanagon::Engine::Pooler' do
-  let (:platform) { double(Vanagon::Platform, :target_user => 'root') }
+  let (:platform) { double(Vanagon::Platform, :target_user => 'root', :ssh_port => 22) }
   let (:platform_with_vcloud_name) {
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
     plat.instance_eval("platform 'debian-6-i386' do |plat|
