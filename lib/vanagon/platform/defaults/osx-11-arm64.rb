@@ -14,8 +14,8 @@ platform "osx-11-arm64" do |plat|
   plat.provision_with "echo 'test ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/username"
   plat.provision_with "mkdir -p /etc/homebrew"
   plat.provision_with "cd /etc/homebrew"
+  plat.provision_with "createhomedir -c -u test"
   plat.provision_with %(su test -c 'echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
-  plat.provision_with "sudo chown -R test:admin /Users/test/"
   plat.vmpooler_template "macos-112-x86_64"
   plat.cross_compiled true
 end
