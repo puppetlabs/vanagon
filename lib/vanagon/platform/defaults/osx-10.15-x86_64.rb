@@ -5,6 +5,8 @@ platform "osx-10.15-x86_64" do |plat|
 
   plat.provision_with "export HOMEBREW_NO_EMOJI=true"
   plat.provision_with "export HOMEBREW_VERBOSE=true"
+  plat.provision_with "export HOMEBREW_NO_ANALYTICS=1"
+
   plat.provision_with "sudo dscl . -create /Users/test"
   plat.provision_with "sudo dscl . -create /Users/test UserShell /bin/bash"
   plat.provision_with "sudo dscl . -create /Users/test UniqueID 1001"
