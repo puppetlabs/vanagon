@@ -6,6 +6,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+- (VANAGON-221) Speed up file listings on Windows
+
 ## [0.34.0] - release 2023-01-16
 
 ### Changed
