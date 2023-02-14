@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.35.0] - release 2023-02-14
+
+### Changed
+
 - (VANAGON-211) Speed up file listings on Windows
 - (VANAGON-214) Create home directory on macOS before installing brew, add
   macOS 11 & 12 ARM definitions, and opt-out from homebrew analytics.
@@ -1097,7 +1101,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.34.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.35.0...HEAD
+[0.35.0]: https://github.com/puppetlabs/vanagon/compare/0.34.0...0.35.0
 [0.34.0]: https://github.com/puppetlabs/vanagon/compare/0.33.0...0.34.0
 [0.33.0]: https://github.com/puppetlabs/vanagon/compare/0.32.0...0.33.0
 [0.32.0]: https://github.com/puppetlabs/vanagon/compare/0.31.0...0.32.0
