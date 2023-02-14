@@ -6,7 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
-- (VANAGON-221) Speed up file listings on Windows
+- (VANAGON-211) Speed up file listings on Windows
+- (VANAGON-214) Create home directory on macOS before installing brew, add
+  macOS 11 & 12 ARM definitions, and opt-out from homebrew analytics.
 
 ## [0.34.0] - release 2023-01-16
 
