@@ -6,6 +6,8 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.35.1] - release 2023-03-21
+
 ### Changed
 
 - (maint) Name file in deb build 'buildinfo' instead of 'build' to make signing work with newer versions of debsign.
@@ -1105,7 +1107,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.35.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.35.1...HEAD
+[0.35.1]: https://github.com/puppetlabs/vanagon/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/puppetlabs/vanagon/compare/0.34.0...0.35.0
 [0.34.0]: https://github.com/puppetlabs/vanagon/compare/0.33.0...0.34.0
 [0.33.0]: https://github.com/puppetlabs/vanagon/compare/0.32.0...0.33.0
