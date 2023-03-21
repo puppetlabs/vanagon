@@ -7,11 +7,11 @@ class Vanagon
       # @return [Array] list of commands required to build a debian package for the given project from a tarball
       def generate_package(project) # rubocop:disable Metrics/AbcSize
         target_dir = project.repo ? output_dir(project.repo) : output_dir
-        if project.source_artifacts
-          copy_extensions = '*.{deb,build,tar.gz,changes,dsc}'
-        else
-          copy_extensions = '*.deb'
-        end
+        copy_extensions = if project.source_artifacts
+                            '*.{deb,buildinfo,tar.gz,changes,dsc}'
+                          else
+                            '*.deb'
+                          end
         pkg_arch_opt = project.noarch ? "" : "-a#{@architecture}"
         pkg_arch_opt = '-aarm64' if pkg_arch_opt == '-aaarch64'
 

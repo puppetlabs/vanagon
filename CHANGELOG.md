@@ -6,6 +6,10 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- (maint) Name file in deb build 'buildinfo' instead of 'build' to make signing work with newer versions of debsign.
+
 ## [0.35.0] - release 2023-02-14
 
 ### Changed
