@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build an rpm package of
       # @return [Array] list of commands required to build an rpm package for the given project from a tarball
-      def generate_package(project) # rubocop:disable Metrics/AbcSize
+      def generate_package(project)
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         target_source_output_dir = project.repo ? source_output_dir(project.repo) : source_output_dir
         if project.source_artifacts
@@ -61,7 +61,7 @@ class Vanagon
         defines << %(--define 'dist .#{dist}')
       end
 
-      def add_repository(definition) # rubocop:disable Metrics/AbcSize
+      def add_repository(definition)
         definition = URI.parse(definition)
 
         commands = ["rpm -q curl > /dev/null || yum -y install curl"]

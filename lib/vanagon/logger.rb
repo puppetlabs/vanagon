@@ -1,12 +1,12 @@
 require 'logger'
 
-class VanagonLogger < ::Logger
+class VanagonLogger < Logger
   def self.logger
     @@logger ||= VanagonLogger.new
   end
 
   def self.debug_logger
-    @@debug_logger ||= VanagonLogger.new(STDERR)
+    @@debug_logger ||= VanagonLogger.new($stderr)
   end
 
   def self.info(msg)
@@ -21,7 +21,7 @@ class VanagonLogger < ::Logger
     VanagonLogger.logger.error msg
   end
 
-  def initialize(output = STDOUT)
+  def initialize(output = $stdout)
     super(output)
     self.level = ::Logger::INFO
     self.formatter = proc do |severity, datetime, progname, msg|

@@ -180,11 +180,16 @@ describe 'Vanagon::Project' do
 
   describe 'platform settings' do
     before do
-      allow(Vanagon::Component).to receive(:load_component).with('some-component', any_args).and_return(component)
+      allow(Vanagon::Component)
+        .to receive(:load_component)
+              .with('some-component', any_args)
+              .and_return(component)
     end
 
     it 'loads settings set in platforms' do
-      settings_proj = Vanagon::Project::DSL.new('settings-test', configdir, dummy_platform_settings, [])
+      settings_proj = Vanagon::Project::DSL.new(
+        'settings-test', configdir, dummy_platform_settings, []
+      )
       settings_proj.instance_eval(project_block)
       expect(settings_proj._project.settings[:platform_test]).to eq('debian')
     end
@@ -225,7 +230,10 @@ describe 'Vanagon::Project' do
     end
 
     it "fails if downloading over HTTP without a valid sha1sum URI" do
-      allow(Vanagon::Component::Source::Http).to receive(:valid_url?).with(http_yaml_uri).and_return(true)
+      allow(Vanagon::Component::Source::Http)
+        .to receive(:valid_url?)
+              .with(http_yaml_uri)
+              .and_return(true)
       http_source = instance_double(Vanagon::Component::Source::Http)
       allow(Vanagon::Component::Source).to receive(:source).and_return(http_source)
       allow(http_source).to receive(:verify).and_return(true)
@@ -262,7 +270,6 @@ describe 'Vanagon::Project' do
   end
 
   describe "#filter_component" do
-
     # All of the following tests should be run with one project level
     # component that isn't included in the build_deps of another component
     before(:each) do

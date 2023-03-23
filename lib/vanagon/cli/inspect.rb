@@ -63,8 +63,7 @@ class Vanagon
         # Handle --preserve option checking
         valid_preserves = %w[always never on-failure]
         unless valid_preserves.include? options[:preserve]
-          raise InvalidArgument, "--preserve option can only be one of: " +
-                                 valid_preserves.join(', ')
+          raise InvalidArgument, "--preserve option can only be one of: #{valid_preserves.join(', ')}"
         end
         options[:preserve] = options[:preserve].to_sym
         return options

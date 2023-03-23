@@ -60,7 +60,7 @@ class Makefile
     def compounded_recipe
       Array(recipe)
         .compact
-        .map { |line| "\t" + line.gsub("\n", "\n\t") + "\n" }
+        .map { |line| "\t#{line.gsub("\n", "\n\t")}\n" }
         .join
     end
 

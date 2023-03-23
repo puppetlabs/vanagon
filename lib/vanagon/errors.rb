@@ -16,12 +16,5 @@ class Vanagon
         e.original = original
       end
     end
-
-    # @overload initialize(mesg)
-    #   @param mesg [String] The exception mesg
-    #
-    def initialize(mesg)
-      super(mesg)
-    end
   end
 end

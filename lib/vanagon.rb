@@ -10,7 +10,3 @@ $:.unshift(LIBDIR) unless
 
 require 'vanagon/cli'
 require 'vanagon/driver'
-
-# The main entry point is {Vanagon::Driver}.
-class Vanagon
-end

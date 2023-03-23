@@ -108,13 +108,13 @@ class Vanagon
           dest_pathname_fragment = src_pathname.relative_path_from(vanagon_path)
           target_dir = File.join(destination, dest_pathname_fragment.to_s)
           # Create the target directory if necessary.
-          FileUtils.mkdir_p(target_dir) unless File.exists?(target_dir)
+          FileUtils.mkdir_p(target_dir)
           # Skip the file copy if either target file or ERB equivalent exists.
           # This means that any files already in place in the work directory as a
           # result of being copied from the project specific area will not be
           # overritten.
-          next if File.exists?(Pathname.new(target_dir) + File.basename(file))
-          next if File.exists?(Pathname.new(target_dir) + File.basename(file, ".erb"))
+          next if File.exist?(Pathname.new(target_dir) + File.basename(file))
+          next if File.exist?(Pathname.new(target_dir) + File.basename(file, ".erb"))
           FileUtils.cp(file, target_dir, :verbose => verbose)
         end
       end
@@ -228,7 +228,7 @@ class Vanagon
           # cygpath conversion is necessary as candle is unable to handle posix path specs
           # the preprocessor variables AppDataSourcePath and ApplicationSourcePath are required due to the -var input to the heat
           # runs listed above.
-          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name \'*.wxs\'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} #{candle_preprocessor} $$(cygpath -aw $$wix_file) || exit 1; done",
+          "cd $(tempdir)/wix/wixobj; for wix_file in `find $(tempdir)/wix -name '*.wxs'`; do \"$$WIX/bin/candle.exe\" #{candle_flags} #{candle_preprocessor} $$(cygpath -aw $$wix_file) || exit 1; done",
           # run all wix objects through light to produce the msi
           # the -b flag simply points light to where the SourceDir location is
           # -loc is required for the UI localization it points to the actual localization .wxl
@@ -317,7 +317,7 @@ class Vanagon
 
         if definition.scheme =~ /^(http|ftp|file)/
           if File.extname(definition.path) == '.ps1'
-            commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'iex ((new-object net.webclient).DownloadString(\"#{definition}\"))')
+            commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'iex ((new-object net.webclient).DownloadString("#{definition}"))')
           else
             commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.tr('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
@@ -438,7 +438,7 @@ class Vanagon
       #
       # @param [string] version, the original version number
       def wix_product_version(version)
-        version.split("\.").first(3).collect { |value| value.gsub(/[^0-9]/, '') }.join("\.")
+        version.split(".").first(3).collect { |value| value.gsub(/[^0-9]/, '') }.join(".")
       end
 
       # Constructor. Sets up some defaults for the windows platform and calls the parent constructor

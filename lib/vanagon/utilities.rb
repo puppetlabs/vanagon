@@ -77,8 +77,7 @@ class Vanagon
         end
       end
 
-      response = http.request(request)
-      response
+      http.request(request)
     rescue Errno::ETIMEDOUT, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
       EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
       Net::ProtocolError => e
@@ -159,7 +158,7 @@ class Vanagon
     # @param timeout [Integer] number of seconds to run the block before timing out
     # @return [true] If the block succeeds, true is returned
     # @raise [Vanagon::Error] if the block fails after the retries are exhausted, an error is raised
-    def retry_with_timeout(tries = 5, timeout = 1, &blk) # rubocop:disable Metrics/AbcSize
+    def retry_with_timeout(tries = 5, timeout = 1, &blk)
       error = nil
       tries.to_i.times do
         Timeout::timeout(timeout.to_i) do
@@ -279,7 +278,7 @@ class Vanagon
     end
 
     def clean_environment(&block)
-      return Bundler.with_clean_env { yield } if defined?(Bundler)
+      return Bundler.with_clean_env(&block) if defined?(Bundler)
       yield
     end
     private :clean_environment

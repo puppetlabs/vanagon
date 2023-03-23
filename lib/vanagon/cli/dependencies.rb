@@ -28,29 +28,9 @@ class Vanagon
         exit 1
       end
 
-      def run(options) # rubocop:disable Metrics/AbcSize
-        platforms_directory = File.join(options[:configdir], 'platforms')
-        projects_directory = File.join(options[:configdir], 'projects')
-
-        unless Dir.exist?(projects_directory) && Dir.exist?(platforms_directory)
-          VanagonLogger.error "Path to #{platforms_directory} or #{projects_directory} not found."
-          exit 1
-        end
-
-        projects = [options[:project_name]]
-        if projects.include?('all')
-          projects = Dir.children(projects_directory).map do |project|
-            File.basename(project, File.extname(project))
-          end
-        end
-
-        platforms = options[:platforms].split(',')
-        if platforms.include?('all')
-          platforms = Dir.children(platforms_directory).map do |platform|
-            File.basename(platform, File.extname(platform))
-          end
-        end
-
+      def run(options)
+        projects = get_projects(options)
+        platforms = get_platforms(options)
         failures = []
 
         projects.each do |project|
@@ -72,6 +52,36 @@ class Vanagon
         end
 
         VanagonLogger.info "Finished generating dependencies"
+      end
+
+      def get_projects(options)
+        platforms_directory = File.join(options[:configdir], 'platforms')
+        projects_directory = File.join(options[:configdir], 'projects')
+
+        unless Dir.exist?(projects_directory) && Dir.exist?(platforms_directory)
+          VanagonLogger.error "Path to #{platforms_directory} or #{projects_directory} not found."
+          exit 1
+        end
+
+        projects = [options[:project_name]]
+        if projects.include?('all')
+          Dir.children(projects_directory).map do |project|
+            File.basename(project, File.extname(project))
+          end
+        else
+          projects
+        end
+      end
+
+      def get_platforms(options)
+        platforms = options[:platforms].split(',')
+        if platforms.include?('all')
+          Dir.children(platforms_directory).map do |platform|
+            File.basename(platform, File.extname(platform))
+          end
+        else
+          platforms
+        end
       end
 
       def options_translate(docopt_options)

@@ -21,14 +21,17 @@ end
 # "lock_manager" is specified in development dependencies, to allow
 # the use of unreleased versions of "lock_manager" during development.
 group(:development, :test) do
+  gem 'debug', '>= 1.0.0'
   gem 'fakefs'
   gem 'json'
   gem 'lock_manager', *location_for(ENV['LOCK_MANAGER_LOCATION'] || '>= 0')
   gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '~> 0.99')
   gem 'rake', require: false
   gem 'rspec', '~> 3.0', require: false
-  gem 'rubocop', "~> 0.81.0", require: false
+  gem 'rubocop', '~> 1.0', require: false
+  gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
   gem 'simplecov', require: false
-  gem 'webmock', '3.9.3'
+  gem 'webmock', '~> 3.18'
   gem 'yard', require: false
 end
