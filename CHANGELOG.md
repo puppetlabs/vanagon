@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- (PUP-11786) Update fustigit gem to version 0.3.0.
+
 ## [0.35.1] - release 2023-03-21
 
 ### Changed
