@@ -8,6 +8,7 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Changed
 - (PUP-11786) Update fustigit gem to version 0.3.0.
+- (PUP-11786) Use keyword arguments in method calls.
 
 ## [0.35.1] - release 2023-03-21
 

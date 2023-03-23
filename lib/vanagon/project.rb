@@ -857,7 +857,7 @@ class Vanagon
         if source_type == :http
           yaml_path = File.join(working_directory, source.file)
         end
-        @settings.merge!(YAML.safe_load(File.read(yaml_path), [Symbol]))
+        @settings.merge!(YAML.safe_load(File.read(yaml_path), permitted_classes: [Symbol]))
       end
     end
 
