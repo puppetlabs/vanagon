@@ -97,11 +97,11 @@ class Vanagon
 
       # Attempt to provision a host from a specific pooler.
       #
-      def select_target_from(pooler) # rubocop:disable Metrics/AbcSize
+      def select_target_from(pooler)
         response = Vanagon::Utilities.http_request(
           "#{pooler}/vm",
           'POST',
-          '{"' + build_host_name + '":"1"}',
+          "{\"#{build_host_name}\":\"1\"}",
           { 'X-AUTH-TOKEN' => @token }
         )
         if response["ok"]
@@ -110,7 +110,7 @@ class Vanagon
           # in the future we should make the two APIs the same in this sense, but for now, just check
           # if 'domain' is a thing and use it if so.
           if response['domain']
-            @target += '.' + response['domain']
+            @target += ".#{response['domain']}"
           end
           Vanagon::Driver.logger.info "Reserving #{@target} (#{build_host_name}) [#{@token ? 'token used' : 'no token used'}]"
           add_tags_to_target(pooler, response[build_host_name]['hostname'])

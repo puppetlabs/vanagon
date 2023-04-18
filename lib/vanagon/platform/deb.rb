@@ -21,7 +21,7 @@ class Vanagon
         "cat file-list >> debian/install",
         "cp -pr debian $(tempdir)/#{project.name}-#{project.version}",
         "gunzip -c #{project.name}-#{project.version}.tar.gz | '#{@tar}' -C '$(tempdir)/#{project.name}-#{project.version}' --strip-components 1 -xf -",
-        "#{sed} -i 's/\ /?/g' $(tempdir)/#{project.name}-#{project.version}/debian/install",
+        "#{sed} -i 's/ /?/g' $(tempdir)/#{project.name}-#{project.version}/debian/install",
         "(cd $(tempdir)/#{project.name}-#{project.version}; debuild --no-lintian #{pkg_arch_opt} -uc -us)",
         "cp $(tempdir)/#{copy_extensions} ./output/#{target_dir}"]
       end
@@ -125,7 +125,7 @@ class Vanagon
       end
 
       def version_munger(version_string, default: '=')
-        operator, version = super.split(' ')
+        operator, version = super.split
         if operator =~ /^[<>]$/
           operator = "#{operator}#{operator}"
         end

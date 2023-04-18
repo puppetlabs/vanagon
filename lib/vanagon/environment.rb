@@ -176,21 +176,22 @@ class Vanagon
     # @param key [Object]
     # @raise [ArgumentError] if key is not a String, if key contains invalid
     #   characters, or if key begins with a digit
-    def validate_key(str)
-      str = str.to_s
+    def validate_key(key)
+      environment_string = key.to_s
 
-      if str[0] =~ /\d/
-        raise ArgumentError,
-              'environment variable Name cannot begin with a digit'
+      if environment_string[0] =~ /\d/
+        raise ArgumentError, 'environment variable Name cannot begin with a digit'
       end
 
-      invalid_chars = str.scan(/[^\w]/).uniq
-      unless invalid_chars.empty?
-        raise ArgumentError,
-              'environment variable Name contains invalid characters: ' +
-              invalid_chars.map { |char| %("#{char}") }.join(', ')
-      end
-      str
+      invalid_characters = environment_string
+        .scan(/[^\w]/)
+        .uniq
+        .map { |char| %("#{char}") }
+        .join(', ')
+
+      return environment_string if invalid_characters.empty?
+      raise ArgumentError,
+            "environment variable Name contains invalid characters: #{invalid_characters}"
     end
     private :validate_key
 

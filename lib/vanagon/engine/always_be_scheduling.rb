@@ -287,20 +287,17 @@ class Vanagon
           VanagonLogger.error "\nVanagon interrupted during mains ABS polling. Make sure you delete the requested job_id #{@saved_job_id}"
           raise
         end
-        response_body = translated(response_body, @saved_job_id)
-        response_body
+        translated(response_body, @saved_job_id)
       end
 
       def validate_queue_status_response(status_code, body)
         case status_code
         when "200"
           return JSON.parse(body) unless body.empty? || !valid_json?(body)
-        when "202"
+        when "202", "503"
           return nil
         when "401"
           raise Vanagon::Error, "HTTP #{status_code}: The token provided could not authenticate.\n#{body}"
-        when "503"
-          return nil
         else
           raise Vanagon::Error, "HTTP #{status_code}: request to ABS failed!\n#{body}"
         end
@@ -309,7 +306,7 @@ class Vanagon
       # This method is used to tell the ABS to delete the job_id requested
       # otherwise the resources will eventually get allocated asynchronously
       # and will keep running until the end of their lifetime.
-      def teardown # rubocop:disable Metrics/AbcSize
+      def teardown
         request_object = {
             'job_id' => @saved_job_id,
         }
@@ -348,7 +345,7 @@ class Vanagon
       def build_request_object
         user = ENV['USER'] || ENV['USERNAME'] || 'vanagon'
 
-        @saved_job_id = user + "-" + DateTime.now.strftime('%Q')
+        @saved_job_id = "#{user}-#{DateTime.now.strftime('%Q')}"
         request_object = {
             :resources => { build_host_name => 1 },
             :job       => {

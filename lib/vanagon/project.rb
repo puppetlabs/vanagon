@@ -590,7 +590,7 @@ class Vanagon
     # for the project
     #
     # @return [Array] all the files and directories that should be included in the tarball
-    def get_tarball_files # rubocop:disable Metrics/AbcSize
+    def get_tarball_files
       # It is very important that 'file-list' remains the first element in this
       # array, lest the tar command be malformed and the package creation fail
       files = ['file-list']
@@ -779,7 +779,7 @@ class Vanagon
     # set in the project definition.
     #
     # @param [Vanagon::Platform] the platform to publish settings for
-    def publish_yaml_settings(platform) # rubocop:disable Metrics/AbcSize
+    def publish_yaml_settings(platform)
       return unless yaml_settings
       raise(Vanagon::Error, "You must specify a project version") unless version
 
@@ -831,33 +831,61 @@ class Vanagon
     # @param settings_uri [String] A URI to a yaml settings file
     # @param settings_sha1_uri [String] A URI to a sha1sum file for the yaml settings file
     # @raise [Vanagon::Error] when the settings file can't be found
-    def load_yaml_settings(settings_uri, settings_sha1_uri = nil) # rubocop:disable Metrics/AbcSize
+    def load_yaml_settings(settings_uri, settings_sha1_uri = nil)
+      source_type = yaml_settings_source_type(settings_uri, settings_sha1_uri)
+
+      Dir.mktmpdir do |working_directory|
+        source = Vanagon::Component::Source.source(
+          settings_uri,
+          workdir: working_directory,
+          sum: settings_sha1_uri,
+          sum_type: 'sha1'
+        )
+        source.fetch
+        source.verify
+
+        yaml_path = if source_type == :http
+                      File.join(working_directory, source.file)
+                    else
+                      source.file
+                    end
+
+        @settings.merge!(yaml_safe_load_shim(yaml_path))
+      end
+    end
+
+    # Get the source_type of the settings_uri. Complain if we don't like stuff about it.
+    def yaml_settings_source_type(settings_uri, settings_sha1_uri)
       source_type = Vanagon::Component::Source.determine_source_type(settings_uri)
 
       if %i[unknown git].include?(source_type)
-        message = "Can't inherit settings from '#{settings_uri}'. Only http and file URIs are valid."
+        message = "Can't inherit settings from '#{settings_uri}'. " \
+                  "Only http and file URIs are valid."
         if settings_uri =~ /^file/
-          message = "Tried to load YAML settings from '#{settings_uri}', but the file doesn't exist."
+          message = "Tried to load YAML settings from '#{settings_uri}', " \
+                    "but the file doesn't exist."
         end
         raise Vanagon::Error, message
       end
 
       if (source_type == :http) && !settings_sha1_uri
-        raise Vanagon::Error, "You must provide a sha1sum URI for the YAML file when inheriting YAML settings over http"
+        raise Vanagon::Error, 'The sha1sum URI for the YAML file must be provided ' \
+                              'when inheriting YAML settings over http'
       end
 
-      Dir.mktmpdir do |working_directory|
-        source = Vanagon::Component::Source.source(settings_uri,
-                                                   workdir: working_directory,
-                                                   sum: settings_sha1_uri,
-                                                   sum_type: 'sha1')
-        source.fetch
-        source.verify
-        yaml_path = source.file
-        if source_type == :http
-          yaml_path = File.join(working_directory, source.file)
-        end
-        @settings.merge!(YAML.safe_load(File.read(yaml_path), [Symbol]))
+      source_type
+    end
+
+    # YAML.safe_load introduced an incompatible change in Ruby 3.1.0
+    # Shim that until no longer relevant.
+    def yaml_safe_load_shim(yaml_path)
+      new_safe_load_version = Gem::Version.new('3.1.0')
+      this_version = Gem::Version.new(RUBY_VERSION)
+
+      if this_version >= new_safe_load_version
+        YAML.safe_load(File.read(yaml_path), permitted_classes: [Symbol])
+      else
+        YAML.safe_load(File.read(yaml_path), [Symbol])
       end
     end
 

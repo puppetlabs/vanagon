@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- (VANAGON-226) Fix problems with running on Ruby 3.0 - 3.2
+- (VANAGON-204) Fix and update some rspec tests for Ruby 3
+
 
 ## [0.35.1] - release 2023-03-21
 

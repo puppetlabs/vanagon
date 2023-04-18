@@ -103,7 +103,7 @@ class Vanagon
       # @raise [RuntimeError] exceptions are raised if there is no file,
       #   if it refers to methods that don't exist, or if it does not contain a Hash
       def load_from_json(file)
-        if File.exists?(file)
+        if File.exist?(file)
           data = JSON.parse(File.read(file))
           raise "Hash required. Got '#{data.class}' when parsing '#{file}'" unless data.is_a?(Hash)
           data.each do |key, value|
@@ -203,10 +203,10 @@ class Vanagon
           # Return here because there is no file to install, just a string read in
           return
         when "windows"
-          @component.service << OpenStruct.new(\
+          @component.service << OpenStruct.new( \
             :bindir_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '').upcase}BINDIR", \
             :service_file => service_file, \
-            :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Component"\
+            :component_group_id => "#{service_name.gsub(/[^A-Za-z0-9]/, '')}Component" \
           )
           # return here as we are just collecting the name of the service file to put into the harvest filter list.
           return
@@ -392,15 +392,15 @@ class Vanagon
         end
       end
 
-
       # This will add a source to the project and put it in the workdir alongside the other sources
       #
       # @param uri [String] uri of the source
       # @param [Hash] options optional keyword arguments used to instatiate a new source
       #   @option opts [String] :sum
       #   @option opts [String] :ref
-      #   @option opts [Bool] :erb set to 'true' to specify that the source file should be translated by erb
-      def add_source(uri, **options)
+      #   @option opts [Bool] :erb set to 'true' to specify that the source file should be
+      #     translated by erb
+      def add_source(uri, options = {})
         @component.sources << OpenStruct.new(options.merge({ url: uri }))
       end
 

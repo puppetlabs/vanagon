@@ -17,7 +17,7 @@ class Vanagon
         CHECKSUM_TYPES = %w[md5 sha1 sha256 sha512].freeze
 
         class << self
-          def valid_url?(target_url) # rubocop:disable Metrics/AbcSize
+          def valid_url?(target_url)
             uri = URI.parse(target_url.to_s)
             return false unless ['http', 'https'].include? uri.scheme
 
@@ -49,7 +49,7 @@ class Vanagon
         # @param workdir [String] working directory to download into
         # @param sum_type [String] type of sum we are verifying
         # @raise [RuntimeError] an exception is raised is sum is nil
-        def initialize(url, sum:, workdir:, sum_type:, **options) # rubocop:disable Metrics/AbcSize
+        def initialize(url, sum:, workdir:, sum_type:, **options)
           unless sum
             fail "sum is required to validate the http source"
           end
@@ -93,7 +93,7 @@ class Vanagon
         # Verify the downloaded file matches the provided sum
         #
         # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
-        def verify # rubocop:disable Metrics/AbcSize
+        def verify
           VanagonLogger.info "Verifying file: #{file} against sum: '#{sum}'"
           actual = get_sum(File.join(workdir, file), sum_type)
           return true if sum == actual

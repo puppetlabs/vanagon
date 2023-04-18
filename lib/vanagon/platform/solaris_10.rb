@@ -5,7 +5,7 @@ class Vanagon
       #
       # @param project [Vanagon::Project] project to build a solaris package of
       # @return [Array] list of commands required to build a solaris package for the given project from a tarball
-      def generate_package(project) # rubocop:disable Metrics/AbcSize
+      def generate_package(project) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
         target_dir = project.repo ? output_dir(project.repo) : output_dir
         name_and_version = "#{project.name}-#{project.version}"
         pkg_name = package_name(project)
@@ -18,9 +18,9 @@ class Vanagon
         # required more string manipulation anyway. the string should be formatted like so:
         #         && ($$3 ~ /directory\/regex.*/ || $$3 ~ /another\/directory\/regex.*/)
         # for as many iterations as there are directries in the package
-        pkgdirs = project.get_root_directories.map { |dir| dir.sub(/^\//, "").gsub(/([\/\.])+/, '\\\\\1') + '.*' }
+        pkgdirs = project.get_root_directories.map { |dir| "#{dir.sub(/^\//, '').gsub(/([\/.])+/, '\\\\\1')}.*" }
         explicit_search_string = pkgdirs.map do |dir_regex|
-          " $$3 ~ /" + dir_regex + "/ "
+          " $$3 ~ /#{dir_regex}/ "
         end.join("||")
 
         # Here we maintain backward compatibility with older vanagon versions
@@ -108,7 +108,7 @@ class Vanagon
       #
       # @param user [Vanagon::Common::User] the user to create
       # @return [String] the commands required to add a user to the system
-      def add_user(user) # rubocop:disable Metrics/AbcSize
+      def add_user(user)
         # NB: system users aren't supported on solaris 10
         # Solaris 10 also doesn't support long flags
         cmd_args = ["'#{user.name}'"]

@@ -150,7 +150,7 @@ class Vanagon
     # @param config_directory [String] the path to the platform config file
     # @return [Vanagon::Platform] the platform as specified in the platform config
     # @raise if the instance_eval on Platform fails, the exception is reraised
-    def self.load_platform(platform_name, config_directory) # rubocop:disable Metrics/AbcSize
+    def self.load_platform(platform_name, config_directory)
       platform_name = File.basename(platform_name, '.rb')
       platform_file_name = "#{platform_name}.rb"
       platform_path = File.join(config_directory, platform_file_name)
@@ -235,7 +235,7 @@ class Vanagon
     #
     # @param name [String] name of the platform
     # @return [Vanagon::Platform] the platform with the given name
-    def initialize(name) # rubocop:disable Metrics/AbcSize
+    def initialize(name) # rubocop:disable Metrics/PerceivedComplexity, Metrics/AbcSize
       @name = name
       @settings = {}
       @os_name = os_name

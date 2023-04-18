@@ -30,24 +30,11 @@ class Vanagon
       end
 
       def run(options) # rubocop:disable Metrics/AbcSize
-        if Dir.exist?(File.join(options[:configdir], 'platforms')) == false ||
-           Dir.exist?(File.join(options[:configdir], 'projects')) == false
+        check_directories(options)
 
-          VanagonLogger.error "Path to #{File.join(options[:configdir], 'platforms')} or #{File.join(options[:configdir], 'projects')} not found."
-          exit 1
-        end
-
-        default_list = Dir.children(File.join(File.dirname(__FILE__), '..', 'platform', 'defaults')).map do |platform|
-          File.basename(platform, File.extname(platform))
-        end.sort
-
-        platform_list = Dir.children(File.join(options[:configdir], 'platforms')).map do |platform|
-          File.basename(platform, File.extname(platform))
-        end.sort
-
-        project_list = Dir.children(File.join(options[:configdir], 'projects')).map do |project|
-          File.basename(project, File.extname(project))
-        end.sort
+        default_list = topic_list(File.dirname(__FILE__), '..', 'platform', 'defaults')
+        platform_list = topic_list(options[:configdir], 'platforms')
+        project_list = topic_list(options[:configdir], 'projects')
 
         if options[:defaults]
           puts "- Defaults", output(default_list, options[:use_spaces])
@@ -55,7 +42,8 @@ class Vanagon
         end
 
         if options[:projects] == options[:platforms]
-          puts "- Projects", output(project_list, options[:use_spaces]), "\n", "- Platforms", output(platform_list, options[:use_spaces])
+          puts "- Projects", output(project_list, options[:use_spaces]), "\n",
+               "- Platforms", output(platform_list, options[:use_spaces])
           return
         end
 
@@ -68,6 +56,27 @@ class Vanagon
           puts "- Platforms", output(platform_list, options[:use_spaces])
           return
         end
+      end
+
+      def check_directories(options)
+        platforms_directory = File.join(options[:configdir], 'platforms')
+        projects_directory = File.join(options[:configdir], 'projects')
+
+        unless Dir.exist?(platforms_directory)
+          VanagonLogger.error "Platforms directory \"#{platforms_directory}\" does not exist."
+          exit 1
+        end
+
+        unless Dir.exist?(projects_directory)
+          VanagonLogger.error "Projectss directory \"#{projects_directory}\" does not exist."
+          exit 1
+        end
+      end
+
+      def topic_list(*topic_path_items)
+        Dir.children(File.join(topic_path_items)).map do |t|
+          File.basename(t, File.extname(t))
+        end.sort
       end
 
       def options_translate(docopt_options)

@@ -2,6 +2,7 @@ class Vanagon
   class Common
     class User
       attr_accessor :name, :group, :shell, :is_system, :homedir
+
       def initialize(name, group = nil, shell = nil, is_system = false, homedir = nil)
         @name = name
         @group = group ? group : @name

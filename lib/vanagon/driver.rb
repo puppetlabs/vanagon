@@ -42,7 +42,7 @@ class Vanagon
       end
       loginit('vanagon_hosts.log')
 
-      @remote_workdir = options[:"remote-workdir"]
+      @remote_workdir = options[:'remote-workdir']
 
       engine = pick_engine(options)
       load_engine_object(engine, @platform, options[:target])
@@ -58,7 +58,7 @@ class Vanagon
       end
     end
 
-    def pick_engine(options) # rubocop:disable Metrics/PerceivedComplexity
+    def pick_engine(options)
       if options[:engine] && !options[:target]
         options[:engine]
       elsif @platform.build_hosts
@@ -133,7 +133,7 @@ class Vanagon
       # whole makefile. Instead just perform the installation.
       make_target = ''
       if @project.no_packaging
-        make_target = @project.name + '-project'
+        make_target = "#{@project.name}-project"
       end
 
       @engine.startup(workdir)
@@ -171,7 +171,7 @@ class Vanagon
       end
     end
 
-    def render # rubocop:disable Metrics/AbcSize
+    def render
       # Simple sanity check for the project
       if @project.version.nil? || @project.version.empty?
         raise Vanagon::Error, "Project requires a version set, all is lost."
