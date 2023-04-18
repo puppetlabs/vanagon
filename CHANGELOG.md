@@ -1,37 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project adheres to [Semantic Versioning](https://semver.org).
 
-This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
+This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.36.0] - release 2023-04-18
 ### Fixed
 - (VANAGON-226) Fix problems with running on Ruby 3.0 - 3.2
 - (VANAGON-204) Fix and update some rspec tests for Ruby 3
 
-
 ## [0.35.1] - release 2023-03-21
-
 ### Changed
-
 - (maint) Name file in deb build 'buildinfo' instead of 'build' to make signing work with newer versions of debsign.
 
 ## [0.35.0] - release 2023-02-14
-
 ### Changed
-
 - (VANAGON-211) Speed up file listings on Windows
 - (VANAGON-214) Create home directory on macOS before installing brew, add
   macOS 11 & 12 ARM definitions, and opt-out from homebrew analytics.
 
 ## [0.34.0] - release 2023-01-16
-
 ### Changed
-
 - (PA-4841) Update platform default for Ubuntu 18.04 aarch64/ARM64
 
 ## [0.33.0] - release 2023-01-13
-
 ### Changed
 - (PA-4838) Update platform defaults for RHEL 8 ppc64le, RHEL 7 & 8 FIPS (x86-64)
 
@@ -141,7 +135,6 @@ This changelog adheres to [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ### Changed
 - (maint) Update nspooler URL to reflect changed location.
-
 
 ## [0.21.1] - released 2021-06-07
 ### Added
@@ -1112,6 +1105,7 @@ on Debian < 8 and needs more work and testing.
 ## Versions <= 0.3.9 do not have a change log entry
 
 [Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.35.1...HEAD
+[0.36.0]: https://github.com/puppetlabs/vanagon/compare/0.35.1...0.36.0
 [0.35.1]: https://github.com/puppetlabs/vanagon/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/puppetlabs/vanagon/compare/0.34.0...0.35.0
 [0.34.0]: https://github.com/puppetlabs/vanagon/compare/0.33.0...0.34.0
