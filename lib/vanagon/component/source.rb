@@ -68,7 +68,8 @@ class Vanagon
           timeout = 5
           if Vanagon::Component::Source::Git.valid_remote?(uri, timeout)
             if uri =~ /^http/
-              VanagonLogger.info "Passing git URLs as http(s) addresses is deprecated! Please prefix your source URL with `git:`"
+              VanagonLogger.warn "Using http(s) URIs for github is deprecated. " \
+                                 "Use `git:` URI scheme instead."
             end
             return :git
           end
