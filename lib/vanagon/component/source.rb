@@ -10,18 +10,18 @@ class Vanagon
       SUPPORTED_PROTOCOLS = %w[file http https git].freeze
 
       class << self
-        # Basic factory to hand back the correct {Vanagon::Component::Source} subtype to the component
+        # Factory to hand back the correct {Vanagon::Component::Source} subtype to the component
         #
-        # @param url [String] URI of the source file (includes git@... style links)
+        # @param uri_instance [#to_s] URI of the source file (includes git@... style links)
         # @param options [Hash] hash of the options needed for the subtype
         # @param workdir [String] working directory to fetch the source into
         # @return [Vanagon::Component::Source] the correct subtype for the given source
-        def source(uri, **options) # rubocop:disable Metrics/AbcSize
+        def source(uri_instance, **options) # rubocop:disable Metrics/AbcSize
           # Sometimes the uri comes in as a string, but sometimes it's already been
           # coerced into a URI object. The individual source providers will turn
           # the passed uri into a URI object if needed, but for this method we
           # want to work with the uri as a string.
-          uri = uri.to_s
+          uri = uri_instance.to_s
           if uri.start_with?('git')
             source_type = :git
             # when using an http(s) source for a git repo, you should prefix the

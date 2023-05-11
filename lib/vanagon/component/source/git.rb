@@ -18,8 +18,7 @@ class Vanagon
 
         class << self
           # Attempt to connect to whatever URL is provided and
-          # return true or false depending on whether or not
-          # `git` thinks it's a valid Git repo.
+          # return true or false base on a number of guesses of whether it's a valid Git repo.
           #
           # @param url [#to_s] A URI::HTTPS, URI:HTTP, or String with the the URL of the
           #        remote git repository.
@@ -27,21 +26,18 @@ class Vanagon
           #        git command has failed. Useful in instances where a URL
           #        prompts for credentials despite not being a git remote
           # @return [Boolean] whether #url is a valid Git repo or not
-
-          # [RE-13837] This ought to be the way to do this. Unfortunately,
-          # there's a bug in Git.ls_remote that when ssh prints something like
-          #  Warning: Permanently added 'github.com,192.30.255.113' (RSA)
-          # Git.ls_remote attempts to parse it as actual git output and fails
-          # with: NoMethodError: undefined method `split' for nil:NilClass
-          #
-          # We'll work around that case by calling 'git ls-remote' directly ourselves.
-
           def valid_remote?(url, timeout = 0)
             # RE-15209. To relieve github rate-limiting, if the URL starts with
             # https://github.com/... just accept it rather than ping github over and over.
-            return true if url.to_s.start_with?('https://github.com/')
+            return github_remote?(url) if url.to_s.start_with?(github_url_prefix)
 
             begin
+              # [RE-13837] there's a bug in Git.ls_remote that when ssh prints something like
+              #  Warning: Permanently added 'github.com,192.30.255.113' (RSA)
+              # Git.ls_remote attempts to parse it as actual git output and fails
+              # with: NoMethodError: undefined method `split' for nil:NilClass
+              #
+              # Work around it by calling 'git ls-remote' directly ourselves.
               Timeout.timeout(timeout) do
                 Vanagon::Utilities.local_command("git ls-remote --heads #{url} > /dev/null 2>&1")
                 $?.exitstatus.zero?
@@ -50,6 +46,41 @@ class Vanagon
               # Either a Timeout::Error or some other execution exception that we'll just call
               # 'invalid'
               false
+            end
+          end
+
+          def github_url_prefix
+            'https://github.com/'
+          end
+
+          def github_remote?(url)
+            github_source_type(url) == :github_remote
+          end
+
+          # VANAGON-227 We need to be careful when guessing whether a https://github.com/...
+          # URL is actually a true git repo. Make some rules around it based on the github API.
+          # Decide that anything with a documented media_type is just an http url.
+          # See:
+          # https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives
+          # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar
+          # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-zip
+          def github_source_type(url)
+            url_directory = url.to_s.delete_prefix(github_url_prefix)
+            url_components = url_directory.split('/')
+
+            return :github_remote if url_directory.end_with?('.git')
+
+            # Find cases of supported github media types.
+            # [ owner, repo, media_type, ref ]
+            case url_components[2]
+            when 'archive'
+              :github_archive
+            when 'tarball'
+              :github_tarball
+            when 'zipball'
+              :github_zipball
+            else
+              :github_remote
             end
           end
         end
