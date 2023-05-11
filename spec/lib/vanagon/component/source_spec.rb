@@ -141,7 +141,6 @@ describe "Vanagon::Component::Source" do
         stub_request(:head, github_archive_uri).with(
           headers: {
        	    'Accept' => '*/*',
-       	    'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
        	    'Host' => 'github.com',
        	    'User-Agent' => 'Ruby'
           }
@@ -155,7 +154,6 @@ describe "Vanagon::Component::Source" do
         stub_request(:head, github_tarball_uri).with(
           headers: {
        	    'Accept' => '*/*',
-       	    'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
        	    'Host' => 'github.com',
        	    'User-Agent' => 'Ruby'
           }
@@ -169,7 +167,6 @@ describe "Vanagon::Component::Source" do
         stub_request(:head, github_zipball_uri).with(
           headers: {
        	    'Accept' => '*/*',
-       	    'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
        	    'Host' => 'github.com',
        	    'User-Agent' => 'Ruby'
           }
