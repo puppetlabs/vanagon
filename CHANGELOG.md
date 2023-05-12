@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+(maint) When using `vanagon list` with the --platforms or --projects flags do not print the  "-Platforms" or "-Projects" header.
 
 ## [0.36.0] - release 2023-04-18
 ### Fixed
