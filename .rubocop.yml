@@ -443,6 +443,18 @@ RSpec/SubjectDeclaration:
 RSpec/VerifiedDoubleReference:
   Enabled: true
 
+Rspec/BeforeAfterAll:
+  Enabled: false
+
+Rspec/ExampleLength:
+  Enabled: false
+
+Rspec/HookArgument:
+  Enabled: false
+
+Rspec/MultipleMemoizedHelpers:
+  Enabled: false
+
 Security/CompoundHash:
   Enabled: true
 
