@@ -407,6 +407,9 @@ RSpec/FactoryBot/SyntaxMethods:
 RSpec/IdenticalEqualityAssertion:
   Enabled: true
 
+RSpec/MessageSpies:
+  Enabled: false
+
 RSpec/NoExpectationExample:
   Enabled: true
 

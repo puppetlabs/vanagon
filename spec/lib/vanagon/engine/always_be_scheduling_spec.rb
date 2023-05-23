@@ -128,75 +128,133 @@ describe 'Vanagon::Engine::AlwaysBeScheduling' do
 
     end
     token_value = 'decade'
-    it %(reads a token from '~/.vmfloaty.yml at the top level') do
-      allow(YAML).to receive(:load_file)
-                         .with(floaty_config)
-                         .and_return({'token' => token_value})
-      allow(ENV).to receive(:[])
-      allow(ENV).to receive(:[])
-                         .with('VMPOOLER_TOKEN')
-                         .and_return(nil)
 
+    it 'reads a token from "~/.vmfloaty.yml" at the top level' do
+      allow(YAML).to receive(:load_file)
+        .with(floaty_config)
+        .and_return({ 'token' => token_value })
+      allow(ENV).to receive(:[])
+      allow(ENV).to receive(:[]).with('VMPOOLER_TOKEN').and_return(nil)
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       expect(abs_service.token).to eq(token_value)
-      expect(abs_service.token_vmpooler).to eq(nil)
     end
-    it %(reads a token from '~/.vmfloaty.yml in the abs service') do
-      allow(YAML).to receive(:load_file)
-                         .with(floaty_config)
-                         .and_return({'services' =>
-                                          {'MYabs' => {'type'=>'abs', 'token'=>token_value, 'url'=>'foo'}}
-                                     })
-      allow(ENV).to receive(:[])
-      allow(ENV).to receive(:[])
-                         .with('VMPOOLER_TOKEN')
-                         .and_return(nil)
 
-      abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
-      expect(abs_service.token).to eq(token_value)
-      expect(abs_service.token_vmpooler).to eq(nil)
-    end
-    it %(reads a token from '~/.vmfloaty.yml in the abs service and includes the vmpooler token') do
+    it 'reads a token from "~/.vmfloaty.yml" in the abs service' do
       vmp_token_value = 'deecade'
       allow(YAML).to receive(:load_file)
-                         .with(floaty_config)
-                         .and_return({'services' =>
-                                          {'MYabs' => {'type'=>'abs', 'token'=>token_value, 'url'=>'foo', 'vmpooler_fallback' => 'myvmp'},
-                                           'myvmp' => {'token'=>vmp_token_value, 'url'=>'bar'}}
-                                     })
+        .with(floaty_config)
+        .and_return(
+          {
+            'services' => {
+              'MYabs' => {
+                'type' => 'abs',
+                'token' => token_value,
+                'url' => 'foo',
+                'vmpooler_fallback' => 'myvmp'
+              },
+              'myvmp' => { 'token' => vmp_token_value, 'url' => 'bar' }
+            }
+          }
+        )
 
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       expect(abs_service.token).to eq(token_value)
+    end
+
+    it 'reads a token from "~/.vmfloaty.yml" and includes the vmpooler token' do
+      vmp_token_value = 'deecade'
+      allow(YAML).to receive(:load_file)
+        .with(floaty_config)
+        .and_return(
+          {
+            'services' => {
+              'MYabs' => {
+                'type' => 'abs',
+                'token' => token_value,
+                'url' => 'foo',
+                'vmpooler_fallback' => 'myvmp'
+              },
+              'myvmp' => { 'token' => vmp_token_value, 'url' => 'bar' }
+            }
+          }
+        )
+
+      abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       expect(abs_service.token_vmpooler).to eq(vmp_token_value)
     end
   end
+
   describe '#select_target_from' do
     it 'runs successfully' do
       hostname = 'faint-whirlwind.puppet.com'
-      stub_request(:post, "https://foobar/request").
-          to_return({status: 202, body: "", headers: {}},{status: 200, body: '[{"hostname":"'+hostname+'","type":"aix-6.1-ppc","engine":"nspooler"}]', headers: {}})
+      stub_request(:post, 'https://foobar/request')
+        .to_return(
+          { status: 202, body: "", headers: {} },
+          {
+            status: 200,
+            body: [{ 'hostname' => hostname, 'type' => 'aix-6.1-ppc', 'engine' => 'nspooler' }]
+              .to_json,
+            headers: {}
+          }
+        )
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       abs_service.select_target_from("https://foobar")
       expect(abs_service.target).to eq(hostname)
     end
+
     it 'returns a warning if the first request is not a 202' do
       hostname = 'fainter-whirlwind.puppet.com'
-      stub_request(:post, "https://foobar/request").
-          to_return({status: 404, body: "", headers: {}},{status: 200, body: '[{"hostname":"'+hostname+'","type":"aix-6.1-ppc","engine":"nspooler"}]', headers: {}})
-      allow_any_instance_of(VanagonLogger).to receive(:info)
-      expect_any_instance_of(VanagonLogger).to receive(:info).with("failed to request ABS with code 404")
+      stub_request(:post, "https://foobar/request")
+        .to_return(
+          { status: 404, body: "", headers: {} },
+          {
+            status: 200,
+            body:
+              [{ 'hostname' => hostname, 'type' => 'aix-6.1-ppc', 'engine' => 'nspooler' }].to_json,
+            headers: {}
+          }
+        )
+      allow(VanagonLogger).to receive(:info)
+      expect(VanagonLogger).to receive(:info).with('failed to request ABS with code 404')
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
-      pooler = abs_service.select_target_from("https://foobar")
-      expect(pooler).to eq('')
+      abs_service.select_target_from('https://foobar')
     end
-    it 'returns a warning and retries until request is a 200' do
+
+    it 'retries until request is a 200' do
       hostname = 'faintest-whirlwind.puppet.com'
-      stub_request(:post, "https://foobar/request").
-          to_return({status: 202, body: "", headers: {}},
-                    {status: 503, body: "", headers: {}},
-                    {status: 200, body: '[{"hostname":"'+hostname+'","type":"aix-6.1-ppc","engine":"nspooler"}]', headers: {}})
-      allow_any_instance_of(VanagonLogger).to receive(:info)
-      expect_any_instance_of(VanagonLogger).to receive(:info).with(/Waiting 1 seconds to check if ABS request has been filled/)
+      stub_request(:post, 'https://foobar/request')
+        .to_return(
+          { status: 202, body: "", headers: {} },
+          { status: 503, body: "", headers: {} },
+          {
+            status: 200,
+            body: [{
+                     'hostname' => hostname, 'type' => 'aix-6.1-ppc', 'engine' => "nspooler"
+                   }].to_json,
+            headers: {}
+          }
+        )
+      allow(VanagonLogger).to receive(:info)
+      expect(VanagonLogger).to receive(:info).with(/^Waiting 1 second.*to fill/)
+      abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
+      abs_service.select_target_from("https://foobar")
+    end
+
+    it 'sets a service target when request is a 200' do
+      hostname = 'faintest-whirlwind.puppet.com'
+      stub_request(:post, 'https://foobar/request')
+        .to_return(
+          { status: 202, body: "", headers: {} },
+          { status: 503, body: "", headers: {} },
+          {
+            status: 200,
+            body: [{
+                     'hostname' => hostname, 'type' => 'aix-6.1-ppc', 'engine' => "nspooler"
+                   }].to_json,
+            headers: {}
+          }
+        )
+      allow(VanagonLogger).to receive(:info)
       abs_service = Vanagon::Engine::AlwaysBeScheduling.new(platform, nil)
       abs_service.select_target_from("https://foobar")
       expect(abs_service.target).to eq(hostname)
