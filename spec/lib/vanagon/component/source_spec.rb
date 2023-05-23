@@ -36,7 +36,7 @@ describe "Vanagon::Component::Source" do
         .to raise_error(URI::InvalidURIError)
     end
 
-    context "takes a Git repo" do
+    context "with a Git repo" do
       before do
         allow_any_instance_of(Vanagon::Component::Source::Git)
           .to receive(:valid_remote?)
@@ -64,12 +64,16 @@ describe "Vanagon::Component::Source" do
 
       it "returns a Git object for git:http:// repositories" do
         component_source = klass.source(git_prefixed_http, ref: ref, workdir: workdir)
-        expect(component_source.url.to_s).to eq 'http://github.com/abcd/things'
         expect(component_source.class).to eq Vanagon::Component::Source::Git
+      end
+
+      it "returns a Git url for git:http:// repositories" do
+        component_source = klass.source(git_prefixed_http, ref: ref, workdir: workdir)
+        expect(component_source.url.to_s).to eq 'http://github.com/abcd/things'
       end
     end
 
-    context "takes a HTTP/HTTPS file" do
+    context "with a HTTP/HTTPS file" do
       before do
         allow(Vanagon::Component::Source::Http)
           .to receive(:valid_url?)
@@ -96,7 +100,7 @@ describe "Vanagon::Component::Source" do
       end
     end
 
-    context "takes a local file" do
+    context "with a local file" do
       before do
         allow_any_instance_of(Vanagon::Component::Source::Local)
           .to receive(:valid_file?)
@@ -110,6 +114,76 @@ describe "Vanagon::Component::Source" do
       it "returns an object of the correct type for file:// URLS" do
         expect(klass.source(file_url, sum: sum, workdir: workdir).class)
           .to eq Vanagon::Component::Source::Local
+      end
+    end
+  end
+
+  describe "#determine_source_type" do
+    context 'with a github https: URI' do
+
+      let(:github_archive_uri) do
+        'https://github.com/2ndQuadrant/pglogical/archive/a_file_name.tar.gz'
+      end
+      let(:github_tarball_uri) do
+        'https://github.com/Baeldung/kotlin-tutorials/tarball/main'
+      end
+      let(:github_zipball_uri) do
+        'https://github.com/Baeldung/kotlin-tutorials/zipball/master'
+      end
+      let(:github_repo_uri) do
+        'https://github.com/cameronmcnz/rock-paper-scissors'
+      end
+      let(:github_repo_dotgit_uri) do
+        'https://github.com/cameronmcnz/rock-paper-scissors.git'
+      end
+
+      it "identifies github archive uris" do
+        stub_request(:head, github_archive_uri).with(
+          headers: {
+       	    'Accept' => '*/*',
+       	    'Host' => 'github.com',
+       	    'User-Agent' => 'Ruby'
+          }
+        ).to_return(status: 200, body: "", headers: {})
+
+        expect(Vanagon::Component::Source.determine_source_type(github_archive_uri))
+          .to eq(:http)
+      end
+
+      it "identifies github tarball uris" do
+        stub_request(:head, github_tarball_uri).with(
+          headers: {
+       	    'Accept' => '*/*',
+       	    'Host' => 'github.com',
+       	    'User-Agent' => 'Ruby'
+          }
+        ).to_return(status: 200, body: "", headers: {})
+
+        expect(Vanagon::Component::Source.determine_source_type(github_tarball_uri))
+          .to eq(:http)
+      end
+
+      it "identifies github zipball uris" do
+        stub_request(:head, github_zipball_uri).with(
+          headers: {
+       	    'Accept' => '*/*',
+       	    'Host' => 'github.com',
+       	    'User-Agent' => 'Ruby'
+          }
+        ).to_return(status: 200, body: "", headers: {})
+
+        expect(Vanagon::Component::Source.determine_source_type(github_zipball_uri))
+          .to eq(:http)
+      end
+
+      it "identifies github generic repo uris" do
+        expect(Vanagon::Component::Source.determine_source_type(github_repo_uri))
+          .to eq(:git)
+      end
+
+      it "identifies github .git repo uris" do
+        expect(Vanagon::Component::Source.determine_source_type(github_repo_dotgit_uri))
+          .to eq(:git)
       end
     end
   end

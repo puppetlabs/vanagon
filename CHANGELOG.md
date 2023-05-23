@@ -8,6 +8,11 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Changed
 (maint) When using `vanagon list` with the --platforms or --projects flags do not print the  "-Platforms" or "-Projects" header.
 
+### Fixed
+- (VANAGON-227) Be more discerning when declaring a URI starting with 'https://github.com/'
+  as a git repository for source purposes.
+
+
 ## [0.36.0] - release 2023-04-18
 ### Fixed
 - (VANAGON-226) Fix problems with running on Ruby 3.0 - 3.2
