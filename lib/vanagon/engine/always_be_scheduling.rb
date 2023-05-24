@@ -223,13 +223,15 @@ class Vanagon
       end
       private :read_vmfloaty_token
 
-      # This method is used to obtain a vm to build upon using Puppet's internal
-      # ABS (https://github.com/puppetlabs/always-be-scheduling) which is a level of abstraction for other
-      # engines using similar APIs
+      # Used to obtain a vm to build upon using Puppet's internal ABS
+      # (https://github.com/puppetlabs/always-be-scheduling) which is
+      # a level of abstraction for other engines using similar APIs
       # @raise [Vanagon::Error] if a target cannot be obtained
       def select_target
         @pooler = select_target_from(@available_abs_endpoint)
-        raise Vanagon::Error, "Something went wrong getting a target vm to build on" if @pooler.empty?
+        if @pooler.empty?
+          raise Vanagon::Error, "No available ABS machine from #{@available_abs_endpoint}"
+        end
       end
 
       # Attempt to provision a host from a specific pooler.
@@ -264,7 +266,8 @@ class Vanagon
       # main loop where the status of the request is checked, to see if the request
       # has been allocated
       def check_queue(pooler, request_object)
-        retries = 360 # ~ one hour
+        # 360 retries takes about an hour
+        retries = 360
         response_body = nil
         begin
           (1..retries).each do |i|
@@ -279,15 +282,22 @@ class Vanagon
 
             sleep_seconds = 10 if i >= 10
             sleep_seconds = i if i < 10
-            VanagonLogger.info "Waiting #{sleep_seconds} seconds to check if ABS request has been filled. (x#{i})"
+            VanagonLogger.info "Waiting #{sleep_seconds} seconds to fill ABS request (x#{i})"
 
             sleep(sleep_seconds)
           end
         rescue SystemExit, Interrupt
-          VanagonLogger.error "\nVanagon interrupted during mains ABS polling. Make sure you delete the requested job_id #{@saved_job_id}"
+          VanagonLogger.error "\nVanagon interrupted during mains ABS polling. " \
+                              "Remember to delete the requested job_id #{@saved_job_id}"
           raise
         end
-        translated(response_body, @saved_job_id)
+
+        if response_body
+          translated(response_body, @saved_job_id)
+        else
+          VanagonLogger.error "ABS timed out after #{retries} retries."
+          { 'retry-failure': retries }
+        end
       end
 
       def validate_queue_status_response(status_code, body)
@@ -334,7 +344,8 @@ class Vanagon
       def translated(response_body, job_id)
         vmpooler_formatted_body = { 'job_id' => job_id }
 
-        response_body.each do |host| # in this context there should be only one host
+        # in this context there should be only one host
+        response_body.each do |host|
           vmpooler_formatted_body[host['type']] = { 'hostname' => host['hostname'] }
         end
         vmpooler_formatted_body['ok'] = true

@@ -8,9 +8,11 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Fixed
 - (VANAGON-227) Be more discerning when declaring a URI starting with 'https://github.com/'
   as a git repository for source purposes.
+- (VANAGON-232) Be a bit more polite when ABS times out allocating a VM.
 
 ### Removed
 - (PA-5327) Remove OSX 10.15 (x86_64)
+
 
 ## [0.36.0] - release 2023-04-18
 ### Fixed
