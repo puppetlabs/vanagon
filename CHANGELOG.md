@@ -14,6 +14,9 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 - (PA-5327) Remove OSX 10.15 (x86_64)
 - (PA-5331) Red Hat 7 (aarch64)
 
+### Changed
+- (maint) Add gpg key to provisioning step for default ubuntu-22.04-amd64 config.
+
 
 ## [0.36.0] - release 2023-04-18
 ### Fixed
