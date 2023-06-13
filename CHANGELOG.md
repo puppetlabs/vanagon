@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.37.0] - release 2023-06-13
 ### Fixed
 - (VANAGON-227) Be more discerning when declaring a URI starting with 'https://github.com/'
   as a git repository for source purposes.
@@ -16,7 +18,6 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ### Changed
 - (maint) Add gpg key to provisioning step for default ubuntu-22.04-amd64 config.
-
 
 ## [0.36.0] - release 2023-04-18
 ### Fixed
@@ -1116,7 +1117,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.35.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.37.0...HEAD
+[0.37.0]: https://github.com/puppetlabs/vanagon/compare/0.36.0...0.37.0
 [0.36.0]: https://github.com/puppetlabs/vanagon/compare/0.35.1...0.36.0
 [0.35.1]: https://github.com/puppetlabs/vanagon/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/puppetlabs/vanagon/compare/0.34.0...0.35.0
