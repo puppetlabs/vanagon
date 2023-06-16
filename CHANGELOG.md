@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+- (maint) Add TLS 1.2 to the platform add command for Windows
 
 ## [0.37.0] - release 2023-06-13
 ### Fixed

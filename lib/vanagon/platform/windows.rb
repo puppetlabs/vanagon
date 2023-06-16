@@ -317,7 +317,7 @@ class Vanagon
 
         if definition.scheme =~ /^(http|ftp|file)/
           if File.extname(definition.path) == '.ps1'
-            commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'iex ((new-object net.webclient).DownloadString("#{definition}"))')
+            commands << %(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command '[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;iex ((new-object net.webclient).DownloadString("#{definition}"))')
           else
             commands << %(C:/ProgramData/chocolatey/bin/choco.exe source add -n #{definition.host}-#{definition.path.tr('/', '-')} -s "#{definition}" --debug || echo "Oops, it seems that you don't have chocolatey installed on this system. Please ensure it's there by adding something like 'plat.add_repository 'https://chocolatey.org/install.ps1'' to your platform definition.")
           end
