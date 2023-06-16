@@ -290,7 +290,7 @@ class Vanagon
     # @return [String] the evaluated template
     def erb_string(erbfile, b = binding)
       template = File.read(erbfile)
-      message  = ERB.new(template, nil, "-")
+      message  = ERB.new(template, trim_mode: "-")
       message.result(b)
         .gsub(/[\n]+{3,}/, "\n\n")
         .squeeze("\s")
