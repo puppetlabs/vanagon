@@ -1,4 +1,5 @@
 platform 'osx-13-arm64' do |plat|
+    plat.brew '/opt/homebrew/bin/brew'
     plat.servicetype 'launchd'
     plat.servicedir '/Library/LaunchDaemons'
     plat.codename 'ventura'
