@@ -159,6 +159,13 @@ class Vanagon
         @platform.copy = copy_cmd
       end
 
+      # Set the path to Homebrew for the platform
+      #
+      # @param brew_cmd [String] Absolute path to Homebrew for the platform
+      def brew(brew_cmd)
+        @platform.brew = brew_cmd
+      end
+
       # Set the cross_compiled flag for the platform
       #
       # @param xcc [Boolean] True if this is a cross-compiled platform

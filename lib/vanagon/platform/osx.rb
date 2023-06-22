@@ -10,7 +10,7 @@ class Vanagon
         <<-HERE.undent
           mkdir -p /etc/homebrew
           cd /etc/homebrew
-          su test -c '/usr/local/bin/brew install #{list_build_dependencies.join(' ')}'
+          su test -c '#{@brew} install #{list_build_dependencies.join(' ')}'
         HERE
       end
 
@@ -135,6 +135,7 @@ class Vanagon
         @patch = "/usr/bin/patch"
         @num_cores = "/usr/sbin/sysctl -n hw.physicalcpu"
         @mktemp = "mktemp -d -t 'tmp'"
+        @brew = '/usr/local/bin/brew'
         super(name)
       end
     end

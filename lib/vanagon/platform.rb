@@ -54,6 +54,7 @@ class Vanagon
     attr_accessor :sort
     attr_accessor :tar
     attr_accessor :shasum
+    attr_accessor :brew # This is macOS specific
 
     # Hold a string containing the values that a given platform
     # should use when a Makefile is run - resolves to the CFLAGS
