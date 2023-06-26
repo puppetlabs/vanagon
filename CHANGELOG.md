@@ -8,6 +8,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ### Added
 - (maint) Adds `brew` attribute to specify the path of Homebrew on macOS on different architectures.
+- (PA-5329) Add macOS 13 (ARM64)
 
 ## [0.37.1] - release 2023-06-21
 ### Changed
