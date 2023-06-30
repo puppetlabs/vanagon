@@ -5,10 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
-
 ### Added
 - (maint) Adds `brew` attribute to specify the path of Homebrew on macOS on different architectures.
 - (PA-5329) Add macOS 13 (ARM64)
+- (PA-5326) Added macos 13 (x86_64)
 
 ## [0.37.1] - release 2023-06-21
 ### Changed
