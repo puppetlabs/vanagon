@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.38.0] - release 2023-07-05
+
 ### Added
 - (maint) Adds `brew` attribute to specify the path of Homebrew on macOS on different architectures.
 - (PA-5329) Add macOS 13 (ARM64)
@@ -1126,7 +1129,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.37.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.38.0...HEAD
+[0.38.0]: https://github.com/puppetlabs/vanagon/compare/0.37.1...0.38.0
 [0.37.1]: https://github.com/puppetlabs/vanagon/compare/0.37.0...0.37.1
 [0.37.0]: https://github.com/puppetlabs/vanagon/compare/0.36.0...0.37.0
 [0.36.0]: https://github.com/puppetlabs/vanagon/compare/0.35.1...0.36.0
