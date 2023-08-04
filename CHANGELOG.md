@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (PA-5701) Allow platform's name to be overridden
 
 ## [0.38.0] - release 2023-07-05
 

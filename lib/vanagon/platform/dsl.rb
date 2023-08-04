@@ -18,7 +18,7 @@ class Vanagon
     class DSL
       # Constructor for the DSL object
       #
-      # @param name [String] name of the platform
+      # @param platform_name [String] name of the platform
       # @return [Vanagon::Platform::DSL] A DSL object to describe the {Vanagon::Platform}
       def initialize(platform_name)
         @name = platform_name
@@ -26,9 +26,15 @@ class Vanagon
 
       # Primary way of interacting with the DSL. Also a simple factory to get the right platform object.
       #
-      # @param name [String] name of the platform
+      # @param platform_name [String] name of the platform
+      # @param override_name [Boolean] whether the specified `platform_name` should override the basename
       # @param block [Proc] DSL definition of the platform to call
-      def platform(platform_name, &block)
+      def platform(platform_name, override_name: false, &block)
+        # By default, the Vanagon::Platform's name/version/arch will be based on
+        # the filename of the platform definition. But if override_name is true,
+        # then use the `platform_name` passed into this method instead.
+        @name = platform_name if override_name
+
         @platform = case platform_name
                     when /^aix-/
                       Vanagon::Platform::RPM::AIX.new(@name)
