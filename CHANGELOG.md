@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Fixed
+- (maint) Fix git remote detection
+- (maint) Fix valid_url? check
 
 ## [0.39.0] - release 2023-08-07
 ### Added
