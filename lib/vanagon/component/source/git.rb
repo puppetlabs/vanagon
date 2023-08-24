@@ -60,6 +60,7 @@ class Vanagon
           # VANAGON-227 We need to be careful when guessing whether a https://github.com/...
           # URL is actually a true git repo. Make some rules around it based on the github API.
           # Decide that anything with a documented media_type is just an http url.
+          # We do this instead of talking to GitHub directly to avoid rate limiting.
           # See:
           # https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives
           # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar
@@ -68,17 +69,13 @@ class Vanagon
             url_directory = url.to_s.delete_prefix(github_url_prefix)
             url_components = url_directory.split('/')
 
-            return :github_remote if url_directory.end_with?('.git')
-
             # Find cases of supported github media types.
             # [ owner, repo, media_type, ref ]
-            case url_components[2]
-            when 'archive'
-              :github_archive
-            when 'tarball'
-              :github_tarball
-            when 'zipball'
-              :github_zipball
+            path_types = ['archive', 'releases', 'tarball', 'zipball']
+            if path_types.include?(url_components[2]) ||
+               url_components[-1].end_with?('.tar.gz') ||
+               url_components[-1].end_with?('.zip')
+              :github_media
             else
               :github_remote
             end

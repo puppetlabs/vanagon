@@ -15,11 +15,26 @@ describe "Vanagon::Component::Source::Git" do
     let(:github_archive_uri) do
       'https://github.com/2ndQuadrant/pglogical/archive/a_file_name.tar.gz'
     end
+    let(:github_releases_uri) do
+      'https://github.com/libffi/libffi/releases/download/v3.4.3/libffi-3.4.3.tar.gz'
+    end
     let(:github_tarball_uri) do
       'https://github.com/Baeldung/kotlin-tutorials/tarball/main'
     end
     let(:github_zipball_uri) do
       'https://github.com/Baeldung/kotlin-tutorials/zipball/master'
+    end
+    let(:github_actual_tarball_uri) do
+      'https://github.com/puppetlabs/puppet/archive/refs/tags/8.2.0.tar.gz'
+    end
+    let(:github_actual_tarball_with_unexpected_path_uri) do
+      'https://github.com/puppetlabs/puppet/something/refs/tags/8.2.0.tar.gz'
+    end
+    let(:github_actual_zipball_uri) do
+      'https://github.com/puppetlabs/puppet/archive/refs/tags/8.2.0.zip'
+    end
+    let(:github_actual_zipball_with_unexpected_path_uri) do
+      'https://github.com/puppetlabs/puppet/something/refs/tags/8.2.0.zip'
     end
     let(:github_repo_uri) do
       'https://github.com/cameronmcnz/rock-paper-scissors'
@@ -32,12 +47,32 @@ describe "Vanagon::Component::Source::Git" do
       expect(Vanagon::Component::Source::Git.valid_remote?(github_archive_uri)).to be false
     end
 
+    it "flags github releases uris as not valid repos" do
+      expect(Vanagon::Component::Source::Git.valid_remote?(github_releases_uri)).to be false
+    end
+
     it "flags github tarball uris as not valid repos" do
       expect(Vanagon::Component::Source::Git.valid_remote?(github_tarball_uri)).to be false
     end
 
+    it "flags github actual tarball uris as not valid repos" do
+      expect(Vanagon::Component::Source::Git.valid_remote?(github_actual_tarball_uri)).to be false
+    end
+
+    it "flags github actual tarball uris with an unexpected path as not valid repos" do
+      expect(Vanagon::Component::Source::Git.valid_remote?(github_actual_tarball_with_unexpected_path_uri)).to be false
+    end
+
     it "flags git zipball uris as not valid repos" do
       expect(Vanagon::Component::Source::Git.valid_remote?(github_zipball_uri)).to be false
+    end
+
+    it "flags github actual tarball uris as not valid repos" do
+      expect(Vanagon::Component::Source::Git.valid_remote?(github_actual_zipball_uri)).to be false
+    end
+
+    it "flags github actual tarball uris with an unexpected path as not valid repos" do
+      expect(Vanagon::Component::Source::Git.valid_remote?(github_actual_zipball_with_unexpected_path_uri)).to be false
     end
 
     it "identifies git generic uris as valid repos" do
