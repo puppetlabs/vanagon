@@ -22,20 +22,19 @@ class Vanagon
             return false unless ['http', 'https'].include? uri.scheme
 
             Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-              http.request(Net::HTTP::Head.new(uri)) do |response|
-                case response
-                when Net::HTTPRedirection
-                  # By parsing the location header, we get either an absolute
-                  # URI or a URI with a relative `path`. Adding it to `uri`
-                  # should correctly update the relative `path` or overwrite
-                  # the entire URI if it's absolute.
-                  location = URI.parse(response.header['location'])
-                  valid_url?(uri + location)
-                when Net::HTTPSuccess
-                  return true
-                else
-                  false
-                end
+              response = http.request(Net::HTTP::Head.new(uri))
+              case response
+              when Net::HTTPRedirection
+                # By parsing the location header, we get either an absolute
+                # URI or a URI with a relative `path`. Adding it to `uri`
+                # should correctly update the relative `path` or overwrite
+                # the entire URI if it's absolute.
+                location = URI.parse(response.header['location'])
+                valid_url?(uri + location)
+              when Net::HTTPSuccess
+                true
+              else
+                false
               end
             end
           end
