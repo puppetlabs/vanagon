@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.39.2] - release 2023-08-29
 ### Fixed
 - (maint) Handle an invalid mirror gracefully
 
@@ -1140,7 +1142,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.39.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.39.2...HEAD
+[0.39.2]: https://github.com/puppetlabs/vanagon/compare/0.39.1...0.39.2
 [0.39.1]: https://github.com/puppetlabs/vanagon/compare/0.39.0...0.39.1
 [0.39.0]: https://github.com/puppetlabs/vanagon/compare/0.38.0...0.39.0
 [0.38.0]: https://github.com/puppetlabs/vanagon/compare/0.37.1...0.38.0
