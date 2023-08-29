@@ -3,8 +3,11 @@ require 'vanagon/logger'
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'
 require 'vanagon/component/source/local'
+require 'vanagon/errors'
 
 class Vanagon
+  class InvalidSource < Vanagon::Error
+  end
   class Component
     class Source
       SUPPORTED_PROTOCOLS = %w[file http https git].freeze
@@ -55,8 +58,8 @@ class Vanagon
           end
 
           # Unknown source type!
-          raise Vanagon::Error,
-            "Unknown file type: '#{uri}'; cannot continue"
+          raise Vanagon::InvalidSource,
+            "Source is invalid or of an unknown type: '#{uri}'; cannot continue"
         end
 
         def determine_source_type(uri)
