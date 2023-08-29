@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+(maint) When using `vanagon list` with the --platforms or --projects flags do not print the  "-Platforms" or "-Projects" header.
+
 ### Fixed
 - (maint) Handle an invalid mirror gracefully
 
@@ -41,6 +44,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ### Changed
 - (maint) Add gpg key to provisioning step for default ubuntu-22.04-amd64 config.
+
 
 ## [0.36.0] - release 2023-04-18
 ### Fixed
