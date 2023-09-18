@@ -31,6 +31,8 @@ Gem::Specification.new do |gem|
   # Utilities for `ship` and `repo` commands
   # - ASL v2 licensed: https://rubygems.org/gems/packaging
   gem.add_runtime_dependency('packaging')
+  gem.add_runtime_dependency('psych', '>= 4.0')
+
   gem.require_path = 'lib'
   gem.bindir       = 'bin'
   gem.executables  = %w[vanagon build inspect ship render repo sign
