@@ -850,7 +850,7 @@ class Vanagon
                       source.file
                     end
 
-        @settings.merge!(yaml_safe_load_shim(yaml_path))
+        @settings.merge!(YAML.safe_load(File.read(yaml_path), permitted_classes: [Symbol]))
       end
     end
 
@@ -874,19 +874,6 @@ class Vanagon
       end
 
       source_type
-    end
-
-    # YAML.safe_load introduced an incompatible change in Ruby 3.1.0
-    # Shim that until no longer relevant.
-    def yaml_safe_load_shim(yaml_path)
-      new_safe_load_version = Gem::Version.new('3.1.0')
-      this_version = Gem::Version.new(RUBY_VERSION)
-
-      if this_version >= new_safe_load_version
-        YAML.safe_load(File.read(yaml_path), permitted_classes: [Symbol])
-      else
-        YAML.safe_load(File.read(yaml_path), [Symbol])
-      end
     end
 
     def load_upstream_metadata(metadata_uri)

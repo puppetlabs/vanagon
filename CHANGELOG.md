@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+- (maint) Force psych gem to use >= 4.0 to avoid breaking change in safe_load between v3 and
+  v4 of the gem.
 
 ## [0.39.2] - release 2023-08-29
 ### Fixed
