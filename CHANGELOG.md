@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (PA-5328) Add support for Debian 11 (ARM64)
+
 ### Changed
 - (maint) Force psych gem to use >= 4.0 to avoid breaking change in safe_load between v3 and
   v4 of the gem.
