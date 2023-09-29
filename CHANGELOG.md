@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.39.3] - release 2023-09-29
 ### Added
 - (PA-5328) Add support for Debian 11 (ARM64)
 
@@ -1148,7 +1150,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.39.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.39.3...HEAD
+[0.39.3]: https://github.com/puppetlabs/vanagon/compare/0.39.2...0.39.3
 [0.39.2]: https://github.com/puppetlabs/vanagon/compare/0.39.1...0.39.2
 [0.39.1]: https://github.com/puppetlabs/vanagon/compare/0.39.0...0.39.1
 [0.39.0]: https://github.com/puppetlabs/vanagon/compare/0.38.0...0.39.0
