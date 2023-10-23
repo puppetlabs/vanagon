@@ -242,6 +242,17 @@ fi
 
 
 %post
+# Run required postinstall scripts on install if defined
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/install ] ; then
+  <%= get_postinstall_required_actions("install") %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/install
+fi
+
+# Run required postinstall scripts on upgrade if defined
+if [ -e %{_localstatedir}/lib/rpm-state/%{name}/upgrade ] ; then
+  <%= get_postinstall_required_actions("upgrade") %>
+  rm %{_localstatedir}/lib/rpm-state/%{name}/upgrade
+fi
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>
 ## EL-4 and AIX RPM don't have %posttrans, so we'll put them here
 # Run postinstall scripts on install if defined
