@@ -5,10 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
-### Added
-- (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post section for rpm
 
-## [0.39.3] - release 2023-09-29
+## [0.40.0] - 2023-10-24
+### Added
+- (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post
+  section for rpm
+
+## [0.39.3] - 2023-09-29
 ### Added
 - (PA-5328) Add support for Debian 11 (ARM64)
 
@@ -16,32 +19,32 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 - (maint) Force psych gem to use >= 4.0 to avoid breaking change in safe_load between v3 and
   v4 of the gem.
 
-## [0.39.2] - release 2023-08-29
+## [0.39.2] - 2023-08-29
 ### Fixed
 - (maint) Handle an invalid mirror gracefully
 
-## [0.39.1] - release 2023-08-25
+## [0.39.1] - 2023-08-25
 ### Fixed
 - (maint) Fix git remote detection
 - (maint) Fix valid_url? check
 
-## [0.39.0] - release 2023-08-07
+## [0.39.0] - 2023-08-07
 ### Added
 - (PA-5701) Allow platform's name to be overridden
 
-## [0.38.0] - release 2023-07-05
+## [0.38.0] - 2023-07-05
 
 ### Added
 - (maint) Adds `brew` attribute to specify the path of Homebrew on macOS on different architectures.
 - (PA-5329) Add macOS 13 (ARM64)
 - (PA-5326) Added macos 13 (x86_64)
 
-## [0.37.1] - release 2023-06-21
+## [0.37.1] - 2023-06-21
 ### Changed
 - (maint) Add TLS 1.2 to the platform add command for Windows
 - (maint) Use keyword arguments
 
-## [0.37.0] - release 2023-06-13
+## [0.37.0] - 2023-06-13
 ### Fixed
 - (VANAGON-227) Be more discerning when declaring a URI starting with 'https://github.com/'
   as a git repository for source purposes.
@@ -54,30 +57,30 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Changed
 - (maint) Add gpg key to provisioning step for default ubuntu-22.04-amd64 config.
 
-## [0.36.0] - release 2023-04-18
+## [0.36.0] - 2023-04-18
 ### Fixed
 - (VANAGON-226) Fix problems with running on Ruby 3.0 - 3.2
 - (VANAGON-204) Fix and update some rspec tests for Ruby 3
 
-## [0.35.1] - release 2023-03-21
+## [0.35.1] - 2023-03-21
 ### Changed
 - (maint) Name file in deb build 'buildinfo' instead of 'build' to make signing work with newer versions of debsign.
 
-## [0.35.0] - release 2023-02-14
+## [0.35.0] - 2023-02-14
 ### Changed
 - (VANAGON-211) Speed up file listings on Windows
 - (VANAGON-214) Create home directory on macOS before installing brew, add
   macOS 11 & 12 ARM definitions, and opt-out from homebrew analytics.
 
-## [0.34.0] - release 2023-01-16
+## [0.34.0] - 2023-01-16
 ### Changed
 - (PA-4841) Update platform default for Ubuntu 18.04 aarch64/ARM64
 
-## [0.33.0] - release 2023-01-13
+## [0.33.0] - 2023-01-13
 ### Changed
 - (PA-4838) Update platform defaults for RHEL 8 ppc64le, RHEL 7 & 8 FIPS (x86-64)
 
-## [0.32.0] - release 2023-01-11
+## [0.32.0] - 2023-01-11
 ### Changed
 - (RE-15209) Exempt github URLs from being checked as valid git repositories in order to avoid
   rate-limiting from excessive traffic.
@@ -86,7 +89,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Fixed
 - (maint) `only-build` option is now converted to an array so it can be used.
 
-## [0.31.0] - release 2022-10-04
+## [0.31.0] - 2022-10-04
 ### Removed
 - (VANAGON-184) Remove support for Fedora 32 (x86-64)
 - (VANAGON-185) Remove support for Fedora 34 (x86-64)
@@ -97,15 +100,15 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 - (RE-14715) Update fustigit gem to version 0.2.0.
 - (maint) osx-10-15.x86-64 installs homebrew via bash rather then ruby
 
-## [0.30.0] - release 2022-08-18
+## [0.30.0] - 2022-08-18
 ### Changed
 - (maint) Update extra file signer to use rsync for extra file signing due to scp causing issues with osx.
 
-## [0.29.0] - release 2022-08-15
+## [0.29.0] - 2022-08-15
 ### Changed
 - (maint) Update extra file signer to use scp and sign using a script rather than a direct ssh command.
 
-## [0.28.0] - release 2022-07-27
+## [0.28.0] - 2022-07-27
 ### Added
 - (VANAGON-193) Adds support for Fedora 36 (x86-64)
 
@@ -115,41 +118,41 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
   the platform name not end with the '.rb' extension.
 - (maint) Update the macos hostArchitectures option to 'x86_64,arm64' in order to support the install of packages on macos M1 hardware
 
-## [0.27.0] - released 2022-06-06
+## [0.27.0] - 2022-06-06
 ### Added
 - (VANAGON-182) Add Ubuntu 22.04
 
 ### Changed
 - (maint) Force dh_builddeb to use -Zgzip for compatibility with reprepro. This keeps existing gzip usage and thwarts Ubuntu 22.04's desire to switch to zstd.
 
-## [0.26.3] - released 2022-05-11
+## [0.26.3] - 2022-05-11
 ### Changed
 - (RE-14660) Update git gem dependency
 - (maint) Simplifies logic for .tar.xz archives
 
-## [0.26.2] - released 2022-04-27
+## [0.26.2] - 2022-04-27
 ### Changed
 - (maint) Add the focal-updates.list file creation and gpg key add to the provisioning step in the defaults for ubuntu-20.04-amd64
 
-## [0.26.1] - released 2022-03-29
+## [0.26.1] - 2022-03-29
 ### Added
 - (VANAGON-181) Add macOS 12 Monterey x86-64 support
 
 ### Changed
 - Reverted work to support Apple Notarization while we work through more issues
 
-## [0.26.0] - released 2022-03-10
+## [0.26.0] - 2022-03-10
 ### Added
 - (VANAGON-179) Addition of ruby 3 support for vanagon
 
 ### Changed
 - (VANAGON-187) Change valid remote repository check to use 'git ls-remote --heads' rather than 'git ls-remote'
 
-## [0.25.0] - released 2022-01-24
+## [0.25.0] - 2022-01-24
 ### Changed
 - (maint) Use priority 3 for ABS and user 'vanagon' if none is given
 
-## [0.24.0] - released 2022-01-14
+## [0.24.0] - 2022-01-14
 ### Added
 - (VANAGON-174) Addition 'el-9' platform
 - (RE-14305) Add 'vanagon dependencies' command to generate gem dependencies as a json file
@@ -162,7 +165,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 - (VANAGON-169) Remove Fedora 31 x86_64
 - (VANAGON-170) Remove OSX 10.14 x86_64
 
-## [0.23.0] - released 2021-09-23
+## [0.23.0] - 2021-09-23
 ### Added
 - (VANAGON-171) Add Ubuntu 18.04 aarch64 defaults
 - (VANAGON-166) Add RedHat 8 FIPS defaults
@@ -175,7 +178,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 - (VANAGON-166) Do not undefine `__debug_package` on EL 8 FIPS
 - (VANAGON-177) Remove `__debug_package` workaround for EL 8
 
-## [0.22.0] - released 2021-07-06
+## [0.22.0] - 2021-07-06
 ### Added
 - (PA-3709) Add Debian 11 64-bit support
 - (PA-3755) add `--extended-attributes` on mac OS
@@ -184,7 +187,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Changed
 - (maint) Update nspooler URL to reflect changed location.
 
-## [0.21.1] - released 2021-06-07
+## [0.21.1] - 2021-06-07
 ### Added
 - (PA-3755) Add support for mac OS code signing
 - (PA-3613) Added vanagon support for MacOS 11 Big Sur
@@ -198,19 +201,19 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Changed
 - (maint) `vanagon list` now returns results in alphabetical order.
 
-## [0.21.0] - released 2021-04-15
+## [0.21.0] - 2021-04-15
 ### Added
 - (VANAGON-85) Moved platform definitions into core vanagon. Created default
 platform definitions which projects can inherit. Added the `inherit_from_default`
 method to the platform DSL. Added a `--defaults` option to `vanagon list`. This
 shows all the default platforms that are available in core vanagon.
 
-## [0.20.1] - released 2021-03-15
+## [0.20.1] - 2021-03-15
 ### Changed
 - (RE-13838) Remove the rescue from the ship cli code that masked Artifactory
   upload failures. Make it easier to diagnose when artifacts fail to ship.
 
-## [0.20.0] - released 2021-2-2
+## [0.20.0] - 2021-2-2
 ### Added
 - (VANAGON-123) Re-add support for multiple service types for a single platform.
   This is intended primarily for Debian packages supporting both systemd and
@@ -220,12 +223,12 @@ shows all the default platforms that are available in core vanagon.
 - (RE-13837) Workaround a parsing bug in ruby git where Git.ls-remote was mis-parsing
   unexpected output from ssh.
 
-## [0.19.1] - released 2021-1-13
+## [0.19.1] - 2021-1-13
 ### Fixed
 - (maint) Fixed an issue invoking VanagonLogger in the error handling for the
   `Vanagon::Component.load_component` method
 
-## [0.19.0] - released 2021-1-12
+## [0.19.0] - 2021-1-12
 ### Added
 - (VANAGON-129) Added support for passing a version to `requires` in components
   and projects. Updated `get_requires` to handle the versions, and pass them to
@@ -237,12 +240,12 @@ shows all the default platforms that are available in core vanagon.
 - (maint) Fix bugs in pick_engine
 - (maint) Fix pristine config files clobbering (Solaris 10)
 
-## [0.18.1] - released 2020-12-09
+## [0.18.1] - 2020-12-09
 ### Fixed
 - (maint) Patch bug in engine-selection method where target argument is getting ignored
   when ABS engine is loaded.
 
-## [0.18.0] - released 2020-12-08
+## [0.18.0] - 2020-12-08
 ### Added
 - (maint) Added `vanagon list` subcommand with options to list `--projects`,
   and / or `--platforms`. By default, the list is spaced with new-line
@@ -267,7 +270,7 @@ shows all the default platforms that are available in core vanagon.
 ### Changed
 - (maint) Made 'always_be_scheduling' the default engine.
 
-## [0.17.0] - released 2020-11-02
+## [0.17.0] - 2020-11-02
 ### Added
 - (DIO-1066) Update vanagon to go through ABS for VMs. Before this change,
   the ABS engine was partially implemented.
@@ -275,11 +278,11 @@ shows all the default platforms that are available in core vanagon.
   engine (vmpooler, nspooler, AWS) and is forward compatible with
   ondemand Vmpooler pools. Used internally at Puppet
 
-## [0.16.1] - released 2020-09-18
+## [0.16.1] - 2020-09-18
 ### Fixed
 - Fixed issue where the 'ship' command was failing to execute.
 
-## [0.16.0] - released on 2020-09-17
+## [0.16.0] - 2020-09-17
 ### Added
 - (RE-13660) Rewrote the command line parser around `docopt`. Introduced
   `vanagon <subcommand>` replacement for the existing standalone commands.
@@ -295,7 +298,7 @@ shows all the default platforms that are available in core vanagon.
 - (VANAGON-163) Vanagon now prioritizes the `--engine` CLI flag over logic
   that picks the engine based on features used by the platform definition.
 
-## [0.15.38] - released on 2020-06-16
+## [0.15.38] - 2020-06-16
 ### Fixed
 - (maint) Fix for invalid build metadata JSON when generating compiled archives.
 - (RE-13296) Follow redirects when installing rpm/deb repos.
@@ -304,24 +307,24 @@ shows all the default platforms that are available in core vanagon.
 - (RE-13303) Add the ability to sign additional files on windows during the MSI
 build step.
 
-## [0.15.37] - released on 2020-05-06
+## [0.15.37] - 2020-05-06
 ### Changed
 - (maint) Build el-8 packages without build-id files to prevent collision errors.
 
-## [0.15.36] - released on 2020-04-29
+## [0.15.36] - 2020-04-29
 ### Fixed
 - (maint) Another el-8 debug_package fix that we missed the first time.
 
-## [0.15.35] - released on 2020-04-29
+## [0.15.35] - 2020-04-29
 ### Fixed
 - (RE-13396) Fix debug_package handling in el-8
 
-## [0.15.34] - released on 2020-04-28
+## [0.15.34] - 2020-04-28
 ### Fixed
 - (maint) Move informational output about loading inherited metadata to stderr
   instead of stdout.
 
-## [0.15.33] - released on 2020-04-14
+## [0.15.33] - 2020-04-14
 ### Added
 - (VANAGON-144) Add ability to load `build_metadata` from another project. This
   is useful when loading settings from another project. If you're loading settings
@@ -338,17 +341,17 @@ build step.
 ### Fixed
 - (VANAGON-112) Fix undefined variable in warning message for version/release from git.
 
-## [0.15.32] - released on 2020-02-11
+## [0.15.32] - 2020-02-11
 ### Added
 - (VANAGON-155) Added `none` option to the `repo` binary so that repo can be
   called without deb or rpm packages. This will be helpful in packaging pipelines
   that do not always build deb or rpm packages.
 
-## [0.15.31] - released on 2019-11-14
+## [0.15.31] - 2019-11-14
 ### Fixed
 - Don't use `match?` method that wasn't added until ruby 2.4.
 
-## [0.15.30] - released on 2019-11-12
+## [0.15.30] - 2019-11-12
 ### Changed
 - (VANAGON-157) Make curl calls fail on error.
 
@@ -365,24 +368,24 @@ build step.
 - (VANAGON-35) Update `find_program_on_path` to support windows files with
   extensions.
 
-## [0.15.29] - released on 2019-09-25
+## [0.15.29] - 2019-09-25
 ### Changed
 - Loosen `is_windows?` to include windowsfips.
 
-## [0.15.28] - released on 2019-09-24
+## [0.15.28] - 2019-09-24
 ### Changed
 - Loosen Windows platform definition to include windowsfips.
 
-## [0.15.27] - released on 2019-09-11
+## [0.15.27] - 2019-09-11
 ### Added
 - Add `DEBIAN_FRONTEND=noninteractive` to apt curl install.
 
-## [0.15.26] - released on 2019-09-10
+## [0.15.26] - 2019-09-10
 ### Added
 - (PA-2838) Add support for windowsfips-2012r2.
 - Add GitHub Action to publish gems on tag.
 
-## [0.15.25] - released on 2019-07-24
+## [0.15.25] - 2019-07-24
 ### Added
 - (RE-12605) Add CODEOWNERS file.
 
@@ -392,7 +395,7 @@ build step.
 ### Removed
 - Remove out-of-date MAINTAINERS file.
 
-## [0.15.24] - released on 2019-07-08
+## [0.15.24] - 2019-07-08
 ### Changed
 - (VANAGON-153) Update version in SMF manifest from the current version (which is always 1) to the puppet-runtime version since version is expected to be an integer value, per SMF documentation.
 - (VANAGON-153) Update the Solaris sed to `/usr/gnu/bin/sed` which is the GNU implementation.
@@ -402,7 +405,7 @@ build step.
 - (VANAGON-151) Update Docker engine with a 1 second sleep after each SSH failure to allow SSHD
 a chance to start up before Vanagon retries the command.
 
-## [0.15.23] - released on 2019-05-14
+## [0.15.23] - 2019-05-14
 ### Added
 - (VANAGON-150) Allow platforms to specify `docker run` arguments.
 - (PA-2670) Add support for `get_version_forced` in the vanagon component which enables
@@ -411,16 +414,16 @@ finding the version of git sources while the component is being processed.
 ### Fixed
 - (VANAGON-101) Sanitize the docker container name so it won't contain invalid characters.
 
-## [0.15.22] - released on 2019-04-04
+## [0.15.22] - 2019-04-04
 ### Changed
 - (VANAGON-147) Disable shebang munging in rpm spec file.
 
-## [0.15.21] - released on 2019-03-12
+## [0.15.21] - 2019-03-12
 ### Added
 - (RE-12096) Set filesystem type when creating OSX packages to prevent signing
 failure of osx-10.14 packages.
 
-## [0.15.20] - released on 2019-02-12
+## [0.15.20] - 2019-02-12
 ### Added
 - (PE-24814) Add support to handle ghostfile settings included in
 the `Component::DSL` which adds them to the final rpm spec.
@@ -429,7 +432,7 @@ the `Component::DSL` which adds them to the final rpm spec.
 - (VANAGON-132) Create metadata files with `<project>.<platform>` in the file name.
 Previously `ext/build_metadata.json` now `ext/build_metadata.<project>.<platform>.json`.
 
-## [0.15.19] - released on 2018-12-20
+## [0.15.19] - 2018-12-20
 ### Changed
 - Moved `package_overrides` higher up in the RPM spec file to support setting
 additional globals or defines that are used in the `__os_install_post`.
@@ -438,7 +441,7 @@ additional globals or defines that are used in the `__os_install_post`.
 - (VANAGON-146) Simplified parsing of project vendor field for improved error
 handling.
 
-## [0.15.18] - released on 2018-12-10
+## [0.15.18] - 2018-12-10
 ### Added
 - (PA-2231) Add support for Fedora 29 by explicitly requiring /usr/bin/touch
   and /usr/bin/mkdir when building for versions of Fedora >= 29, since core
@@ -449,12 +452,12 @@ handling.
   will not get overwritten if two different components have patch files with
   the same name.
 
-## [0.15.17] - released on 2018-11-13
+## [0.15.17] - 2018-11-13
 ### Added
 - (PA-1272) Add `Vanagon::Platform::OSX.install_build_dependencies` method to
   install with homebrew as a non-root user.
 
-## [0.15.16] - released on 2018-11-01
+## [0.15.16] - 2018-11-01
 ### Added
 - (VANAGON-122) Add `VANAGON_USE_MIRRORS` environment variable that, when set
   to 'n', will skip internal mirrors when fetching sources.
@@ -464,7 +467,7 @@ handling.
   Previously, package installation on Solaris 11.4 failed because this is a
   "reserved" directory.
 
-## [0.15.15] - released on 2018-09-11
+## [0.15.15] - 2018-09-11
 ### Added
 - (VANAGON-106) Add homepage to component DSL.
 - Add `build_requirements` command to list external build requirements.
@@ -472,22 +475,22 @@ handling.
 ### Fixed
 - (VANAGON-141) Ensure git reference defaults to HEAD.
 
-## [0.15.14] - released on 2018-08-14
+## [0.15.14] - 2018-08-14
 ### Changed
 -  (RE-11270) Create `ext` directory before writing build_metadata.
 -  Add the --no-progress switch for choco downloads in an effort to shrink
    the size of build logs.
 
-## [0.15.13] - released on 2018-07-11
+## [0.15.13] - 2018-07-11
 ### Fixed
 - (VANAGON-139) Fix `retrieve_built_artifact` in the local engine to match
 previous updates to the method signature.
 
-## [0.15.12] - released on 2018-06-19
+## [0.15.12] - 2018-06-19
 ### Fixed
 - (VANAGON-138) Fix incorrect sha1sum output when publishing yaml settings.
 
-## [0.15.11] - released on 2018-06-08
+## [0.15.11] - 2018-06-08
 ### Changed
 - (VANAGON-123) This work has been reverted. It was causing a regression for
   installation on debian systems using automated installers or chroots.
@@ -496,7 +499,7 @@ previous updates to the method signature.
 - (VANAGON-131) Paths were being incorrectly determined when inheriting yaml
   settings from a local file source.
 
-## [0.15.10] - released on 2018-05-29
+## [0.15.10] - 2018-05-29
 ### Added
 - (VANAGON-130) Add `publish_yaml_settings` to the project DSL to let you output
   the project's settings at build time as a yaml file.
@@ -506,18 +509,18 @@ previous updates to the method signature.
 ### Fixed
 - A looped sed call during RPM generation was optimized.
 
-## [0.15.9] - released on 2018-05-08
+## [0.15.9] - 2018-05-08
 ### Added
 - (VANAGON-123) Add support for multiple service types for a single platform.
   This is intended primarily for Debian packages supporting both systemd and
   sysv init systems.
 
-## [0.15.8] - released on 2018-04-17
+## [0.15.8] - 2018-04-17
 ### Fixed
 - The fix for bill-of-materials in release [0.15.7] broke tar generation. This
   release fixes that issue.
 
-## [0.15.7] - released on 2018-04-17
+## [0.15.7] - 2018-04-17
 ### Added
 - Added task to sign packages after being built and before you ship.
 Simply run `bundle exec sign`.
@@ -543,7 +546,7 @@ or #{proj.bill_of_materials.path}/bill-of-materials.
 now-removed devkit work, and any of the other subcommands that accept a
 target take target as a positional parameter, so that flag is completely unused.
 
-## [0.15.6] - released on 2018-03-19
+## [0.15.6] - 2018-03-19
 ### Fixed
 - (VANAGON-125) On AIX, postinstall scripts for upgrades now run in
   the triggerpostun phase. This ensures they run after any postun
@@ -552,12 +555,12 @@ target take target as a positional parameter, so that flag is completely unused.
 - (VANAGON-125) On AIX, service stop in postun now only runs on an
   uninstall, not on upgrades.
 
-## [0.15.5] - released on 2018-03-05
+## [0.15.5] - 2018-03-05
 ### Fixed
 - (VANAGON-120) Postinstall scripts for upgrades now run in the postinstall
   phase, as expected. Previously, they were run in the postuninstall phase.
 
-## [0.15.4] - released on 2018-02-14
+## [0.15.4] - 2018-02-14
 ### Added
  - Added support for performing erb transforms on sources. This can be done by
    passing `erb: true` to `add_sources`.
@@ -571,17 +574,17 @@ target take target as a positional parameter, so that flag is completely unused.
  - `release_from_git` was added to the project DSL. With this, you can set the
    project release number to be the number of commits since the last tag.
 
-## [0.15.3] - released on 2018-02-06
+## [0.15.3] - 2018-02-06
 ### Changed
  - Added a runtime dependency on the packaging gem, which is required for the
    'ship' and 'repo' commands.
 
-## [0.15.2] - released on 2018-01-24
+## [0.15.2] - 2018-01-24
 ### Fixed
  - RPM platform names beginning with 'redhat' were not matching the `is_rpm?`
    and `is_el?` checks.
 
-## [0.15.1] - released on 2018-01-19
+## [0.15.1] - 2018-01-19
 ### Added
  - Automatic source detection can be skipped for git sources over http(s) by
    prefixing the source URL with 'git:', for example,
@@ -603,7 +606,7 @@ target take target as a positional parameter, so that flag is completely unused.
  - (VANAGON-116) Retry source fetches individually rather than retrying all if
    one fails.
 
-## [0.15.0] - released on 2018-01-09
+## [0.15.0] - 2018-01-09
 ### Added
  - (VANAGON-69) Allow path for `sed` to be customized in platform definitions.
  - (VANAGON-108) Allow path and default options for `mktemp` to be customized in
@@ -626,22 +629,22 @@ target take target as a positional parameter, so that flag is completely unused.
    now be set with a comparison operator, and methods have been added to do the
    necessary munging for version comparison in Debian packages.
 
-## [0.14.3] - released on 2017-12-12
+## [0.14.3] - 2017-12-12
 ### Fixed
  - In the `ship` command we need to rescue both `LoadError`s and generic
    `Exception`s to ensure the job doesn't fail on packaging < 1.0.x.
 
-## [0.14.2] - released on 2017-12-12
+## [0.14.2] - 2017-12-12
 ### Fixed
  - In the `ship` binary we were incorrectly rescuing a LoadError when shipping
    to artifactory. The `rescue` has been updated to explicitly `rescue LoadError`
    since LoadError doesn't inherit from Exception.
 
-## [0.14.1] - released on 2017-11-21
+## [0.14.1] - 2017-11-21
 ### Fixed
  - Remove devkit as an executable in the gemspec
 
-## [0.14.0] - released on 2017-11-21 (tag-only release)
+## [0.14.0] - 2017-11-21 (tag-only release)
 ### Added
  - (VANAGON-59) Adds support for RPM and deb triggers. These can be added using
    `add_rpm_install_triggers`, `add_debian_interest_triggers`, and
@@ -687,11 +690,11 @@ target take target as a positional parameter, so that flag is completely unused.
  - The `devkit` command has been removed since much of its initial functionality
    has been built into `build`, `render`, and `inspect`.
 
-## [0.13.1] - released on 2017-07-19
+## [0.13.1] - 2017-07-19
 ### Added
  - Component Url is now reported in the `build_metadata.json` file.
 
-## [0.13.0] - released on 2017-07-12
+## [0.13.0] - 2017-07-12
 ### Added
  - A metadata file is generated when producing artifacts which contains
    metadata about components and various other information about a built
@@ -701,20 +704,20 @@ target take target as a positional parameter, so that flag is completely unused.
    list of components with their version information which make up the built
    artifact.
 
-## [0.12.2] - released on 2017-06-29
+## [0.12.2] - 2017-06-29
 ### Fixes
 - Previously, we created AIX services once at install, but did not have
   correct logic to update them if they changed. This release adds the necessary
   logic to reconfigure AIX services.
 
-## [0.12.1] - released on 2017-06-12
+## [0.12.1] - 2017-06-12
 ### Fixes
 - install_file was not respecting file mode, which was causing problems with
   file permissions on platforms like MacOS that do not explicitly manage permissions
   in the packaging. This should now be fixed for those cases, with the exception of
   Windows MSI packaging, that still needs to be managed in the WIX files.
 
-## [0.12.0] - released on 2017-05-31
+## [0.12.0] - 2017-05-31
 ### Added
 - Added `generate_source_artifacts` method to the platform dsl to allow generation
   of `.src.rpm` and debian source artifacts.
@@ -731,24 +734,24 @@ target take target as a positional parameter, so that flag is completely unused.
 ### Fixes
 - Exceptions now provide accurate backtraces if thrown while parsing Component, Platform, or Projects.
 
-## [0.11.3] - released on 2017-04-10
+## [0.11.3] - 2017-04-10
 ### Changed
 - Removed dependency on files `/bin/touch` and `/bin/mkdir` for any RPMs generated for AIX platforms.
 - If the `workdir` path is underneath a symbolically linked path, Vanagon will now resolve the complete path instead of using the symbolically linked path.
 - Vanagon no longer creates backup copies of any source files patched during the staging process.
 
-## [0.11.2] - released on 2017-04-04
+## [0.11.2] - 2017-04-04
 ### Added
 - Added the `link_target` keyword argument to `install_service`. If `link_target` is specified, instead of installing the `service_file` in the platform/init system default for service files, the file will be installed to the `link_target` and a link will be added from the system's default for service files to the link target.
 
-## [0.11.1] - released on 2017-03-30
+## [0.11.1] - 2017-03-30
 ### Fixed
 - Dirname now honors when user overrides the default directory a source unpacks into
 
 ### Changed
 - Update git tests to no longer hit the network and run quite a bit faster
 
-## [0.11.0] - released on 2017-03-22
+## [0.11.0] - 2017-03-22
 ### Added
 - A new Platform DSL method, `shell`, has been added. This allows a user to define a custom shell or path to a specific shell for a given platform.
 - Support for specifying the owner, group, and permission mode has been added to the Component DSL.
@@ -764,7 +767,7 @@ target take target as a positional parameter, so that flag is completely unused.
 ### Removed
 - We've removed initial support for metrics collection. The functionality depended on Make's usage of target-specific variables, so if they're unreliable (and they are) then the metrics functionality is also unreliable. Consider instead using [Remake](http://bashdb.sourceforge.net/remake/) if you need to profile a Vanagon build. We may provide official support for `remake --profile` in a future Vanagon release.
 
-## [0.10.0] - released on 2017-02-21
+## [0.10.0] - 2017-02-21
 ### Added
 - Initial support to the Makefile to enable metrics collection during a build
 - Allow user to specify the directory on the build host to place sources and
@@ -776,7 +779,7 @@ target take target as a positional parameter, so that flag is completely unused.
   project specific, platform specific, or component specific
 - Allow `dist` tag used in naming rpm packages to be specified
 
-## [0.9.3] - released on 2017-03-01
+## [0.9.3] - 2017-03-01
 ### Added
 - Allow user to specify the directory on the build host to place sources and
   perform build tasks to allow for faster iteration.
@@ -789,7 +792,7 @@ target take target as a positional parameter, so that flag is completely unused.
   `install_configfile`.
 - Allow `dist` tag used in naming rpm packages to be specified.
 
-## [0.9.2] - released on 2017-01-31
+## [0.9.2] - 2017-01-31
 ### Added
 - Experimental `render` command added to aid in rapid Makefile iteration and testing
 
@@ -800,7 +803,7 @@ target take target as a positional parameter, so that flag is completely unused.
 - Updated to Rubocop 0.47.x
 - MAINTAINERS file updated with current project maintainers
 
-## [0.9.1] - released on 2017-01-09
+## [0.9.1] - 2017-01-09
 This is a bug-fix release to replace the yanked 0.9.0 release.
 
 ### Fixed
@@ -812,7 +815,7 @@ This is a bug-fix release to replace the yanked 0.9.0 release.
 - We sanitize the `ENV` hash further while testing token support in the
   vmpooler engine.
 
-## [0.9.0] - released on 2017-01-06; yanked on 2017-01-06
+## [0.9.0] - 2017-01-06; yanked on 2017-01-06
 ### Added
 - Support for reading vmpooler tokens from a
   [vmfloaty](https://github.com/briancain/vmfloaty) config file.
@@ -1152,7 +1155,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.39.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.40.0...HEAD
+[0.40.0]: https://github.com/puppetlabs/vanagon/compare/0.39.3...0.40.0
 [0.39.3]: https://github.com/puppetlabs/vanagon/compare/0.39.2...0.39.3
 [0.39.2]: https://github.com/puppetlabs/vanagon/compare/0.39.1...0.39.2
 [0.39.1]: https://github.com/puppetlabs/vanagon/compare/0.39.0...0.39.1
