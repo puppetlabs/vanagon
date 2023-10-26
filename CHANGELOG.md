@@ -6,6 +6,13 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
 
+## [0.41.0] - 2023-10-26
+### Added
+- (VANAGON-231) Added amazon linux 2023 platform for intel & arm
+
+### Removed
+- Reverted "(PA-5786) Add ability to execute direct post installation scriptlets"
+
 ## [0.40.0] - 2023-10-24
 ### Added
 - (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post
@@ -1155,7 +1162,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.40.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.41.0...HEAD
+[0.41.0]: https://github.com/puppetlabs/vanagon/compare/0.40.0...0.41.0
 [0.40.0]: https://github.com/puppetlabs/vanagon/compare/0.39.3...0.40.0
 [0.39.3]: https://github.com/puppetlabs/vanagon/compare/0.39.2...0.39.3
 [0.39.2]: https://github.com/puppetlabs/vanagon/compare/0.39.1...0.39.2
