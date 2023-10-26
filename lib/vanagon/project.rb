@@ -494,18 +494,6 @@ class Vanagon
       end
     end
 
-    # Collects the postinstall packaging actions that must exit successfully for the project and it's components
-    #  for the specified packaging state
-    #
-    # @param pkg_state [String] the package state we want to run the given scripts for.
-    #   Can be one of 'install' or 'upgrade'
-    # @return [String] string of Bourne shell compatible scriptlets to execute during the postinstall
-    #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
-    def get_postinstall_required_actions(pkg_state)
-      scripts = components.flat_map(&:postinstall_required_actions).compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
-      return ': no postinstall required scripts provided' if scripts.empty?
-      scripts.join("\n")
-    end
     # Collects the preremove packaging actions for the project and it's components
     # for the specified packaging state
     #
