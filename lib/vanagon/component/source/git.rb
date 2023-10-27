@@ -106,7 +106,7 @@ class Vanagon
           @clone_options = opts[:clone_options] ||= {}
 
           # We can test for Repo existence without cloning
-          raise Vanagon::InvalidRepo, "url is not a valid Git repo" unless valid_remote?
+          raise Vanagon::InvalidRepo, "\"#{url}\" is not a valid Git repo" unless valid_remote?
         end
 
         # Fetch the source. In this case, clone the repository into the workdir
