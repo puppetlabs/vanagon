@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post section for rpm
 
 ## [0.41.0] - 2023-10-26
 ### Added

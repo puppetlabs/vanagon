@@ -106,6 +106,9 @@ class Vanagon
     # activate_triggers is a one-dimentional Array of Strings, describing scripts that
     # should be executed when a package identifies an activate trigger
     attr_accessor :activate_triggers
+    # postinstall_required_actions is a two-dimensional Array, describing scripts that
+    # must be executed successfully after a given component is installed.
+    attr_accessor :postinstall_required_actions
     # postinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed after a given component is installed.
     attr_accessor :postinstall_actions
@@ -176,6 +179,7 @@ class Vanagon
       @install_triggers = []
       @interest_triggers = []
       @activate_triggers = []
+      @postinstall_required_actions = []
       @postinstall_actions = []
       @preremove_actions = []
       @postremove_actions = []
