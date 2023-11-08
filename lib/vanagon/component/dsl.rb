@@ -503,6 +503,16 @@ class Vanagon
         @component.activate_triggers << OpenStruct.new(:activate_name => activate_name)
       end
 
+      # Add post installation action that must exit successfully before restarting the service
+      #
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'install' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      def add_postinstall_required_action(pkg_state, scripts)
+        check_pkg_state_array(pkg_state)
+        @component.postinstall_required_actions << OpenStruct.new(:pkg_state => Array(pkg_state), :scripts => Array(scripts))
+      end
+
       # Adds action to run during the postinstall phase of packaging
       #
       # @param pkg_state [Array] the state in which the scripts should execute. Can be
