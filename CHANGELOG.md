@@ -5,8 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.42.0] - 2023-11-09
 ### Added
-- (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post section for rpm
+- (PA-5786) Add revised `postinstall_required_actions` forcing scriptlets to run in the %post section for rpm
 
 ### Changed
 - (VANAGON-235) Report the actual URL when a Git URL is deemed invalid.
@@ -1167,7 +1169,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.41.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.42.0...HEAD
+[0.42.0]: https://github.com/puppetlabs/vanagon/compare/0.41.0...0.42.0
 [0.41.0]: https://github.com/puppetlabs/vanagon/compare/0.40.0...0.41.0
 [0.40.0]: https://github.com/puppetlabs/vanagon/compare/0.39.3...0.40.0
 [0.39.3]: https://github.com/puppetlabs/vanagon/compare/0.39.2...0.39.3
