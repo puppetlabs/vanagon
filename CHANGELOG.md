@@ -8,6 +8,9 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ### Added
 - (PA-5786) Add `postinstall_required_actions` forcing scriptlets to run in the %post section for rpm
 
+### Changed
+- (VANAGON-235) Report the actual URL when a Git URL is deemed invalid.
+
 ## [0.41.0] - 2023-10-26
 ### Added
 - (VANAGON-231) Added amazon linux 2023 platform for intel & arm
