@@ -380,6 +380,13 @@ class Vanagon
       return !!@name.match(/^fedora-.*$/)
     end
 
+    # Utility matcher to determine is the platform is a amazon linux variety
+    #
+    # @return [true, false] true if it is a amazon linux variety, false otherwise
+    def is_amazon?
+      return !!@name.match(/^amazon-.*$/)
+    end
+
     # Utility matcher to determine is the platform is a debian variety
     #
     # @return [true, false] true if it is a debian variety, false otherwise
