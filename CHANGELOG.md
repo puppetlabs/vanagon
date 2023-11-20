@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (VANAGON-236) Add macOS 14 (Intel) platform definition to vanagon
 
 ## [0.42.0] - 2023-11-09
 ### Added
