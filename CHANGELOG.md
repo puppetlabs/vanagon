@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
 ### Added
+- (VANAGON-237) Add macOS 14 (ARM) platform definition to vanagon
+
+### Added
 - (VANAGON-236) Add macOS 14 (Intel) platform definition to vanagon
 
 ## [0.43.0] - 2023-11-20
