@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ## [Unreleased]
 ### Added
 - (VANAGON-236) Add macOS 14 (Intel) platform definition to vanagon
+- (maint) Add Debian 12 bookworm platform definitions
 
 ## [0.43.0] - 2023-11-20
 ### Added
