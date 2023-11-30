@@ -5,10 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.44.0] - 2023-11-30
 ### Added
 - (VANAGON-237) Add macOS 14 (ARM) platform definition to vanagon
-
-### Added
 - (VANAGON-236) Add macOS 14 (Intel) platform definition to vanagon
 - (maint) Add Debian 12 bookworm platform definitions
 
@@ -1179,8 +1179,9 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.43.0...HEAD
-[0.42.0]: https://github.com/puppetlabs/vanagon/compare/0.42.0...0.43.0
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.44.0...HEAD
+[0.44.0]: https://github.com/puppetlabs/vanagon/compare/0.43.0...0.44.0
+[0.43.0]: https://github.com/puppetlabs/vanagon/compare/0.42.0...0.43.0
 [0.42.0]: https://github.com/puppetlabs/vanagon/compare/0.41.0...0.42.0
 [0.41.0]: https://github.com/puppetlabs/vanagon/compare/0.40.0...0.41.0
 [0.40.0]: https://github.com/puppetlabs/vanagon/compare/0.39.3...0.40.0
