@@ -474,7 +474,7 @@ class Vanagon
     #
     # @return [true, false] true if it is a linux variety, false otherwise
     def is_linux?
-      return (!is_windows? && !is_unix?)
+      !is_windows? && !is_unix?
     end
 
     # Utility matcher to determine if the platform is a cross-compiled variety
@@ -490,7 +490,7 @@ class Vanagon
     #
     # @return [true, false] true if it is a cross-compiled Linux variety, false otherwise
     def is_cross_compiled_linux?
-      return (is_cross_compiled? && is_linux?)
+      is_cross_compiled? && is_linux?
     end
 
     # Pass in a packaging override. This needs to be implemented for each
