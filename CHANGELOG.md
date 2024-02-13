@@ -7,6 +7,7 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ## [Unreleased]
 ### Added
 - (VANAGON-228) Add Fedora-38 (Intel) platform definition to vanagon
+- (RE-16102) Add Redhat-9 FIPS platform definition to vanagon
 
 ## [0.44.0] - 2023-11-30
 ### Added
