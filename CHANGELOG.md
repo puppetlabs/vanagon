@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.45.0] - 2024-02-16
 ### Added
 - (VANAGON-228) Add Fedora-38 (Intel) platform definition to vanagon
 - (RE-16102) Add Redhat-9 FIPS platform definition to vanagon
@@ -1183,7 +1185,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.44.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.45.0...HEAD
+[0.45.0]: https://github.com/puppetlabs/vanagon/compare/0.44.0...0.45.0
 [0.44.0]: https://github.com/puppetlabs/vanagon/compare/0.43.0...0.44.0
 [0.43.0]: https://github.com/puppetlabs/vanagon/compare/0.42.0...0.43.0
 [0.42.0]: https://github.com/puppetlabs/vanagon/compare/0.41.0...0.42.0
