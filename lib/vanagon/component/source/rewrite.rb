@@ -78,11 +78,12 @@ class Vanagon
             return uri if rewrite_rules.empty?
             if !!uri.match(/^git:http/)
               VanagonLogger.info <<-HERE.undent
-                `fustigit` parsing doesn't get along with how we specify the source
+                `build-uri` parsing doesn't get along with how we specify the source
                 type by prefixing `git`. As `rewrite_rules` are deprecated, we'll
                 replace `git:http` with `http` in your uri. At some point this will
                 break.
               HERE
+              # both fustigit and build-uri don't support git:http://host/path
               uri.sub!(/^git:http/, 'http')
             end
             url = URI.parse(uri)

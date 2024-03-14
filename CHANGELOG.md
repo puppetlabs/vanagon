@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (maint) Use build-uri instead of fustigit to support Ruby 3 without monkey-patching
 
 ## [0.45.0] - 2024-02-16
 ### Added
