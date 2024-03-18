@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+(RE-16095) Abandon fustigit in favor of build-uri. build-uri provides similar functionality
+  without the monkey-patching
+
 
 ## [0.45.0] - 2024-02-16
 ### Added

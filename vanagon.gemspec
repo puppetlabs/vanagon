@@ -23,8 +23,8 @@ Gem::Specification.new do |gem|
   # - MIT licensed: https://rubygems.org/gems/git
   gem.add_runtime_dependency('git', '~> 1.13.0')
   # Parse scp-style triplets like URIs; used for Git source handling.
-  # - MIT licensed: https://rubygems.org/gems/fustigit
-  gem.add_runtime_dependency('fustigit', '~> 0.3.0')
+  # - MIT licensed: https://rubygems.org/gems/build-uri
+  gem.add_runtime_dependency('build-uri', '~> 1.0')
   # Handle locking hardware resources
   # - ASL v2 licensed: https://rubygems.org/gems/lock_manager
   gem.add_runtime_dependency('lock_manager', '>= 0')
