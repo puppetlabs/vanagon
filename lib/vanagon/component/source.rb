@@ -1,4 +1,3 @@
-require 'fustigit'
 require 'vanagon/logger'
 require 'vanagon/component/source/http'
 require 'vanagon/component/source/git'

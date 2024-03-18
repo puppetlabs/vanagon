@@ -13,55 +13,57 @@ describe 'Vanagon::Project' do
     OpenStruct.new(:settings => {})
   end
 
-  let(:project_block) {
+  let(:project_block) do
     "project 'test-fixture' do |proj|
     proj.component 'some-component'
     end"
-  }
+  end
 
-  let(:upstream_project_block) {
+  let(:upstream_project_block) do
     "project 'upstream-test' do |proj|
     proj.setting(:test, 'upstream-test')
     end"
-  }
+  end
 
-  let(:inheriting_project_block) {
+  let(:inheriting_project_block) do
     "project 'inheritance-test' do |proj|
     proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
     end"
-  }
+  end
 
-  let(:inheriting_project_block_with_settings) {
+  let(:inheriting_project_block_with_settings) do
     "project 'inheritance-test' do |proj|
     proj.setting(:merged, 'yup')
     proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
     end"
-  }
+  end
 
-  let(:preset_inheriting_project_block) {
+  let(:preset_inheriting_project_block) do
     "project 'inheritance-test' do |proj|
     proj.setting(:test, 'inheritance-test')
     proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
     end"
-  }
+  end
 
-  let(:postset_inheriting_project_block) {
+  let(:postset_inheriting_project_block) do
     "project 'inheritance-test' do |proj|
     proj.inherit_settings 'upstream-test', 'git://some.url', 'master'
     proj.setting(:test, 'inheritance-test')
     end"
-  }
+  end
 
-  let (:dummy_platform_settings) {
+  let (:dummy_platform_settings) do
     plat = Vanagon::Platform::DSL.new('debian-6-i386')
-    plat.instance_eval("platform 'debian-6-i386' do |plat|
-                       plat.servicetype 'sysv'
-                       plat.servicedir '/etc/init.d'
-                       plat.defaultdir '/etc/default'
-                       settings[:platform_test] = 'debian'
-                    end")
+    plat.instance_eval <<-END_EVAL, __FILE__, __LINE__ + 1
+      platform 'debian-6-i386' do |plat|
+        plat.servicetype 'sysv'
+        plat.servicedir '/etc/init.d'
+        plat.defaultdir '/etc/default'
+        settings[:platform_test] = 'debian'
+      end
+    END_EVAL
     plat._platform
-  }
+  end
 
 
   describe '#vendor=' do
@@ -71,7 +73,8 @@ describe 'Vanagon::Project' do
 
     it 'fails if vendor field does not include email address' do
       project = Vanagon::Project.new('vendor-test', dummy_platform)
-      expect { project.vendor = bad_vendor }.to raise_error(Vanagon::Error, /Project vendor field must include email address/)
+      expect { project.vendor = bad_vendor }
+        .to raise_error(Vanagon::Error, /Project vendor field must include email address/)
     end
 
     it 'sets project vendor to the supplied value' do
@@ -98,7 +101,6 @@ describe 'Vanagon::Project' do
   end
 
   describe '#get_root_directories' do
-
     before do
       allow_any_instance_of(Vanagon::Project::DSL).to receive(:puts)
       allow(Vanagon::Driver).to receive(:configdir).and_return(configdir)
@@ -108,22 +110,25 @@ describe 'Vanagon::Project' do
     let(:test_sets) do
       [
         {
-          :directories => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs", "/etc/puppetlabs/puppet", "/opt/puppetlabs"],
+          :directories => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs",
+                           "/etc/puppetlabs/puppet", "/opt/puppetlabs"],
           :results => ["/opt/puppetlabs", "/etc/puppetlabs", "/var/log/puppetlabs"],
         },
         {
-          :directories => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs", "/etc/puppetlabs/puppet", "/opt/puppetlabs/lib"],
-          :results => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs", "/opt/puppetlabs/lib"],
+          :directories => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs",
+                           "/etc/puppetlabs/puppet", "/opt/puppetlabs/lib"],
+          :results => ["/opt/puppetlabs/bin", "/etc/puppetlabs", "/var/log/puppetlabs",
+                       "/opt/puppetlabs/lib"],
         },
       ]
     end
 
     it 'returns only the highest level directories' do
       test_sets.each do |set|
-        expect(component).to receive(:directories).and_return([])
+        allow(component).to receive(:directories).and_return([])
         proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform, [])
         proj.instance_eval(project_block)
-        set[:directories].each {|dir| proj.directory dir }
+        set[:directories].each { |dir| proj.directory dir }
         expect(proj._project.get_root_directories.sort).to eq(set[:results].sort)
       end
     end
@@ -132,16 +137,19 @@ describe 'Vanagon::Project' do
   describe "#load_upstream_settings" do
     before(:each) do
       # stub out all of the git methods so we don't actually clone
-      allow(Vanagon::Component::Source::Git).to receive(:valid_remote?).with(URI.parse('git://some.url')).and_return(true)
+      allow(Vanagon::Component::Source::Git)
+        .to receive(:valid_remote?)
+        .with(Build::URI.parse('git://some.url'))
+        .and_return(true)
       git_source = Vanagon::Component::Source::Git.new('git://some.url', workdir: Dir.getwd)
       allow(Vanagon::Component::Source::Git).to receive(:new).and_return(git_source)
-      expect(git_source).to receive(:fetch).and_return(true)
+      allow(git_source).to receive(:fetch).and_return(true)
 
       # stubs for the upstream project
       upstream_proj = Vanagon::Project::DSL.new('upstream-test', configdir, upstream_platform, [])
       upstream_proj.instance_eval(upstream_project_block)
-      expect(Vanagon::Project).to receive(:load_project).and_return(upstream_proj._project)
-      expect(Vanagon::Platform).to receive(:load_platform).and_return(upstream_platform)
+      allow(Vanagon::Project).to receive(:load_project).and_return(upstream_proj._project)
+      allow(Vanagon::Platform).to receive(:load_platform).and_return(upstream_platform)
 
       class Vanagon
         class Project
@@ -182,8 +190,8 @@ describe 'Vanagon::Project' do
     before do
       allow(Vanagon::Component)
         .to receive(:load_component)
-              .with('some-component', any_args)
-              .and_return(component)
+        .with('some-component', any_args)
+        .and_return(component)
     end
 
     it 'loads settings set in platforms' do
@@ -232,8 +240,8 @@ describe 'Vanagon::Project' do
     it "fails if downloading over HTTP without a valid sha1sum URI" do
       allow(Vanagon::Component::Source::Http)
         .to receive(:valid_url?)
-              .with(http_yaml_uri)
-              .and_return(true)
+        .with(http_yaml_uri)
+        .and_return(true)
       http_source = instance_double(Vanagon::Component::Source::Http)
       allow(Vanagon::Component::Source).to receive(:source).and_return(http_source)
       allow(http_source).to receive(:verify).and_return(true)
@@ -241,7 +249,7 @@ describe 'Vanagon::Project' do
       expect { project.load_yaml_settings(http_yaml_uri) }.to raise_error(Vanagon::Error)
     end
 
-    context "given a valid source" do
+    context "with a valid source" do
       before(:each) do
         local_source = instance_double(Vanagon::Component::Source::Local)
         allow(local_source).to receive(:fetch)
@@ -425,7 +433,7 @@ describe 'Vanagon::Project' do
       @proj = Vanagon::Project.new('test-project', platform)
     end
 
-    it 'should generate a hash with the expected build metadata' do
+    it 'generates a hash with the expected build metadata' do
       comp1 = Vanagon::Component.new('test-component1', {}, {})
       comp1.version = '1.0.0'
       @proj.components << comp1
@@ -439,7 +447,7 @@ describe 'Vanagon::Project' do
       })
     end
 
-    it 'should call pretty-print when we want pretty json' do
+    it 'calls pretty-print when we want pretty json' do
       comp1 = Vanagon::Component.new('test-component1', {}, {})
       comp1.version = '1.0.0'
       @proj.components << comp1
@@ -454,6 +462,7 @@ describe 'Vanagon::Project' do
     include FakeFS::SpecHelpers
     let(:platform_name) { 'el-7-x86_64' }
     let(:platform) { Vanagon::Platform.new(platform_name) }
+
     before(:each) do
       class Vanagon
         class Project
@@ -465,7 +474,7 @@ describe 'Vanagon::Project' do
       @proj = Vanagon::Project.new('test-project', platform)
     end
 
-    it 'should generate a file with the expected build metadata' do
+    it 'generates a file with the expected build metadata' do
       correct_sample_metadata = {
         'packaging_type' => { 'vanagon' => '0.0.0-rspec' },
         'version' => '123abcde',
@@ -495,9 +504,6 @@ describe 'Vanagon::Project' do
 
 
   describe '#publish_yaml_settings' do
-    let(:platform_name) { 'aix-7.2-ppc' }
-    let(:platform) { Vanagon::Platform.new(platform_name) }
-
     subject(:project) do
       project = Vanagon::Project.new('test-project', platform)
       project.settings = { key: 'value' }
@@ -506,8 +512,16 @@ describe 'Vanagon::Project' do
       project
     end
 
-    let(:yaml_output_path) { File.expand_path("test-project-version.#{platform_name}.settings.yaml", "output") }
-    let(:sha1_output_path) { File.expand_path("test-project-version.#{platform_name}.settings.yaml.sha1", "output") }
+    let(:platform_name) { 'aix-7.2-ppc' }
+    let(:platform) { Vanagon::Platform.new(platform_name) }
+
+
+    let(:yaml_output_path) do
+      File.expand_path("test-project-version.#{platform_name}.settings.yaml", "output")
+    end
+    let(:sha1_output_path) do
+      File.expand_path("test-project-version.#{platform_name}.settings.yaml.sha1", "output")
+    end
 
     let(:yaml_file) { double('yaml_file') }
     let(:sha1_file) { double('sha1_file') }
@@ -516,10 +530,10 @@ describe 'Vanagon::Project' do
     let(:sha1_object) { instance_double(Digest::SHA1, hexdigest: sha1_content) }
 
     it 'writes project settings as yaml and a sha1sum for the settings to the output directory' do
-      expect(File).to receive(:open).with(yaml_output_path, "w").and_yield(yaml_file)
-      expect(Digest::SHA1).to receive(:file).with(yaml_output_path).and_return(sha1_object)
-      expect(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
-      expect(yaml_file).to receive(:write).with({key: 'value'}.to_yaml)
+      allow(File).to receive(:open).with(yaml_output_path, "w").and_yield(yaml_file)
+      allow(Digest::SHA1).to receive(:file).with(yaml_output_path).and_return(sha1_object)
+      allow(File).to receive(:open).with(sha1_output_path, "w").and_yield(sha1_file)
+      expect(yaml_file).to receive(:write).with({ key: 'value' }.to_yaml)
       expect(sha1_file).to receive(:puts).with(sha1_content)
       expect { project.publish_yaml_settings(platform) }.not_to raise_error
     end
@@ -545,35 +559,39 @@ describe 'Vanagon::Project' do
   describe '#generate_package' do
     it "builds packages by default" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
-      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end", __FILE__, __LINE__)
       proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
-      expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
+      allow(platform._platform).to receive(:generate_package).and_return(["# making a package"])
       expect(proj._project.generate_package).to eq(["# making a package"])
     end
 
     it "builds packages and archives if configured for both" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
-      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end", __FILE__, __LINE__)
       proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_archives(true)
-      expect(platform._platform).to receive(:generate_package) { ["# making a package"] }
-      expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
+      allow(platform._platform).to receive(:generate_package).and_return(["# making a package"])
+      allow(platform._platform)
+        .to receive(:generate_compiled_archive)
+        .and_return(["# making an archive"])
       expect(proj._project.generate_package).to eq(["# making a package", "# making an archive"])
     end
 
     it "can build only archives" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
-      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end", __FILE__, __LINE__)
       proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_archives(true)
       proj.generate_packages(false)
-      expect(platform._platform).to receive(:generate_compiled_archive) { ["# making an archive"] }
+      allow(platform._platform)
+        .to receive(:generate_compiled_archive)
+        .and_return(["# making an archive"])
       expect(proj._project.generate_package).to eq(["# making an archive"])
     end
 
     it "builds nothing if that's what you really want" do
       platform = Vanagon::Platform::DSL.new('el-7-x86_64')
-      platform.instance_eval("platform 'el-7-x86_6' do |plat| end")
+      platform.instance_eval("platform 'el-7-x86_6' do |plat| end", __FILE__, __LINE__)
       proj = Vanagon::Project::DSL.new('test-fixture', configdir, platform._platform, [])
       proj.generate_packages(false)
       expect(proj._project.generate_package).to eq([])

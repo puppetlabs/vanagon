@@ -4,7 +4,7 @@ require 'vanagon/logger'
 # This stupid library requires a capital 'E' in its name
 # but it provides a wealth of useful constants
 require 'English'
-require 'fustigit'
+require 'build/uri'
 require 'git/basic_submodules'
 require 'logger'
 require 'timeout'
@@ -98,7 +98,7 @@ class Vanagon
           opts = default_options.merge(options.reject { |k, v| v.nil? })
 
           # Ensure that #url returns a URI object
-          @url = URI.parse(url.to_s)
+          @url = Build::URI.parse(url.to_s)
           @log_url = @url.host + @url.path unless @url.host.nil? || @url.path.nil?
           @ref = opts[:ref]
           @dirname = opts[:dirname]
