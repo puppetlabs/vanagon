@@ -5,10 +5,11 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
-### Changed
-(RE-16095) Abandon fustigit in favor of build-uri. build-uri provides similar functionality
-  without the monkey-patching
 
+## [0.46.0] - 2024-03-18
+### Changed
+- (RE-16095) Abandon fustigit in favor of build-uri. build-uri provides similar functionality
+  without the monkey-patching
 
 ## [0.45.0] - 2024-02-16
 ### Added
@@ -1189,7 +1190,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.45.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.46.0...HEAD
+[0.46.0]: https://github.com/puppetlabs/vanagon/compare/0.45.0...0.46.0
 [0.45.0]: https://github.com/puppetlabs/vanagon/compare/0.44.0...0.45.0
 [0.44.0]: https://github.com/puppetlabs/vanagon/compare/0.43.0...0.44.0
 [0.43.0]: https://github.com/puppetlabs/vanagon/compare/0.42.0...0.43.0
