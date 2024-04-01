@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (PA-5323) Add RedHat 9 (Power9) platform definition to vanagon
 
 ## [0.46.0] - 2024-03-18
 ### Changed
