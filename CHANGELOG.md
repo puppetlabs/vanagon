@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (PA-6347) Add Fedora 40 platform definition to vanagon
 
 ## [0.47.0] - 2024-04-03
 ### Added
