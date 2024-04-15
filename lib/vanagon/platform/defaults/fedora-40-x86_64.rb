@@ -2,7 +2,7 @@ platform 'fedora-40-x86_64' do |plat|
   plat.servicedir '/usr/lib/systemd/system'
   plat.defaultdir '/etc/sysconfig'
   plat.servicetype 'systemd'
-  plat.dist 'fc38'
+  plat.dist 'fc40'
 
   packages = %w[
     autoconf automake bzip2-devel gcc gcc-c++ libselinux-devel
@@ -13,5 +13,5 @@ platform 'fedora-40-x86_64' do |plat|
   plat.provision_with("/usr/bin/dnf install -y --best --allowerasing #{packages.join(' ')}")
 
   plat.install_build_dependencies_with '/usr/bin/dnf install -y --best --allowerasing'
-  plat.vmpooler_template 'fedora-38-x86_64'
+  plat.vmpooler_template 'fedora-40-x86_64'
 end
