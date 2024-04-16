@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.48.0] - 2024-04-16
 ### Added
 - (PA-6347) Add Fedora 40 platform definition to vanagon
 
@@ -1196,7 +1198,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.47.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.48.0...HEAD
+[0.48.0]: https://github.com/puppetlabs/vanagon/compare/0.47.0...0.48.0
 [0.47.0]: https://github.com/puppetlabs/vanagon/compare/0.46.0...0.47.0
 [0.46.0]: https://github.com/puppetlabs/vanagon/compare/0.45.0...0.46.0
 [0.45.0]: https://github.com/puppetlabs/vanagon/compare/0.44.0...0.45.0
