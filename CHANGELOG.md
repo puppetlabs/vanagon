@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Fixed
+- Use URI.parse when selecting the docker target
 
 ## [0.48.0] - 2024-04-16
 ### Added
