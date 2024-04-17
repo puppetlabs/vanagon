@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (VANAGON-242) Add Amazon Linux2 (intel) platform definition to vanagon
+
 ### Fixed
 - Use URI.parse when selecting the docker target
 
