@@ -101,4 +101,26 @@ describe Vanagon::Engine::Docker do
       end
     end
   end
+
+  describe '#select_target' do
+    context 'when platform has use_docker_exec set' do
+      subject { described_class.new(platform_with_docker_exec) }
+
+      it 'starts a new docker instance' do
+        expect(Vanagon::Utilities).to receive(:ex).with("/usr/bin/docker run -d --name debian_10-slim-builder   debian:10-slim")
+
+        subject.select_target
+      end
+
+      it 'sets the target to a localhost URI' do
+        allow(Vanagon::Utilities).to receive(:ex)
+
+        subject.select_target
+
+        uri = subject.target
+        expect(uri).to be_an_instance_of(URI::Generic)
+        expect(uri.path).to eq('localhost')
+      end
+    end
+  end
 end

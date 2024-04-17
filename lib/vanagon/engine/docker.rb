@@ -40,7 +40,7 @@ class Vanagon
         extra_args = @platform.docker_run_args.nil? ? [] : @platform.docker_run_args
 
         Vanagon::Utilities.ex("#{@docker_cmd} run -d --name #{build_host_name}-builder #{ssh_args} #{extra_args.join(' ')} #{@platform.docker_image}")
-        @target = URI.new('localhost')
+        @target = URI.parse('localhost')
 
         wait_for_ssh unless @platform.use_docker_exec
       rescue StandardError => e
