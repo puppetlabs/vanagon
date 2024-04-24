@@ -7,6 +7,8 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 ## [Unreleased]
 ### Fixed
 - Use URI.parse when selecting the docker target
+### Added
+- (VANAGON-242) Add Amazon Linux2 ARM platform definition to vanagon
 
 ## [0.48.0] - 2024-04-16
 ### Added
