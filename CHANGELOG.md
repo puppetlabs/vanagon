@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Changed
+(PA-6262) Change cmake to cmake3 form amazon linux 2 arm
 
 ## [0.49.0] - 2024-04-29
 ### Fixed
