@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- (VANAGON-243) Add Ubuntu 24.04 (ARM) platform definition to vanagon
 
 ## [0.50.0] - 2024-04-29
 ### Changed
