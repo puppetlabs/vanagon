@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+### Added
+- Add Amazon 2 (ARM) platform definition to vanagon
 
 ## [0.51.0] - 2024-05-31
 ### Added
