@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.52.0] - 2024-06-03
 ### Added
 - Add Amazon 2 (ARM) platform definition to vanagon
 
@@ -1214,7 +1216,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.51.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.52.0...HEAD
+[0.52.0]: https://github.com/puppetlabs/vanagon/compare/0.51.0...0.52.0
 [0.51.0]: https://github.com/puppetlabs/vanagon/compare/0.50.0...0.51.0
 [0.50.0]: https://github.com/puppetlabs/vanagon/compare/0.49.0...0.50.0
 [0.49.0]: https://github.com/puppetlabs/vanagon/compare/0.48.0...0.49.0
