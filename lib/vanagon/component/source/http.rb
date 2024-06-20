@@ -82,6 +82,13 @@ class Vanagon
         # Download the source from the url specified. Sets the full path to the
         # file as @file and the @extension for the file as a side effect.
         def fetch
+          @file = File.basename(URI.parse(@url).path)
+          begin
+            return if verify
+          rescue RuntimeError, Errno::ENOENT
+            remove_instance_variable(:@file)
+          end
+
           @file = download(@url)
         end
 
