@@ -24,7 +24,7 @@ class Vanagon
     def initialize(platform, project, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       @options = options
       @verbose = options[:verbose] || false
-      @preserve = options[:preserve] || false
+      @preserve = options[:preserve] || :'on-failure'
       @workdir = options[:workdir] || Dir.mktmpdir
 
       @@configdir = options[:configdir] || File.join(Dir.pwd, "configs")

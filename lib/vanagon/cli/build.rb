@@ -15,7 +15,7 @@ class Vanagon
           -o, --only-build COMPONENT,COMPONENT,...
                                            Only build listed COMPONENTs
           -p, --preserve [RULE]            Rule for VM preservation: never, on-failure, always
-                                             [Default: always]
+                                             [Default: on-failure]
           -r, --remote-workdir DIRECTORY   Working directory on the remote host
           -s, --skipcheck                  Skip the "check" stage when building components
           -w, --workdir DIRECTORY          Working directory on the local host
