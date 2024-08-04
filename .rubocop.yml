@@ -408,16 +408,16 @@ RSpec/SubjectDeclaration:
 RSpec/VerifiedDoubleReference:
   Enabled: true
 
-Rspec/BeforeAfterAll:
+RSpec/BeforeAfterAll:
   Enabled: false
 
-Rspec/ExampleLength:
+RSpec/ExampleLength:
   Enabled: false
 
-Rspec/HookArgument:
+RSpec/HookArgument:
   Enabled: false
 
-Rspec/MultipleMemoizedHelpers:
+RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 Security/CompoundHash:
