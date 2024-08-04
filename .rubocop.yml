@@ -6,27 +6,13 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.3
+  NewCops: enable
   Exclude:
   - "**/*.erb"
   - spec/**/*
   - vendor/**/*
   - examples/**/*
   - lib/vanagon/platform/defaults/*
-
-Capybara/MatchStyle:
-  Enabled: true
-
-Capybara/NegationMatcher:
-  Enabled: true
-
-Capybara/SpecificActions:
-  Enabled: true
-
-Capybara/SpecificFinders:
-  Enabled: true
-
-Capybara/SpecificMatcher:
-  Enabled: true
 
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: true
@@ -395,15 +381,6 @@ RSpec/DuplicatedMetadata:
 RSpec/ExcessiveDocstringSpacing:
   Enabled: true
 
-RSpec/FactoryBot/ConsistentParenthesesStyle:
-  Enabled: true
-
-RSpec/FactoryBot/FactoryNameStyle:
-  Enabled: true
-
-RSpec/FactoryBot/SyntaxMethods:
-  Enabled: true
-
 RSpec/IdenticalEqualityAssertion:
   Enabled: true
 
@@ -414,21 +391,6 @@ RSpec/NoExpectationExample:
   Enabled: true
 
 RSpec/PendingWithoutReason:
-  Enabled: true
-
-RSpec/Rails/AvoidSetupHook:
-  Enabled: true
-
-RSpec/Rails/HaveHttpStatus:
-  Enabled: true
-
-RSpec/Rails/InferredSpecType:
-  Enabled: true
-
-RSpec/Rails/MinitestAssertions:
-  Enabled: true
-
-RSpec/Rails/TravelAround:
   Enabled: true
 
 RSpec/RedundantAround:
