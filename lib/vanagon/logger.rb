@@ -22,7 +22,7 @@ class VanagonLogger < Logger
   end
 
   def initialize(output = $stdout)
-    super(output)
+    super
     self.level = ::Logger::INFO
     self.formatter = proc do |severity, datetime, progname, msg|
       "#{msg}\n"

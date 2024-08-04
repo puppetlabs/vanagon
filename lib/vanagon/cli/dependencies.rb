@@ -35,12 +35,10 @@ class Vanagon
 
         projects.each do |project|
           platforms.each do |platform|
-            begin
-              artifact = Vanagon::Driver.new(platform, project, options)
-              artifact.dependencies
-            rescue RuntimeError => e
-              failures.push("#{project}, #{platform}: #{e}")
-            end
+            artifact = Vanagon::Driver.new(platform, project, options)
+            artifact.dependencies
+          rescue RuntimeError => e
+            failures.push("#{project}, #{platform}: #{e}")
           end
         end
 
@@ -92,7 +90,7 @@ class Vanagon
           '<project-name>' => :project_name,
           '<platforms>' => :platforms
         }
-        return docopt_options.map { |k, v| [translations[k], v] }.to_h
+        return docopt_options.transform_keys { |k| translations[k] }
       end
     end
   end

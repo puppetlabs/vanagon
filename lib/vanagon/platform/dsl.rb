@@ -247,7 +247,7 @@ class Vanagon
         @platform.servicedir = dir
 
         # Add to the servicetypes array if we haven't already
-        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.select { |s| s.servicetype == @platform.servicetype }.empty?
+        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.none? { |s| s.servicetype == @platform.servicetype }
           @platform.servicetypes << OpenStruct.new(:servicetype => @platform.servicetype, :servicedir => @platform.servicedir)
         end
       end
@@ -263,7 +263,7 @@ class Vanagon
       #
       # @param type [String] service type for the platform ('sysv' for example)
       # @param servicedir [String] service dir for this platform and service type ('/etc/init.d' for example). Optional.
-      def servicetype(type, servicedir: nil) # rubocop:disable Metrics/AbcSize
+      def servicetype(type, servicedir: nil)
         if servicedir
           @platform.servicetypes << OpenStruct.new(:servicetype => type, :servicedir => servicedir)
         else
@@ -271,7 +271,7 @@ class Vanagon
         end
 
         # Add to the servicetypes array if we haven't already
-        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.select { |s| s.servicetype == @platform.servicetype }.empty?
+        if @platform.servicetype && @platform.servicedir && @platform.servicetypes.none? { |s| s.servicetype == @platform.servicetype }
           @platform.servicetypes << OpenStruct.new(:servicetype => @platform.servicetype, :servicedir => @platform.servicedir)
         end
       end

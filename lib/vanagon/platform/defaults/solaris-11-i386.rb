@@ -5,6 +5,7 @@ platform "solaris-11-i386" do |plat|
 # Serial #: 03:3A:F1:E6:A7:11:A9:A0:BB:28:64:B1:1D:09:FA:E5
 # SHA256 Fingerprint: CB:3C:CB:B7:60:31:E5:E0:13:8F:8D:D3:9A:23:F9:DE:47:FF:C3:5E:43:C1:14:4C:EA:27:D4:6A:5A:B1:CB:5F  
 # https://perforce.atlassian.net/browse/RE-16540 for long term fix for this
+# Required by Vanagon while on Solaris 11.1 (solaris-11-x86_64 in our local vmpooler)
 DigiCertGlobalRootG2 = <<-STRING
 -----BEGIN CERTIFICATE-----
 MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
@@ -32,7 +33,7 @@ STRING
   plat.servicedir "/lib/svc/manifest"
   plat.defaultdir "/lib/svc/method"
   plat.servicetype "smf"
-
+  
   plat.vmpooler_template "solaris-11-x86_64"
   plat.provision_with "echo '#{DigiCertGlobalRootG2}'> /etc/openssl/certs/DigiCertGlobalRootG2.pem"
   plat.provision_with 'chmod a+r /etc/openssl/certs/DigiCertGlobalRootG2.pem'

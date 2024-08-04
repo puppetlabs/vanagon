@@ -22,7 +22,7 @@ class Vanagon
       def run(_)
         ENV['PROJECT_ROOT'] = Dir.pwd
 
-        if Dir['output/**/*'].select { |entry| File.file?(entry) }.empty?
+        if Dir['output/**/*'].none? { |entry| File.file?(entry) }
           VanagonLogger.error 'vanagon: Error: No packages to ship in the "output" directory. Maybe build some first?'
           exit 1
         end

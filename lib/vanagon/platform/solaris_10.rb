@@ -189,7 +189,7 @@ class Vanagon
         @shasum = "/opt/csw/bin/shasum"
         # solaris 10
         @num_cores = "/usr/bin/kstat cpu_info | awk '{print $$1}' | grep '^core_id$$' | wc -l"
-        super(name)
+        super
         if @architecture == "sparc"
           @platform_triple = "sparc-sun-solaris2.#{@os_version}"
         elsif @architecture == "i386"

@@ -140,12 +140,10 @@ class Vanagon
       # @return [void]
       def wait_for_ssh
         Vanagon::Utilities.retry_with_timeout(5, 5) do
-          begin
-            Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @target_port)
-          rescue StandardError => e
-            sleep(1) # Give SSHD some time to start.
-            raise e
-          end
+          Vanagon::Utilities.remote_ssh_command("#{@target_user}@#{@target}", 'exit', @target_port)
+        rescue StandardError => e
+          sleep(1) # Give SSHD some time to start.
+          raise e
         end
       rescue StandardError => e
         raise Vanagon::Error.wrap(e, "SSH was not up in the container after 5 seconds.")
