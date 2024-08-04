@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.authors  = ['Puppet By Perforce']
   gem.email    = 'release@puppet.com'
   gem.homepage = 'http://github.com/puppetlabs/vanagon'
-  gem.required_ruby_version = '>=2.3', '<4'
+  gem.required_ruby_version = '>=2.7', '<4'
 
   gem.add_runtime_dependency('docopt')
   # Handle git repos responsibly

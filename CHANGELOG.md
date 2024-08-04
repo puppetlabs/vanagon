@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+- Bump minimum ruby requirement to 2.7
 
 ## [0.52.0] - 2024-06-03
 ### Added
