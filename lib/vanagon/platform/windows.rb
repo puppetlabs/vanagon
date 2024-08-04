@@ -457,7 +457,7 @@ class Vanagon
         @install = "/usr/bin/install"
         @copy = "/usr/bin/cp"
         @package_type = "msi"
-        super(name)
+        super
       end
     end
   end

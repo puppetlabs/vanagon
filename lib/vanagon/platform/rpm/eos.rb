@@ -14,7 +14,7 @@ class Vanagon
           else
             case project.platform.package_type
             when "rpm"
-              return super(project)
+              return super
             when "swix"
               return generate_swix_package(project)
             else
@@ -34,7 +34,7 @@ class Vanagon
           else
             case project.platform.package_type
             when "rpm"
-              return super(project)
+              return super
             when "swix"
               return swix_package_name(project)
             else

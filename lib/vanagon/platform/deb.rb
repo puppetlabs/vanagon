@@ -144,7 +144,7 @@ class Vanagon
         @num_cores = "/usr/bin/nproc"
         @curl = "curl --silent --show-error --fail --location"
         @valid_operators = ['<', '>', '<=', '>=', '=', '<<', '>>']
-        super(name)
+        super
       end
     end
   end

@@ -39,9 +39,8 @@ class Vanagon
 
         components = driver.project.components
         component_names = components.map(&:name)
-        build_requirements = []
-        components.each do |component|
-          build_requirements << component.build_requires.reject do |requirement|
+        build_requirements = components.map do |component|
+          component.build_requires.reject do |requirement|
             # only include external requirements: i.e. those that do not match
             # other components in the project
             component_names.include?(requirement)
@@ -61,7 +60,7 @@ class Vanagon
           '<project-name>' => :project_name,
           '<platform>' => :platform,
         }
-        return docopt_options.map { |k, v| [translations[k], v] }.to_h
+        return docopt_options.transform_keys { |k| translations[k] }
       end
     end
   end
