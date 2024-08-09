@@ -6,6 +6,9 @@ This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
 
+### Added
+- Add DigiCertGlobalRootG2 cert as part of Solaris default
+
 ## [0.52.0] - 2024-06-03
 ### Added
 - Add Amazon 2 (ARM) platform definition to vanagon
