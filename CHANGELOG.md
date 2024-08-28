@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+- (VANAGON-257) Enable windowsfips-2016 to use '-fips' candle and heat flags.
 
 ## [0.52.0] - 2024-06-03
 ### Added
