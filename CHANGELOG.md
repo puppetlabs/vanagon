@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
 
 ## [Unreleased]
+
+## [0.53.0] - 2024-09-13
 ### Added
 - (VANAGON-257) Enable windowsfips-2016 to use '-fips' candle and heat flags.
 
@@ -1218,7 +1220,8 @@ on Debian < 8 and needs more work and testing.
 
 ## Versions <= 0.3.9 do not have a change log entry
 
-[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.52.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/vanagon/compare/0.53.0...HEAD
+[0.53.0]: https://github.com/puppetlabs/vanagon/compare/0.52.0...0.53.0
 [0.52.0]: https://github.com/puppetlabs/vanagon/compare/0.51.0...0.52.0
 [0.51.0]: https://github.com/puppetlabs/vanagon/compare/0.50.0...0.51.0
 [0.50.0]: https://github.com/puppetlabs/vanagon/compare/0.49.0...0.50.0
