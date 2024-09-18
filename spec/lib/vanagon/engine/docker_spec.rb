@@ -2,6 +2,10 @@ require 'vanagon/engine/docker'
 require 'vanagon/platform'
 
 describe Vanagon::Engine::Docker do
+  before(:each) do
+    allow(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
+  end
+
   let (:platform_with_docker_image) do
     plat = Vanagon::Platform::DSL.new('debian-10-amd64')
     plat.instance_eval(<<~EOF)
@@ -34,6 +38,7 @@ describe Vanagon::Engine::Docker do
 
   describe '#initialize' do
     it 'fails without docker installed' do
+      allow(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_call_original
       ENV['PATH'].split(File::PATH_SEPARATOR).each do |path_elem|
         expect(FileTest).to receive(:executable?).with(File.join(path_elem, 'docker')).and_return(false)
       end
@@ -44,18 +49,15 @@ describe Vanagon::Engine::Docker do
 
   describe "#validate_platform" do
     it 'raises an error if the platform is missing a required attribute' do
-      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
       expect { described_class.new(platform_without_docker_image).validate_platform }.to raise_error(Vanagon::Error)
     end
 
     it 'returns true if the platform has the required attributes' do
-      expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
       expect(described_class.new(platform_with_docker_image).validate_platform).to be(true)
     end
   end
 
   it 'returns "docker" name' do
-    expect(Vanagon::Utilities).to receive(:find_program_on_path).with('docker').and_return('/usr/bin/docker')
     expect(described_class.new(platform_with_docker_image).name).to eq('docker')
   end
 

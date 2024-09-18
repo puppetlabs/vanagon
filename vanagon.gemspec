@@ -16,22 +16,22 @@ Gem::Specification.new do |gem|
   gem.authors  = ['Puppet By Perforce']
   gem.email    = 'release@puppet.com'
   gem.homepage = 'http://github.com/puppetlabs/vanagon'
-  gem.required_ruby_version = '>=2.3', '<4'
+  gem.required_ruby_version = '>=2.7', '<4'
 
-  gem.add_runtime_dependency('docopt')
+  gem.add_dependency('docopt')
   # Handle git repos responsibly
   # - MIT licensed: https://rubygems.org/gems/git
-  gem.add_runtime_dependency('git', '~> 1.13.0')
+  gem.add_dependency('git', '~> 1.13.0')
   # Parse scp-style triplets like URIs; used for Git source handling.
   # - MIT licensed: https://rubygems.org/gems/build-uri
-  gem.add_runtime_dependency('build-uri', '~> 1.0')
+  gem.add_dependency('build-uri', '~> 1.0')
   # Handle locking hardware resources
   # - ASL v2 licensed: https://rubygems.org/gems/lock_manager
-  gem.add_runtime_dependency('lock_manager', '>= 0')
+  gem.add_dependency('lock_manager', '>= 0')
   # Utilities for `ship` and `repo` commands
   # - ASL v2 licensed: https://rubygems.org/gems/packaging
-  gem.add_runtime_dependency('packaging')
-  gem.add_runtime_dependency('psych', '>= 4.0')
+  gem.add_dependency('packaging')
+  gem.add_dependency('psych', '>= 4.0')
 
   gem.require_path = 'lib'
   gem.bindir       = 'bin'

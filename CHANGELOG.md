@@ -3,8 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org).
 
 This changelog adheres to [Keep a CHANGELOG](https://keepachangelog.com).
-
+### Changed
 ## [Unreleased]
+- Bump minimum ruby requirement to 2.7
+
+### Added
+- Add DigiCertGlobalRootG2 cert as part of Solaris default
 
 ## [0.53.0] - 2024-09-13
 ### Added
