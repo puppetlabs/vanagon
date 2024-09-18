@@ -104,7 +104,7 @@ class Vanagon
         @num_cores ||= "/bin/grep -c 'processor' /proc/cpuinfo"
         @rpmbuild ||= "/usr/bin/rpmbuild"
         @curl = "curl --silent --show-error --fail --location"
-        super(name)
+        super
       end
     end
   end

@@ -15,7 +15,7 @@ class Vanagon
           -o, --only-build COMPONENT,COMPONENT,...
                                            Only build listed COMPONENTs
           -p, --preserve [RULE]            Rule for VM preservation: never, on-failure, always
-                                             [Default: always]
+                                             [Default: on-failure]
           -r, --remote-workdir DIRECTORY   Working directory on the remote host
           -s, --skipcheck                  Skip the "check" stage when building components
           -w, --workdir DIRECTORY          Working directory on the local host
@@ -71,7 +71,7 @@ class Vanagon
           '<platforms>' => :platforms,
           '<targets>' => :targets
         }
-        return docopt_options.map { |k, v| [translations[k], v] }.to_h
+        return docopt_options.transform_keys { |k| translations[k] }
       end
 
       def options_validate(options)

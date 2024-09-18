@@ -1,18 +1,5 @@
 require 'vanagon/cli'
 
-##
-## Ignore the CLI calling 'exit'
-##
-RSpec.configure do |rspec|
-  rspec.around(:example) do |ex|
-    begin
-      ex.run
-    rescue SystemExit => e
-      puts "Got SystemExit: #{e.inspect}. Ignoring"
-    end
-  end
-end
-
 describe Vanagon::CLI do
   describe "options that don't take a value" do
     [:skipcheck, :verbose].each do |flag|
@@ -53,7 +40,7 @@ describe Vanagon::CLI do
     end
     it "preserve defaults to :on-failure" do
       subject = described_class.new
-      expect(subject.parse([])).to include(:preserve => :'on-failure')
+      expect(subject.parse(%W[build hello project platform])).to include(:preserve => :'on-failure')
     end
   end
 
