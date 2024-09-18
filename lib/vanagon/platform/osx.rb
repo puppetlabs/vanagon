@@ -136,7 +136,7 @@ class Vanagon
         @num_cores = "/usr/sbin/sysctl -n hw.physicalcpu"
         @mktemp = "mktemp -d -t 'tmp'"
         @brew = '/usr/local/bin/brew'
-        super(name)
+        super
       end
     end
   end

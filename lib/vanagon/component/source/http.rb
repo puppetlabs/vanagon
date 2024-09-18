@@ -82,6 +82,16 @@ class Vanagon
         # Download the source from the url specified. Sets the full path to the
         # file as @file and the @extension for the file as a side effect.
         def fetch
+          @file = File.basename(URI.parse(@url).path)
+          if File.exist?(File.join(workdir, file))
+            begin
+              return if verify
+            rescue RuntimeError, Errno::ENOENT
+              # ignore invalid "cached" file
+            end
+          end
+          remove_instance_variable(:@file)
+
           @file = download(@url)
         end
 
@@ -93,9 +103,13 @@ class Vanagon
         #
         # @raise [RuntimeError] an exception is raised if the sum does not match the sum of the file
         def verify
+          return true if @verified
+
           VanagonLogger.info "Verifying file: #{file} against sum: '#{sum}'"
           actual = get_sum(File.join(workdir, file), sum_type)
-          return true if sum == actual
+
+          @verified = (sum == actual)
+          return true if @verified
 
           fail "Unable to verify '#{File.join(workdir, file)}': #{sum_type} mismatch (expected '#{sum}', got '#{actual}')"
         end

@@ -462,13 +462,8 @@ class Vanagon
     # @return [Array] of OpenStructs of all interest triggers for the pkg_state
     #   Use array of openstructs because we need both interest_name and the scripts
     def get_interest_triggers(pkg_state)
-      interest_triggers = []
       check_pkg_state_string(pkg_state)
-      interests = components.flat_map(&:interest_triggers).compact.select { |s| s.pkg_state.include? pkg_state }
-      interests.each do |interest|
-        interest_triggers.push(interest)
-      end
-      interest_triggers.flatten.compact
+      components.flat_map(&:interest_triggers).compact.select { |s| s.pkg_state.include? pkg_state }.flatten.compact
     end
 
     # Collects activate triggers for the project and its components
