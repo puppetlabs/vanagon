@@ -162,13 +162,11 @@ class Vanagon
       error = nil
       tries.to_i.times do
         Timeout::timeout(timeout.to_i) do
-          begin
-            yield
-            return true
-          rescue StandardError => e
-            VanagonLogger.error 'An error was encountered evaluating block. Retrying..'
-            error = e
-          end
+          yield
+          return true
+        rescue StandardError => e
+          VanagonLogger.error 'An error was encountered evaluating block. Retrying..'
+          error = e
         end
       end
 

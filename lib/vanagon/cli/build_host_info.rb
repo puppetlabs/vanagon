@@ -51,7 +51,7 @@ class Vanagon
           '<platforms>' => :platforms,
           '<targets>' => :targets
         }
-        return docopt_options.map { |k, v| [translations[k], v] }.to_h
+        return docopt_options.transform_keys { |k| translations[k] }
       end
     end
   end

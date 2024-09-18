@@ -15,10 +15,10 @@ class Vanagon
       #
       # @return [true, false] true if all attributes have equal values. false otherwise.
       def ==(other)
-        other.name == self.name && \
-          other.group == self.group && \
-          other.shell == self.shell && \
-          other.is_system == self.is_system && \
+        other.name == self.name &&
+          other.group == self.group &&
+          other.shell == self.shell &&
+          other.is_system == self.is_system &&
           other.homedir == self.homedir
       end
     end
